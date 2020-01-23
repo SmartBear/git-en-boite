@@ -1,0 +1,14 @@
+version: "3"
+services:
+  example-app:
+    build: packages/example-app
+    volumes:
+      - ./packages/example-app:/app
+    ports:
+        - 3000:3000
+  la-boite:
+    build: packages/la-boite
+    volumes:
+        - ./packages/la-boite:/app
+    ports:
+         - 3001:3001
