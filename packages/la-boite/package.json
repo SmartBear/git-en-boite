@@ -12,7 +12,8 @@
   "dependencies": {
     "koa": "^2.11.0",
     "koa-router": "^8.0.6",
-    "koa2-cors": "^2.0.6"
+    "koa2-cors": "^2.0.6",
+    "nodegit": "^0.26.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

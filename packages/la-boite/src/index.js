@@ -1,13 +1,21 @@
 const Koa = require("koa");
 const Router = require("koa-router");
 const cors = require('koa2-cors');
+const Git = require("nodegit");
 
 const app = new Koa();
 const router = new Router();
 
-const listOfFiles = ["one.js", "two.js", "a-folder/three.js"];
+const getFiles = async () => {
+  const repository = await Git.Repository.open('repository')
+  const masterCommit = await repository.getMasterCommit()
+  const entries = (await masterCommit.getTree()).entries()
+  return entries.map(entry => entry.path())
+}
+
 
 const serializedListOfFiles = async () => {
+  const listOfFiles = await getFiles()
   return {
     data: listOfFiles.map((file, index) => ({
       type: "file",
