@@ -68,7 +68,7 @@ app.use(cors({ origin: '*' }))
 router.get('/files', async (ctx, next) => {
   ctx.body = await serializedListOfFiles()
 })
-router.get('/files/:branch', async (ctx, next) => {
+router.get('/files/:branch*', async (ctx, next) => {
   ctx.body = await serializedListOfFiles(ctx.params.branch)
 })
 router.get('/branches', async (ctx, next) => {
