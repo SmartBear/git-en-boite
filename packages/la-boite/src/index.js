@@ -1,12 +1,10 @@
-const Koa = require("koa");
-const Router = require("koa-router");
-const cors = require('koa2-cors');
-const Git = require("nodegit");
+const Koa = require("koa")
+const Router = require("koa-router")
+const cors = require('koa2-cors')
+const Git = require("nodegit")
 
 const app = new Koa()
 const router = new Router()
-
-
 
 const walkTree = (tree) => {
   const treeWalker = tree.walk()
@@ -49,8 +47,8 @@ const serializedListOfFiles = async (branchName = null) => {
         path: file
       }
     }))
-  };
-};
+  }
+}
 
 const getBranches = async () => {
   const repository = await Git.Repository.open('repository')
@@ -75,15 +73,14 @@ app.use(cors({ origin: '*' }))
 
 router.get("/files", async (ctx, next) => {
   ctx.body = await serializedListOfFiles()
-});
+})
 router.get("/files/:branch", async (ctx, next) => {
   ctx.body = await serializedListOfFiles(ctx.params.branch)
-});
-
+})
 router.get("/branches", async (ctx, next) => {
   ctx.body = await serializedListOfBranches()
-});
+})
 
-app.use(router.routes()).use(router.allowedMethods());
+app.use(router.routes()).use(router.allowedMethods())
 
-app.listen(3001);
+app.listen(3001)
