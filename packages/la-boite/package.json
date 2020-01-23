@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "koa": "^2.11.0",
-    "koa-router": "^8.0.6"
+    "koa-router": "^8.0.6",
+    "koa2-cors": "^2.0.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

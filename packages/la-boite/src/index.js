@@ -1,5 +1,6 @@
 const Koa = require("koa");
 const Router = require("koa-router");
+const cors = require('koa2-cors');
 
 const app = new Koa();
 const router = new Router();
@@ -17,6 +18,8 @@ const serializedListOfFiles = async () => {
     }))
   };
 };
+
+app.use(cors({ origin: '*' }));
 
 router.get("/files", async (ctx, next) => {
   ctx.body = await serializedListOfFiles();
