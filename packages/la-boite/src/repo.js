@@ -1,3 +1,4 @@
+const path = require('path')
 const Git = require('nodegit')
 
 module.exports = class Repo {
@@ -6,12 +7,12 @@ module.exports = class Repo {
   }
 
   async getBranches() {
-    const repository = await Git.Repository.open('repository')
+    const repository = await Git.Repository.open(path.resolve(this._repoName))
     return repository.getReferenceNames(Git.Reference.TYPE.LISTALL)
   }
 
   async getFiles(branchName = 'master') {
-    const repository = await Git.Repository.open(this._repoName)
+    const repository = await Git.Repository.open(path.resolve(this._repoName))
     const commit = await repository.getReferenceCommit(branchName)
     const tree = await commit.getTree()
     return walkTree(tree)

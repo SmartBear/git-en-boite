@@ -1,3 +1,4 @@
+const path = require('path')
 const Koa = require('koa')
 const cors = require('koa2-cors')
 const router = require('./router')
