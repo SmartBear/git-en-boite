@@ -1,7 +1,7 @@
-const Koa = require("koa")
-const Router = require("koa-router")
+const Koa = require('koa')
+const Router = require('koa-router')
 const cors = require('koa2-cors')
-const Git = require("nodegit")
+const Git = require('nodegit')
 
 const app = new Koa()
 const router = new Router()
@@ -22,26 +22,24 @@ const walkTree = (tree) => {
   })
 }
 
-const getFiles = async (branchName = null) => {
+const getFiles = async (branchName = 'master') => {
   const repository = await Git.Repository.open('repository')
-  let masterCommit
-  if (branchName === null) {
-    masterCommit = await repository.getMasterCommit()
-  } else {
-    masterCommit = await repository.getBranchCommit(branchName)
-  }
+  const masterCommit = await repository.getReferenceCommit(branchName)
+  console.log(masterCommit)
 
   const tree = await masterCommit.getTree()
+  console.log(tree)
+
   const files = await walkTree(tree)
 
   return files
 }
 
-const serializedListOfFiles = async (branchName = null) => {
+const serializedListOfFiles = async (branchName = 'master') => {
   const listOfFiles = await getFiles(branchName)
   return {
     data: listOfFiles.map((file, index) => ({
-      type: "file",
+      type: 'file',
       id: index,
       attributes: {
         path: file
@@ -60,7 +58,7 @@ const serializedListOfBranches = async () => {
   const branches = await getBranches()
   return {
     data: branches.map((branch, index) => ({
-      type: "branch",
+      type: 'branch',
       id: index,
       attributes: {
         name: branch
@@ -71,13 +69,13 @@ const serializedListOfBranches = async () => {
 
 app.use(cors({ origin: '*' }))
 
-router.get("/files", async (ctx, next) => {
+router.get('/files', async (ctx, next) => {
   ctx.body = await serializedListOfFiles()
 })
-router.get("/files/:branch", async (ctx, next) => {
+router.get('/files/:branch', async (ctx, next) => {
   ctx.body = await serializedListOfFiles(ctx.params.branch)
 })
-router.get("/branches", async (ctx, next) => {
+router.get('/branches', async (ctx, next) => {
   ctx.body = await serializedListOfBranches()
 })
 
