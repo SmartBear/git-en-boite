@@ -8,6 +8,7 @@ const generateTree = (paths) =>
 
 function App() {
   const [files, setFiles] = React.useState([])
+  const [branches, setBranches] = React.useState([])
   React.useEffect(() => {
     (async function fetchAndSetFiles() {
       const response = await fetch('http://localhost:3001/files')
@@ -15,11 +16,18 @@ function App() {
       setFiles(files)
     })()
   })
+  React.useEffect(() => {
+    (async function fetchAndSetBranches() {
+      const response = await fetch('http://localhost:3001/branches')
+      const branches = (await response.json()).data
+      setBranches(branches)
+    })()
+  })
   return (
     <div className="App">
       <header className="App-header">
         <HTMLSelect >
-          {['master', 'sprint1', 'sprint2'].map((name, index) => <option key={index}>{name}</option>)}
+          {branches.map(({ id, attributes: { name } }) => <option key={id}>{name}</option>)}
         </HTMLSelect>
         <Tree contents={generateTree(files)}/>
       </header>
