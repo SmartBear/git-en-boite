@@ -5,10 +5,13 @@ import { Tree, HTMLSelect } from "@blueprintjs/core"
 const generateTree = (paths) =>
   paths.map(({ id, attributes: { path } }) => ({ id, label: path, icon: "document" }))
 
-const fetchFiles = async () => {
-  const response = await fetch('http://localhost:3001/files')
+const fetchApi = async (path) => {
+  const response = await fetch(`http://localhost:3001/${path}`)
   return (await response.json()).data
 }
+
+const fetchFiles = () => fetchApi('files')
+const fetchBranches = () => fetchApi('branches')
 
 function App() {
   const [files, setFiles] = React.useState([])
@@ -19,10 +22,8 @@ function App() {
     })()
   })
   React.useEffect(() => {
-    (async function fetchAndSetBranches() {
-      const response = await fetch('http://localhost:3001/branches')
-      const branches = (await response.json()).data
-      setBranches(branches)
+    (async function () {
+      setBranches(await fetchBranches())
     })()
   })
   return (

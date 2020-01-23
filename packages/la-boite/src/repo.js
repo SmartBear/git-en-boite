@@ -8,7 +8,7 @@ module.exports = class Repo {
 
   async getBranches() {
     const repository = await Git.Repository.open(path.resolve(this._repoName))
-    return repository.getReferenceNames(Git.Reference.TYPE.LISTALL)
+    return repository.getReferenceNames(Git.Reference.TYPE.ALL)
   }
 
   async getFiles(branchName = 'master') {
