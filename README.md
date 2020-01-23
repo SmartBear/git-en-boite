@@ -1,4 +1,4 @@
-# git-aux-boite
+# git-en-boite
 
 An experiment to put git in a box to make it easy to work with in your apps.
 
@@ -12,8 +12,8 @@ An experiment to put git in a box to make it easy to work with in your apps.
 
 ## Architecture
 
-git aux boite is written in Node-JS, but runs in a docker container. It exposes an HTTP API.
+git-en-boite is written in Node-JS, but runs in a docker container. It exposes an HTTP API.
 
 ## Sample app
 
-Try out the sample app to get a feel for what git-aux-boite can do for you.
+Try out the sample app to get a feel for what git-en-boite can do for you.
