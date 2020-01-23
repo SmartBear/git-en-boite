@@ -5,15 +5,17 @@ import { Tree, HTMLSelect } from "@blueprintjs/core"
 const generateTree = (paths) =>
   paths.map(({ id, attributes: { path } }) => ({ id, label: path, icon: "document" }))
 
+const fetchFiles = async () => {
+  const response = await fetch('http://localhost:3001/files')
+  return (await response.json()).data
+}
 
 function App() {
   const [files, setFiles] = React.useState([])
   const [branches, setBranches] = React.useState([])
   React.useEffect(() => {
-    (async function fetchAndSetFiles() {
-      const response = await fetch('http://localhost:3001/files')
-      const files = (await response.json()).data
-      setFiles(files)
+    (async function () {
+      setFiles(await fetchFiles())
     })()
   })
   React.useEffect(() => {
@@ -29,10 +31,10 @@ function App() {
         <HTMLSelect >
           {branches.map(({ id, attributes: { name } }) => <option key={id}>{name}</option>)}
         </HTMLSelect>
-        <Tree contents={generateTree(files)}/>
+        <Tree contents={generateTree(files)} />
       </header>
     </div>
   );
 }
 
-export default App;
+export default App
