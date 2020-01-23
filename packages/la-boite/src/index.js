@@ -8,15 +8,15 @@ const router = new Router()
 
 
 
-const walkTree = (tree, filePaths = []) => {
+const walkTree = (tree) => {
   const treeWalker = tree.walk()
   const files = []
 
   return new Promise(resolve => {
-    treeWalker.on('entry', function(entry) {
+    treeWalker.on('entry', function (entry) {
       files.push(entry.path())
     })
-    treeWalker.on('end', function(trees) {
+    treeWalker.on('end', function () {
       resolve(files)
     })
 
