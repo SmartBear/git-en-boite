@@ -24,17 +24,23 @@ const walkTree = (tree) => {
   })
 }
 
-const getFiles = async () => {
+const getFiles = async (branchName = null) => {
   const repository = await Git.Repository.open('repository')
-  const masterCommit = await repository.getMasterCommit()
+  let masterCommit
+  if (branchName === null) {
+    masterCommit = await repository.getMasterCommit()
+  } else {
+    masterCommit = await repository.getBranchCommit(branchName)
+  }
+
   const tree = await masterCommit.getTree()
   const files = await walkTree(tree)
 
   return files
 }
 
-const serializedListOfFiles = async () => {
-  const listOfFiles = await getFiles()
+const serializedListOfFiles = async (branchName = null) => {
+  const listOfFiles = await getFiles(branchName)
   return {
     data: listOfFiles.map((file, index) => ({
       type: "file",
@@ -69,6 +75,9 @@ app.use(cors({ origin: '*' }))
 
 router.get("/files", async (ctx, next) => {
   ctx.body = await serializedListOfFiles()
+});
+router.get("/files/:branch", async (ctx, next) => {
+  ctx.body = await serializedListOfFiles(ctx.params.branch)
 });
 
 router.get("/branches", async (ctx, next) => {
