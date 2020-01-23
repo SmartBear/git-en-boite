@@ -24,12 +24,8 @@ const walkTree = (tree) => {
 
 const getFiles = async (branchName = 'master') => {
   const repository = await Git.Repository.open('repository')
-  const masterCommit = await repository.getReferenceCommit(branchName)
-  console.log(masterCommit)
-
-  const tree = await masterCommit.getTree()
-  console.log(tree)
-
+  const commit = await repository.getReferenceCommit(branchName)
+  const tree = await commit.getTree()
   const files = await walkTree(tree)
 
   return files
