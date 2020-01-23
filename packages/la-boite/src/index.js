@@ -46,10 +46,33 @@ const serializedListOfFiles = async () => {
   };
 };
 
+const getBranches = async () => {
+  const repository = await Git.Repository.open('repository')
+  const referenceNames = await repository.getReferenceNames(Git.Reference.TYPE.LISTALL)
+  return referenceNames;
+}
+
+const serializedListOfBranches = async () => {
+  const branches = await getBranches()
+  return {
+    data: branches.map((branch, index) => ({
+      type: "branch",
+      id: index,
+      attributes: {
+        name: branch
+      }
+    }))
+  }
+}
+
 app.use(cors({ origin: '*' }))
 
 router.get("/files", async (ctx, next) => {
   ctx.body = await serializedListOfFiles()
+});
+
+router.get("/branches", async (ctx, next) => {
+  ctx.body = await serializedListOfBranches()
 });
 
 app.use(router.routes()).use(router.allowedMethods());
