@@ -17,3 +17,14 @@ git-en-boite is written in Node-JS, but runs in a docker container. It exposes a
 ## Sample app
 
 Try out the sample app to get a feel for what git-en-boite can do for you.
+
+## Development
+
+### Start the application
+
+The following docker-compose command starts the backend HTTP API for git and our
+example app:
+
+```bash
+docker-compose up
+```
