@@ -1,17 +1,10 @@
 import React from 'react'
 import './App.css'
 import { Tree, HTMLSelect } from "@blueprintjs/core"
+import { fetchBranches, fetchFiles } from './api'
 
 const generateTree = (paths) =>
   paths.map(({ id, attributes: { path } }) => ({ id, label: path, icon: "document" }))
-
-const fetchApi = async (path) => {
-  const response = await fetch(`http://localhost:3001/${path}`)
-  return (await response.json()).data
-}
-
-const fetchFiles = () => fetchApi('files')
-const fetchBranches = () => fetchApi('branches')
 
 function App() {
   const [files, setFiles] = React.useState([])
