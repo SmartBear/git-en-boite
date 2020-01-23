@@ -1,0 +1,26 @@
+{
+  "name": "example-app",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Matt Wynne <matt@mattwynne.net>",
+  "homepage": "https://github.com/SmartBear/git-en-boite#readme",
+  "license": "ISC",
+  "main": "lib/example-app.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SmartBear/git-en-boite.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/SmartBear/git-en-boite/issues"
+  }
+}
