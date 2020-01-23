@@ -28,3 +28,14 @@ example app:
 ```bash
 docker-compose up
 ```
+To install the dependencies, execute:
+
+```
+lerna bootstrap
+```
+
+Then, run the servers (frontend and backend):
+
+```
+lerna run start
+```
