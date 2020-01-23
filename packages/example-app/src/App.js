@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import { Tree, Button, HTMLSelect } from "@blueprintjs/core"
+import { Tree, HTMLSelect } from "@blueprintjs/core"
 
 const generateTree = (paths) =>
   paths.map(({ id, attributes: { path } }) => ({ id, label: path, icon: "document" }))
