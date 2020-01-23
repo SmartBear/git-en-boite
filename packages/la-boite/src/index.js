@@ -1,8 +1,27 @@
-const Koa = require('koa');
-const app = new Koa();
+const Koa = require("koa");
+const Router = require("koa-router");
 
-app.use(async ctx => {
-  ctx.body = 'Hello World';
+const app = new Koa();
+const router = new Router();
+
+const listOfFiles = ["one.js", "two.js", "a-folder/three.js"];
+
+const serializedListOfFiles = async () => {
+  return {
+    data: listOfFiles.map((file, index) => ({
+      type: "file",
+      id: index,
+      attributes: {
+        path: file
+      }
+    }))
+  };
+};
+
+router.get("/files", async (ctx, next) => {
+  ctx.body = await serializedListOfFiles();
 });
+
+app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3001);
