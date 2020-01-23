@@ -1,9 +1,10 @@
 import React from 'react'
 import './App.css'
-import { Tree } from "@blueprintjs/core"
+import { Tree, Button } from "@blueprintjs/core"
 
 const generateTree = (paths) =>
   paths.map(({ id, attributes: { path } }) => ({ id, label: path, icon: "document" }))
+
 
 function App() {
   const [files, setFiles] = React.useState([])
@@ -17,7 +18,10 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Tree contents={generateTree(files)}></Tree>
+        <select >
+          {['master', 'sprint1', 'sprint2'].map((name) => <option>{name}</option>)}
+        </select>
+        <Tree contents={generateTree(files)}/>
       </header>
     </div>
   );
