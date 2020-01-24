@@ -5,6 +5,8 @@ import { fetchBranches, fetchFiles } from './api'
 const generateTree = (paths) =>
   paths.map(({ id, attributes: { path } }) => ({ id, label: path, icon: "document" }))
 
+const prettyBranchName = (name) => name.split('/').slice(-1)[0]
+
 function App() {
   const [files, setFiles] = React.useState([])
   const [branches, setBranches] = React.useState([])
@@ -26,7 +28,7 @@ function App() {
             <Navbar.Heading>Select a branch</Navbar.Heading>
             <Navbar.Divider />
             <HTMLSelect>
-              {branches.map(({ id, attributes: { name } }) => <option key={id}>{name}</option>)}
+              {branches.map(({ id, attributes: { name } }) => <option key={id}>{prettyBranchName(name)}</option>)}
             </HTMLSelect>
           </Navbar.Group>
         </Navbar>
