@@ -27,8 +27,6 @@ function App() {
   }, [])
   React.useEffect(() => {
     const es = new EventSource('http://localhost:3001/sse')
-    es.onopen = () => { console.log('hello') }
-    es.onmessage = (x) => { handleRepositoryUpdate() }
     es.addEventListener('repository-updated', handleRepositoryUpdate)
     return () => es.removeEventListener('repository-updated', handleRepositoryUpdate)
   }, [])
