@@ -8,13 +8,14 @@ const generateTree = (paths) =>
 const prettyBranchName = (name) => name.split('/').slice(-1)[0]
 
 function App() {
+  const [selectedBranch, setSelectedBranch] = React.useState([])
   const [files, setFiles] = React.useState([])
   const [branches, setBranches] = React.useState([])
   React.useEffect(() => {
     (async function () {
-      setFiles(await fetchFiles())
+      setFiles(await fetchFiles(selectedBranch))
     })()
-  }, [])
+  }, [selectedBranch])
   React.useEffect(() => {
     (async function () {
       setBranches(await fetchBranches())
@@ -27,7 +28,7 @@ function App() {
           <Navbar.Group align={Alignment.LEFT}>
             <Navbar.Heading>Select a branch</Navbar.Heading>
             <Navbar.Divider />
-            <HTMLSelect>
+            <HTMLSelect defaultValue='master' onChange={(event) => setSelectedBranch(event.currentTarget.value)}>
               {branches.map(({ id, attributes: { name } }) => <option key={id}>{prettyBranchName(name)}</option>)}
             </HTMLSelect>
           </Navbar.Group>
