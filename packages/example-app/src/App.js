@@ -11,6 +11,10 @@ function App() {
   const [selectedBranch, setSelectedBranch] = React.useState([])
   const [files, setFiles] = React.useState([])
   const [branches, setBranches] = React.useState([])
+  const handleRepositoryUpdate = async () => {
+    setFiles(await fetchFiles())
+    setBranches(await fetchBranches())
+  }
   React.useEffect(() => {
     (async function () {
       setFiles(await fetchFiles(selectedBranch))
@@ -20,6 +24,13 @@ function App() {
     (async function () {
       setBranches(await fetchBranches())
     })()
+  }, [])
+  React.useEffect(() => {
+    const es = new EventSource('http://localhost:3001/sse')
+    es.onopen = () => { console.log('hello') }
+    es.onmessage = (x) => { handleRepositoryUpdate() }
+    es.addEventListener('repository-updated', handleRepositoryUpdate)
+    return () => es.removeEventListener('repository-updated', handleRepositoryUpdate)
   }, [])
   return (
     <div className="App">

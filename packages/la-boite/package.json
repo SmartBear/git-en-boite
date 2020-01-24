@@ -15,7 +15,8 @@
     "koa-router": "^8.0.6",
     "koa-sse-stream": "^0.2.0",
     "koa2-cors": "^2.0.6",
-    "nodegit": "^0.26.4"
+    "nodegit": "^0.26.4",
+    "ssestream": "^1.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
