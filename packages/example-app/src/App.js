@@ -1,5 +1,4 @@
 import React from 'react'
-import './App.css'
 import { Tree, HTMLSelect } from "@blueprintjs/core"
 import { fetchBranches, fetchFiles } from './api'
 
