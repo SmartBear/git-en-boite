@@ -9,7 +9,17 @@ module.exports = class Repo {
 
   async getBranches() {
     const repository = await this._openRepository()
-    return repository.getReferenceNames(Git.Reference.TYPE.ALL)
+    const stdVectorGitReference = await repository.getReferences()
+    const branches = []
+    
+    stdVectorGitReference.forEach((reference) => {
+      if (reference.isBranch() && !reference.isRemote()) {
+        console.log('----------------------> is remote and branch', reference.name())
+        branches.push(reference.name())
+      }
+    })
+
+    return branches
   }
 
   async getFiles(branchName = 'master') {
