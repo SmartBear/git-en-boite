@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tree, HTMLSelect } from "@blueprintjs/core"
+import { Alignment, Navbar, Tree, HTMLSelect } from "@blueprintjs/core"
 import { fetchBranches, fetchFiles } from './api'
 
 const generateTree = (paths) =>
@@ -21,9 +21,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <HTMLSelect >
-          {branches.map(({ id, attributes: { name } }) => <option key={id}>{name}</option>)}
-        </HTMLSelect>
+        <Navbar>
+          <Navbar.Group align={Alignment.LEFT}>
+            <Navbar.Heading>Select a branch</Navbar.Heading>
+            <Navbar.Divider />
+            <HTMLSelect>
+              {branches.map(({ id, attributes: { name } }) => <option key={id}>{name}</option>)}
+            </HTMLSelect>
+          </Navbar.Group>
+        </Navbar>
         <Tree contents={generateTree(files)} />
       </header>
     </div>
