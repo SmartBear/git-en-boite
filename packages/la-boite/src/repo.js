@@ -4,7 +4,8 @@ const Git = require('nodegit')
 module.exports = class Repo {
   constructor() {
     const repoName = 'repository'
-    this._openRepository = () => Git.Repository.open(path.resolve(repoName)) }
+    this._openRepository = () => Git.Repository.open(path.resolve(repoName))
+  }
 
   async getBranches() {
     const repository = await this._openRepository()
@@ -16,6 +17,12 @@ module.exports = class Repo {
     const commit = await repository.getReferenceCommit(branchName)
     const tree = await commit.getTree()
     return walkTree(tree)
+  }
+
+  async pullFromOrigin() {
+    const repository = await this._openRepository()
+    await repository.fetchAll()
+    await repository.mergeBranches("master", "origin/master")
   }
 }
 

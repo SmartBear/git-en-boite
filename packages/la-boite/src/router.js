@@ -20,6 +20,7 @@ router.get('/branches', async ctx => {
 })
 
 router.post('/github/webhooks', async ctx => {
+  await new Repo().pullFromOrigin()
   ctx.status = 200
 })
 
