@@ -13,12 +13,12 @@ function App() {
     (async function () {
       setFiles(await fetchFiles())
     })()
-  })
+  }, [])
   React.useEffect(() => {
     (async function () {
       setBranches(await fetchBranches())
     })()
-  })
+  }, [])
   return (
     <div className="App">
       <header className="App-header">
