@@ -11,7 +11,7 @@
       "src": "logo383.png",
       "type": "image/png",
       "sizes": "383x383"
-    },
+    }
   ],
   "start_url": ".",
   "display": "standalone",
