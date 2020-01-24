@@ -14,7 +14,6 @@ module.exports = class Repo {
     
     stdVectorGitReference.forEach((reference) => {
       if (reference.isBranch() && !reference.isRemote()) {
-        console.log('----------------------> is remote and branch', reference.name())
         branches.push(reference.name())
       }
     })
