@@ -49,7 +49,7 @@ function App() {
         <header className="App-header">
           <Navbar>
             <Navbar.Group align={Alignment.LEFT}>
-              <Navbar.Heading>Select a branch</Navbar.Heading>
+              <Navbar.Heading>smartbear/git-en-boite-demo</Navbar.Heading>
               <Navbar.Divider />
               <HTMLSelect defaultValue='master' onChange={(event) => setSelectedBranch(event.currentTarget.value)}>
                 {branches.map(({ id, attributes: { name } }) => <option key={id}>{prettyBranchName(name)}</option>)}
