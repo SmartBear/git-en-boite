@@ -1,20 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _a = require('cucumber'), Given = _a.Given, When = _a.When, Then = _a.Then, defineParameterType = _a.defineParameterType;
-defineParameterType({
-    name: 'app',
-    regexp: /[A-Z][a-z]+(?:[A-Z][a-z]+)*/,
-    transformer: function (name) { return new Actor(name); }
-});
-var Actor = /** @class */ (function () {
-    function Actor(name) {
-        this.name = name;
-    }
-    Actor.prototype.attemptsTo = function (action) {
-    };
-    Actor.prototype.checksThat = function (assertion) {
-    };
-    return Actor;
-}());
 var CreateUser = {
     withId: function (userId) { return function (_a) { }; }
 };

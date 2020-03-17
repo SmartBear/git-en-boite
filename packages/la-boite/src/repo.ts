@@ -2,6 +2,8 @@ const path = require('path')
 const Git = require('nodegit')
 
 module.exports = class Repo {
+  private _openRepository: any
+
   constructor() {
     const repoName = 'repository'
     this._openRepository = () => Git.Repository.open(path.resolve(repoName))
@@ -10,9 +12,9 @@ module.exports = class Repo {
   async getBranches() {
     const repository = await this._openRepository()
     const stdVectorGitReference = await repository.getReferences()
-    const branches = []
+    const branches: Array<string> = []
     
-    stdVectorGitReference.forEach((reference) => {
+    stdVectorGitReference.forEach((reference: any) => {
       if (reference.isBranch() && !reference.isRemote()) {
         branches.push(reference.name())
       }
@@ -35,12 +37,12 @@ module.exports = class Repo {
   }
 }
 
-const walkTree = (tree) => {
+const walkTree = (tree: any) => {
   const treeWalker = tree.walk()
-  const files = []
+  const files: Array<string> = []
 
   return new Promise(resolve => {
-    treeWalker.on('entry', function (entry) {
+    treeWalker.on('entry', function (entry: any) {
       files.push(entry.path())
     })
     treeWalker.on('end', function () {
