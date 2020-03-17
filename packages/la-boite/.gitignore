@@ -1,4 +1,3 @@
 /repository
-/src/**/*.js
-/features/**/*.js
+/out
 .vscode
