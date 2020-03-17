@@ -1,3 +1,4 @@
 module.exports = {
-  default: '--format node_modules/cucumber-pretty'
+  default: '--tags "not @wip"',
+  wip: '--tags @wip --format node_modules/cucumber-pretty'
 }
