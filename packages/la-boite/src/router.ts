@@ -7,6 +7,10 @@ const router = new Router()
 
 let sse
 
+router.get('/', async ctx => {
+  ctx.body = 'bonjour'
+})
+
 router.get('/files', async ctx => {
   const files = await new Repo().getFiles('master')
   ctx.body = serializedListOfFiles(files)
