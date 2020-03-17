@@ -1,4 +1,4 @@
-[![Test & Deploy](https://circleci.com/gh/smartbear/git-en-boite/tree/master.svg?style=svg)](https://circleci.com/gh/smartbear/git-en-boite/tree/master)
+[![Test & Deploy](https://circleci.com/gh/SmartBear/git-en-boite/tree/master.svg?style=shield)](https://circleci.com/gh/smartbear/git-en-boite/tree/master)
 
 # git-en-boite
 
