@@ -1,7 +1,7 @@
-const path = require('path')
-const Git = require('nodegit')
+import path from 'path'
+import Git from 'nodegit'
 
-module.exports = class Repo {
+export class Repo {
   private _openRepository: any
 
   constructor() {
@@ -12,8 +12,8 @@ module.exports = class Repo {
   async getBranches() {
     const repository = await this._openRepository()
     const stdVectorGitReference = await repository.getReferences()
-    const branches: Array<string> = []
-    
+    const branches: string[] = []
+
     stdVectorGitReference.forEach((reference: any) => {
       if (reference.isBranch() && !reference.isRemote()) {
         branches.push(reference.name())
@@ -23,7 +23,7 @@ module.exports = class Repo {
     return branches
   }
 
-  async getFiles(branchName = 'master') {
+  async getFiles(branchName = 'master') : Promise<string[]> {
     const repository = await this._openRepository()
     const commit = await repository.getReferenceCommit(branchName)
     const tree = await commit.getTree()
@@ -37,15 +37,15 @@ module.exports = class Repo {
   }
 }
 
-const walkTree = (tree: any) => {
+const walkTree = (tree: any): Promise<string[]> => {
   const treeWalker = tree.walk()
-  const files: Array<string> = []
+  const files: string[] = []
 
   return new Promise(resolve => {
-    treeWalker.on('entry', function (entry: any) {
+    treeWalker.on('entry', (entry: any) => {
       files.push(entry.path())
     })
-    treeWalker.on('end', function () {
+    treeWalker.on('end', () => {
       resolve(files)
     })
 

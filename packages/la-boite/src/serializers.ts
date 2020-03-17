@@ -1,4 +1,4 @@
-export const serializedListOfFiles = (files: Array<string>) => ({
+export const serializedListOfFiles = (files: string[]) => ({
   data: files.map((file, index) => ({
     type: 'file',
     id: index,
@@ -8,7 +8,7 @@ export const serializedListOfFiles = (files: Array<string>) => ({
   }))
 })
 
-export const serializedListOfBranches = (branches: Array<string>) => ({
+export const serializedListOfBranches = (branches: string[]) => ({
   data: branches.map((branch: string, index : number) => ({
     type: 'branch',
     id: index,

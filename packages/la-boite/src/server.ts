@@ -1,4 +1,6 @@
-const { app } = require('./app')
+/* tslint:disable: no-console */
+
+import { app } from './app'
 const port = 3001
 const host = "localhost"
 app.listen(port)

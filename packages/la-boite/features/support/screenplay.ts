@@ -1,3 +1,5 @@
+import { toUnicode } from "punycode"
+
 class Actor {
   name: string
 
@@ -6,9 +8,11 @@ class Actor {
   }
 
   attemptsTo(action: any) {
+    throw new Error('todo')
   }
 
   checksThat(assertion: any) {
+    throw new Error('todo')
   }
 }
 

@@ -1,17 +1,23 @@
-const { Given, When, Then, defineParameterType } = require('cucumber')
+/* tslint:disable: only-arrow-functions */
+
+import { Given, When, Then, defineParameterType } from 'cucumber'
 import { Actor } from '../support/screenplay'
 
 const CreateUser = {
-  withId: (userId : string)=> ({}) =>  {}
+  withId: (userId : string)=> ({}) => { throw new Error('todo')}
+}
+
+const CreateApp = {
+  named: (name: string)  => ({}) => { throw new Error('todo') }
 }
 
 const Has = {
-  user: ({ userId }: { userId: string}) => {}
+  user: ({ userId }: { userId: string}) => { throw new Error('todo') }
 }
 
 Given('an app {app}', function (app: Actor) {
-  // Write code here that turns the phrase above into concrete actions
-  return 'pending'
+  const cucumber: Actor = new Actor('cucumber')
+  cucumber.attemptsTo(CreateApp.named(Actor.name))
 })
 
 When('{app} creates a user {word}', function (app: Actor, userId: string) {

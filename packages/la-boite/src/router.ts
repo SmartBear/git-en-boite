@@ -1,8 +1,8 @@
 import { Context } from 'koa'
-const Router = require('koa-router')
-const Repo = require('./repo')
+import Router from 'koa-router'
+import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
-const SseStream = require('ssestream')
+import SseStream from 'ssestream'
 
 const router = new Router()
 
@@ -13,7 +13,7 @@ router.get('/', async (ctx: Context) => {
 })
 
 router.get('/files', async (ctx: Context) => {
-  const files = await new Repo().getFiles('master')
+  const files: string[] = await new Repo().getFiles('master')
   ctx.body = serializedListOfFiles(files)
 })
 
@@ -39,4 +39,4 @@ router.get('/sse', (ctx: Context) => {
   ctx.body = sse
 })
 
-module.exports = router
+export { router }
