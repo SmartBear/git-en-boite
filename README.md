@@ -1,3 +1,5 @@
+[![Test & Deploy](https://circleci.com/gh/smartbear/git-en-boite/tree/master.svg?style=svg)](https://circleci.com/gh/smartbear/git-en-boite/tree/master)
+
 # git-en-boite
 
 An experiment to put git in a box to make it easy to work with in your apps.
