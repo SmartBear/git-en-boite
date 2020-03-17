@@ -9,8 +9,10 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm install
-            - run: npm test
+            - run: cd packages/la-boite && npm install
+            - run: cd packages/la-boite && ./node_modules/.bin/tsc
+            - run: cd packages/la-boite && npm run lint
+            - run: cd packages/la-boite && npm test
 workflows:
     build-and-test:
       jobs:
