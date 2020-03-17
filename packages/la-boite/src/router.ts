@@ -2,7 +2,9 @@ import { Context } from 'koa'
 import Router from 'koa-router'
 import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
-import SseStream from 'ssestream'
+
+/* tslint:disable-next-line: no-var-requires */
+const SseStream = require('ssestream')
 
 const router = new Router()
 
