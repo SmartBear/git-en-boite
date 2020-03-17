@@ -1,3 +1,4 @@
 /repository
 /src/**/*.js
 /features/**/*.js
+.vscode
