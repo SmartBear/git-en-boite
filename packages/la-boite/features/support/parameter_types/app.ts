@@ -1,4 +1,4 @@
-const { defineParameterType } = require('cucumber')
+import { defineParameterType } from 'cucumber'
 import { Actor } from '../screenplay'
 
 defineParameterType({
