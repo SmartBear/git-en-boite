@@ -1,19 +1,36 @@
 version: 2.1
+
 orbs:
   node: circleci/node@1.1.6
+  docker: circleci/docker@1.0.0
+
 jobs:
-  build-and-test:
+  test-in-node:
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
+          dir: ~/project/packages/la-boite/node_modules
           steps:
-            - run: cd packages/la-boite && npm install
+            - run: cd packages/la-boite && yarn
             - run: cd packages/la-boite && ./node_modules/.bin/tsc
-            - run: cd packages/la-boite && npm run lint
-            - run: cd packages/la-boite && npm test
+            - run: cd packages/la-boite && yarn run lint
+            - run: cd packages/la-boite && yarn test
+
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  version: 2.1
+  build:
+    jobs:
+      - test-in-node
+      - docker/publish:
+          image: smartbear/git-en-boite
+          path: packages/la-boite
+          tag: latest
+          after_build:
+            - run: 
+                name: Run tests in container
+                command: docker run -ti smartbear/git-en-boite:latest yarn test
+          filters:
+            branches:
+              only: master

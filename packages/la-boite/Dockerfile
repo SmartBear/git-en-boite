@@ -7,6 +7,7 @@ RUN yarn install
 
 COPY bin bin
 COPY tsconfig.json .
+COPY cucumber.js .
 COPY src src
 COPY features features
 RUN node_modules/.bin/tsc
