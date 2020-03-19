@@ -135,10 +135,15 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
   integrity sha512-FwI9gX75FgVBJ7ywgnq/P7tw+/o1GUbtP0KzbtusLigAOgIgNISRK0ZPl4qertvXSIE8YbsVJueQ90cDt9YYyw==
 
-"@types/node@*", "@types/node@^13.9.1":
+"@types/node@*":
   version "13.9.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.1.tgz#96f606f8cd67fb018847d9b61e93997dabdefc72"
   integrity sha512-E6M6N0blf/jiZx8Q3nb0vNaswQeEyn0XlupO+xN6DtJ6r6IT4nXrTry7zhIfYvFCl3/8Cu6WIysmUBKiqV0bqQ==
+
+"@types/node@^13.9.2":
+  version "13.9.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.2.tgz#ace1880c03594cc3e80206d96847157d8e7fa349"
+  integrity sha512-bnoqK579sAYrQbp73wwglccjJ4sfRdKU7WNEZ5FW4K2U6Kc0/eZ5kvXG0JKsEKFB50zrFmfFt52/cvBbZa7eXg==
 
 "@types/nodegit@^0.26.1":
   version "0.26.1"
@@ -1215,10 +1220,10 @@ koa-convert@^1.2.0:
     co "^4.6.0"
     koa-compose "^3.0.0"
 
-koa-router@^8.0.6:
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/koa-router/-/koa-router-8.0.6.tgz#5e808ee69dad4fd62d647102aac42be09e4425b0"
-  integrity sha512-qBrxDisLkuIPfasyrEtSPAtaP49ILfjDTJJoAiVC96uWM4PGM12XuFBY/iSm43zQFry1XFFE2OgVRaV2IrBnMg==
+koa-router@^8.0.8:
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/koa-router/-/koa-router-8.0.8.tgz#f0b70f90dae275db8c71a41e1efb625581fb3b5a"
+  integrity sha512-2rNF2cgu/EWi/NV8GlBE5+H/QBoaof83X6Z0dULmalkbt7W610/lyP2EOLVqVrUUFfjsVWL/Ju5TVBcGJDY9XQ==
   dependencies:
     debug "^4.1.1"
     http-errors "^1.7.3"
@@ -1491,10 +1496,10 @@ nodegit-promise@~4.0.0:
   dependencies:
     asap "~2.0.3"
 
-nodegit@^0.26.4:
-  version "0.26.4"
-  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.26.4.tgz#047bde88d35b3f1f1872ad1a1a3cafb37b05c64b"
-  integrity sha512-HbGdk6zqI+3u3HhRLoOigut/Ns0Bm04WL0JPwsxJKalvpihOevrdTj7461wofANu/Vn5sdaq//VpeHLZTJQrlQ==
+nodegit@^0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.26.5.tgz#1534d8aaa52de7acfbbe18de28df2075de86f7d2"
+  integrity sha512-l9l2zhcJ0V7FYzPdXIsuJcXN8UnLuhQgM+377HJfCYE/eupL/OWtMVvUOq42F9dRsgC3bAYH9j2Xbwr0lpYVZQ==
   dependencies:
     fs-extra "^7.0.0"
     json5 "^2.1.0"
@@ -1986,10 +1991,10 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-ssestream@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/ssestream/-/ssestream-1.0.1.tgz#351551b12c00e91e7550f38d558323f3f47b54c2"
-  integrity sha1-NRVRsSwA6R51UPONVYMj8/R7VMI=
+ssestream@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/ssestream/-/ssestream-1.1.0.tgz#f46d046ede4797ca00e2e1b88964021cfbe7d678"
+  integrity sha512-UOS3JTuGqGEOH89mfHFwVOJNH2+JX9ebIWuw6WBQXpkVOxbdoY3RMliSHzshL4XVYJJrcul5NkuvDFCzgYu1Lw==
 
 sshpk@^1.7.0:
   version "1.16.1"

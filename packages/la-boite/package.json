@@ -12,15 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/koa": "^2.11.2",
-    "@types/node": "^13.9.1",
+    "@types/node": "^13.9.2",
     "json": "^9.0.6",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-router": "^8.0.6",
+    "koa-router": "^8.0.8",
     "koa-sse-stream": "^0.2.0",
     "koa2-cors": "^2.0.6",
-    "nodegit": "^0.26.4",
-    "ssestream": "^1.0.1",
+    "nodegit": "^0.26.5",
+    "ssestream": "^1.1.0",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
