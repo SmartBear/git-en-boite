@@ -20,7 +20,10 @@
     "koa-sse-stream": "^0.2.0",
     "koa2-cors": "^2.0.6",
     "nodegit": "^0.26.5",
+    "pg": "^7.18.2",
+    "reflect-metadata": "^0.1.13",
     "ssestream": "^1.1.0",
+    "typeorm": "^0.2.24",
     "typescript": "^3.8.3"
   },
   "devDependencies": {

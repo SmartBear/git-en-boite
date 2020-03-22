@@ -1,5 +1,5 @@
 /* tslint:disable: no-console */
-
+import 'reflect-metadata'
 import { app } from './app'
 const port = 3001
 const host = "localhost"
