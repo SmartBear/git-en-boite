@@ -11,7 +11,7 @@ const router = new Router()
 let sse: any
 
 router.get('/', async (ctx: Context) => {
-  ctx.body = 'bonjour'
+  ctx.body = 'Bonjour, je suis la boîte.'
 })
 
 router.get('/files', async (ctx: Context) => {
