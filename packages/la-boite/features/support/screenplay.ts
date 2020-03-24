@@ -1,14 +1,14 @@
 import { toUnicode } from "punycode"
 
 class Actor {
-  name: string
+  abilities: object
 
-  constructor(name: string) {
-    this.name = name
+  constructor(abilities: object) {
+    this.abilities = abilities
   }
 
   attemptsTo(action: any) {
-    throw new Error('todo')
+    action(this.abilities)
   }
 
   checksThat(assertion: any) {
