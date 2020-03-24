@@ -27,11 +27,10 @@ const Has = {
 
 Given('an app {app}', async function (app: Actor) {
   const connection = await createConnection({
-    type: 'postgres',
-    url: process.env['GIT_EN_BOITE_PG_URL'],
-    entities: [
-      ClientApp
-    ]
+    type: "postgres",
+    url: process.env["GIT_EN_BOITE_PG_URL"],
+    entities: [ClientApp],
+    synchronize: true
   })
   const getRepository = connection.getRepository.bind(connection)
   const cucumber: Actor = new Actor({ name: 'cucumber', getRepository })
