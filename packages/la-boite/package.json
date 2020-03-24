@@ -1,42 +1,48 @@
 {
-  "name": "la-boite",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "./bin/cucumber",
-    "start": "ts-node-dev src/server.ts",
-    "lint": "tslint --fix {features,src}/**/*.ts"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/koa": "^2.11.2",
-    "@types/node": "^13.9.2",
-    "json": "^9.0.6",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.2.1",
-    "koa-router": "^8.0.8",
-    "koa-sse-stream": "^0.2.0",
-    "koa2-cors": "^2.0.6",
-    "node-git": "0.0.0",
-    "nodegit": "^0.26.5",
-    "pg": "^7.18.2",
-    "reflect-metadata": "^0.1.13",
-    "ssestream": "^1.1.0",
-    "typeorm": "^0.2.24",
-    "typescript": "^3.8.3"
-  },
-  "devDependencies": {
-    "@types/cucumber": "^6.0.1",
-    "@types/koa-bodyparser": "^4.3.0",
-    "@types/koa-router": "^7.4.0",
-    "@types/koa2-cors": "^2.0.1",
-    "@types/nodegit": "^0.26.1",
-    "cucumber": "^6.0.5",
-    "cucumber-pretty": "^6.0.0",
-    "supervisor": "^0.12.0",
-    "ts-node-dev": "^1.0.0-pre.44",
-    "tslint": "^6.1.0"
-  }
+   "name": "la-boite",
+   "version": "1.0.0",
+   "description": "",
+   "main": "src/index.js",
+   "scripts": {
+      "test": "./bin/cucumber",
+      "start": "ts-node src/index.ts",
+      "lint": "tslint --fix {features,src}/**/*.ts"
+   },
+   "author": "",
+   "license": "ISC",
+   "dependencies": {
+      "@types/koa": "^2.11.2",
+      "@types/node": "^13.9.2",
+      "@types/uuid": "^7.0.2",
+      "json": "^9.0.6",
+      "koa": "^2.11.0",
+      "koa-bodyparser": "^4.2.1",
+      "koa-router": "^8.0.8",
+      "koa-sse-stream": "^0.2.0",
+      "koa2-cors": "^2.0.6",
+      "mysql": "^2.14.1",
+      "node-git": "0.0.0",
+      "nodegit": "^0.26.5",
+      "pg": "^7.18.2",
+      "reflect-metadata": "^0.1.10",
+      "ssestream": "^1.1.0",
+      "typeorm": "0.2.24",
+      "typescript": "^3.8.3",
+      "uuid": "^7.0.2"
+   },
+   "devDependencies": {
+      "@types/cucumber": "^6.0.1",
+      "@types/koa-bodyparser": "^4.3.0",
+      "@types/koa-router": "^7.4.0",
+      "@types/koa2-cors": "^2.0.1",
+      "@types/node": "^8.0.29",
+      "@types/nodegit": "^0.26.1",
+      "cucumber": "^6.0.5",
+      "cucumber-pretty": "^6.0.0",
+      "supervisor": "^0.12.0",
+      "ts-node": "3.3.0",
+      "ts-node-dev": "^1.0.0-pre.44",
+      "tslint": "^6.1.0",
+      "typescript": "3.3.3333"
+   }
 }

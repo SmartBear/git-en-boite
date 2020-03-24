@@ -7,8 +7,8 @@ class Actor {
     this.abilities = abilities
   }
 
-  attemptsTo(action: any) {
-    action(this.abilities)
+  async attemptsTo(action: any) {
+    await action(this.abilities)
   }
 
   checksThat(assertion: any) {

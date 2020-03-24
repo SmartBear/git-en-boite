@@ -2,7 +2,7 @@
 import 'reflect-metadata'
 
 import {createConnection} from "typeorm";
-import {ClientApp} from "./entity/client_app";
+import {ClientApp} from "./entity/ClientApp";
 
 createConnection({
   type: "postgres",
