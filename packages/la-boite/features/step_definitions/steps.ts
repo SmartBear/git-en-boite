@@ -1,12 +1,13 @@
 /* tslint:disable: only-arrow-functions */
 import { ClientApp } from '../../src/entity/ClientApp'
-import { createConnection, UpdateQueryBuilder, Connection } from 'typeorm'
-import { v4 as uuid } from 'uuid'
+import { createConnection, UpdateQueryBuilder, Connection, AdvancedConsoleLogger } from 'typeorm'
 
 import { Given, When, Then, defineParameterType } from 'cucumber'
 import { Actor } from '../support/screenplay'
 import { Repository, Entity } from 'typeorm'
 import { User } from '../../src/entity/User'
+/* tslint:disable-next-line: no-var-requires */
+const { assertThat, hasItem, hasProperty } = require('hamjest')
 
 const CreateUser = {
   withId: (userId : string) => async ({ name, getRepository } : any) => {
@@ -23,8 +24,7 @@ const CreateApp = {
   named: (name: string)  => async ({ getRepository } : { getRepository: any }) => {
     const repository = await getRepository(ClientApp)
     const app = new ClientApp()
-    app.name = name
-    app.id = uuid()
+    app.id = name
     await repository.save(app)
   }
 }
@@ -59,6 +59,12 @@ When('{app} creates a user {word}', async function (app: Actor, userId: string) 
   })
 })
 
-Then('the {app} app\'s users should include {word}', async function (userId: string, app: Actor) {
-  await app.checksThat(Has.user({ userId }))
+Then('the {app} app\'s users should include {word}',
+  async function (app:Actor, userId: string) {
+  await withConnection(async (connection: Connection) => {
+    const getRepository = connection.getRepository.bind(connection)
+    const repository = await getRepository(ClientApp)
+    const clientApp: ClientApp = await repository.findOneOrFail(app.name)
+    assertThat(clientApp.users, hasItem(hasProperty('id', userId)))
+  })
 })

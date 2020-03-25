@@ -14,7 +14,7 @@ class Actor {
   }
 
   async attemptsTo(action: any) {
-    await action(this.abilities)
+    await action({ name: this.name, ...this.abilities })
   }
 
   checksThat(assertion: any) {

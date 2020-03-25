@@ -7,9 +7,6 @@ export class ClientApp {
     @PrimaryColumn()
     id: string
 
-    @Column()
-    name: string
-
     @Column({ type: "json", default: [] })
     users: User[]
 }
