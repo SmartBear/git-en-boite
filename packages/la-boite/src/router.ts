@@ -3,11 +3,12 @@ import Router from 'koa-router'
 import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
 
-/* tslint:disable-next-line: no-var-requires */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const SseStream = require('ssestream')
 
 const router = new Router()
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let sse: any
 
 router.get('/', async (ctx: Context) => {

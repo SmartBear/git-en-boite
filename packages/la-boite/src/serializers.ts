@@ -3,17 +3,17 @@ export const serializedListOfFiles = (files: string[]) => ({
     type: 'file',
     id: index,
     attributes: {
-      path: file
-    }
-  }))
+      path: file,
+    },
+  })),
 })
 
 export const serializedListOfBranches = (branches: string[]) => ({
-  data: branches.map((branch: string, index : number) => ({
+  data: branches.map((branch: string, index: number) => ({
     type: 'branch',
     id: index,
     attributes: {
-      name: branch
-    }
-  }))
+      name: branch,
+    },
+  })),
 })

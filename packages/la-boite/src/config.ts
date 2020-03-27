@@ -1,7 +1,7 @@
-import { ConnectionOptions } from "typeorm"
-import { ClientApp } from "./entity/ClientApp"
-import { ProcessEnv } from "./environment"
-import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions"
+import { ConnectionOptions } from 'typeorm'
+import { ClientApp } from './entity/ClientApp'
+import { ProcessEnv } from './environment'
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
 
 export interface Config {
   database: ConnectionOptions
@@ -9,21 +9,20 @@ export interface Config {
 
 const createDatabaseConfig = (env: ProcessEnv): ConnectionOptions => {
   const defaultOptions: PostgresConnectionOptions = {
-    type: "postgres",
+    type: 'postgres',
     url: env.GIT_EN_BOITE_PG_URL,
     entities: [ClientApp],
-    synchronize: true
+    synchronize: true,
   }
 
-  if (env.GIT_EN_BOITE_PG_URL)
-    return { ...defaultOptions, url: env.GIT_EN_BOITE_PG_URL }
+  if (env.GIT_EN_BOITE_PG_URL) return { ...defaultOptions, url: env.GIT_EN_BOITE_PG_URL }
 
   return {
     ...defaultOptions,
-    database: `git-en-boite-${env.NODE_ENV}`
+    database: `git-en-boite-${env.NODE_ENV}`,
   }
 }
 
 export const createConfig = (env: ProcessEnv): Config => ({
-  database: createDatabaseConfig(env)
+  database: createDatabaseConfig(env),
 })
