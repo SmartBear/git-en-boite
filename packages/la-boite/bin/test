@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+clear
+
+export NODE_ENV=test
+
+npx mocha
+
+if [[ -z `psql -Atqc '\list git-en-boite-test' postgres` ]]; then createdb git-en-boite-test; fi
+
+./bin/cucumber -p wip
+
+./bin/cucumber

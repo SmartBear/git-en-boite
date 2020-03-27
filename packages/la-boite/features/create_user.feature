@@ -4,8 +4,8 @@ Feature: Create user
 
   So the first step is to create a user.
 
-  @wip
   Scenario: Create a valid user
     Given an app CucumberStudio
     When CucumberStudio creates a user Bob
-    Then the CucumberStudio app's users should include Bob
+    Then the CucumberStudio app's users should be:
+      | Bob |
