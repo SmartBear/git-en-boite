@@ -8,11 +8,6 @@ npx mocha
 
 if [[ -z `psql -Atqc '\list git-en-boite-test' postgres` ]]; then createdb git-en-boite-test; fi
 
-if ./bin/cucumber -p wip; then
-  echo
-  echo -e "\\033[31mWIP scenarios should not pass!\\033[0m"
-  echo
-  exit 1
-fi
+./bin/cucumber -p wip
 
 ./bin/cucumber
