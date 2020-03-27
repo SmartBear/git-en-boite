@@ -2,26 +2,21 @@
 import 'reflect-metadata'
 
 import {createConnection} from "typeorm";
-import {ClientApp} from "./entity/ClientApp";
+import { createConfig } from './config'
 
-createConnection({
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "matt",
-  database: "git-en-boite-development",
-  entities: [__dirname + "/entity/*.ts"],
-  synchronize: true,
-  logging: false
-})
+const config = createConfig(process.env)
+
+createConnection(config.database)
   .then(connection => {
     // here you can start to work with your entities
   })
   .catch(error => console.log(error));
 
+console.log(`git-en-boite starting up`)
+console.log(`Using config: ${JSON.stringify(createConfig, null, 2)}`)
 
 import { app } from './app'
 const port = 3001
 const host = "localhost"
 app.listen(port)
-console.log(`git-en-boite server listening on http://${host}:${port}`)
+console.log(`Server listening on http://${host}:${port}`)

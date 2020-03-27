@@ -2,10 +2,20 @@
 import { ClientApp } from '../../src/entity/ClientApp'
 import { createConnection, UpdateQueryBuilder, Connection, AdvancedConsoleLogger } from 'typeorm'
 
-import { Given, When, Then, defineParameterType } from 'cucumber'
+import { Given, When, Then, defineParameterType, Before } from 'cucumber'
 import { Actor } from '../support/screenplay'
 import { Repository, Entity } from 'typeorm'
 import { User } from '../../src/entity/User'
+import { createConfig } from '../../src/config'
+
+const config = createConfig(process.env)
+
+console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
+
+Before(() => 
+  withConnection((connection: Connection) => connection.dropDatabase())
+)
+
 /* tslint:disable-next-line: no-var-requires */
 const { assertThat, hasItem, hasProperty } = require('hamjest')
 
@@ -34,12 +44,7 @@ const Has = {
 }
 
 const withConnection = async (fn: any) => {
-  const connection = await createConnection({
-    type: "postgres",
-    url: process.env.GIT_EN_BOITE_PG_URL,
-    entities: [ClientApp],
-    synchronize: true
-  })
+  const connection = await createConnection(config.database)
   await fn(connection)
   await connection.close()
 }
