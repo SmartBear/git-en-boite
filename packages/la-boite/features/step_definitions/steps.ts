@@ -2,7 +2,7 @@
 import { ClientApp } from '../../src/entity/ClientApp'
 import { createConnection, UpdateQueryBuilder, Connection, AdvancedConsoleLogger } from 'typeorm'
 
-import { Given, When, Then, defineParameterType, Before } from 'cucumber'
+import { Given, When, Then, defineParameterType, Before, TableDefinition } from 'cucumber'
 import { Actor } from '../support/screenplay'
 import { Repository, Entity } from 'typeorm'
 import { User } from '../../src/entity/User'
@@ -15,7 +15,7 @@ Before(() =>
 )
 
 /* tslint:disable-next-line: no-var-requires */
-const { assertThat, hasItem, hasProperty } = require('hamjest')
+const { assertThat, hasItem, hasProperty, equalTo } = require('hamjest')
 
 const CreateUser = {
   withId: (userId : string) => async ({ name, getRepository } : any) => {
@@ -43,8 +43,9 @@ const Has = {
 
 const withConnection = async (fn: any) => {
   const connection = await createConnection(config.database)
-  await fn(connection)
+  const result = await fn(connection)
   await connection.close()
+  return result
 }
 
 Given('an app {app}', async function (app: Actor) {
@@ -62,12 +63,16 @@ When('{app} creates a user {word}', async function (app: Actor, userId: string) 
   })
 })
 
-Then('the {app} app\'s users should include {word}',
-  async function (app:Actor, userId: string) {
-  await withConnection(async (connection: Connection) => {
+Then('the {app} app\'s users should be:',
+  async function (app:Actor, expectedUsers: TableDefinition) {
+  const users = await withConnection(async (connection: Connection) => {
     const getRepository = connection.getRepository.bind(connection)
     const repository = await getRepository(ClientApp)
     const clientApp: ClientApp = await repository.findOneOrFail(app.name)
-    assertThat(clientApp.users, hasItem(hasProperty('id', userId)))
+    return clientApp.users
   })
+  for(let i = 0; i <  expectedUsers.raw().length; i++) {
+    const row: string[] = expectedUsers.raw()[i]
+    assertThat(users[i].id, equalTo(row[0]))
+  }
 })

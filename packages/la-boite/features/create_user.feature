@@ -7,4 +7,5 @@ Feature: Create user
   Scenario: Create a valid user
     Given an app CucumberStudio
     When CucumberStudio creates a user Bob
-    Then the CucumberStudio app's users should include Bob
+    Then the CucumberStudio app's users should be:
+      | Bob |
