@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
-clear
+
+if [ -n "$TERM" ]; then
+  clear
+fi
 
 export NODE_ENV=test
 
