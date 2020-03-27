@@ -10,8 +10,6 @@ import { createConfig } from '../../src/config'
 
 const config = createConfig(process.env)
 
-console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
-
 Before(() => 
   withConnection((connection: Connection) => connection.dropDatabase())
 )
