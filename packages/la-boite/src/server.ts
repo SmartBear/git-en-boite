@@ -1,7 +1,7 @@
 /* tslint:disable: no-console */
 import 'reflect-metadata'
 
-import {createConnection} from "typeorm";
+import { createConnection } from "typeorm"
 import { createConfig } from './config'
 
 const config = createConfig(process.env)
@@ -13,7 +13,7 @@ createConnection(config.database)
   .catch(error => console.log(error));
 
 console.log(`git-en-boite starting up`)
-console.log(`Using config: ${JSON.stringify(createConfig, null, 2)}`)
+console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 import { app } from './app'
 const port = 3001
