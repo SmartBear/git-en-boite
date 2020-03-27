@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -n "$TERM" ]; then
+if [[ -z "${TERM}" ]]; then
   clear
 fi
 
