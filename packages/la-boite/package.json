@@ -6,7 +6,7 @@
    "scripts": {
       "test": "./bin/test",
       "start": "ts-node src/server.ts",
-      "lint": "tslint --fix {features,src}/**/*.ts"
+      "lint": "tsc --noEmit && eslint '*/**/*.{js,ts}' --quiet --fix"
    },
    "author": "",
    "license": "ISC",
@@ -27,23 +27,28 @@
       "uuid": "^7.0.2"
    },
    "devDependencies": {
-      "@types/koa": "^2.11.2",
-      "@types/node": "^12.12.31",
-      "@types/uuid": "^7.0.2",
       "@types/cucumber": "^6.0.1",
+      "@types/koa": "^2.11.2",
       "@types/koa-bodyparser": "^4.3.0",
       "@types/koa-router": "^7.4.0",
       "@types/koa2-cors": "^2.0.1",
       "@types/mocha": "^7.0.2",
+      "@types/node": "^12.12.31",
       "@types/nodegit": "^0.26.1",
+      "@types/uuid": "^7.0.2",
+      "@typescript-eslint/eslint-plugin": "^2.25.0",
+      "@typescript-eslint/parser": "^2.25.0",
       "cucumber": "^6.0.5",
       "cucumber-pretty": "^6.0.0",
+      "eslint": "^6.8.0",
+      "eslint-config-prettier": "^6.10.1",
+      "eslint-plugin-prettier": "^3.1.2",
       "hamjest": "^3.3.1",
       "mocha": "^7.1.1",
+      "prettier": "^2.0.2",
       "supervisor": "^0.12.0",
       "ts-node": "8",
       "ts-node-dev": "^1.0.0-pre.44",
-      "tslint": "^6.1.0",
       "typescript": "^3.8.3"
    }
 }
