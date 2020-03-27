@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+if ./bin/cucumber -p wip; then
+  echo
+  echo -e "\\033[31mWIP scenarios should not pass!\\033[0m"
+  echo
+  exit 1
+fi
+
+./bin/cucumber
