@@ -1,22 +1,38 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@1.1.6
+  node: circleci/node@2.0.0
   docker: circleci/docker@1.0.0
 
 jobs:
   test-in-node:
-    executor:
-      name: node/default
+    docker:
+      - image: circleci/node:current
+        environment:
+          GIT_EN_BOITE_PG_URL: postgres://root@localhost/git-en-boite-test
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: git-en-boite-test
     steps:
       - checkout
-      - node/with-cache:
-          dir: ~/project/packages/la-boite/node_modules
-          steps:
-            - run: cd packages/la-boite && yarn
-            - run: cd packages/la-boite && ./node_modules/.bin/tsc
-            - run: cd packages/la-boite && yarn run lint
-            - run: cd packages/la-boite && yarn test
+      - node/install-packages:
+          app-dir: packages/la-boite
+          cache-key: yarn.lock
+          pkg-manager: yarn
+          with-cache: true
+      - run:
+          name: Compiling Typescript
+          command: npx tsc
+          working_directory: packages/la-boite
+      - run:
+          name: Linting Typescript
+          command: yarn run lint
+          working_directory: packages/la-boite
+      - run:
+          name: Running tests
+          command: ./bin/test
+          working_directory: packages/la-boite
 
 workflows:
   version: 2.1
@@ -27,10 +43,19 @@ workflows:
           image: smartbear/git-en-boite
           path: packages/la-boite
           tag: latest
+          before_build:
+            - run: 
+                name: Creating container network
+                command: docker network create git-en-boite
+            - run: 
+                name: Creating postgres container ready for tests
+                command: docker run --detach --network=git-en-boite --name postgres -h postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=git-en-boite-test postgres
           after_build:
             - run: 
-                name: Run tests in container
-                command: docker run -ti smartbear/git-en-boite:latest yarn test
+                name: Running tests in container
+                command: docker run --network=git-en-boite -e GIT_EN_BOITE_PG_URL=postgres://postgres@postgres/git-en-boite-test -i -t smartbear/git-en-boite:latest yarn test
           filters:
             branches:
-              only: master
+              only: 
+                - master
+                - ci
