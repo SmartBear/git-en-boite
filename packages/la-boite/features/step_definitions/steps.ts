@@ -7,6 +7,7 @@ import { Actor } from '../support/screenplay'
 import { Repository } from 'typeorm'
 import { User } from '../../src/entity/User'
 import { createConfig } from '../../src/config'
+import request from 'supertest'
 
 const config = createConfig(process.env)
 
@@ -56,7 +57,9 @@ const CreateApp = {
 Given('an app {app}', async function (app: Actor) {
   await withConnection(async (connection: Connection) => {
     const getRepository = connection.getRepository.bind(connection)
-    const cucumber: Actor = new Actor('cucumber').withAbilities({ getRepository })
+    const cucumber: Actor = new Actor('cucumber').withAbilities({
+      getRepository,
+    })
     await cucumber.attemptsTo(CreateApp.named(app.name))
   })
 })
@@ -68,7 +71,10 @@ When('{app} creates a user {word}', async function (app: Actor, userId: string) 
   })
 })
 
-Then("the {app} app's users should be:", async function (app: Actor, expectedUsers: TableDefinition) {
+Then("the {app} app's users should be:", async function (
+  app: Actor,
+  expectedUsers: TableDefinition,
+) {
   const users = await withConnection(async (connection: Connection) => {
     const getRepository = connection.getRepository.bind(connection)
     const repository = await getRepository(ClientApp)
@@ -79,4 +85,31 @@ Then("the {app} app's users should be:", async function (app: Actor, expectedUse
     const row: string[] = expectedUsers.raw()[i]
     assertThat(users[i].id, equalTo(row[0]))
   }
+})
+
+Given('a {app} repo {string} with branches:', function (app, string, dataTable) {
+  // TODO: Write code here that turns the phrase above into concrete actions
+})
+
+Given('a user {word} has valid credentials for the repo', function (userId) {
+  // TODO: Write code here that turns the phrase above into concrete actions
+})
+
+When('{word} connects {app} to the repo', function (userId, app) {
+  // TODO: Write code here that turns the phrase above into concrete actions
+})
+
+Then("{word} can see that the repo's branches are:", async function (
+  app: Actor,
+  expectedBranches: TableDefinition,
+) {
+  const repoId = 'a-repo-id'
+  const token = 'a-token'
+  const response = await request(this.webApp)
+    .get(`/repo/${repoId}/branches`)
+    .auth(app.name, token)
+    .set('Accept', 'application/json')
+    .expect(200)
+  console.log(response)
+  // TODO: compare to expectedBranches
 })
