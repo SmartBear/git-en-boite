@@ -12,8 +12,8 @@ createConnection(config.database).catch((error) => console.log(error))
 console.log(`git-en-boite starting up`)
 console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
-import { app } from './app'
+import { webApp } from './web_app'
 const port = 3001
 const host = 'localhost'
-app.listen(port)
+webApp.listen(port)
 console.log(`Server listening on http://${host}:${port}`)
