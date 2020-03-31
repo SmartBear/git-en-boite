@@ -2,13 +2,11 @@
 import { ClientApp } from '../../src/entity/ClientApp'
 import { createConnection, Connection } from 'typeorm'
 
-import { Given, When, Then, Before, After, TableDefinition } from 'cucumber'
+import { Given, When, Then, Before, TableDefinition } from 'cucumber'
 import { Actor } from '../support/screenplay'
 import { Repository } from 'typeorm'
 import { User } from '../../src/entity/User'
 import { createConfig } from '../../src/config'
-import request from 'supertest'
-import { webApp } from '../../src/web_app'
 
 const config = createConfig(process.env)
 
@@ -100,23 +98,16 @@ When('{word} connects {app} to the repo', function (userId, app) {
   // TODO: Write code here that turns the phrase above into concrete actions
 })
 
-Before(function () {
-  this.webServer = webApp.listen(8888)
-})
-
-After(function () {
-  this.webServer.close()
-})
-
 Then("{word} can see that the repo's branches are:", async function (
   userId: string,
   expectedBranches: TableDefinition,
 ) {
+  const { request } = this
   const repoId = 'a-repo-id'
   const token = 'a-token'
-  const response = await request(this.webServer)
+  const response = await request
     .get(`/repos/${repoId}/branches`)
-    .auth(app.name, token)
+    .auth(userId, token)
     .set('Accept', 'application/json')
     .expect(200)
   assertThat(expectedBranches.raw()[0], equalTo(response.body))
