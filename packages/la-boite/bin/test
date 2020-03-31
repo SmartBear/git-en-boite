@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ -z "${TERM}" ]]; then
+if [[ ! -z "${TERM}" ]]; then
   clear
 fi
 
 export NODE_ENV=test
 
 npx mocha
-
-if [[ ! -z "${CI}" ]]; then
-  ./bin/cucumber -p wip
-fi
 
 ./bin/cucumber
