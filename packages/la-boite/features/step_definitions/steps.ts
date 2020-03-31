@@ -109,16 +109,15 @@ After(function () {
 })
 
 Then("{word} can see that the repo's branches are:", async function (
-  app: Actor,
+  userId: string,
   expectedBranches: TableDefinition,
 ) {
   const repoId = 'a-repo-id'
   const token = 'a-token'
   const response = await request(this.webServer)
-    .get(`/repo/${repoId}/branches`)
+    .get(`/repos/${repoId}/branches`)
     .auth(app.name, token)
     .set('Accept', 'application/json')
     .expect(200)
-  console.log(response)
-  // TODO: compare to expectedBranches
+  assertThat(expectedBranches.raw()[0], equalTo(response.body))
 })
