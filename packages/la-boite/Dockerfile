@@ -2,8 +2,8 @@ FROM node:lts
 
 WORKDIR /app
 COPY package.json .
-COPY yarn.lock .
-RUN yarn install
+COPY package-lock.json .
+RUN npm install
 
 COPY bin bin
 COPY cucumber.js .
@@ -16,4 +16,4 @@ COPY features features
 RUN node_modules/.bin/tsc
 
 EXPOSE 3001
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]

@@ -18,8 +18,6 @@ jobs:
       - checkout
       - node/install-packages:
           app-dir: packages/la-boite
-          cache-key: yarn.lock
-          pkg-manager: yarn
           with-cache: true
       - run:
           name: Compiling Typescript
@@ -27,7 +25,7 @@ jobs:
           working_directory: packages/la-boite
       - run:
           name: Linting Typescript
-          command: yarn run lint
+          command: npm run lint
           working_directory: packages/la-boite
       - run:
           name: Running tests
@@ -53,7 +51,7 @@ workflows:
           after_build:
             - run: 
                 name: Running tests in container
-                command: docker run --network=git-en-boite -e GIT_EN_BOITE_PG_URL=postgres://postgres@postgres/git-en-boite-test -i -t smartbear/git-en-boite:latest yarn test
+                command: docker run --network=git-en-boite -e GIT_EN_BOITE_PG_URL=postgres://postgres@postgres/git-en-boite-test -i -t smartbear/git-en-boite:latest npm test
           filters:
             branches:
               only: 
