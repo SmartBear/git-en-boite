@@ -9,6 +9,8 @@ export NODE_ENV=test
 
 npx mocha
 
-./bin/cucumber -p wip
+if [[ ! -z "${CI}" ]]; then
+  ./bin/cucumber -p wip
+fi
 
 ./bin/cucumber
