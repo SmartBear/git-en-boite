@@ -1,12 +1,10 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env node
+const { execSync } = require('child_process')
+const exec = cmd => execSync(cmd, { stdio: 'inherit' })
 
-if [[ ! -z "${TERM}" ]]; then
-  clear
-fi
+if (process.env.TERM)
+  exec('clear')
 
-export NODE_ENV=test
+exec('npx mocha')
 
-npx mocha
-
-./bin/cucumber
+exec('./bin/cucumber')
