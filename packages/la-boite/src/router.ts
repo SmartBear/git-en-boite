@@ -2,49 +2,51 @@ import { Context } from 'koa'
 import Router from 'koa-router'
 import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
-import { CertX509 } from 'nodegit'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const SseStream = require('ssestream')
+function create(): Router {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const SseStream = require('ssestream')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let sse: any
 
-const router = new Router()
+  const router = new Router()
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let sse: any
+  router.get('/', async (ctx: Context) => {
+    ctx.body = 'Bonjour, je suis la boîte.'
+  })
 
-router.get('/', async (ctx: Context) => {
-  ctx.body = 'Bonjour, je suis la boîte.'
-})
+  router.get('/repos/:repoId/branches', async (ctx: Context) => {
+    ctx.body = ['master-todo']
+  })
 
-router.get('/repos/:repoId/branches', async (ctx: Context) => {
-  ctx.body = ['master-todo']
-})
+  router.get('/files', async (ctx: Context) => {
+    const files: string[] = await new Repo().getFiles('master')
+    ctx.body = serializedListOfFiles(files)
+  })
 
-router.get('/files', async (ctx: Context) => {
-  const files: string[] = await new Repo().getFiles('master')
-  ctx.body = serializedListOfFiles(files)
-})
+  router.get('/files/:branch*', async (ctx: Context) => {
+    const files = await new Repo().getFiles(ctx.params.branch)
+    ctx.body = serializedListOfFiles(files)
+  })
 
-router.get('/files/:branch*', async (ctx: Context) => {
-  const files = await new Repo().getFiles(ctx.params.branch)
-  ctx.body = serializedListOfFiles(files)
-})
+  router.get('/branches', async (ctx: Context) => {
+    const branches = await new Repo().getBranches()
+    ctx.body = serializedListOfBranches(branches)
+  })
 
-router.get('/branches', async (ctx: Context) => {
-  const branches = await new Repo().getBranches()
-  ctx.body = serializedListOfBranches(branches)
-})
+  router.post('/github/webhooks', async (ctx: Context) => {
+    await new Repo().pullFromOrigin()
+    sse.write({ event: 'repository-updated', data: 'well done' })
+    ctx.status = 200
+  })
 
-router.post('/github/webhooks', async (ctx: Context) => {
-  await new Repo().pullFromOrigin()
-  sse.write({ event: 'repository-updated', data: 'well done' })
-  ctx.status = 200
-})
+  router.get('/sse', (ctx: Context) => {
+    sse = new SseStream(ctx.req)
+    sse.pipe(ctx.res)
+    ctx.body = sse
+  })
 
-router.get('/sse', (ctx: Context) => {
-  sse = new SseStream(ctx.req)
-  sse.pipe(ctx.res)
-  ctx.body = sse
-})
+  return router
+}
 
-export { router }
+export default { create }
