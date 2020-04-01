@@ -2,21 +2,17 @@ import { Context } from 'koa'
 import Router from 'koa-router'
 import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
-import ReposRouter from './routes/repos_router'
+import ReposRouter from './repos/repos_router'
+import { GitRepos } from './repos/git_repos'
 
-function create(): Router {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const SseStream = require('ssestream')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let sse: any
-
+function create(app: GitRepos): Router {
   const router = new Router()
 
   router.get('/', async (ctx: Context) => {
     ctx.body = 'Bonjour, je suis la boîte.'
   })
 
-  router.use(ReposRouter.create().routes())
+  router.use(ReposRouter.create(app).routes())
 
   router.get('/files', async (ctx: Context) => {
     const files: string[] = await new Repo().getFiles('master')
@@ -33,6 +29,10 @@ function create(): Router {
     ctx.body = serializedListOfBranches(branches)
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const SseStream = require('ssestream')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let sse: any
   router.post('/github/webhooks', async (ctx: Context) => {
     await new Repo().pullFromOrigin()
     sse.write({ event: 'repository-updated', data: 'well done' })
