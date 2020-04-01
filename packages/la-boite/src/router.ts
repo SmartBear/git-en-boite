@@ -2,6 +2,7 @@ import { Context } from 'koa'
 import Router from 'koa-router'
 import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
+import ReposRouter from './routes/repos_router'
 
 function create(): Router {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -15,9 +16,7 @@ function create(): Router {
     ctx.body = 'Bonjour, je suis la boîte.'
   })
 
-  router.get('/repos/:repoId/branches', async (ctx: Context) => {
-    ctx.body = ['master-todo']
-  })
+  router.use(ReposRouter.create().routes())
 
   router.get('/files', async (ctx: Context) => {
     const files: string[] = await new Repo().getFiles('master')
