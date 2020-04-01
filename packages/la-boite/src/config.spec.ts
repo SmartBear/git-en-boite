@@ -1,6 +1,5 @@
 import { createConfig } from './config'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { assertThat, hasProperty, equalTo, not } = require('hamjest')
+import { assertThat, hasProperty, equalTo, not } from 'hamjest'
 
 describe('createConfig', () => {
   context('database config', () => {

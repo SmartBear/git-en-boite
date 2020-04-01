@@ -7,6 +7,7 @@ import { Actor } from '../support/screenplay'
 import { Repository } from 'typeorm'
 import { User } from '../../src/entity/User'
 import { createConfig } from '../../src/config'
+import { assertThat, equalTo } from 'hamjest'
 
 const config = createConfig(process.env)
 
@@ -19,9 +20,6 @@ const withConnection = async (fn: any): Promise<any> => {
 }
 
 Before(() => withConnection((connection: Connection) => connection.dropDatabase()))
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { assertThat, equalTo } = require('hamjest')
 
 const CreateUser = {
   withId: (userId: string) => async ({
