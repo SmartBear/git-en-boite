@@ -5,7 +5,8 @@ export function create(): Router {
   const router = new Router({ prefix: '/repos' })
 
   router.get('/:repoId/branches', async (ctx: Context) => {
-    ctx.body = ['master-todo']
+    console.log(ctx.params.repoId)
+    ctx.body = ['master']
   })
 
   return router
