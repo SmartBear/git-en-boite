@@ -3,8 +3,6 @@ import { ClientApp } from '../../src/entity/ClientApp'
 import { createConnection, Connection } from 'typeorm'
 
 import { Given, When, Then, Before, TableDefinition } from 'cucumber'
-import { Actor } from '../support/screenplay'
-import { Repository } from 'typeorm'
 import { User } from '../../src/entity/User'
 import { createConfig } from '../../src/config'
 import { assertThat, equalTo } from 'hamjest'
