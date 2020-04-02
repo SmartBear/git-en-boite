@@ -21,61 +21,34 @@ const withConnection = async (fn: any): Promise<any> => {
 
 Before(() => withConnection((connection: Connection) => connection.dropDatabase()))
 
-const CreateUser = {
-  withId: (userId: string) => async ({
-    name,
-    getRepository,
-  }: {
-    name: string
-    getRepository: (type: object) => Repository<ClientApp>
-  }): Promise<void> => {
-    const repository = getRepository(ClientApp)
+Given('an app {word}', async function (appId: string) {
+  await withConnection(async (connection: Connection) => {
+    const app = new ClientApp()
+    app.id = appId
+    const repository = connection.getRepository(ClientApp)
+    await repository.save(app)
+  })
+})
+
+When('{word} creates a user {word}', async function (appId: string, userId: string) {
+  await withConnection(async (connection: Connection) => {
     const user = new User()
     user.id = userId
-    const app: ClientApp = await repository.findOneOrFail(name)
+    const repository = connection.getRepository(ClientApp)
+    const app: ClientApp = await repository.findOneOrFail(appId)
     app.users = app.users.concat([user])
     await repository.save(app)
-  },
-}
-
-const CreateApp = {
-  named: (name: string) => async ({
-    getRepository,
-  }: {
-    getRepository: (type: object) => Repository<ClientApp>
-  }): Promise<void> => {
-    const repository = await getRepository(ClientApp)
-    const app = new ClientApp()
-    app.id = name
-    await repository.save(app)
-  },
-}
-
-Given('an app {app}', async function (app: Actor) {
-  await withConnection(async (connection: Connection) => {
-    const getRepository = connection.getRepository.bind(connection)
-    const cucumber: Actor = new Actor('cucumber').withAbilities({
-      getRepository,
-    })
-    await cucumber.attemptsTo(CreateApp.named(app.name))
   })
 })
 
-When('{app} creates a user {word}', async function (app: Actor, userId: string) {
-  await withConnection(async (connection: Connection) => {
-    const getRepository = connection.getRepository.bind(connection)
-    await app.withAbilities({ getRepository }).attemptsTo(CreateUser.withId(userId))
-  })
-})
-
-Then("the {app} app's users should be:", async function (
-  app: Actor,
+Then("the {word} app's users should be:", async function (
+  appId: string,
   expectedUsers: TableDefinition,
 ) {
   const users = await withConnection(async (connection: Connection) => {
     const getRepository = connection.getRepository.bind(connection)
     const repository = await getRepository(ClientApp)
-    const clientApp: ClientApp = await repository.findOneOrFail(app.name)
+    const clientApp: ClientApp = await repository.findOneOrFail(appId)
     return clientApp.users
   })
   for (let i = 0; i < expectedUsers.raw().length; i++) {
@@ -84,7 +57,7 @@ Then("the {app} app's users should be:", async function (
   }
 })
 
-Given('a {app} repo {string} with branches:', function (app, string, dataTable) {
+Given('a {word} repo {string} with branches:', function (app, string, dataTable) {
   // TODO: Write code here that turns the phrase above into concrete actions
 })
 
@@ -92,7 +65,7 @@ Given('a user {word} has valid credentials for the repo', function (userId) {
   // TODO: Write code here that turns the phrase above into concrete actions
 })
 
-When('{word} connects {app} to the repo', function (userId, app) {
+When('{word} connects {word} to the repo', function (userId, app) {
   // TODO: Write code here that turns the phrase above into concrete actions
 })
 
