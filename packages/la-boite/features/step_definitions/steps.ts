@@ -43,6 +43,10 @@ When('{word} connects {word} to the repo', function (userId, app) {
   // TODO: Write code here that turns the phrase above into concrete actions
 })
 
+When('the repo has synchronised', function () {
+  // Write code here that turns the phrase above into concrete actions
+})
+
 Then("{word} can see that the repo's branches are:", async function (
   userId: string,
   expectedBranches: TableDefinition,
