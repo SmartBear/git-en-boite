@@ -3,6 +3,9 @@ import { Given, When, Then, TableDefinition } from 'cucumber'
 import { ClientApp } from '../../src/entity/ClientApp'
 import { User } from '../../src/entity/User'
 import { assertThat, equalTo } from 'hamjest'
+import path from 'path'
+import fs from 'fs'
+import { GitProcess } from 'dugite'
 
 Given('an app {word}', async function (appId: string) {
   const app = new ClientApp()
@@ -31,16 +34,28 @@ Then("the {word} app's users should be:", async function (
   assertThat(userIds, equalTo(expectedUserIds))
 })
 
-Given('a {word} repo {string} with branches:', function (app, string, dataTable) {
-  // TODO: Write code here that turns the phrase above into concrete actions
+Given('a {word} repo {string} with branches:', async function (providerType, repoId, branches) {
+  this.repoRemoteUrl = path.resolve(
+    __dirname,
+    `../../git-repos/test/remote/${providerType}`,
+    repoId,
+  )
+  const dir = this.repoRemoteUrl
+  fs.mkdirSync(dir, { recursive: true })
+  await GitProcess.exec(['init'], dir)
+  await GitProcess.exec(['commit', '--allow-empty', '-m "test"'], dir)
 })
 
 Given('a user {word} has valid credentials for the repo', function (userId) {
   // TODO: Write code here that turns the phrase above into concrete actions
 })
 
-When('{word} connects {word} to the repo', function (userId, app) {
-  // TODO: Write code here that turns the phrase above into concrete actions
+When('{word} connects an app to the repo', async function (userId) {
+  const { request } = this
+  const repoId = 'a-repo-id'
+  const token = 'a-token'
+  const repoInfo = { repoId, remoteUrl: this.repoRemoteUrl }
+  await request.post('/repos').send(repoInfo).auth(userId, token).expect(200)
 })
 
 When('the repo has synchronised', function () {

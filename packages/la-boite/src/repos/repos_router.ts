@@ -10,6 +10,11 @@ export function create({ findRepo }: GitRepos): Router {
     ctx.body = repo.branches
   })
 
+  router.post('/', async (ctx: Context) => {
+    console.log(ctx.request.body)
+    ctx.response.status = 200
+  })
+
   return router
 }
 
