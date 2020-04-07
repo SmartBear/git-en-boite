@@ -1,6 +1,7 @@
 /* tslint:disable: no-console */
 import 'reflect-metadata'
 
+import path from 'path'
 import { createConnection } from 'typeorm'
 import { createConfig } from './config'
 import { create } from './web_app'
@@ -13,7 +14,7 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 // check we can make a connection
 const connection = createConnection(config.database).catch((error) => console.log(error))
 
-const app = new LocalGitRepos()
+const app = new LocalGitRepos(path.resolve(__dirname, `../git-repos/${process.env.node_env}`))
 
 const webApp = create(app)
 const port = 3001
