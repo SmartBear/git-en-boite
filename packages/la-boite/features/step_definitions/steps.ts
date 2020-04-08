@@ -51,6 +51,8 @@ Given('a {word} repo {string} with branches:', async function (
   await exec(`mkdir -p ${repoPath}`)
   const git = (...args: string[]) => GitProcess.exec(args, repoPath)
   await git('init')
+  await git('config', 'user.email', 'test@example.com')
+  await git('config', 'user.name', 'Test User')
   for (const branchName of branches) {
     await git('checkout', '-b', branchName)
     await git('commit', '--allow-empty', '-m "test"')

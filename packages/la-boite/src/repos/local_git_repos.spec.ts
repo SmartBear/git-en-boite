@@ -26,18 +26,26 @@ describe(LocalGitRepos.name, () => {
 
   it('can connect a new repo by cloning from a remote URL', async () => {
     const repoId = 'a-new-repo'
-    const remoteUrl = path.resolve(__dirname, '../../tmp/test/remote/', repoId)
+    const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
     const request: ConnectRepoRequest = {
       repoId,
       remoteUrl,
     }
     await exec(`rm -rf ${remoteUrl}`)
-    await exec(`mkdir -p ${remoteUrl}`)
-    await GitProcess.exec(['init'], remoteUrl)
-    await GitProcess.exec(['commit', '--allow-empty', '-m "test"'], remoteUrl)
+    const repoPath = remoteUrl
+    const branches = ['master']
+    await exec(`mkdir -p ${repoPath}`)
+    const git = (...args: string[]) => GitProcess.exec(args, repoPath)
+    await git('init')
+    await git('config', 'user.email', 'test@example.com')
+    await git('config', 'user.name', 'Test User')
+    for (const branchName of branches) {
+      await git('checkout', '-b', branchName)
+      await git('commit', '--allow-empty', '-m "test"')
+    }
     const repos = new LocalGitRepos(root)
     await repos.connectToRemote(request)
-    const repo = await repos.findRepo(repoId)
+    const repo = repos.findRepo(repoId)
     assertThat(repo.id, equalTo(repoId))
     assertThat(await repo.branches(), equalTo(['master']))
   })

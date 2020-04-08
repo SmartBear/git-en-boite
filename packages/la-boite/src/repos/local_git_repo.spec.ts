@@ -16,10 +16,12 @@ describe(LocalGitRepo.name, () => {
   it('lists the local branches in the repo', async () => {
     const repoId = 'a-repo-id'
     const repoPath = path.resolve(root, repoId)
+    const branches = ['master', 'test']
     await exec(`mkdir -p ${repoPath}`)
     const git = (...args: string[]) => GitProcess.exec(args, repoPath)
     await git('init')
-    const branches = ['master', 'test']
+    await git('config', 'user.email', 'test@example.com')
+    await git('config', 'user.name', 'Test User')
     for (const branchName of branches) {
       await git('checkout', '-b', branchName)
       await git('commit', '--allow-empty', '-m "test"')
