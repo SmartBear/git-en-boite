@@ -1,4 +1,5 @@
 export interface GitRepo {
+  path: string
   id: string
-  branches: string[]
+  branches: () => Promise<string[]>
 }

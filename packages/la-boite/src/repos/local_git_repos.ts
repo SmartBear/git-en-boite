@@ -1,17 +1,23 @@
+import path from 'path'
 import { GitRepos, ConnectRepoRequest } from './git_repos'
 import { GitRepo } from './git_repo'
 import { LocalGitRepo } from './local_git_repo'
+import { GitProcess } from 'dugite'
 
 export class LocalGitRepos implements GitRepos {
-  path: string
+  basePath: string
 
-  constructor(path: string) {
-    this.path = path
+  constructor(basePath: string) {
+    this.basePath = basePath
   }
 
-  connectToRemote: (request: ConnectRepoRequest) => void
+  async connectToRemote(request: ConnectRepoRequest): Promise<void> {
+    const { repoId, remoteUrl } = request
+    await GitProcess.exec(['clone', remoteUrl, repoId], this.basePath)
+  }
 
   findRepo(repoId: string): GitRepo {
-    return new LocalGitRepo(repoId)
+    const repoPath = path.resolve(this.basePath, repoId)
+    return new LocalGitRepo(repoId, repoPath)
   }
 }
