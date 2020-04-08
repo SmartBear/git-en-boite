@@ -13,15 +13,18 @@ describe(LocalGitRepo.name, () => {
     await exec(`rm -rf ${root}`)
   })
 
-  it('lists the branches in the repo', async () => {
+  it('lists the local branches in the repo', async () => {
     const repoId = 'a-repo-id'
-    const repoPath = path.resolve(__dirname, '../../tmp/test', repoId)
+    const repoPath = path.resolve(root, repoId)
     await exec(`mkdir -p ${repoPath}`)
-    await GitProcess.exec(['init'], repoPath)
-    await GitProcess.exec(['commit', '--allow-empty', '-m "test"'], repoPath)
-    await GitProcess.exec(['checkout', '-b', 'test'], repoPath)
-    await GitProcess.exec(['commit', '--allow-empty', '-m "test"'], repoPath)
+    const git = (...args: string[]) => GitProcess.exec(args, repoPath)
+    await git('init')
+    const branches = ['master', 'test']
+    for (const branchName of branches) {
+      await git('checkout', '-b', branchName)
+      await git('commit', '--allow-empty', '-m "test"')
+    }
     const repo = new LocalGitRepo(repoId, repoPath)
-    assertThat(await repo.branches(), equalTo(['master', 'test']))
+    assertThat(await repo.branches(), equalTo(branches))
   })
 })

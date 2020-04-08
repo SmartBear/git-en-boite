@@ -4,8 +4,10 @@ import { ClientApp } from '../../src/entity/ClientApp'
 import { User } from '../../src/entity/User'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
-import fs from 'fs'
 import { GitProcess } from 'dugite'
+import childProcess from 'child_process'
+import { promisify } from 'util'
+const exec = promisify(childProcess.exec)
 
 Given('an app {word}', async function (appId: string) {
   const app = new ClientApp()
@@ -29,21 +31,30 @@ Then("the {word} app's users should be:", async function (
 ) {
   const repository = this.connection.getRepository(ClientApp)
   const clientApp: ClientApp = await repository.findOneOrFail(appId)
-  const userIds = clientApp.users.map((user) => user.id)
-  const expectedUserIds = expectedUsers.raw().map((user) => user[0])
+  const userIds = clientApp.users.map(user => user.id)
+  const expectedUserIds = expectedUsers.raw().map(user => user[0])
   assertThat(userIds, equalTo(expectedUserIds))
 })
 
-Given('a {word} repo {string} with branches:', async function (providerType, repoId, branches) {
-  this.repoRemoteUrl = path.resolve(
+Given('a {word} repo {string} with branches:', async function (
+  providerType,
+  repoId,
+  branchesTable,
+) {
+  const branches = branchesTable.raw().map((row: string[]) => row[0])
+  const repoPath = (this.repoRemoteUrl = path.resolve(
     __dirname,
-    `../../git-repos/test/remote/${providerType}`,
+    '../../tmp/remote',
+    providerType,
     repoId,
-  )
-  const dir = this.repoRemoteUrl
-  fs.mkdirSync(dir, { recursive: true })
-  await GitProcess.exec(['init'], dir)
-  await GitProcess.exec(['commit', '--allow-empty', '-m "test"'], dir)
+  ))
+  await exec(`mkdir -p ${repoPath}`)
+  const git = (...args: string[]) => GitProcess.exec(args, repoPath)
+  await git('init')
+  for (const branchName of branches) {
+    await git('checkout', '-b', branchName)
+    await git('commit', '--allow-empty', '-m "test"')
+  }
 })
 
 Given('a user {word} has valid credentials for the repo', function (userId) {
