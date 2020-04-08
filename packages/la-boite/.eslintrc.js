@@ -10,6 +10,6 @@ module.exports = {
     sourceType: 'module', // Allows for the use of imports
   },
   rules: {
-    '@typescript-eslint/explicit-function-return-type': 'disable',
+    '@typescript-eslint/explicit-function-return-type': 0
   },
 }
