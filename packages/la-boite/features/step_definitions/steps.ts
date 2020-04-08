@@ -49,7 +49,10 @@ Given('a {word} repo {string} with branches:', async function (
     repoId,
   ))
   await exec(`mkdir -p ${repoPath}`)
-  const git = (...args: string[]) => GitProcess.exec(args, repoPath)
+  const git = async (...args: string[]) => {
+    const result = await GitProcess.exec(args, repoPath)
+    if (result.exitCode > 0) throw new Error(result.stderr)
+  }
   await git('init')
   await git('config', 'user.email', 'test@example.com')
   await git('config', 'user.name', 'Test User')
