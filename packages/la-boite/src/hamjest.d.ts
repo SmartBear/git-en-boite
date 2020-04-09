@@ -1,4 +1,4 @@
-declare module hamjest {}
+declare namespace hamjest {}
 
 export interface Matcher {
   (value: any, matcher?: Matcher): Matcher

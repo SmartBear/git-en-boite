@@ -12,7 +12,7 @@ console.log(`git-en-boite starting up`)
 console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 // check we can make a connection
-const connection = createConnection(config.database).catch((error) => console.log(error))
+const connection = createConnection(config.database).catch(error => console.log(error))
 
 const app = new LocalGitRepos(path.resolve(__dirname, `../git-repos/${process.env.node_env}`))
 

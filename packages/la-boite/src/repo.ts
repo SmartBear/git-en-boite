@@ -5,7 +5,7 @@ const walkTree = (tree: Tree): Promise<string[]> => {
   const treeWalker = tree.walk()
   const files: string[] = []
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     treeWalker.on('entry', (entry: TreeEntry) => {
       files.push(entry.path())
     })

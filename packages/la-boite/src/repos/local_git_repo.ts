@@ -16,9 +16,9 @@ export class LocalGitRepo implements GitRepo {
     const repo = await this.repo
     const refs = await repo.getReferences()
     return refs
-      .filter((ref) => ref.isBranch())
-      .filter((ref) => !ref.isRemote())
-      .map((ref) => ref.name())
-      .map((refName) => refName.split('/')[2])
+      .filter(ref => ref.isBranch())
+      .filter(ref => !ref.isRemote())
+      .map(ref => ref.name())
+      .map(refName => refName.split('/')[2])
   }
 }
