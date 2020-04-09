@@ -50,4 +50,28 @@ describe('createConfig', () => {
       })
     })
   })
+
+  context('version', () => {
+    it('returns the version from package.json by default', () => {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const config = createConfig({ NODE_ENV: 'any', npm_package_version: '1.2.3' })
+      assertThat(config, hasProperty('version', equalTo('1.2.3')))
+    })
+
+    it('returns the version from package.json with appended build number if a .build_number file exists', () => {
+      const fakeFs = {
+        readFileSync: (path: string) => {
+          if (path.match(/\.build_number$/)) return '456'
+          throw new Error(`path ${path} not faked`)
+        },
+        existsSync: (path: string) => {
+          if (path.match(/\.build_number$/)) return true
+          throw new Error(`path ${path} not faked`)
+        },
+      }
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const config = createConfig({ NODE_ENV: 'any', npm_package_version: '1.2.3' }, fakeFs)
+      assertThat(config, hasProperty('version', equalTo('1.2.3.456')))
+    })
+  })
 })

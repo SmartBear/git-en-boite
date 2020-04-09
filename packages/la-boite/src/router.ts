@@ -4,12 +4,14 @@ import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
 import ReposRouter from './repos/repos_router'
 import { GitRepos } from './repos/git_repos'
+import { createConfig } from './config'
 
 function create(app: GitRepos): Router {
   const router = new Router()
 
   router.get('/', async (ctx: Context) => {
-    ctx.body = 'Bonjour, je suis la boîte.'
+    const config = createConfig()
+    ctx.body = `Bonjour, je suis la boîte, version ${config.version}`
   })
 
   router.use(ReposRouter.create(app).routes())
