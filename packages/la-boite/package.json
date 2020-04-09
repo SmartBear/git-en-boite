@@ -11,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/koa-log": "^2.1.1",
     "@types/supertest": "^2.0.8",
     "dugite": "^1.88.2",
     "json": "^9.0.6",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
+    "koa-log": "^2.1.0",
     "koa-router": "^8.0.8",
     "koa-sse-stream": "^0.2.0",
     "koa2-cors": "^2.0.6",
