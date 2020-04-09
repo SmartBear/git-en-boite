@@ -48,6 +48,9 @@ workflows:
             - run: 
                 name: Creating postgres container ready for tests
                 command: docker run --detach --network=git-en-boite --name postgres -h postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=git-en-boite-test postgres
+            - run:
+                name: Writing .build-number file
+                command: echo $CIRCLE_BUILD_NUM > .build-number
           after_build:
             - run: 
                 name: Running tests in container

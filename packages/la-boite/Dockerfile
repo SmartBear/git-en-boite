@@ -13,6 +13,7 @@ COPY .prettierrc.js .
 COPY tsconfig.json .
 COPY src src
 COPY features features
+COPY .build-number .
 RUN node_modules/.bin/tsc
 
 EXPOSE 3001

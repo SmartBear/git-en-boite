@@ -44,7 +44,7 @@ const createGitConfig = (env: ProcessEnv): GitOptions => {
 }
 
 const createVersionConfig = (env: ProcessEnv, fs: any): string => {
-  const buildNumPath = path.resolve(appRoot, '.build_number')
+  const buildNumPath = path.resolve(appRoot, '.build-number')
   if (fs.existsSync(buildNumPath))
     return `${env.npm_package_version}.${fs.readFileSync(buildNumPath)}`
   return env.npm_package_version
