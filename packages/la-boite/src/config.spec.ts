@@ -53,8 +53,14 @@ describe('createConfig', () => {
 
   context('version', () => {
     it('returns the version from package.json by default', () => {
+      const fakeFs = {
+        existsSync: (path: string) => {
+          if (path.match(/\.build-number$/)) return false
+          throw new Error(`path ${path} not faked`)
+        },
+      }
       // eslint-disable-next-line @typescript-eslint/camelcase
-      const config = createConfig({ NODE_ENV: 'any', npm_package_version: '1.2.3' })
+      const config = createConfig({ NODE_ENV: 'any', npm_package_version: '1.2.3' }, fakeFs)
       assertThat(config, hasProperty('version', equalTo('1.2.3')))
     })
 
