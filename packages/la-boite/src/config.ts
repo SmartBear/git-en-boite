@@ -43,6 +43,7 @@ const createGitConfig = (env: ProcessEnv): GitOptions => {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createVersionConfig = (env: ProcessEnv, fs: any): string => {
   const buildNumPath = path.resolve(appRoot, '.build-number')
   if (fs.existsSync(buildNumPath))

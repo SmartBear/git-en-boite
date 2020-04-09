@@ -8,7 +8,8 @@ import { GitRepos } from './repos/git_repos'
 function create(app: GitRepos): Koa {
   const webApp = new Koa()
   const router = Router.create(app)
-  webApp.use(logger('combined'))
+  if (process.env.NODE_ENV !== 'test')
+    webApp.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'))
   webApp.use(bodyParser())
   webApp.use(cors({ origin: '*' }))
   webApp.use(router.routes()).use(router.allowedMethods())
