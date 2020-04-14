@@ -3,10 +3,10 @@ import Router from 'koa-router'
 import { Repo } from './repo'
 import { serializedListOfBranches, serializedListOfFiles } from './serializers'
 import ReposRouter from './repos/repos_router'
-import { GitRepos } from './repos/git_repos'
 import { createConfig } from './config'
+import { Application } from './application'
 
-function create(app: GitRepos): Router {
+function create(app: Application): Router {
   const router = new Router()
 
   router.get('/', async (ctx: Context) => {

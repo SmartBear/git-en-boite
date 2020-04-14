@@ -1,8 +1,9 @@
 import { Context } from 'koa'
 import Router from 'koa-router'
-import { GitRepos, ConnectRepoRequest } from './git_repos'
+import { ConnectRepoRequest } from './git_repos'
+import { Application } from '../application'
 
-export function create(repos: GitRepos): Router {
+export function create({ repos }: Application): Router {
   const router = new Router({ prefix: '/repos' })
 
   router.get('/:repoId/branches', async (ctx: Context) => {

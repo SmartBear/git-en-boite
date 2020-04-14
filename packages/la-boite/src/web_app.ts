@@ -3,9 +3,9 @@ import cors from 'koa2-cors'
 import logger from 'koa-log'
 import Router from './router'
 import bodyParser from 'koa-bodyparser'
-import { GitRepos } from './repos/git_repos'
+import { Application } from './application'
 
-function create(app: GitRepos): Koa {
+function create(app: Application): Koa {
   const webApp = new Koa()
   const router = Router.create(app)
   if (process.env.NODE_ENV !== 'test')

@@ -20,7 +20,7 @@ describe('/repos', () => {
   beforeEach(() => {
     const webApp = new Koa()
     webApp.use(bodyParser()) // TODO: remove duplication with web_app.ts
-    webApp.use(create(repos).routes())
+    webApp.use(create({ repos }).routes())
     server = webApp.listen(8888)
     request = supertest(server)
   })

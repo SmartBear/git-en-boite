@@ -10,5 +10,5 @@ Before(async function () {
   const gitReposPath = createConfig().git.root
   await exec(`rm -rf ${gitReposPath}`)
   await exec(`mkdir -p ${gitReposPath}`)
-  this.app = new LocalGitRepos(gitReposPath)
+  this.app = { repos: new LocalGitRepos(gitReposPath) }
 })

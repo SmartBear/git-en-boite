@@ -5,6 +5,7 @@ import { createConnection } from 'typeorm'
 import { createConfig } from './config'
 import { create } from './web_app'
 import { LocalGitRepos } from './repos/local_git_repos'
+import { Application } from './application'
 
 const config = createConfig(process.env)
 console.log(`git-en-boite starting up`)
@@ -13,7 +14,7 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 // check we can make a connection
 const connection = createConnection(config.database).catch(error => console.log(error))
 
-const app = new LocalGitRepos(config.git.root)
+const app = { repos: new LocalGitRepos(config.git.root) } as Application
 
 const webApp = create(app)
 const port = 3001
