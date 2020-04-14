@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { execSync } = require('child_process')
+const exec = cmd => execSync(cmd, { stdio: 'inherit' })
+
+if (process.env.NODE_ENV === 'development') exec('ts-node-dev src/server.ts')
+else exec('ts-node src/server.ts')

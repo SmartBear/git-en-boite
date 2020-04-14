@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "./bin/test",
-    "start": "ts-node src/server.ts",
+    "start": "./bin/start",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "author": "",
