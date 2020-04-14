@@ -3,7 +3,8 @@ import 'reflect-metadata'
 
 import { createConnection } from 'typeorm'
 import { createConfig } from './config'
-import { create } from './web_app'
+import WebApp from './web_app'
+import Router from './router'
 import { LocalGitRepos } from './repos/local_git_repos'
 import { Application } from './application'
 
@@ -16,7 +17,8 @@ const connection = createConnection(config.database).catch(error => console.log(
 
 const app = { repos: new LocalGitRepos(config.git.root) } as Application
 
-const webApp = create(app)
+const routes = Router.create(app)
+const webApp = WebApp.withRoutes(routes)
 const port = 3001
 const host = 'localhost'
 webApp.listen(port)

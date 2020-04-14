@@ -1,19 +1,19 @@
 import Koa from 'koa'
 import cors from 'koa2-cors'
 import logger from 'koa-log'
-import Router from './router'
 import bodyParser from 'koa-bodyparser'
-import { Application } from './application'
+import Router from 'koa-router'
 
-function create(app: Application): Koa {
+function withRoutes(...routers: Router[]): Koa {
   const webApp = new Koa()
-  const router = Router.create(app)
   if (process.env.NODE_ENV !== 'test')
     webApp.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'))
   webApp.use(bodyParser())
   webApp.use(cors({ origin: '*' }))
-  webApp.use(router.routes()).use(router.allowedMethods())
+  for (const router of routers) {
+    webApp.use(router.routes()).use(router.allowedMethods())
+  }
   return webApp
 }
 
-export { create }
+export default { withRoutes }

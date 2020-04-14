@@ -1,12 +1,11 @@
 import supertest, { SuperTest, Test } from 'supertest'
-import Koa from 'koa'
 import { create } from './repos_router'
 import { GitRepo } from './git_repo'
 import { GitRepos } from './git_repos'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
 import { Substitute, SubstituteOf, Arg } from '@fluffy-spoon/substitute'
-import bodyParser from 'koa-bodyparser'
+import WebApp from '../web_app'
 
 describe('/repos', () => {
   let request: SuperTest<Test>
@@ -18,9 +17,8 @@ describe('/repos', () => {
   })
 
   beforeEach(() => {
-    const webApp = new Koa()
-    webApp.use(bodyParser()) // TODO: remove duplication with web_app.ts
-    webApp.use(create({ repos }).routes())
+    const routes = create({ repos })
+    const webApp = WebApp.withRoutes(routes)
     server = webApp.listen(8888)
     request = supertest(server)
   })
