@@ -4,16 +4,16 @@ import { GitRepo } from './git_repo'
 import { GitRepos } from './git_repos'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
-import { Substitute, SubstituteOf, Arg } from '@fluffy-spoon/substitute'
 import WebApp from '../web_app'
+import { stubInterface, StubbedInstance } from 'ts-sinon'
 
 describe('/repos', () => {
   let request: SuperTest<Test>
   let server: Server
-  let repos: SubstituteOf<GitRepos>
+  let repos: StubbedInstance<GitRepos>
 
   beforeEach(() => {
-    repos = Substitute.for<GitRepos>()
+    repos = stubInterface<GitRepos>()
   })
 
   beforeEach(() => {
@@ -29,20 +29,21 @@ describe('/repos', () => {
 
   describe('GET /:repoId/branches', () => {
     it('returns the branches in the repo', async () => {
-      const repo = Substitute.for<GitRepo>()
-      repo.branches().resolves(['master'])
-      repos.findRepo('a-repo-id').returns(repo)
+      const repo = stubInterface<GitRepo>()
+      repo.branches.resolves(['master'])
+      repos.findRepo.returns(repo)
       const response = await request.get('/repos/a-repo-id/branches').expect(200)
       assertThat(response.body, equalTo(['master']))
       server.close()
     })
   })
+
   describe('POST /', () => {
     it('connects to the remote repo', async () => {
       const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
-      repos.connectToRemote(connectRepoRequest).resolves()
+      repos.connectToRemote.withArgs(connectRepoRequest).resolves()
       await request.post('/repos').send(connectRepoRequest).auth('', '').expect(200)
-      repos.received().connectToRemote(Arg.any())
+      assertThat(repos.connectToRemote.called, equalTo(true))
     })
   })
 })

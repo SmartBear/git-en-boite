@@ -33,7 +33,6 @@
     "uuid": "^7.0.2"
   },
   "devDependencies": {
-    "@fluffy-spoon/substitute": "^1.117.0",
     "@types/cucumber": "^6.0.1",
     "@types/koa": "^2.11.2",
     "@types/koa-bodyparser": "^4.3.0",
