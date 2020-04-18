@@ -28,6 +28,7 @@
     "reflect-metadata": "^0.1.10",
     "ssestream": "^1.1.0",
     "substitute": "^0.7.1",
+    "ts-sinon": "^1.2.0",
     "typeorm": "0.2.24",
     "uuid": "^7.0.2"
   },
