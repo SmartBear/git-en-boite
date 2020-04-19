@@ -1,7 +1,7 @@
 export interface Responder<ResultType> {
-  foundMany: (results: ResultType[]) => Promise<void>
-  foundOne: (result: ResultType) => Promise<void>
-  foundNone: () => Promise<void>
+  foundMany?: (results: ResultType[]) => Promise<void>
+  foundOne?: (result: ResultType) => Promise<void>
+  foundNone?: () => Promise<void>
 }
 
 export class QueryResult<ResultType> {

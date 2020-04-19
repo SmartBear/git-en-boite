@@ -19,7 +19,7 @@ describe(LocalGitRepos.name, () => {
     const repoPath = path.resolve(root, repoId)
     await exec(`mkdir -p ${repoPath}`)
     const repos = new LocalGitRepos(root)
-    const repo = repos.findRepo(repoId)
+    const repo = repos.findRepo(repoId).results[0]
     assertThat(repo.id, equalTo(repoId))
     assertThat(repo.path, equalTo(repoPath))
   })
@@ -48,7 +48,7 @@ describe(LocalGitRepos.name, () => {
     }
     const repos = new LocalGitRepos(root)
     await repos.connectToRemote(request)
-    const repo = repos.findRepo(repoId)
+    const repo = repos.findRepo(repoId).results[0]
     assertThat(repo.id, equalTo(repoId))
     assertThat(await repo.branches(), equalTo(['master']))
   })

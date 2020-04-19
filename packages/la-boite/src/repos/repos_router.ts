@@ -4,31 +4,11 @@ import { ConnectRepoRequest } from './git_repos'
 import { Application } from '../application'
 import { GitRepo } from './git_repo'
 
-interface Responder<ResultType> {
-  foundOne: (result: ResultType) => Promise<void>
-  foundNone: () => Promise<void>
-}
-
-class QueryResult<ResultType> {
-  readonly results: ResultType[]
-
-  constructor(...results: ResultType[]) {
-    this.results = results.filter(result => !!result)
-  }
-
-  async respond(responder: Responder<ResultType>) {
-    if (this.results.length === 1) return responder.foundOne(this.results[0])
-    if (this.results.length === 0) return responder.foundNone()
-  }
-}
-
 export function create({ repos }: Application): Router {
   const router = new Router({ prefix: '/repos' })
 
   router.get('/:repoId/branches', async (ctx: Context) => {
-    const repo = repos.findRepo(ctx.params.repoId)
-    const result = new QueryResult<GitRepo>(repo)
-    await result.respond({
+    await repos.findRepo(ctx.params.repoId).respond({
       foundOne: async (repo: GitRepo) => {
         ctx.body = await repo.branches()
       },

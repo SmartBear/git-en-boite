@@ -1,4 +1,5 @@
 import { GitRepo } from './git_repo'
+import { QueryResult } from 'query_result'
 
 export interface ConnectRepoRequest {
   repoId: string
@@ -7,5 +8,5 @@ export interface ConnectRepoRequest {
 
 export interface GitRepos {
   connectToRemote: (request: ConnectRepoRequest) => Promise<void>
-  findRepo: (repoId: string) => GitRepo
+  findRepo: (repoId: string) => QueryResult<GitRepo>
 }

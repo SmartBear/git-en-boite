@@ -1,8 +1,10 @@
 import path from 'path'
+import fs from 'fs'
 import { GitRepos, ConnectRepoRequest } from './git_repos'
 import { GitRepo } from './git_repo'
 import { LocalGitRepo } from './local_git_repo'
 import { GitProcess } from 'dugite'
+import { QueryResult } from '../query_result'
 
 export class LocalGitRepos implements GitRepos {
   basePath: string
@@ -20,8 +22,9 @@ export class LocalGitRepos implements GitRepos {
     await git('clone', remoteUrl, repoId)
   }
 
-  findRepo(repoId: string): GitRepo {
+  findRepo(repoId: string): QueryResult<GitRepo> {
     const repoPath = path.resolve(this.basePath, repoId)
-    return new LocalGitRepo(repoId, repoPath)
+    if (!fs.existsSync(repoPath)) return new QueryResult()
+    return new QueryResult(new LocalGitRepo(repoId, repoPath))
   }
 }
