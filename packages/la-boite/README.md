@@ -9,7 +9,7 @@ npm install
 ### Make a directory to receive git repos
 
 ```
-mkdir git-repositories
+mkdir git-repos
 ```
 
 ## Run the development app
