@@ -10,7 +10,7 @@ RUN npm install
 COPY bin bin
 COPY cucumber.js .
 COPY .eslintrc.js .
-COPY .mocharc.json .
+COPY .mocharc.js .
 COPY .prettierrc.js .
 COPY tsconfig.json .
 COPY src src
