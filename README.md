@@ -22,6 +22,12 @@ Try out the sample app to get a feel for what git-en-boite can do for you.
 
 ## Development
 
+### Installing lerna
+
+```
+npm install --global lerna
+```
+
 ### Start the application
 
 The following docker-compose command starts the backend HTTP API for git and our
