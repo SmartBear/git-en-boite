@@ -11,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bull": "^3.12.2",
     "@types/koa-log": "^2.1.1",
     "@types/supertest": "^2.0.8",
+    "bull": "^3.13.0",
     "dugite": "^1.88.2",
     "json": "^9.0.6",
     "koa": "^2.11.0",

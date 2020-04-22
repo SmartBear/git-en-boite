@@ -1,19 +1,28 @@
 import { GitRepo } from './git_repo'
-import { Repository, Reference } from 'nodegit'
+import { Repository } from 'nodegit'
+import { GitProcess } from 'dugite'
+import fs from 'fs'
 
 export class LocalGitRepo implements GitRepo {
-  id: string
   path: string
-  private repo: Promise<Repository>
 
-  constructor(id: string, path: string) {
-    this.id = id
+  static async open(path: string) {
+    fs.mkdirSync(path, { recursive: true })
+    return new this(path)
+  }
+
+  constructor(path: string) {
     this.path = path
-    this.repo = Repository.open(path)
+  }
+
+  async git(cmd: string, ...args: string[]): Promise<string> {
+    const result = await GitProcess.exec([cmd, ...args], this.path)
+    if (result.exitCode > 0) throw new Error(result.stderr)
+    return result.stdout
   }
 
   async branches(): Promise<string[]> {
-    const repo = await this.repo
+    const repo = await Repository.open(this.path)
     const refs = await repo.getReferences()
     return refs
       .filter(ref => ref.isBranch())

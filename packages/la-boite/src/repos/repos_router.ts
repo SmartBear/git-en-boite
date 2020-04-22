@@ -21,7 +21,7 @@ export function create({ repos }: Application): Router {
   router.post('/', async (ctx: Context) => {
     const connectRepoRequest: ConnectRepoRequest = ctx.request.body
     await repos.connectToRemote(connectRepoRequest)
-    ctx.response.status = 200
+    ctx.response.status = 202
   })
 
   return router

@@ -4,10 +4,7 @@ import { ClientApp } from '../../src/entity/ClientApp'
 import { User } from '../../src/entity/User'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
-import { GitProcess } from 'dugite'
-import childProcess from 'child_process'
-import { promisify } from 'util'
-const exec = promisify(childProcess.exec)
+import { LocalGitRepo } from '../../src/repos/local_git_repo'
 
 Given('an app {word}', async function (appId: string) {
   const app = new ClientApp()
@@ -42,23 +39,14 @@ Given('a {word} repo {string} with branches:', async function (
   branchesTable,
 ) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
-  const repoPath = (this.repoRemoteUrl = path.resolve(
-    __dirname,
-    '../../tmp/remote',
-    providerType,
-    repoId,
-  ))
-  await exec(`mkdir -p ${repoPath}`)
-  const git = async (...args: string[]) => {
-    const result = await GitProcess.exec(args, repoPath)
-    if (result.exitCode > 0) throw new Error(result.stderr)
-  }
-  await git('init')
-  await git('config', 'user.email', 'test@example.com')
-  await git('config', 'user.name', 'Test User')
+  const repoPath = (this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', providerType, repoId))
+  const repo = await LocalGitRepo.open(repoPath)
+  await repo.git('init')
+  await repo.git('config', 'user.email', 'test@example.com')
+  await repo.git('config', 'user.name', 'Test User')
   for (const branchName of branches) {
-    await git('checkout', '-b', branchName)
-    await git('commit', '--allow-empty', '-m "test"')
+    await repo.git('checkout', '-b', branchName)
+    await repo.git('commit', '--allow-empty', '-m "test"')
   }
 })
 
@@ -71,11 +59,11 @@ When('{word} connects an app to the repo', async function (userId) {
   const repoId = 'a-repo-id'
   const token = 'a-token'
   const repoInfo = { repoId, remoteUrl: this.repoRemoteUrl }
-  await request.post('/repos').send(repoInfo).auth(userId, token).expect(200)
+  await request.post('/repos').send(repoInfo).auth(userId, token).expect(202)
 })
 
-When('the repo has synchronised', function () {
-  // Write code here that turns the phrase above into concrete actions
+When('the repo has synchronised', async function () {
+  await this.app.repos.waitUntilIdle('a-repo-id')
 })
 
 Then("{word} can see that the repo's branches are:", async function (

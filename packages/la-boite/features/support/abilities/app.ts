@@ -1,9 +1,8 @@
-import { Before } from 'cucumber'
+import { Before, After } from 'cucumber'
 import { createConfig } from '../../../src/config'
 import { LocalGitRepos } from '../../../src/repos/local_git_repos'
 import childProcess from 'child_process'
 import { promisify } from 'util'
-
 const exec = promisify(childProcess.exec)
 
 Before(async function () {
@@ -11,4 +10,8 @@ Before(async function () {
   await exec(`rm -rf ${gitReposPath}`)
   await exec(`mkdir -p ${gitReposPath}`)
   this.app = { repos: new LocalGitRepos(gitReposPath) }
+})
+
+After(async function () {
+  this.app.repos.close()
 })
