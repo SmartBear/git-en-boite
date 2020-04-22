@@ -6,16 +6,23 @@
 npm install
 ```
 
-### Make a directory to receive git repos
+### Make a directory to store git repos
 
 ```
 mkdir -p git-repos/development
 ```
 
-## Run the development app
+## Run the app in development mode
 
-NODE_ENV=development GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-development ./bin/start
+```
+export NODE_ENV=development
+export GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-development
+./bin/start
+```
 
-## How to run the tests
+## Run the tests
 
-GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-test ./bin/test
+```
+export GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-development
+./bin/test
+```
