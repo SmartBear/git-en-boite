@@ -1,6 +1,7 @@
 FROM node:lts
 RUN apt-get update
 RUN apt-get install redis-server -y
+RUN service redis-server start
 
 WORKDIR /app
 COPY package.json .
