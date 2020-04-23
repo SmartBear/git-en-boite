@@ -1,7 +1,6 @@
 FROM node:lts
 RUN apt-get update
 RUN apt-get install redis-server -y
-RUN service redis-server start
 
 WORKDIR /app
 COPY package.json .
@@ -20,4 +19,4 @@ COPY .build-number .
 RUN node_modules/.bin/tsc
 
 EXPOSE 3001
-CMD [ "npm", "start" ]
+CMD npm start

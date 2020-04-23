@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { execSync } = require('child_process')
+const fs = require('fs')
 const exec = cmd => execSync(cmd, { stdio: 'inherit' })
+
+if (fs.existsSync('/.dockerenv')) {
+  console.log('Running in Docker')
+  exec('service redis-server start')
+}
 
 if (process.env.NODE_ENV === 'development') exec('ts-node-dev src/server.ts')
 else exec('ts-node src/server.ts')
