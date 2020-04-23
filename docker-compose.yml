@@ -1,22 +1,21 @@
 version: "3"
 services:
 
-  la-boite:
+  app:
     build: packages/la-boite
     ports:
       - 3001:3001
     environment:
       - NODE_ENV=development
-      - GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-development
+      - GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
 
-  pg:
+  postgres:
     image: postgres:12.2-alpine
+    restart: always
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-    volumes:
-      - $HOME/.docker-volumes/pg_data:/var/lib/postgresql/data
+      - POSTGRES_DB=git-en-boite-development
+      - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - 5432:5432
 
