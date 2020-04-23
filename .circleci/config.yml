@@ -51,7 +51,7 @@ workflows:
                 command: docker run --detach --network=git-en-boite --name postgres -h postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=git-en-boite-test postgres
             - run:
                 name: Creating redis container ready for tests
-                command: docker run --detach --network=git-en-boite --name redis -h redis service redis-server start
+                command: docker run --detach --network=git-en-boite --name redis -h redis redis:latest
             - run:
                 name: Writing .build-number file
                 command: echo $CIRCLE_BUILD_NUM > packages/la-boite/.build-number
