@@ -59,39 +59,6 @@ workflows:
             - run: 
                 name: Running tests in container
                 command: docker run --network=git-en-boite -e GIT_EN_BOITE_PG_URL=postgres://postgres@postgres/git-en-boite-test -e REDIS_URL=redis://redis:6379 -i -t smartbear/git-en-boite:latest npm test
-version: "3"
-services:
-
-  la-boite:
-    build: packages/la-boite
-    ports:
-      - 3001:3001
-    environment:
-      - NODE_ENV=development
-
-  example-app:
-    build: packages/example-app
-    volumes:
-      - ./packages/example-app:/app
-    ports:
-      - 3000:3000
-    environment:
-      - NODE_ENV=development
-
-  pg:
-    image: postgres:12.2-alpine
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-    volumes:
-      - $HOME/.docker-volumes/pg_data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-
-  redis:
-    image: redis:latest
-    ports:
-      - 6379:6379
           filters:
             branches:
               only: 
