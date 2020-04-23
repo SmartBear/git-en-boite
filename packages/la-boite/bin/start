@@ -6,7 +6,9 @@ const exec = cmd => execSync(cmd, { stdio: 'inherit' })
 
 if (fs.existsSync('/.dockerenv')) {
   console.log('Running in Docker')
-  exec('service redis-server start')
+
+  if (!process.env.REDIS_URL)
+    exec('service redis-server start')
 }
 
 if (process.env.NODE_ENV === 'development') exec('ts-node-dev src/server.ts')

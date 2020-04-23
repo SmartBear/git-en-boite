@@ -5,6 +5,8 @@ import { GitRepo } from './git_repo'
 import { LocalGitRepo } from './local_git_repo'
 import { QueryResult } from '../query_result'
 import Queue from 'bull'
+import { createConfig } from '../config'
+const config = createConfig()
 
 export class LocalGitRepos implements GitRepos {
   basePath: string
@@ -49,7 +51,7 @@ export class LocalGitRepos implements GitRepos {
   }
 
   private createRepoQueue(repoId: string): Queue.Queue {
-    const result = new Queue(repoId)
+    const result = new Queue(repoId, config.redis.url)
     result.process('clone', async job => {
       const { repoPath, remoteUrl } = job.data
       const repo = await LocalGitRepo.open(repoPath)

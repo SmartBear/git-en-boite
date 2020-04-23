@@ -10,10 +10,15 @@ export interface Config {
   git: GitOptions
   database: ConnectionOptions
   version: string
+  redis: RedisOptions
 }
 
 interface GitOptions {
   root: string
+}
+
+interface RedisOptions {
+  url: string
 }
 
 const createDatabaseConfig = (env: ProcessEnv): ConnectionOptions => {
@@ -51,11 +56,18 @@ const createVersionConfig = (env: ProcessEnv, fs: any): string => {
   return env.npm_package_version
 }
 
+const createRedisConfig = (env: ProcessEnv): RedisOptions => {
+  return {
+    url: env.REDIS_URL || 'redis://127.0.0.1:6379',
+  }
+}
+
 export const createConfig = (env: ProcessEnv = process.env, fs = require('fs')): Config => {
   if (!env.NODE_ENV) throw new Error('Please set NODE_ENV')
   return {
     database: createDatabaseConfig(env),
     git: createGitConfig(env),
     version: createVersionConfig(env, fs),
+    redis: createRedisConfig(env),
   }
 }
