@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { GitRepos, ConnectRepoRequest } from './git_repos'
-import { GitRepo } from './git_repo'
+import { GitRepos, ConnectRepoRequest, GitRepoInfo } from './git_repos'
 import { LocalGitRepo } from './local_git_repo'
 import { QueryResult } from '../query_result'
 import Queue from 'bull'
@@ -39,10 +38,17 @@ export class LocalGitRepos implements GitRepos {
     })
   }
 
-  findRepo(repoId: string): QueryResult<GitRepo> {
+  async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
+    if (!this.exists(repoId)) return QueryResult.from()
     const repoPath = path.resolve(this.basePath, repoId)
-    if (!fs.existsSync(repoPath)) return new QueryResult()
-    return new QueryResult(new LocalGitRepo(repoPath))
+    const repo = new LocalGitRepo(repoPath)
+    const refs = await repo.refs()
+    return QueryResult.from({ repoId, refs })
+  }
+
+  private exists(repoId: string): boolean {
+    const repoPath = path.resolve(this.basePath, repoId)
+    return fs.existsSync(repoPath)
   }
 
   private getQueueForRepo(repoId: string): Queue.Queue {
@@ -55,7 +61,11 @@ export class LocalGitRepos implements GitRepos {
     result.process('clone', async job => {
       const { repoPath, remoteUrl } = job.data
       const repo = await LocalGitRepo.open(repoPath)
-      await repo.git('clone', remoteUrl, '.')
+      // await repo.git('clone', remoteUrl, '.')
+      await repo.git('init', '--bare')
+      await repo.git('config', 'gc.auto', '0')
+      await repo.git('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
+      await repo.git('fetch', '--prune', remoteUrl, '+refs/*:refs/*')
     })
     result.on('failed', (job, err) =>
       console.error(`Error processing job #${job.id} for repo "${repoId}"`, err),

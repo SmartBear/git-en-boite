@@ -1,16 +1,18 @@
 import { Context } from 'koa'
 import Router from 'koa-router'
-import { ConnectRepoRequest } from './git_repos'
+import { ConnectRepoRequest, GitRepoInfo } from './git_repos'
 import { Application } from '../application'
 import { GitRepo } from './git_repo'
 
 export function create({ repos }: Application): Router {
   const router = new Router({ prefix: '/repos' })
 
-  router.get('/:repoId/branches', async (ctx: Context) => {
-    await repos.findRepo(ctx.params.repoId).respond({
-      foundOne: async (repo: GitRepo) => {
-        ctx.body = await repo.branches()
+  router.get('/:repoId', async (ctx: Context) => {
+    const { repoId } = ctx.params
+    const result = await repos.getInfo(repoId)
+    result.respond({
+      foundOne: async repoInfo => {
+        ctx.body = repoInfo
       },
       foundNone: async () => {
         ctx.response.status = 404

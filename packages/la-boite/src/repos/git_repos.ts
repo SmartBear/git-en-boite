@@ -6,7 +6,12 @@ export interface ConnectRepoRequest {
   remoteUrl: string
 }
 
+export interface GitRepoInfo {
+  repoId: string
+  refs: string[]
+}
+
 export interface GitRepos {
   connectToRemote: (request: ConnectRepoRequest) => Promise<void>
-  findRepo: (repoId: string) => QueryResult<GitRepo>
+  getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>
 }

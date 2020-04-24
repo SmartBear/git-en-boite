@@ -1,6 +1,6 @@
 import { GitRepo } from './git_repo'
 import { Repository } from 'nodegit'
-import { GitProcess } from 'dugite'
+import { GitProcess, IGitResult } from 'dugite'
 import fs from 'fs'
 
 export class LocalGitRepo implements GitRepo {
@@ -15,10 +15,18 @@ export class LocalGitRepo implements GitRepo {
     this.path = path
   }
 
-  async git(cmd: string, ...args: string[]): Promise<string> {
+  async git(cmd: string, ...args: string[]): Promise<IGitResult> {
     const result = await GitProcess.exec([cmd, ...args], this.path)
     if (result.exitCode > 0) throw new Error(result.stderr)
-    return result.stdout
+    return result
+  }
+
+  async refs(): Promise<string[]> {
+    const { stdout } = await this.git('show-ref')
+    return stdout
+      .trim()
+      .split('\n')
+      .map(line => line.split(' ')[1])
   }
 
   async branches(): Promise<string[]> {

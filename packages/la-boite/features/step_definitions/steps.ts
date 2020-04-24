@@ -2,7 +2,7 @@
 import { Given, When, Then, TableDefinition } from 'cucumber'
 import { ClientApp } from '../../src/entity/ClientApp'
 import { User } from '../../src/entity/User'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, equalTo, containsInAnyOrder } from 'hamjest'
 import path from 'path'
 import { LocalGitRepo } from '../../src/repos/local_git_repo'
 
@@ -58,14 +58,12 @@ When('the repo has synchronised', async function () {
   await this.app.repos.waitUntilIdle('a-repo-id')
 })
 
-Then("Bob can see that the repo's branches are:", async function (
-  expectedBranches: TableDefinition,
-) {
+Then("Bob can see that the repo's refs are:", async function (expectedRefs: TableDefinition) {
   const { request } = this
   const repoId = 'a-repo-id'
   const response = await request
-    .get(`/repos/${repoId}/branches`)
+    .get(`/repos/${repoId}`)
     .set('Accept', 'application/json')
     .expect(200)
-  assertThat(expectedBranches.raw()[0], equalTo(response.body))
+  assertThat(response.body.refs, containsInAnyOrder(...expectedRefs.raw().map(row => row[0])))
 })
