@@ -9,6 +9,9 @@ services:
       - NODE_ENV=development
       - GIT_EN_BOITE_PG_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
+    links:
+      - postgres
+      - redis
 
   postgres:
     image: postgres:12.2-alpine
@@ -16,10 +19,6 @@ services:
     environment:
       - POSTGRES_DB=git-en-boite-development
       - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - 5432:5432
 
   redis:
     image: redis:latest
-    ports:
-      - 6379:6379
