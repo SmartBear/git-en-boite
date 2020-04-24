@@ -47,28 +47,24 @@ Given('a repo with branches:', async function (branchesTable) {
   }
 })
 
-When('{word} connects an app to the repo', async function (userId) {
+When('Bob connects an app to the repo', async function () {
   const { request } = this
   const repoId = 'a-repo-id'
-  const token = 'a-token'
   const repoInfo = { repoId, remoteUrl: this.repoRemoteUrl }
-  await request.post('/repos').send(repoInfo).auth(userId, token).expect(202)
+  await request.post('/repos').send(repoInfo).expect(202)
 })
 
 When('the repo has synchronised', async function () {
   await this.app.repos.waitUntilIdle('a-repo-id')
 })
 
-Then("{word} can see that the repo's branches are:", async function (
-  userId: string,
+Then("Bob can see that the repo's branches are:", async function (
   expectedBranches: TableDefinition,
 ) {
   const { request } = this
   const repoId = 'a-repo-id'
-  const token = 'a-token'
   const response = await request
     .get(`/repos/${repoId}/branches`)
-    .auth(userId, token)
     .set('Accept', 'application/json')
     .expect(200)
   assertThat(expectedBranches.raw()[0], equalTo(response.body))

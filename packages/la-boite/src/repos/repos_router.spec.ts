@@ -48,7 +48,7 @@ describe('/repos', () => {
     it('connects to the remote repo', async () => {
       const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
       repos.connectToRemote.withArgs(connectRepoRequest).resolves()
-      await request.post('/repos').send(connectRepoRequest).auth('', '').expect(202)
+      await request.post('/repos').send(connectRepoRequest).expect(202)
       assertThat(repos.connectToRemote.called, equalTo(true))
     })
   })
