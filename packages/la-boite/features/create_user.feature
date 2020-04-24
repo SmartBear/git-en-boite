@@ -1,8 +1,8 @@
 Feature: Create user
 
-  Most operations in git-en-boite are performed on behalf of a user.
+  This scenario is just here to prove that we can call postgres.
 
-  So the first step is to create a user.
+  It's probably not describing functionality we'll need in the end.
 
   Scenario: Create a valid user
     Given an app CucumberStudio

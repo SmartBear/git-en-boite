@@ -33,13 +33,10 @@ Then("the {word} app's users should be:", async function (
   assertThat(userIds, equalTo(expectedUserIds))
 })
 
-Given('a {word} repo {string} with branches:', async function (
-  providerType,
-  repoId,
-  branchesTable,
-) {
+Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
-  const repoPath = (this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', providerType, repoId))
+  const repoId = (this.repoId = 'a-repo-id')
+  const repoPath = (this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId))
   const repo = await LocalGitRepo.open(repoPath)
   await repo.git('init')
   await repo.git('config', 'user.email', 'test@example.com')
@@ -48,10 +45,6 @@ Given('a {word} repo {string} with branches:', async function (
     await repo.git('checkout', '-b', branchName)
     await repo.git('commit', '--allow-empty', '-m "test"')
   }
-})
-
-Given('a user {word} has valid credentials for the repo', function (userId) {
-  // TODO: Write code here that turns the phrase above into concrete actions
 })
 
 When('{word} connects an app to the repo', async function (userId) {
