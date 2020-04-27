@@ -20,6 +20,7 @@ jobs:
       - node/install-packages:
           app-dir: packages/la-boite
           with-cache: true
+          cache-key: 'reset'
       - run:
           name: Compiling Typescript
           command: npx tsc
