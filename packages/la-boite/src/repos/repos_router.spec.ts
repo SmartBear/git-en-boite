@@ -31,7 +31,7 @@ describe('/repos', () => {
     it('returns an object with info about the repo', async () => {
       const repoInfo = {
         repoId: 'a-repo-id',
-        refs: ['refs/remotes/origin/master'],
+        refs: [{ name: 'refs/remotes/origin/master', revision: 'abc123' }],
       }
       repos.getInfo.resolves(QueryResult.from(repoInfo))
       const response = await request.get('/repos/a-repo-id').expect(200)

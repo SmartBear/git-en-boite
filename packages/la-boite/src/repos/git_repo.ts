@@ -1,5 +1,6 @@
+import { Reference } from './reference'
+
 export interface GitRepo {
-  refs(): any
+  refs(): Promise<Reference[]>
   path: string
-  branches: () => Promise<string[]>
 }

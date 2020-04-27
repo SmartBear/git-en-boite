@@ -61,7 +61,6 @@ export class LocalGitRepos implements GitRepos {
     result.process('clone', async job => {
       const { repoPath, remoteUrl } = job.data
       const repo = await LocalGitRepo.open(repoPath)
-      // await repo.git('clone', remoteUrl, '.')
       await repo.git('init', '--bare')
       await repo.git('config', 'gc.auto', '0')
       await repo.git('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs

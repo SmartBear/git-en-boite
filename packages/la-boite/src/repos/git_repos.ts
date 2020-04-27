@@ -1,5 +1,5 @@
-import { GitRepo } from './git_repo'
 import { QueryResult } from 'query_result'
+import { Reference } from './reference'
 
 export interface ConnectRepoRequest {
   repoId: string
@@ -8,7 +8,7 @@ export interface ConnectRepoRequest {
 
 export interface GitRepoInfo {
   repoId: string
-  refs: string[]
+  refs: Reference[]
 }
 
 export interface GitRepos {

@@ -7,10 +7,10 @@ import {
   promiseThat,
   fulfilled,
   hasProperty,
-  containsInAnyOrder,
   is,
   truthy,
   falsy,
+  equalTo,
 } from 'hamjest'
 import { ConnectRepoRequest } from './git_repos'
 import { LocalGitRepo } from './local_git_repo'
@@ -63,20 +63,8 @@ describe(LocalGitRepos.name, () => {
       await repos.waitUntilIdle(repoId)
       const result = await repos.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
-      result.respond({
-        foundOne: repoInfo =>
-          assertThat(
-            repoInfo,
-            hasProperty(
-              'refs',
-              containsInAnyOrder(
-                'refs/heads/master',
-                'refs/heads/development',
-                'refs/remotes/origin/master',
-                'refs/remotes/origin/development',
-              ),
-            ),
-          ),
+      await result.respond({
+        foundOne: repoInfo => assertThat(repoInfo.refs, hasProperty('length', equalTo(2 * 2))),
       })
     })
   })

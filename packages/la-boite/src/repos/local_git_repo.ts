@@ -1,7 +1,7 @@
 import { GitRepo } from './git_repo'
-import { Repository } from 'nodegit'
 import { GitProcess, IGitResult } from 'dugite'
 import fs from 'fs'
+import { Reference } from './reference'
 
 export class LocalGitRepo implements GitRepo {
   path: string
@@ -21,21 +21,12 @@ export class LocalGitRepo implements GitRepo {
     return result
   }
 
-  async refs(): Promise<string[]> {
+  async refs(): Promise<Reference[]> {
     const { stdout } = await this.git('show-ref')
     return stdout
       .trim()
       .split('\n')
-      .map(line => line.split(' ')[1])
-  }
-
-  async branches(): Promise<string[]> {
-    const repo = await Repository.open(this.path)
-    const refs = await repo.getReferences()
-    return refs
-      .filter(ref => ref.isBranch())
-      .filter(ref => !ref.isRemote())
-      .map(ref => ref.name())
-      .map(refName => refName.split('/')[2])
+      .map(line => line.trim().split(' '))
+      .map(([revision, name]) => ({ revision, name }))
   }
 }
