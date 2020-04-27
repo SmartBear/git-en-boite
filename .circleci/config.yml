@@ -9,11 +9,11 @@ jobs:
     docker:
       - image: circleci/node:current
         environment:
-          GIT_EN_BOITE_PG_URL: postgres://root@localhost/git-en-boite-test
+          GIT_EN_BOITE_PG_URL: postgres://postgres@localhost/git-en-boite-test
       - image: circleci/postgres:latest
         environment:
-          POSTGRES_USER: root
           POSTGRES_DB: git-en-boite-test
+          POSTGRES_HOST_AUTH_METHOD: trust
       - image: circleci/redis:latest
     steps:
       - checkout
