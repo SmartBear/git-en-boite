@@ -65,7 +65,8 @@ export class LocalGitRepos implements GitRepos {
       await repo.git('init', '--bare')
       await repo.git('config', 'gc.auto', '0')
       await repo.git('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
-      await repo.git('fetch', '--prune', remoteUrl, '+refs/*:refs/*')
+      await repo.git('remote', 'add', 'origin', remoteUrl)
+      await repo.git('fetch', '--prune', 'origin', '+refs/*:refs/*')
     })
     result.on('failed', (job, err) =>
       console.error(`Error processing job #${job.id} for repo "${repoId}"`, err),

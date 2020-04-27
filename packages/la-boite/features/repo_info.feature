@@ -5,9 +5,11 @@ Feature: Repo info
   Scenario: List refs
     Given a repo with branches:
       | master  |
-      | story-a |
+      | develop |
     When Bob connects an app to the repo
     And the repo has synchronised
     Then Bob can see that the repo's refs are:
-      | refs/heads/master  |
-      | refs/heads/story-a |
+      | refs/heads/master           |
+      | refs/heads/develop          |
+      | refs/remotes/origin/master  |
+      | refs/remotes/origin/develop |

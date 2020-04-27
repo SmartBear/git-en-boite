@@ -67,7 +67,15 @@ describe(LocalGitRepos.name, () => {
         foundOne: repoInfo =>
           assertThat(
             repoInfo,
-            hasProperty('refs', containsInAnyOrder('refs/heads/master', 'refs/heads/development')),
+            hasProperty(
+              'refs',
+              containsInAnyOrder(
+                'refs/heads/master',
+                'refs/heads/development',
+                'refs/remotes/origin/master',
+                'refs/remotes/origin/development',
+              ),
+            ),
           ),
       })
     })
