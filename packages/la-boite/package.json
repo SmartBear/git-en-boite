@@ -25,7 +25,6 @@
     "koa2-cors": "^2.0.6",
     "mysql": "^2.14.1",
     "node-git": "0.0.0",
-    "nodegit": "^0.26.5",
     "pg": "^7.18.2",
     "reflect-metadata": "^0.1.10",
     "ssestream": "^1.1.0",
