@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'fs'
-import crypto from 'crypto'
 import { GitRepos, ConnectRepoRequest, GitRepoInfo } from './git_repos'
 import { LocalGitRepo } from './local_git_repo'
 import { QueryResult } from '../query_result'
@@ -13,7 +12,7 @@ class RepoFolder {
   readonly gitRepoPath: string
 
   constructor(basePath: string, repoId: string) {
-    const folderName = crypto.createHash('sha256').update(repoId).digest('hex')
+    const folderName = Buffer.from(repoId).toString('hex')
     this.path = path.resolve(basePath, folderName)
     this.gitRepoPath = path.resolve(this.path, 'git')
   }
