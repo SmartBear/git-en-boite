@@ -1,11 +1,23 @@
 import path from 'path'
 import fs from 'fs'
+import crypto from 'crypto'
 import { GitRepos, ConnectRepoRequest, GitRepoInfo } from './git_repos'
 import { LocalGitRepo } from './local_git_repo'
 import { QueryResult } from '../query_result'
 import Queue from 'bull'
 import { createConfig } from '../config'
 const config = createConfig()
+
+class RepoFolder {
+  readonly path: string
+  readonly gitRepoPath: string
+
+  constructor(basePath: string, repoId: string) {
+    const folderName = crypto.createHash('sha256').update(repoId).digest('hex')
+    this.path = path.resolve(basePath, folderName)
+    this.gitRepoPath = path.resolve(this.path, 'git')
+  }
+}
 
 export class LocalGitRepos implements GitRepos {
   basePath: string
@@ -29,26 +41,27 @@ export class LocalGitRepos implements GitRepos {
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
-    const repoPath = path.resolve(this.basePath, repoId)
     const queue = this.getQueueForRepo(repoId)
     await queue.add('clone', {
       repoId,
-      repoPath,
+      repoPath: this.repoFolder(repoId).gitRepoPath,
       remoteUrl,
     })
   }
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!this.exists(repoId)) return QueryResult.from()
-    const repoPath = path.resolve(this.basePath, repoId)
-    const repo = new LocalGitRepo(repoPath)
+    const repo = new LocalGitRepo(this.repoFolder(repoId).gitRepoPath)
     const refs = await repo.refs()
     return QueryResult.from({ repoId, refs })
   }
 
+  private repoFolder(repoId: string) {
+    return new RepoFolder(this.basePath, repoId)
+  }
+
   private exists(repoId: string): boolean {
-    const repoPath = path.resolve(this.basePath, repoId)
-    return fs.existsSync(repoPath)
+    return fs.existsSync(this.repoFolder(repoId).path)
   }
 
   private getQueueForRepo(repoId: string): Queue.Queue {
