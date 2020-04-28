@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:14.0.0
 RUN apt-get update
 RUN apt-get install redis-server -y
 

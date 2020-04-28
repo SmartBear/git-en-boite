@@ -7,14 +7,14 @@ orbs:
 jobs:
   test-in-node:
     docker:
-      - image: circleci/node:current
+      - image: circleci/node:14.0.0
         environment:
           GIT_EN_BOITE_PG_URL: postgres://postgres@localhost/git-en-boite-test
-      - image: postgres
+      - image: circleci/postgres:12.2
         environment:
           POSTGRES_DB: git-en-boite-test
           POSTGRES_HOST_AUTH_METHOD: trust
-      - image: circleci/redis:latest
+      - image: circleci/redis:5.09
     steps:
       - checkout
       - node/install-packages:
@@ -48,10 +48,10 @@ workflows:
                 command: docker network create git-en-boite
             - run: 
                 name: Creating postgres container ready for tests
-                command: docker run --detach --network=git-en-boite --name postgres -h postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=git-en-boite-test postgres
+                command: docker run --detach --network=git-en-boite --name postgres -h postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=git-en-boite-test postgres:12.2
             - run:
                 name: Creating redis container ready for tests
-                command: docker run --detach --network=git-en-boite --name redis -h redis redis:latest
+                command: docker run --detach --network=git-en-boite --name redis -h redis redis:5.0.9
             - run:
                 name: Writing .build-number file
                 command: echo $CIRCLE_BUILD_NUM > packages/la-boite/.build-number
