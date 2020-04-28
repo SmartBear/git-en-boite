@@ -10,7 +10,7 @@ jobs:
       - image: circleci/node:current
         environment:
           GIT_EN_BOITE_PG_URL: postgres://postgres@localhost/git-en-boite-test
-      - image: circleci/postgres:latest
+      - image: postgres
         environment:
           POSTGRES_DB: git-en-boite-test
           POSTGRES_HOST_AUTH_METHOD: trust
