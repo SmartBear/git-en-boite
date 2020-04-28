@@ -3,7 +3,15 @@ import childProcess from 'child_process'
 import { promisify } from 'util'
 const exec = promisify(childProcess.exec)
 import { LocalGitRepo } from './local_git_repo'
-import { assertThat, startsWith, rejected, promiseThat, containsInAnyOrder } from 'hamjest'
+import {
+  assertThat,
+  startsWith,
+  rejected,
+  promiseThat,
+  containsInAnyOrder,
+  hasProperty,
+  matchesPattern,
+} from 'hamjest'
 
 describe(LocalGitRepo.name, () => {
   const root = path.resolve(__dirname, '../../tmp')
@@ -42,10 +50,14 @@ describe(LocalGitRepo.name, () => {
         await repo.git('checkout', '-b', branchName)
         await repo.git('commit', '--allow-empty', '-m "test"')
       }
+      const refs = await repo.refs()
       assertThat(
-        await (await repo.refs()).map(ref => ref.name),
+        refs.map(ref => ref.name),
         containsInAnyOrder('refs/heads/one', 'refs/heads/two'),
       )
+      for (const ref of refs) {
+        assertThat(ref, hasProperty('revision', matchesPattern('[a-e][0-9]')))
+      }
     })
   })
 })
