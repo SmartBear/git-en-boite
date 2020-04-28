@@ -14,7 +14,7 @@ jobs:
         environment:
           POSTGRES_DB: git-en-boite-test
           POSTGRES_HOST_AUTH_METHOD: trust
-      - image: circleci/redis:5.09
+      - image: circleci/redis:5.0.9
     steps:
       - checkout
       - node/install-packages:
