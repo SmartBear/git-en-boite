@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { GitRepos, ConnectRepoRequest, GitRepoInfo } from './git_repos'
+import { GitRepos, ConnectRepoRequest, GitRepoInfo, Branch } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
 import { QueryResult } from '../query_result'
 import Queue from 'bull'
@@ -52,7 +52,16 @@ export class LocalGitRepos implements GitRepos {
     if (!this.exists(repoId)) return QueryResult.from()
     const repo = new LocalGitRepo(this.repoFolder(repoId).gitRepoPath)
     const refs = await repo.refs()
-    return QueryResult.from({ repoId, refs })
+    const branches: Branch[] = refs
+      .filter(ref => ref.name.startsWith('refs/heads'))
+      .map(ref => {
+        return {
+          name: ref.name.replace('refs/heads/', ''),
+          refName: ref.name,
+          revision: ref.revision,
+        }
+      })
+    return QueryResult.from({ repoId, refs, branches })
   }
 
   private repoFolder(repoId: string) {

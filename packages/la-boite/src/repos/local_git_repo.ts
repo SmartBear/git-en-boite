@@ -1,7 +1,6 @@
-import { GitRepo } from './git_repo'
+import { GitRepo, Reference } from './interfaces'
 import { GitProcess, IGitResult } from 'dugite'
 import fs from 'fs'
-import { Reference } from './reference'
 
 export class LocalGitRepo implements GitRepo {
   path: string

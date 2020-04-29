@@ -1,6 +1,6 @@
 import supertest, { SuperTest, Test } from 'supertest'
 import { create } from './repos_router'
-import { GitRepos } from './git_repos'
+import { GitRepos } from './interfaces'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
 import WebApp from '../web_app'

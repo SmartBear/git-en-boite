@@ -2,7 +2,6 @@ Feature: Repo info
 
   Once you've connected a repo, you can see information about it.
 
-  @wip
   Scenario: List refs and branches
     Given a repo with branches:
       | master  |

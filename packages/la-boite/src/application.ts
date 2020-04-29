@@ -1,4 +1,4 @@
-import { GitRepos } from './repos/git_repos'
+import { GitRepos } from './repos/interfaces'
 
 export interface Application {
   repos: GitRepos

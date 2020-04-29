@@ -12,7 +12,7 @@ import {
   falsy,
   equalTo,
 } from 'hamjest'
-import { ConnectRepoRequest } from './git_repos'
+import { ConnectRepoRequest } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
 const exec = promisify(childProcess.exec)
 
@@ -65,6 +65,32 @@ describe(LocalGitRepos.name, () => {
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
         foundOne: repoInfo => assertThat(repoInfo.refs, hasProperty('length', equalTo(2 * 2))),
+      })
+    })
+
+    it('returns an object with the local branches in the repo', async () => {
+      const repoId = 'a-new-repo'
+      const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
+      const request: ConnectRepoRequest = {
+        repoId,
+        remoteUrl,
+      }
+      const repoPath = remoteUrl
+      const branches = ['master', 'development']
+      const repo = await LocalGitRepo.open(repoPath)
+      await repo.git('init')
+      await repo.git('config', 'user.email', 'test@example.com')
+      await repo.git('config', 'user.name', 'Test User')
+      for (const branchName of branches) {
+        await repo.git('checkout', '-b', branchName)
+        await repo.git('commit', '--allow-empty', '-m "test"')
+      }
+      await repos.connectToRemote(request)
+      await repos.waitUntilIdle(repoId)
+      const result = await repos.getInfo(repoId)
+      assertThat(result.isSuccess, is(truthy()))
+      await result.respond({
+        foundOne: repoInfo => assertThat(repoInfo.branches, hasProperty('length', equalTo(2))),
       })
     })
   })

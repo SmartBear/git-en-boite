@@ -5,7 +5,7 @@ import { User } from '../../src/entity/User'
 import { assertThat, equalTo, containsInAnyOrder } from 'hamjest'
 import path from 'path'
 import { LocalGitRepo } from '../../src/repos/local_git_repo'
-import { GitRepoInfo } from '../../src/repos/git_repos'
+import { GitRepoInfo } from '../../src/repos/interfaces'
 
 Given('an app {word}', async function (appId: string) {
   const app = new ClientApp()
@@ -70,5 +70,20 @@ Then("Bob can see that the repo's refs are:", async function (expectedRefsTable:
   assertThat(
     (response.body as GitRepoInfo).refs.map(ref => ref.name),
     containsInAnyOrder(...expectedRefNames),
+  )
+})
+
+Then('Bob can see that the repo\'s branches are:', async function (expectedBranchesTable: TableDefinition) {
+  const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
+  const { request } = this
+  const repoId = 'a-repo-id'
+  const response = await request
+    .get(`/repos/${repoId}`)
+    .set('Accept', 'application/json')
+    .expect(200)
+
+  assertThat(
+    (response.body as GitRepoInfo).branches.map(branch => branch.name),
+    containsInAnyOrder(...expectedBranchNames),
   )
 })
