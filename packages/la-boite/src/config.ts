@@ -57,8 +57,9 @@ const createVersionConfig = (env: ProcessEnv, fs: any): string => {
 }
 
 const createRedisConfig = (env: ProcessEnv): RedisOptions => {
+  if(!env.REDIS_URL) throw new Error('Please set REDIS_URL')
   return {
-    url: env.REDIS_URL || 'redis://127.0.0.1:6379',
+    url: env.REDIS_URL,
   }
 }
 
