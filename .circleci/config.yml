@@ -10,6 +10,7 @@ jobs:
       - image: circleci/node:14.0.0
         environment:
           GIT_EN_BOITE_PG_URL: postgres://postgres@localhost/git-en-boite-test
+          REDIS_URL: redis://localhost:6379
       - image: circleci/postgres:12.2
         environment:
           POSTGRES_DB: git-en-boite-test
