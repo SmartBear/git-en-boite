@@ -5,7 +5,7 @@ import { assertThat, hasProperty, equalTo, not, throws } from 'hamjest'
 describe('createConfig', () => {
   const defaultConfig = {
     NODE_ENV: 'any',
-    REDIS_URL: 'redis://someredis'
+    REDIS_URL: 'redis://someredis',
   }
 
   it('throws an error if NODE_ENV is not set', () => {
@@ -16,15 +16,15 @@ describe('createConfig', () => {
   })
 
   context('database config', () => {
-    context('when GIT_EN_BOITE_PG_URL is defined', () => {
+    context('when DATABASE_URL is defined', () => {
       it('creates database config using the URL', () => {
-        const config = createConfig({ ...defaultConfig, GIT_EN_BOITE_PG_URL: 'test-url' })
+        const config = createConfig({ ...defaultConfig, DATABASE_URL: 'test-url' })
         assertThat(config, hasProperty('database'))
         assertThat(config.database, hasProperty('url', equalTo('test-url')))
       })
     })
 
-    context('when GIT_EN_BOITE_PG_URL is not defined', () => {
+    context('when DATABASE_URL is not defined', () => {
       it('defaults to a database derived from NODE_ENV', () => {
         const config = createConfig({ ...defaultConfig, NODE_ENV: 'test' })
         assertThat(config, hasProperty('database'))
@@ -65,7 +65,7 @@ describe('createConfig', () => {
         },
       }
       // eslint-disable-next-line @typescript-eslint/camelcase
-      const config = createConfig({...defaultConfig, npm_package_version: '1.2.3' }, fakeFs)
+      const config = createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs)
       assertThat(config, hasProperty('version', equalTo('1.2.3')))
     })
 

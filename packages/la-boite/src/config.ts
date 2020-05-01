@@ -24,12 +24,12 @@ interface RedisOptions {
 const createDatabaseConfig = (env: ProcessEnv): ConnectionOptions => {
   const defaultOptions: PostgresConnectionOptions = {
     type: 'postgres',
-    url: env.GIT_EN_BOITE_PG_URL,
+    url: env.DATABASE_URL,
     entities: [ClientApp],
     synchronize: true,
   }
 
-  if (env.GIT_EN_BOITE_PG_URL) return { ...defaultOptions, url: env.GIT_EN_BOITE_PG_URL }
+  if (env.DATABASE_URL) return { ...defaultOptions, url: env.DATABASE_URL }
 
   return {
     ...defaultOptions,
@@ -57,7 +57,7 @@ const createVersionConfig = (env: ProcessEnv, fs: any): string => {
 }
 
 const createRedisConfig = (env: ProcessEnv): RedisOptions => {
-  if(!env.REDIS_URL) throw new Error('Please set REDIS_URL')
+  if (!env.REDIS_URL) throw new Error('Please set REDIS_URL')
   return {
     url: env.REDIS_URL,
   }
