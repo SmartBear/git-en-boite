@@ -41,7 +41,7 @@ workflows:
       - test-in-node
       - docker/publish:
           image: smartbear/git-en-boite
-          path: packages/la-boite
+          path: .
           tag: latest
           before_build:
             - run:
