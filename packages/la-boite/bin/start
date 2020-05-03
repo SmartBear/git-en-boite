@@ -1,13 +1,28 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { execSync } = require('child_process')
+const path = require('path')
 const fs = require('fs')
 const exec = cmd => execSync(cmd, { stdio: 'inherit' })
 
-if (fs.existsSync('/.dockerenv')) {
-  console.log('Running in Docker')
-  exec('ts-node src/server.ts')
-} else {
-  if (process.env.NODE_ENV === 'development') exec('ts-node-dev src/server.ts')
-  else exec('ts-node src/server.ts')
+class Environment {
+  get isDocker() {
+    return fs.existsSync('/.dockerenv')
+  }
+
+  get runner() {
+    if ((process.env.NODE_ENV === 'development') && !this.isDocker)
+      return 'ts-node-dev'
+    return 'ts-node'
+  }
+
+  get startCommand() {
+    return `node_modules/.bin/${this.runner} src/server.ts`
+  }
 }
+
+const root = path.resolve(__dirname, '../')
+process.chdir(root)
+
+const env = new Environment()
+exec(env.startCommand)
