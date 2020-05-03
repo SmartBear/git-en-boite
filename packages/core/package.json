@@ -1,0 +1,22 @@
+{
+  "name": "git-en-boite-core",
+  "version": "0.0.0",
+  "description": "Core Domain for git-en-boite",
+  "main": "src/core.ts",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartbear/git-en-boite.git"
+  },
+  "keywords": [
+    "git"
+  ],
+  "author": "Matt Wynne <matt@mattwynne.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smartbear/git-en-boite/issues"
+  },
+  "homepage": "https://github.com/smartbear/git-en-boite#readme"
+}
