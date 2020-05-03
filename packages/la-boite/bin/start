@@ -6,7 +6,8 @@ const exec = cmd => execSync(cmd, { stdio: 'inherit' })
 
 if (fs.existsSync('/.dockerenv')) {
   console.log('Running in Docker')
+  exec('ts-node src/server.ts')
+} else {
+  if (process.env.NODE_ENV === 'development') exec('ts-node-dev src/server.ts')
+  else exec('ts-node src/server.ts')
 }
-
-if (process.env.NODE_ENV === 'development') exec('ts-node-dev src/server.ts')
-else exec('ts-node src/server.ts')
