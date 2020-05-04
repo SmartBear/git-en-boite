@@ -1,6 +1,6 @@
 import supertest, { SuperTest, Test } from 'supertest'
 import { create } from './repos_router'
-import { GitRepos } from './interfaces'
+import { GitRepos, FetchRepoRequest } from './interfaces'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
 import WebApp from '../web_app'
@@ -50,6 +50,15 @@ describe('/repos', () => {
       repos.connectToRemote.withArgs(connectRepoRequest).resolves()
       await request.post('/repos').send(connectRepoRequest).expect(202)
       assertThat(repos.connectToRemote.called, equalTo(true))
+    })
+  })
+
+  describe('POST /repos/:repoId', () => {
+    it('does stuff', async () => {
+      const fetchRepoRequest: FetchRepoRequest = { repoId: 'a-repo-id' }
+      repos.fetchFromRemote.withArgs(fetchRepoRequest).resolves()
+      await request.post('/repos/a-repo-id').expect(202)
+      assertThat(repos.fetchFromRemote.called, equalTo(true))
     })
   })
 })

@@ -64,6 +64,10 @@ export class LocalGitRepos implements GitRepos {
     return QueryResult.from({ repoId, refs, branches })
   }
 
+  async fetchFromRemote() {
+    throw new Error('Implement me')
+  }
+
   private repoFolder(repoId: string) {
     return new RepoFolder(this.basePath, repoId)
   }

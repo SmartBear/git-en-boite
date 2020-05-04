@@ -26,6 +26,7 @@ export function create({ repos }: Application): Router {
   })
 
   router.post('/:repoId', async (ctx: Context) => {
+    await repos.fetchFromRemote({ repoId: ctx.params.repoId })
     ctx.response.status = 202
   })
 
