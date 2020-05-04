@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { GitRepos, ConnectRepoRequest, GitRepoInfo, Branch } from './interfaces'
+import { GitRepos, ConnectRepoRequest, GitRepoInfo, Branch, FetchRepoRequest } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
 import { QueryResult } from '../query_result'
 import Queue from 'bull'
@@ -64,8 +64,8 @@ export class LocalGitRepos implements GitRepos {
     return QueryResult.from({ repoId, refs, branches })
   }
 
-  async fetchFromRemote() {
-    throw new Error('Implement me')
+  async fetchFromRemote({ repoId }: FetchRepoRequest) {
+    // throw new Error('Implement me')
   }
 
   private repoFolder(repoId: string) {

@@ -118,4 +118,30 @@ describe(LocalGitRepos.name, () => {
     const result = await repos.getInfo(repoId)
     assertThat(result.isSuccess, is(truthy()))
   })
+
+  it.only('can fetch for an existing repo', async () => {
+    const repoId = 'a-repo-id'
+    const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
+    const repoPath = remoteUrl
+    const repo = await LocalGitRepo.open(repoPath)
+    await repo.git('init')
+    await repo.git('config', 'user.email', 'test@example.com')
+    await repo.git('config', 'user.name', 'Test User')
+    await repo.git('checkout', '-b', 'master')
+    await repo.git('commit', '--allow-empty', '-m "test"')
+    await repos.connectToRemote({ repoId, remoteUrl })
+    await repos.waitUntilIdle(repoId)
+    await repo.git('commit', '--allow-empty', '-m "another commit"')
+    const expectedRevision = (await repo.git('rev-parse', 'HEAD')).stdout.trim()
+    await repos.fetchFromRemote({ repoId })
+    await repos.waitUntilIdle(repoId)
+    const result = await repos.getInfo(repoId)
+    await result.respond({
+      foundOne: repoInfo =>
+        assertThat(
+          repoInfo.branches.find(branch => branch.name === 'master').revision,
+          equalTo(expectedRevision),
+        ),
+    })
+  })
 })
