@@ -64,7 +64,7 @@ describe(LocalGitRepos.name, () => {
       const result = await repos.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
-        foundOne: repoInfo => assertThat(repoInfo.refs, hasProperty('length', equalTo(2 * 2))),
+        foundOne: repoInfo => assertThat(repoInfo.refs, hasProperty('length', equalTo(2))),
       })
     })
 
@@ -119,7 +119,7 @@ describe(LocalGitRepos.name, () => {
     assertThat(result.isSuccess, is(truthy()))
   })
 
-  it.only('can fetch for an existing repo', async () => {
+  it('can fetch for an existing repo', async () => {
     const repoId = 'a-repo-id'
     const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
     const repoPath = remoteUrl

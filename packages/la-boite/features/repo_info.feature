@@ -9,8 +9,6 @@ Feature: Repo info
     When Bob connects an app to the repo
     And the repo has synchronised
     Then Bob can see that the repo's refs are:
-      | refs/heads/master           |
-      | refs/heads/develop          |
       | refs/remotes/origin/master  |
       | refs/remotes/origin/develop |
     And Bob can see that the repo's branches are:

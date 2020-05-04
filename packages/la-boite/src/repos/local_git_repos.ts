@@ -27,12 +27,13 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async close() {
-    return Promise.all(Array.from(this.repoQueue.values()).map(queue => queue.close()))
+    await Promise.all(Array.from(this.repoQueue.values()).map(queue => queue.close()))
   }
 
   async waitUntilIdle(repoId: string): Promise<unknown> {
     const queue = this.getQueueForRepo(repoId)
     const counts = await queue.getJobCounts()
+
     if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
       return Promise.resolve()
     return new Promise(resolve => queue.on('drained', resolve))
@@ -53,10 +54,10 @@ export class LocalGitRepos implements GitRepos {
     const repo = new LocalGitRepo(this.repoFolder(repoId).gitRepoPath)
     const refs = await repo.refs()
     const branches: Branch[] = refs
-      .filter(ref => ref.name.startsWith('refs/heads'))
+      .filter(ref => ref.name.startsWith('refs/remotes/origin/'))
       .map(ref => {
         return {
-          name: ref.name.replace('refs/heads/', ''),
+          name: ref.name.replace('refs/remotes/origin/', ''),
           refName: ref.name,
           revision: ref.revision,
         }
@@ -65,7 +66,11 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest) {
-    // throw new Error('Implement me')
+    const queue = this.getQueueForRepo(repoId)
+    await queue.add('fetch', {
+      repoId,
+      repoPath: this.repoFolder(repoId).gitRepoPath,
+    })
   }
 
   private repoFolder(repoId: string) {
@@ -83,6 +88,7 @@ export class LocalGitRepos implements GitRepos {
 
   private createRepoQueue(repoId: string): Queue.Queue {
     const result = new Queue(repoId, config.redis.url)
+
     result.process('clone', async job => {
       const { repoPath, remoteUrl } = job.data
       const repo = await LocalGitRepo.open(repoPath)
@@ -90,8 +96,15 @@ export class LocalGitRepos implements GitRepos {
       await repo.git('config', 'gc.auto', '0')
       await repo.git('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
       await repo.git('remote', 'add', 'origin', remoteUrl)
-      await repo.git('fetch', '--prune', 'origin', '+refs/*:refs/*')
+      await repo.git('fetch', 'origin')
     })
+
+    result.process('fetch', async job => {
+      const { repoPath } = job.data
+      const repo = await LocalGitRepo.open(repoPath)
+      await repo.git('fetch', '--prune', 'origin')
+    })
+
     result.on('failed', (job, err) =>
       console.error(`Error processing job #${job.id} for repo "${repoId}"`, err),
     )
