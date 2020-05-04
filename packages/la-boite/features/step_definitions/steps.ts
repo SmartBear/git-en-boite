@@ -48,6 +48,25 @@ Given('a repo with branches:', async function (branchesTable) {
   }
 })
 
+Given('a remote repo with commits on the master branch', async function () {
+  const repoId = (this.repoId = 'a-repo-id')
+  const repoPath = (this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId))
+  const repo = await LocalGitRepo.open(repoPath)
+  await repo.git('init')
+  await repo.git('config', 'user.email', 'test@example.com')
+  await repo.git('config', 'user.name', 'Test User')
+  await repo.git('checkout', '-b', 'master')
+  await repo.git('commit', '--allow-empty', '-m "test"')
+})
+
+When('a new commit is made in the remote repo', async function () {
+  const repoId = (this.repoId = 'a-repo-id')
+  const repoPath = (this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId))
+  const repo = await LocalGitRepo.open(repoPath)
+  await repo.git('commit', '--allow-empty', '-m "another commit"')
+  this.lastCommitRevision = (await repo.git('rev-parse', 'HEAD')).stdout.trim()
+})
+
 When('Bob connects an app to the repo', async function () {
   const { request } = this
   const repoId = 'a-repo-id'
@@ -55,7 +74,21 @@ When('Bob connects an app to the repo', async function () {
   await request.post('/repos').send(repoInfo).expect(202)
 })
 
+When('a consumer triggers a manual fetch of the repo', async function () {
+  const { request } = this
+  const repoId = 'a-repo-id'
+  await request.post(`/repos/${repoId}`).expect(202)
+})
+
 When('the repo has synchronised', async function () {
+  await this.app.repos.waitUntilIdle('a-repo-id')
+})
+
+Given('the repo has been connected', async function () {
+  const { request } = this
+  const repoId = 'a-repo-id'
+  const repoInfo = { repoId, remoteUrl: this.repoRemoteUrl }
+  await request.post('/repos').send(repoInfo).expect(202)
   await this.app.repos.waitUntilIdle('a-repo-id')
 })
 
@@ -73,7 +106,9 @@ Then("Bob can see that the repo's refs are:", async function (expectedRefsTable:
   )
 })
 
-Then('Bob can see that the repo\'s branches are:', async function (expectedBranchesTable: TableDefinition) {
+Then("Bob can see that the repo's branches are:", async function (
+  expectedBranchesTable: TableDefinition,
+) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
   const { request } = this
   const repoId = 'a-repo-id'
@@ -85,5 +120,19 @@ Then('Bob can see that the repo\'s branches are:', async function (expectedBranc
   assertThat(
     (response.body as GitRepoInfo).branches.map(branch => branch.name),
     containsInAnyOrder(...expectedBranchNames),
+  )
+})
+
+Then('the repo should have the new commit at the head of the master branch', async function () {
+  const { request } = this
+  const repoId = 'a-repo-id'
+  const response = await request
+    .get(`/repos/${repoId}`)
+    .set('Accept', 'application/json')
+    .expect(200)
+
+  assertThat(
+    (response.body as GitRepoInfo).branches.find(branch => branch.name === 'master').revision,
+    equalTo(this.lastCommitRevision),
   )
 })

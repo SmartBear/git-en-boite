@@ -25,6 +25,10 @@ export function create({ repos }: Application): Router {
     ctx.response.status = 202
   })
 
+  router.post('/:repoId', async (ctx: Context) => {
+    ctx.response.status = 202
+  })
+
   return router
 }
 

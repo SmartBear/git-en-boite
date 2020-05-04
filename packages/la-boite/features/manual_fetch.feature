@@ -13,4 +13,5 @@ Feature: Manual Fetch
     And the repo has been connected
     When a new commit is made in the remote repo
     And a consumer triggers a manual fetch of the repo
+    And the repo has synchronised
     Then the repo should have the new commit at the head of the master branch
