@@ -16,17 +16,14 @@ An experiment to put git in a box to make it easy to work with in your apps.
 
 git-en-boite is written in Node-JS, but runs in a docker container. It exposes an HTTP API.
 
+It is separated into multiple Node packages which are all contained inside this Git repo.
+
+We use [Lerna]( https://lerna.js.org ) to manage the dependencies between those packages.
+
 ## Sample app
 
-Try out the sample app to get a feel for what git-en-boite can do for you.
-
-## Development
-
-### Installing lerna
-
-```
-npm install --global lerna
-```
+One of the packages is a sample app. Try out the sample app to get a feel for
+what git-en-boite can do for you.
 
 ### Start the application
 
@@ -36,14 +33,19 @@ example app:
 ```bash
 docker-compose up
 ```
+
+## Development
+
+### Installing lerna
+
 To install the dependencies, execute:
 
 ```
-lerna bootstrap
+npx lerna bootstrap --hoist
 ```
 
 Then, run the servers (frontend and backend):
 
 ```
-lerna run start
+NODE_ENV=development npx lerna run start
 ```
