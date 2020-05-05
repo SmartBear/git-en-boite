@@ -42,8 +42,11 @@ workflows:
       - docker/publish:
           image: smartbear/git-en-boite
           path: .
-          tag: latest
+          tag: $IMAGE_TAGS
           before_build:
+            - run:
+                name: Setting tag(s) for docker image
+                command: export IMAGE_TAGS=latest,stable
             - run:
                 name: Creating container network
                 command: docker network create git-en-boite
