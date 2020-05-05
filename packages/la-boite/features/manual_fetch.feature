@@ -7,7 +7,6 @@ Feature: Manual Fetch
   but we may wish to rename this to "sync" in future if we can make it work in
   both directions.
 
-  @wip
   Scenario: Manually fetch changes from upstream
     Given a remote repo with commits on the master branch
     And the repo has been connected
