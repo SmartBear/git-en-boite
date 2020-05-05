@@ -14,26 +14,7 @@ import {
 } from 'hamjest'
 import { ConnectRepoRequest } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
-import { IGitResult } from 'dugite'
 const exec = promisify(childProcess.exec)
-
-interface Commit {
-  message: string
-}
-
-interface GitInteraction {
-  ({ git }: { git: (...args: string[]) => Promise<IGitResult> }): Promise<IGitResult | void>
-}
-
-// TODO: how to cast this 'any' as a generic handler
-const handlers = new Map<string, any>()
-// TODO: how to remove duplication of 'Commmit' key and Commit type here.
-handlers.set(
-  'Commit',
-  ({ message }: Commit): GitInteraction => async ({ git }) =>
-    git('commit', '--allow-empty', '-m', message),
-)
-console.log(handlers)
 
 describe(LocalGitRepos.name, () => {
   const root = path.resolve(__dirname, '../../tmp')
@@ -77,7 +58,7 @@ describe(LocalGitRepos.name, () => {
       for (const branchName of branches) {
         await repo.git('checkout', '-b', branchName)
         // TODO: how to look up the hander based on the type of command without having to pass a string key
-        await handlers.get('Commit')({ message: 'woo' })({ git: repo.git.bind(repo) })
+        await repo.do('Commit', { message: 'woot ' })
       }
       await repos.connectToRemote(request)
       await repos.waitUntilIdle(repoId)
