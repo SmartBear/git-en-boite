@@ -1,4 +1,5 @@
 import { Job, Queue, QueueBase, Worker } from 'bullmq'
+import { createConfig } from '../config'
 import fs from 'fs'
 import path from 'path'
 
@@ -6,7 +7,7 @@ import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
 
-// const config = createConfig()
+const config = createConfig()
 
 interface Processors {
   [jobName: string]: Function
@@ -126,9 +127,10 @@ export class LocalGitRepos implements GitRepos {
   }
 
   private createRepoQueue(repoId: string): Queue {
-    // TODO: restore config:
-    const queue = new Queue(repoId)
-    const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)())
+    const queue = new Queue(repoId, { connection: config.redis })
+    const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
+      connection: config.redis,
+    })
     worker.on('failed', (job, err) =>
       console.error(
         `Worker failed while processing job #${job.id} "${job.name}" for repo "${repoId}"`,

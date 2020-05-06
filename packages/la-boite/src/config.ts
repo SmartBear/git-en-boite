@@ -1,8 +1,10 @@
+import { RedisOptions } from 'ioredis'
 import path from 'path'
 import { ConnectionOptions } from 'typeorm'
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
+
 import { ClientApp } from './entity/ClientApp'
 import { ProcessEnv } from './environment'
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
 
 const appRoot = path.resolve(__dirname, '..')
 
@@ -15,10 +17,6 @@ export interface Config {
 
 interface GitOptions {
   root: string
-}
-
-interface RedisOptions {
-  url: string
 }
 
 const createDatabaseConfig = (env: ProcessEnv): ConnectionOptions => {
@@ -58,9 +56,7 @@ const createVersionConfig = (env: ProcessEnv, fs: any): string => {
 
 const createRedisConfig = (env: ProcessEnv): RedisOptions => {
   if (!env.REDIS_URL) throw new Error('Please set REDIS_URL')
-  return {
-    url: env.REDIS_URL,
-  }
+  return env.REDIS_URL
 }
 
 export const createConfig = (env: ProcessEnv = process.env, fs = require('fs')): Config => {
