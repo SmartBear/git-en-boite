@@ -4,8 +4,32 @@ import fs from 'fs'
 
 abstract class Command {}
 
-interface Commit extends Command {
-  message: string
+export class Commit extends Command {
+  constructor(public readonly message: string, public readonly branchName: string) {
+    super()
+  }
+
+  static withMessage(message: string) {
+    return new Commit(message, 'master')
+  }
+
+  onBranch(branchName: string): Commit {
+    return new Commit(this.message, branchName)
+  }
+}
+
+export class Init extends Command {
+  constructor(public readonly isBare: boolean) {
+    super()
+  }
+
+  static bareRepo() {
+    return new Init(true)
+  }
+
+  static withWorkingDirectory() {
+    return new Init(false)
+  }
 }
 
 interface GitInteraction {
@@ -13,14 +37,21 @@ interface GitInteraction {
 }
 
 // TODO: how to cast this 'any' as a generic handler
-const handlers = new Map<string, any>()
-// TODO: how to remove duplication of 'Commmit' key and Commit type here.
+const handlers = new Map<Command, any>()
 handlers.set(
-  'Commit',
-  ({ message }: Commit): GitInteraction => async ({ git }) =>
-    git('commit', '--allow-empty', '-m', message),
+  Commit,
+  ({ message, branchName }: Commit): GitInteraction => async ({ git }) => {
+    await git('config', 'user.email', 'test@example.com')
+    await git('config', 'user.name', 'Test User')
+    await git('checkout', '-b', branchName)
+    await git('commit', '--allow-empty', '-m', message)
+  },
 )
-console.log(handlers)
+handlers.set(
+  Init,
+  ({ isBare }: Init): GitInteraction => async ({ git }) =>
+    git('init', ...(isBare ? ['--bare'] : [])),
+)
 
 export class LocalGitRepo implements GitRepo {
   path: string
@@ -34,9 +65,10 @@ export class LocalGitRepo implements GitRepo {
     this.path = path
   }
 
-  async do(commandName: string, command: Command): Promise<IGitResult | void> {
-    const handler = handlers.get(commandName)
-    const interaction = handler(command)
+  async do(command: Command): Promise<IGitResult | void> {
+    console.log(command)
+    const handle = handlers.get(command.constructor)
+    const interaction = handle(command)
     return interaction({ git: this.git.bind(this) })
   }
 
