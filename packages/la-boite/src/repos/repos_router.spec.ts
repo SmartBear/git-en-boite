@@ -27,7 +27,7 @@ describe('/repos', () => {
     server.close()
   })
 
-  describe('GET /:repoId', () => {
+  describe('GET /repos/:repoId', () => {
     it('returns an object with info about the repo', async () => {
       const repoInfo = {
         repoId: 'a-repo-id',
@@ -44,12 +44,25 @@ describe('/repos', () => {
     })
   })
 
-  describe('POST /', () => {
+  describe('POST /repos/', () => {
     it('connects to the remote repo', async () => {
       const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
+      repos.getInfo.resolves(QueryResult.from())
       repos.connectToRemote.withArgs(connectRepoRequest).resolves()
       await request.post('/repos').send(connectRepoRequest).expect(202)
       assertThat(repos.connectToRemote.called, equalTo(true))
+    })
+
+    it('redirects to the repo if it already exists', async () => {
+      const repoInfo = {
+        repoId: 'a-repo-id',
+        refs: [{ name: 'refs/remotes/origin/master', revision: 'abc123' }],
+      }
+      repos.getInfo.resolves(QueryResult.from(repoInfo))
+      const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
+      await request.post('/repos').send(connectRepoRequest).expect(302)
+      const response = await request.post('/repos').send(connectRepoRequest).redirects(1)
+      assertThat(response.body, equalTo(repoInfo))
     })
   })
 

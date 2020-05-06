@@ -6,7 +6,7 @@ import { Application } from '../application'
 export function create({ repos }: Application): Router {
   const router = new Router({ prefix: '/repos' })
 
-  router.get('/:repoId', async (ctx: Context) => {
+  router.get('repo', '/:repoId', async (ctx: Context) => {
     const { repoId } = ctx.params
     const result = await repos.getInfo(repoId)
     result.respond({
@@ -20,9 +20,17 @@ export function create({ repos }: Application): Router {
   })
 
   router.post('/', async (ctx: Context) => {
-    const connectRepoRequest: ConnectRepoRequest = ctx.request.body
-    await repos.connectToRemote(connectRepoRequest)
-    ctx.response.status = 202
+    const request: ConnectRepoRequest = ctx.request.body
+    const result = await repos.getInfo(request.repoId)
+    await result.respond({
+      foundOne: async repoInfo => {
+        ctx.response.redirect(router.url('repo', repoInfo))
+      },
+      foundNone: async () => {
+        await repos.connectToRemote(request)
+        ctx.response.status = 202
+      },
+    })
   })
 
   router.post('/:repoId', async (ctx: Context) => {
