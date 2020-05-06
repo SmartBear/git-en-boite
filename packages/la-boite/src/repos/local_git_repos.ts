@@ -1,11 +1,37 @@
-import path from 'path'
+import { Job, Queue, QueueBase, Worker } from 'bullmq'
 import fs from 'fs'
-import { GitRepos, ConnectRepoRequest, GitRepoInfo, Branch, FetchRepoRequest } from './interfaces'
-import { LocalGitRepo } from './local_git_repo'
+import path from 'path'
+
 import { QueryResult } from '../query_result'
-import Queue from 'bull'
-import { createConfig } from '../config'
-const config = createConfig()
+import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
+import { LocalGitRepo } from './local_git_repo'
+
+// const config = createConfig()
+
+interface Processors {
+  [jobName: string]: Function
+}
+
+const processors: Processors = {
+  clone: async (job: Job) => {
+    const { repoPath, remoteUrl } = job.data
+    const repo = await LocalGitRepo.open(repoPath)
+    await repo.git('init', '--bare')
+    await repo.git('config', 'gc.auto', '0')
+    await repo.git('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
+    await repo.git('remote', 'add', 'origin', remoteUrl)
+    await repo.git('fetch', 'origin')
+  },
+
+  fetch: async (job: Job) => {
+    const { repoPath } = job.data
+    const repo = await LocalGitRepo.open(repoPath)
+    await repo.git('fetch', '--prune', 'origin')
+  },
+}
+
+const getJobProcessor = (job: Job): Function => () =>
+  (processors[job.name] || ((): void => undefined))(job)
 
 class RepoFolder {
   readonly path: string
@@ -20,14 +46,26 @@ class RepoFolder {
 
 export class LocalGitRepos implements GitRepos {
   basePath: string
-  private repoQueue: Map<string, Queue.Queue> = new Map()
+  private repoQueues: Map<string, Queue> = new Map()
+  private closables: QueueBase[] = []
 
   constructor(basePath: string) {
     this.basePath = basePath
   }
 
   async close() {
-    await Promise.all(Array.from(this.repoQueue.values()).map(queue => queue.close()))
+    await Promise.all(
+      this.closables.map(async closable => {
+        await closable.close()
+        // TODO: remove workaround when issues are fixed in bullmq:
+        // https://github.com/taskforcesh/bullmq/issues/180
+        // https://github.com/taskforcesh/bullmq/issues/159
+        if (closable instanceof Worker)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (await (closable as any).blockingConnection.client).disconnect()
+        await closable.disconnect()
+      }),
+    )
   }
 
   async waitUntilIdle(repoId: string): Promise<unknown> {
@@ -36,7 +74,8 @@ export class LocalGitRepos implements GitRepos {
 
     if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
       return Promise.resolve()
-    return new Promise(resolve => queue.on('drained', resolve))
+    return new Promise(resolve => setTimeout(resolve, 150))
+    // return new Promise(resolve => queue.on('drained', resolve))
   }
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
@@ -81,33 +120,25 @@ export class LocalGitRepos implements GitRepos {
     return fs.existsSync(this.repoFolder(repoId).path)
   }
 
-  private getQueueForRepo(repoId: string): Queue.Queue {
-    if (!this.repoQueue.has(repoId)) this.repoQueue.set(repoId, this.createRepoQueue(repoId))
-    return this.repoQueue.get(repoId)
+  private getQueueForRepo(repoId: string): Queue {
+    if (!this.repoQueues.has(repoId)) this.repoQueues.set(repoId, this.createRepoQueue(repoId))
+    return this.repoQueues.get(repoId)
   }
 
-  private createRepoQueue(repoId: string): Queue.Queue {
-    const result = new Queue(repoId, config.redis.url)
-
-    result.process('clone', async job => {
-      const { repoPath, remoteUrl } = job.data
-      const repo = await LocalGitRepo.open(repoPath)
-      await repo.git('init', '--bare')
-      await repo.git('config', 'gc.auto', '0')
-      await repo.git('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
-      await repo.git('remote', 'add', 'origin', remoteUrl)
-      await repo.git('fetch', 'origin')
-    })
-
-    result.process('fetch', async job => {
-      const { repoPath } = job.data
-      const repo = await LocalGitRepo.open(repoPath)
-      await repo.git('fetch', '--prune', 'origin')
-    })
-
-    result.on('failed', (job, err) =>
-      console.error(`Error processing job #${job.id} for repo "${repoId}"`, err),
+  private createRepoQueue(repoId: string): Queue {
+    // TODO: restore config:
+    const queue = new Queue(repoId)
+    const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)())
+    worker.on('failed', (job, err) =>
+      console.error(
+        `Worker failed while processing job #${job.id} "${job.name}" for repo "${repoId}"`,
+        err,
+      ),
     )
-    return result
+
+    this.closables.push(queue)
+    this.closables.push(worker)
+
+    return queue
   }
 }
