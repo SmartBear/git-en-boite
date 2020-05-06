@@ -54,7 +54,7 @@ describe('/repos', () => {
   })
 
   describe('POST /repos/:repoId', () => {
-    it('does stuff', async () => {
+    it('triggers a fetch for the repo', async () => {
       const fetchRepoRequest: FetchRepoRequest = { repoId: 'a-repo-id' }
       repos.fetchFromRemote.withArgs(fetchRepoRequest).resolves()
       await request.post('/repos/a-repo-id').expect(202)
