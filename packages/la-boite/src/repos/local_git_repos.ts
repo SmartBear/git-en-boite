@@ -72,7 +72,7 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async waitUntilIdle(repoId: string): Promise<unknown> {
-    const [queue, worker] = this.getQueueAndWorkerForRepo(repoId)
+    const [queue, worker] = this.getQueueComponentsForRepo(repoId)
     const counts = await queue.getJobCounts()
 
     if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
@@ -83,7 +83,7 @@ export class LocalGitRepos implements GitRepos {
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
-    const [queue] = this.getQueueAndWorkerForRepo(repoId)
+    const queue = this.getQueueForRepo(repoId)
     await queue.add('clone', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
@@ -108,7 +108,7 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest) {
-    const [queue] = this.getQueueAndWorkerForRepo(repoId)
+    const queue = this.getQueueForRepo(repoId)
     await queue.add('fetch', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
@@ -123,7 +123,12 @@ export class LocalGitRepos implements GitRepos {
     return fs.existsSync(this.repoFolder(repoId).path)
   }
 
-  private getQueueAndWorkerForRepo(repoId: string): QueueComponents {
+  private getQueueForRepo(repoId: string): Queue {
+    const [queue] = this.getQueueComponentsForRepo(repoId)
+    return queue
+  }
+
+  private getQueueComponentsForRepo(repoId: string): QueueComponents {
     if (!this.repoQueueComponents.has(repoId))
       this.repoQueueComponents.set(repoId, this.createRepoQueue(repoId))
     return this.repoQueueComponents.get(repoId)
