@@ -1,3 +1,4 @@
+import IORedis from 'ioredis'
 import { Job, Queue, QueueBase, Worker } from 'bullmq'
 import { createConfig } from '../config'
 import fs from 'fs'
@@ -135,10 +136,10 @@ export class LocalGitRepos implements GitRepos {
   }
 
   private createRepoQueue(repoId: string): QueueComponents {
-    console.log(`Creating queue with config: ${config.redis}`)
-    const queue = new Queue(repoId, { connection: config.redis })
+    const connection = new IORedis(config.redis)
+    const queue = new Queue(repoId, { connection })
     const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
-      connection: config.redis,
+      connection,
     })
     worker.on('failed', (job, err) =>
       console.error(
