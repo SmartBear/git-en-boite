@@ -7,9 +7,6 @@ import path from 'path'
 import { LocalGitRepo } from '../../src/repos/local_git_repo'
 import { GitRepoInfo } from '../../src/repos/interfaces'
 
-let nextRepoId = 0
-const getNextRepoId = () => `repo-${nextRepoId++}`
-
 Given('an app {word}', async function (appId: string) {
   const app = new ClientApp()
   app.id = appId
@@ -39,7 +36,7 @@ Then("the {word} app's users should be:", async function (
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
-  const repoId = (this.repoId = getNextRepoId())
+  const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const repo = await LocalGitRepo.open(this.repoRemoteUrl)
   await repo.git('init')
@@ -52,7 +49,7 @@ Given('a repo with branches:', async function (branchesTable) {
 })
 
 Given('a remote repo with commits on the master branch', async function () {
-  this.repoId = getNextRepoId()
+  this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const repo = await LocalGitRepo.open(this.repoRemoteUrl)
   await repo.git('init')

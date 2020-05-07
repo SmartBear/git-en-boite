@@ -10,6 +10,8 @@ Before(async function () {
   await exec(`rm -rf ${gitReposPath}`)
   await exec(`mkdir -p ${gitReposPath}`)
   this.app = { repos: new LocalGitRepos(gitReposPath) }
+  let nextRepoId = 0
+  this.getNextRepoId = () => `repo-${nextRepoId++}`
 })
 
 After(async function () {
