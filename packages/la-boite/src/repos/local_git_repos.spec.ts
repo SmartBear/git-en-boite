@@ -30,8 +30,8 @@ describe(LocalGitRepos.name, () => {
   })
 
   describe('waiting for a repo to become idle', () => {
-    it('resolves immediately if the repo is already idle', () => {
-      promiseThat(repos.waitUntilIdle('a-repo'), fulfilled())
+    it('resolves immediately if the repo is already idle', async () => {
+      await promiseThat(repos.waitUntilIdle('a-repo'), fulfilled())
     })
   })
 
