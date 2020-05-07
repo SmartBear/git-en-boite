@@ -135,6 +135,7 @@ export class LocalGitRepos implements GitRepos {
   }
 
   private createRepoQueue(repoId: string): QueueComponents {
+    console.log(`Creating queue with config: ${config.redis}`)
     const queue = new Queue(repoId, { connection: config.redis })
     const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
       connection: config.redis,
