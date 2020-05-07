@@ -47,7 +47,7 @@ class RepoFolder {
 
 export class LocalGitRepos implements GitRepos {
   basePath: string
-  private repoQueues: Map<string, Queue> = new Map()
+  private repoQueues: Map<string, [Queue, Worker]> = new Map()
   private closables: QueueBase[] = []
 
   constructor(basePath: string) {
@@ -70,18 +70,18 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async waitUntilIdle(repoId: string): Promise<unknown> {
-    const queue = this.getQueueForRepo(repoId)
+    const [queue, worker] = this.getQueueAndWorkerForRepo(repoId)
     const counts = await queue.getJobCounts()
 
     if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
       return Promise.resolve()
-    return new Promise(resolve => setTimeout(resolve, 150))
-    // return new Promise(resolve => queue.on('drained', resolve))
+    // return new Promise(resolve => setTimeout(resolve, 150))
+    return new Promise(resolve => worker.on('drained', resolve))
   }
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
-    const queue = this.getQueueForRepo(repoId)
+    const [queue] = this.getQueueAndWorkerForRepo(repoId)
     await queue.add('clone', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
@@ -106,7 +106,7 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest) {
-    const queue = this.getQueueForRepo(repoId)
+    const [queue] = this.getQueueAndWorkerForRepo(repoId)
     await queue.add('fetch', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
@@ -121,12 +121,12 @@ export class LocalGitRepos implements GitRepos {
     return fs.existsSync(this.repoFolder(repoId).path)
   }
 
-  private getQueueForRepo(repoId: string): Queue {
+  private getQueueAndWorkerForRepo(repoId: string): [Queue, Worker] {
     if (!this.repoQueues.has(repoId)) this.repoQueues.set(repoId, this.createRepoQueue(repoId))
     return this.repoQueues.get(repoId)
   }
 
-  private createRepoQueue(repoId: string): Queue {
+  private createRepoQueue(repoId: string): [Queue, Worker] {
     const queue = new Queue(repoId, { connection: config.redis })
     const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
       connection: config.redis,
@@ -141,6 +141,6 @@ export class LocalGitRepos implements GitRepos {
     this.closables.push(queue)
     this.closables.push(worker)
 
-    return queue
+    return [queue, worker]
   }
 }
