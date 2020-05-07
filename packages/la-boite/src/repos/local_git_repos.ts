@@ -13,6 +13,8 @@ interface Processors {
   [jobName: string]: Function
 }
 
+type QueueComponents = [Queue, Worker]
+
 const processors: Processors = {
   clone: async (job: Job) => {
     const { repoPath, remoteUrl } = job.data
@@ -47,7 +49,7 @@ class RepoFolder {
 
 export class LocalGitRepos implements GitRepos {
   basePath: string
-  private repoQueues: Map<string, [Queue, Worker]> = new Map()
+  private repoQueueComponents: Map<string, QueueComponents> = new Map()
   private closables: QueueBase[] = []
 
   constructor(basePath: string) {
@@ -121,12 +123,13 @@ export class LocalGitRepos implements GitRepos {
     return fs.existsSync(this.repoFolder(repoId).path)
   }
 
-  private getQueueAndWorkerForRepo(repoId: string): [Queue, Worker] {
-    if (!this.repoQueues.has(repoId)) this.repoQueues.set(repoId, this.createRepoQueue(repoId))
-    return this.repoQueues.get(repoId)
+  private getQueueAndWorkerForRepo(repoId: string): QueueComponents {
+    if (!this.repoQueueComponents.has(repoId))
+      this.repoQueueComponents.set(repoId, this.createRepoQueue(repoId))
+    return this.repoQueueComponents.get(repoId)
   }
 
-  private createRepoQueue(repoId: string): [Queue, Worker] {
+  private createRepoQueue(repoId: string): QueueComponents {
     const queue = new Queue(repoId, { connection: config.redis })
     const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
       connection: config.redis,
