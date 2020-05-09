@@ -36,22 +36,27 @@ interface GitInteraction {
   ({ git }: { git: (...args: string[]) => Promise<IGitResult> }): Promise<IGitResult | void>
 }
 
+export interface Type<T> extends Function {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  new (...args: any[]): T
+}
+
+export interface Handler<CommandType> {
+  (command: CommandType): GitInteraction
+}
+
 // TODO: how to cast this 'any' as a generic handler
 const handlers = new Map<Command, any>()
-handlers.set(
-  Commit,
-  ({ message, branchName }: Commit): GitInteraction => async ({ git }) => {
-    await git('config', 'user.email', 'test@example.com')
-    await git('config', 'user.name', 'Test User')
-    await git('checkout', '-b', branchName)
-    await git('commit', '--allow-empty', '-m', message)
-  },
-)
-handlers.set(
-  Init,
-  ({ isBare }: Init): GitInteraction => async ({ git }) =>
-    git('init', ...(isBare ? ['--bare'] : [])),
-)
+function addHandler<CommandType>(commandType: Type<CommandType>, handler: Handler<CommandType>) {
+  handlers.set(commandType, handler)
+}
+addHandler(Commit, ({ message, branchName }) => async ({ git }) => {
+  await git('config', 'user.email', 'test@example.com')
+  await git('config', 'user.name', 'Test User')
+  await git('checkout', '-b', branchName)
+  await git('commit', '--allow-empty', '-m', message)
+})
+addHandler(Init, ({ isBare }) => async ({ git }) => git('init', ...(isBare ? ['--bare'] : [])))
 
 export class LocalGitRepo implements GitRepo {
   path: string
