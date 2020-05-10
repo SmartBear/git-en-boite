@@ -10,8 +10,11 @@ describe('CommandBus', () => {
     constructor(readonly songName: string) {}
   }
 
+  class EatCake {}
+
   class BirthdayParty implements Doable {
     public sounds: string
+    public cake: string
 
     commandBus: CommandBus<BirthdayParty>
 
@@ -30,6 +33,8 @@ describe('CommandBus', () => {
   const singQuietly = (sing: Sing) => (party: BirthdayParty) =>
     (party.sounds = sing.songName.toLocaleLowerCase())
 
+  const eatAllTheCake = () => (party: BirthdayParty) => (party.cake = 'gone')
+
   it('runs the same command through different handlers', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
 
@@ -42,5 +47,17 @@ describe('CommandBus', () => {
     const quietParty = new BirthdayParty(quietHandlers)
     quietParty.do(singHappyBirthday)
     assertThat(quietParty.sounds, equalTo('happy birthday'))
+  })
+
+  it('finds the right handler for a given command', () => {
+    const singHappyBirthday = Sing.theSong('Happy birthday')
+    const eatCake = new EatCake()
+
+    const handlers: HandlerFunction<BirthdayParty>[] = [singQuietly, eatAllTheCake]
+    const party = new BirthdayParty(handlers)
+    party.do(singHappyBirthday)
+    party.do(eatCake)
+    assertThat(party.sounds, equalTo('happy birthday'))
+    assertThat(party.cake, equalTo('gone'))
   })
 })
