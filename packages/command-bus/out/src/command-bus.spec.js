@@ -15,9 +15,9 @@ describe('CommandBus', () => {
     }
     class BirthdayParty {
     }
-    const singLoudly = (sing) => (party) => (party.sounds = sing.songName.toUpperCase());
-    const singQuietly = (sing) => (party) => (party.sounds = sing.songName.toLocaleLowerCase());
-    const eatAllTheCake = () => (party) => (party.cake = 'gone');
+    const singLoudly = (party, sing) => (party.sounds = sing.songName.toUpperCase());
+    const singQuietly = (party, sing) => (party.sounds = sing.songName.toLocaleLowerCase());
+    const eatAllTheCake = (party) => (party.cake = 'gone');
     it('runs the same command through different handlers', () => {
         const singHappyBirthday = Sing.theSong('Happy birthday');
         const noisyParty = new BirthdayParty();

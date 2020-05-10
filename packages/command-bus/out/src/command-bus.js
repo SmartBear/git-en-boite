@@ -10,7 +10,7 @@ class CommandBus {
     }
     do(command) {
         const handler = this.handlers.get(command.constructor);
-        handler(command)(this.target);
+        handler(this.target, command);
     }
 }
 exports.CommandBus = CommandBus;

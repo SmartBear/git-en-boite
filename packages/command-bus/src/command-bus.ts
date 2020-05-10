@@ -11,14 +11,10 @@ export class CommandBus<Context, Command> {
 
   do(command: Command) {
     const handler = this.handlers.get(command.constructor)
-    handler(command)(this.target)
+    handler(this.target, command)
   }
 }
 
-export interface Interaction<Context> {
-  (context: Context): unknown
-}
-
 export interface Handler<Context> {
-  (command: any): Interaction<Context>
+  (target: Context, command: any): unknown
 }
