@@ -1,14 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+class Handlers {
+    constructor() {
+        this.handlers = new Map();
+    }
+    add(commandType, handler) {
+        this.handlers.set(commandType, handler);
+    }
+    forCommand(command) {
+        return this.handlers.get(command.constructor);
+    }
+}
+exports.Handlers = Handlers;
 class CommandBus {
     constructor(target, handlers) {
         this.target = target;
         this.handlers = handlers;
     }
     do(command) {
-        // TODO: Create a handler that can recognise it's command
-        // TODO: test drive this with a second command / handler
-        this.handlers[0](command)(this.target);
+        const handler = this.handlers.forCommand(command);
+        handler(command)(this.target);
     }
 }
 exports.CommandBus = CommandBus;

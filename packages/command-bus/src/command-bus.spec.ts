@@ -1,4 +1,4 @@
-import { CommandBus, Doable, HandlerFunction } from './command-bus'
+import { CommandBus, Handlers } from './command-bus'
 import { equalTo, assertThat } from 'hamjest'
 
 describe('CommandBus', () => {
@@ -12,13 +12,13 @@ describe('CommandBus', () => {
 
   class EatCake {}
 
-  class BirthdayParty implements Doable {
+  class BirthdayParty {
     public sounds: string
     public cake: string
 
     commandBus: CommandBus<BirthdayParty>
 
-    constructor(handlers: HandlerFunction<BirthdayParty>[]) {
+    constructor(handlers: Handlers<BirthdayParty>) {
       this.commandBus = new CommandBus<BirthdayParty>(this, handlers)
     }
 
@@ -38,12 +38,14 @@ describe('CommandBus', () => {
   it('runs the same command through different handlers', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
 
-    const noisyHandlers: HandlerFunction<BirthdayParty>[] = [singLoudly]
+    const noisyHandlers = new Handlers<BirthdayParty>()
+    noisyHandlers.add(Sing, singLoudly)
     const noisyParty = new BirthdayParty(noisyHandlers)
     noisyParty.do(singHappyBirthday)
     assertThat(noisyParty.sounds, equalTo('HAPPY BIRTHDAY'))
 
-    const quietHandlers: HandlerFunction<BirthdayParty>[] = [singQuietly]
+    const quietHandlers = new Handlers<BirthdayParty>()
+    quietHandlers.add(Sing, singQuietly)
     const quietParty = new BirthdayParty(quietHandlers)
     quietParty.do(singHappyBirthday)
     assertThat(quietParty.sounds, equalTo('happy birthday'))
@@ -53,7 +55,9 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const eatCake = new EatCake()
 
-    const handlers: HandlerFunction<BirthdayParty>[] = [singQuietly, eatAllTheCake]
+    const handlers = new Handlers<BirthdayParty>()
+    handlers.add(Sing, singQuietly)
+    handlers.add(EatCake, eatAllTheCake)
     const party = new BirthdayParty(handlers)
     party.do(singHappyBirthday)
     party.do(eatCake)

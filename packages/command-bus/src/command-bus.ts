@@ -1,21 +1,31 @@
-export interface Doable {
-  do(command: unknown): void
+type Command = Record<string, any>
+type Class = { new (...args: any[]): any }
+
+export class Handlers<Context> {
+  public handlers = new Map<Class, Handler<Context>>()
+
+  add(commandType: Class, handler: Handler<Context>): void {
+    this.handlers.set(commandType, handler)
+  }
+
+  forCommand(command: any): Handler<Context> {
+    return this.handlers.get(command.constructor)
+  }
 }
 
 export class CommandBus<Context> {
-  do(command: unknown) {
-    // TODO: Create a handler that can recognise it's command
-    // TODO: test drive this with a second command / handler
-    this.handlers[0](command)(this.target)
-  }
+  constructor(readonly target: Context, readonly handlers: Handlers<Context>) {}
 
-  constructor(readonly target: Context, readonly handlers: HandlerFunction<Context>[]) {}
+  do(command: Command) {
+    const handler = this.handlers.forCommand(command)
+    handler(command)(this.target)
+  }
 }
 
 export interface Interaction<Context> {
   (context: Context): unknown
 }
 
-export interface HandlerFunction<Context> {
+export interface Handler<Context> {
   (command: any): Interaction<Context>
 }
