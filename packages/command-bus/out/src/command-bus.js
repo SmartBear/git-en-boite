@@ -1,24 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Handlers {
-    constructor() {
+class CommandBus {
+    constructor(target) {
+        this.target = target;
         this.handlers = new Map();
     }
-    add(commandType, handler) {
+    handle(commandType, handler) {
         this.handlers.set(commandType, handler);
     }
-    forCommand(command) {
-        return this.handlers.get(command.constructor);
-    }
-}
-exports.Handlers = Handlers;
-class CommandBus {
-    constructor(target, handlers) {
-        this.target = target;
-        this.handlers = handlers;
-    }
     do(command) {
-        const handler = this.handlers.forCommand(command);
+        const handler = this.handlers.get(command.constructor);
         handler(command)(this.target);
     }
 }

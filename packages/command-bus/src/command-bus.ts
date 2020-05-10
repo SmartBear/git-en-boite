@@ -1,23 +1,16 @@
-type Command = Record<string, any>
-type Class = { new (...args: any[]): any }
+type Type<T> = { new (...args: any[]): T }
 
-export class Handlers<Context> {
-  public handlers = new Map<Class, Handler<Context>>()
+export class CommandBus<Context, Command> {
+  private handlers = new Map<Function, Handler<Context>>()
 
-  add(commandType: Class, handler: Handler<Context>): void {
+  constructor(readonly target: Context) {}
+
+  handle(commandType: Type<Command>, handler: Handler<Context>) {
     this.handlers.set(commandType, handler)
   }
 
-  forCommand(command: any): Handler<Context> {
-    return this.handlers.get(command.constructor)
-  }
-}
-
-export class CommandBus<Context> {
-  constructor(readonly target: Context, readonly handlers: Handlers<Context>) {}
-
   do(command: Command) {
-    const handler = this.handlers.forCommand(command)
+    const handler = this.handlers.get(command.constructor)
     handler(command)(this.target)
   }
 }
