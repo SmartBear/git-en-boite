@@ -4,7 +4,6 @@
   "description": "Core Domain for git-en-boite",
   "main": "src/core.ts",
   "scripts": {
-    "test": "mocha"
   },
   "repository": {
     "type": "git",
