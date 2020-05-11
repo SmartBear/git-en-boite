@@ -1,8 +1,8 @@
 {
-  "name": "command-bus",
+  "name": "git-en-boite-command-bus",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/command-bus.ts",
   "scripts": {
     "test": "mocha"
   },

@@ -1,13 +1,10 @@
-import { GitRepo, Reference } from './interfaces'
 import { GitProcess, IGitResult } from 'dugite'
+import { CommandBus } from 'git-en-boite-command-bus'
+import { GitRepo, Reference } from './interfaces'
 import fs from 'fs'
 
-abstract class Command {}
-
-export class Commit extends Command {
-  constructor(public readonly message: string, public readonly branchName: string) {
-    super()
-  }
+export class Commit {
+  constructor(public readonly message: string, public readonly branchName: string) {}
 
   static withMessage(message: string) {
     return new Commit(message, 'master')
@@ -18,10 +15,8 @@ export class Commit extends Command {
   }
 }
 
-export class Init extends Command {
-  constructor(public readonly isBare: boolean) {
-    super()
-  }
+export class Init {
+  constructor(public readonly isBare: boolean) {}
 
   static bareRepo() {
     return new Init(true)
@@ -32,34 +27,29 @@ export class Init extends Command {
   }
 }
 
-interface GitInteraction {
-  ({ git }: { git: (...args: string[]) => Promise<IGitResult> }): Promise<IGitResult | void>
-}
+type Commands = Init | Commit
 
-export interface Type<T> extends Function {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  new (...args: any[]): T
-}
+const handleInit = (repo: LocalGitRepo, command: Init) =>
+  repo.git('init', ...(command.isBare ? ['--bare'] : []))
 
-export interface Handler<CommandType> {
-  (command: CommandType): GitInteraction
+const handleCommit = async (repo: LocalGitRepo, command: Commit) => {
+  const { branchName, message } = command
+  await repo.git('config', 'user.email', 'test@example.com')
+  await repo.git('config', 'user.name', 'Test User')
+  await repo.git('checkout', '-b', branchName)
+  await repo.git('commit', '--allow-empty', '-m', message)
 }
-
-// TODO: how to cast this 'any' as a generic handler
-const handlers = new Map<Command, any>()
-function addHandler<CommandType>(commandType: Type<CommandType>, handler: Handler<CommandType>) {
-  handlers.set(commandType, handler)
-}
-addHandler(Commit, ({ message, branchName }) => async ({ git }) => {
-  await git('config', 'user.email', 'test@example.com')
-  await git('config', 'user.name', 'Test User')
-  await git('checkout', '-b', branchName)
-  await git('commit', '--allow-empty', '-m', message)
-})
-addHandler(Init, ({ isBare }) => async ({ git }) => git('init', ...(isBare ? ['--bare'] : [])))
 
 export class LocalGitRepo implements GitRepo {
   path: string
+
+  static async openForCommands(path: string) {
+    const repo = await this.open(path)
+    const commandBus = new CommandBus<LocalGitRepo, Commands>(repo)
+    commandBus.handle(Init, handleInit)
+    commandBus.handle(Commit, handleCommit)
+    return commandBus.do.bind(commandBus)
+  }
 
   static async open(path: string) {
     fs.mkdirSync(path, { recursive: true })
@@ -68,13 +58,6 @@ export class LocalGitRepo implements GitRepo {
 
   constructor(path: string) {
     this.path = path
-  }
-
-  async do(command: Command): Promise<IGitResult | void> {
-    console.log(command)
-    const handle = handlers.get(command.constructor)
-    const interaction = handle(command)
-    return interaction({ git: this.git.bind(this) })
   }
 
   async git(cmd: string, ...args: string[]): Promise<IGitResult> {

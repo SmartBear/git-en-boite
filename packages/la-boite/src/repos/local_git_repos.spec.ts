@@ -51,10 +51,10 @@ describe(LocalGitRepos.name, () => {
       await exec(`rm -rf ${remoteUrl}`)
       const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const repo = await LocalGitRepo.open(repoPath)
-      await repo.do(Init.withWorkingDirectory())
+      const git = await LocalGitRepo.openForCommands(repoPath)
+      await git(Init.withWorkingDirectory())
       for (const branchName of branches) {
-        await repo.do(Commit.withMessage('woot').onBranch(branchName))
+        await git(Commit.withMessage('woot').onBranch(branchName))
       }
       await repos.connectToRemote(request)
       await repos.waitUntilIdle(repoId)
