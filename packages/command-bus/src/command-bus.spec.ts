@@ -56,4 +56,12 @@ describe('CommandBus', () => {
     assertThat(party.sounds, equalTo('happy birthday'))
     assertThat(party.cake, equalTo('gone'))
   })
+
+  it('returns the value returned by the handler', () => {
+    const party = new BirthdayParty()
+    const commandBus = new CommandBus<BirthdayParty, BirthdayCommand>(party)
+    commandBus.handle(Sing, () => 'a-result')
+    const result = commandBus.do(Sing.theSong('any song'))
+    assertThat(result, equalTo('a-result'))
+  })
 })
