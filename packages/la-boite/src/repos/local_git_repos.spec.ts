@@ -41,7 +41,7 @@ describe(LocalGitRepos.name, () => {
       assertThat(result.isSuccess, is(falsy()))
     })
 
-    it.only('returns an object with the refs in the repo', async () => {
+    it('returns an object with the refs in the repo', async () => {
       const repoId = 'a-new-repo'
       const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
       const request: ConnectRepoRequest = {
