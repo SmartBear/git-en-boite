@@ -7,7 +7,7 @@ describe('CommandBus', () => {
       return new Sing(name)
     }
 
-    constructor(readonly songName: string) {}
+    protected constructor(readonly songName: string) {}
   }
 
   class EatCake {}

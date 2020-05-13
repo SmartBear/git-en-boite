@@ -1,4 +1,4 @@
-type Type<T> = { new (...args: any[]): T }
+type Type<T> = Function & { prototype: T }
 
 export class CommandBus<Context, Command> {
   private handlers = new Map<Function, Handler<Context>>()
