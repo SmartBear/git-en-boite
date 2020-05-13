@@ -18,28 +18,26 @@ git-en-boite is written in Node-JS, but runs in a docker container. It exposes a
 
 It is separated into multiple Node packages which are all contained inside this Git repo.
 
-We use [Lerna](https://lerna.js.org) to manage the dependencies between those packages.
-
-## Sample app
-
-One of the packages is a sample app. Try out the sample app to get a feel for
-what git-en-boite can do for you.
-
 ### Start the application
 
-The following docker-compose command starts the backend HTTP API for git and our
-example app:
+The following docker-compose command starts the backend HTTP API
 
 ```bash
 docker-compose up
+curl http://localhost:3001
 ```
 
 ## Development
 
-- Install yarn
-
-Then, run the servers (frontend and backend):
+Install yarn, then install dependencies:
 
 ```
-NODE_ENV=development npx lerna run start
+yarn
+```
+
+Run the tests in the main package:
+
+```
+cd packages/la-boite
+yarn test
 ```
