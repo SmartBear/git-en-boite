@@ -5,7 +5,29 @@ orbs:
   docker: circleci/docker@1.0.0
 
 jobs:
-  test-in-node:
+
+  test-command-bus:
+    docker:
+      - image: circleci/node:14.0.0
+    steps:
+      - checkout
+      - node/install-packages:
+          app-dir: packages/command-bus
+          with-cache: true
+      - run:
+          name: Compiling Typescript
+          command: npx tsc
+          working_directory: packages/command-bus
+      - run:
+          name: Linting Typescript
+          command: npm run lint
+          working_directory: packages/command-bus
+      - run:
+          name: Running tests
+          command: npm test
+          working_directory: packages/command-bus
+
+  test-la-boite:
     docker:
       - image: circleci/node:14.0.0
         environment:
@@ -38,7 +60,8 @@ workflows:
   version: 2.1
   build:
     jobs:
-      - test-in-node
+      - test-la-boite
+      - test-command-bus
       - docker/publish:
           image: smartbear/git-en-boite
           path: .
