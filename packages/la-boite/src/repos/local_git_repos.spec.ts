@@ -13,7 +13,8 @@ import {
   equalTo,
 } from 'hamjest'
 import { ConnectRepoRequest } from './interfaces'
-import { LocalGitRepo, Commit, Init } from './local_git_repo'
+import { LocalGitRepo, Commit, Init, Misc, EnsureBranchExists } from './local_git_repo'
+import { IGitResult } from 'dugite'
 const exec = promisify(childProcess.exec)
 
 describe(LocalGitRepos.name, () => {
@@ -54,7 +55,8 @@ describe(LocalGitRepos.name, () => {
       const git = await LocalGitRepo.openForCommands(repoPath)
       await git(Init.withWorkingDirectory())
       for (const branchName of branches) {
-        await git(Commit.withMessage('woot').onBranch(branchName))
+        await git(EnsureBranchExists.named(branchName))
+        await git(Commit.withMessage('A commit'))
       }
       await repos.connectToRemote(request)
       await repos.waitUntilIdle(repoId)
@@ -74,13 +76,11 @@ describe(LocalGitRepos.name, () => {
       }
       const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const repo = await LocalGitRepo.open(repoPath)
-      await repo.git('init')
-      await repo.git('config', 'user.email', 'test@example.com')
-      await repo.git('config', 'user.name', 'Test User')
+      const git = await LocalGitRepo.openForCommands(repoPath)
+      await git(Init.withWorkingDirectory())
       for (const branchName of branches) {
-        await repo.git('checkout', '-b', branchName)
-        await repo.git('commit', '--allow-empty', '-m "test"')
+        await git(EnsureBranchExists.named(branchName))
+        await git(Commit.withMessage('A commit'))
       }
       await repos.connectToRemote(request)
       await repos.waitUntilIdle(repoId)
@@ -102,13 +102,11 @@ describe(LocalGitRepos.name, () => {
     await exec(`rm -rf ${remoteUrl}`)
     const repoPath = remoteUrl
     const branches = ['master']
-    const repo = await LocalGitRepo.open(repoPath)
-    await repo.git('init')
-    await repo.git('config', 'user.email', 'test@example.com')
-    await repo.git('config', 'user.name', 'Test User')
+    const git = await LocalGitRepo.openForCommands(repoPath)
+    await git(Init.withWorkingDirectory())
     for (const branchName of branches) {
-      await repo.git('checkout', '-b', branchName)
-      await repo.git('commit', '--allow-empty', '-m "test"')
+      await git(EnsureBranchExists.named(branchName))
+      await git(Commit.withMessage('A commit'))
     }
     await repos.connectToRemote(request)
     await repos.waitUntilIdle(repoId)
@@ -120,16 +118,15 @@ describe(LocalGitRepos.name, () => {
     const repoId = 'a-repo-id'
     const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
     const repoPath = remoteUrl
-    const repo = await LocalGitRepo.open(repoPath)
-    await repo.git('init')
-    await repo.git('config', 'user.email', 'test@example.com')
-    await repo.git('config', 'user.name', 'Test User')
-    await repo.git('checkout', '-b', 'master')
-    await repo.git('commit', '--allow-empty', '-m "test"')
+    const git = await LocalGitRepo.openForCommands(repoPath)
+    await git(Init.withWorkingDirectory())
+    await git(Commit.withMessage('Initial commit'))
     await repos.connectToRemote({ repoId, remoteUrl })
     await repos.waitUntilIdle(repoId)
-    await repo.git('commit', '--allow-empty', '-m "another commit"')
-    const expectedRevision = (await repo.git('rev-parse', 'HEAD')).stdout.trim()
+    await git(Commit.withMessage('Another commit'))
+    const expectedRevision = ((await git(
+      Misc.command('rev-parse').withArgs('HEAD'),
+    )) as IGitResult).stdout.trim()
     await repos.fetchFromRemote({ repoId })
     await repos.waitUntilIdle(repoId)
     const result = await repos.getInfo(repoId)

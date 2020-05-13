@@ -4,14 +4,10 @@ import { GitRepo, Reference } from './interfaces'
 import fs from 'fs'
 
 export class Commit {
-  protected constructor(public readonly message: string, public readonly branchName: string) {}
+  protected constructor(public readonly message: string) {}
 
   static withMessage(message: string) {
-    return new Commit(message, 'master')
-  }
-
-  onBranch(branchName: string): Commit {
-    return new Commit(this.message, branchName)
+    return new Commit(message)
   }
 }
 
@@ -27,17 +23,43 @@ export class Init {
   }
 }
 
-type Commands = Init | Commit
+export class Misc {
+  protected constructor(public readonly command: string, public readonly args: string[]) {}
+
+  static command(name: string) {
+    return new Misc(name, [])
+  }
+
+  withArgs(...args: string[]) {
+    return new Misc(this.command, args)
+  }
+}
+
+export class EnsureBranchExists {
+  protected constructor(public readonly name: string) {}
+
+  static named(name: string) {
+    return new EnsureBranchExists(name)
+  }
+}
+
+type Commands = Init | Commit | Misc | EnsureBranchExists
 
 const handleInit = (repo: LocalGitRepo, command: Init) =>
   repo.git('init', ...(command.isBare ? ['--bare'] : []))
 
 const handleCommit = async (repo: LocalGitRepo, command: Commit) => {
-  const { branchName, message } = command
+  const { message } = command
   await repo.git('config', 'user.email', 'test@example.com')
   await repo.git('config', 'user.name', 'Test User')
-  await repo.git('checkout', '-b', branchName)
   await repo.git('commit', '--allow-empty', '-m', message)
+}
+
+const handleMisc = async (repo: LocalGitRepo, { command, args }: Misc) => repo.git(command, ...args)
+
+const handleEnsureBranchExists = async (repo: LocalGitRepo, { name }: EnsureBranchExists) => {
+  const verifyBranchExists = await repo.git('rev-parse', '--verify', name)
+  if (!(verifyBranchExists.exitCode === 0)) await repo.git('branch', name, 'HEAD')
 }
 
 export class LocalGitRepo implements GitRepo {
@@ -48,6 +70,8 @@ export class LocalGitRepo implements GitRepo {
     const commandBus = new CommandBus<LocalGitRepo, Commands>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(Commit, handleCommit)
+    commandBus.handle(Misc, handleMisc)
+    commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)
     return commandBus.do.bind(commandBus)
   }
 
@@ -61,9 +85,7 @@ export class LocalGitRepo implements GitRepo {
   }
 
   async git(cmd: string, ...args: string[]): Promise<IGitResult> {
-    const result = await GitProcess.exec([cmd, ...args], this.path)
-    if (result.exitCode > 0) throw new Error(result.stderr)
-    return result
+    return await GitProcess.exec([cmd, ...args], this.path)
   }
 
   async refs(): Promise<Reference[]> {

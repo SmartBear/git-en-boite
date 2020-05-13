@@ -11,6 +11,9 @@ import {
   containsInAnyOrder,
   hasProperty,
   matchesPattern,
+  not,
+  equalTo,
+  willBe,
 } from 'hamjest'
 
 describe(LocalGitRepo.name, () => {
@@ -29,11 +32,15 @@ describe(LocalGitRepo.name, () => {
       assertThat(result.stdout, startsWith('Initialized empty Git repository'))
     })
 
-    it('raises any error', async () => {
+    it('does not raise any error', async () => {
       const repoId = 'a-repo-id'
       const repoPath = path.resolve(root, repoId)
       const repo = await LocalGitRepo.open(repoPath)
-      return promiseThat(repo.git('not-a-command'), rejected())
+      await promiseThat(repo.git('not-a-command'), not(rejected()))
+      return promiseThat(
+        repo.git('not-a-command'),
+        willBe(hasProperty('exitCode', not(equalTo(0)))),
+      )
     })
   })
 
