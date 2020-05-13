@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/command-bus.ts",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "author": "",
   "license": "MIT",
