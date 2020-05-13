@@ -4,7 +4,7 @@ import { GitRepo, Reference } from './interfaces'
 import fs from 'fs'
 
 export class Commit {
-  constructor(public readonly message: string, public readonly branchName: string) {}
+  protected constructor(public readonly message: string, public readonly branchName: string) {}
 
   static withMessage(message: string) {
     return new Commit(message, 'master')
@@ -16,7 +16,7 @@ export class Commit {
 }
 
 export class Init {
-  constructor(public readonly isBare: boolean) {}
+  protected constructor(public readonly isBare: boolean) {}
 
   static bareRepo() {
     return new Init(true)
