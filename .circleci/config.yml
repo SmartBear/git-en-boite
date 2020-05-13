@@ -5,7 +5,6 @@ orbs:
   docker: circleci/docker@1.0.0
 
 jobs:
-
   test-command-bus:
     docker:
       - image: circleci/node:14.0.0
@@ -14,17 +13,14 @@ jobs:
       - node/install-packages:
           app-dir: packages/command-bus
           with-cache: true
-      - run:
-          name: Compiling Typescript
-          command: npx tsc
-          working_directory: packages/command-bus
+          pkg-manager: yarn
       - run:
           name: Linting Typescript
-          command: npm run lint
+          command: yarn run lint
           working_directory: packages/command-bus
       - run:
           name: Running tests
-          command: npm test
+          command: yarn run test
           working_directory: packages/command-bus
 
   test-la-boite:
@@ -43,17 +39,14 @@ jobs:
       - node/install-packages:
           app-dir: packages/la-boite
           with-cache: true
-      - run:
-          name: Compiling Typescript
-          command: npx tsc
-          working_directory: packages/la-boite
+          pkg-manager: yarn
       - run:
           name: Linting Typescript
-          command: npm run lint
+          command: yarn run lint
           working_directory: packages/la-boite
       - run:
           name: Running tests
-          command: ./bin/test
+          command: yarn run test
           working_directory: packages/la-boite
 
 workflows:

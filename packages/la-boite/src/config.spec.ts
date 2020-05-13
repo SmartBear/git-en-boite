@@ -15,25 +15,6 @@ describe('createConfig', () => {
     )
   })
 
-  context('database config', () => {
-    context('when DATABASE_URL is defined', () => {
-      it('creates database config using the URL', () => {
-        const config = createConfig({ ...defaultConfig, DATABASE_URL: 'test-url' })
-        assertThat(config, hasProperty('database'))
-        assertThat(config.database, hasProperty('url', equalTo('test-url')))
-      })
-    })
-
-    context('when DATABASE_URL is not defined', () => {
-      it('defaults to a database derived from NODE_ENV', () => {
-        const config = createConfig({ ...defaultConfig, NODE_ENV: 'test' })
-        assertThat(config, hasProperty('database'))
-        assertThat(config.database, not(hasProperty('url')))
-        assertThat(config.database, hasProperty('database', equalTo('git-en-boite-test')))
-      })
-    })
-  })
-
   context('git config', () => {
     context('when running in development or test', () => {
       it('sets the root to ./git-repos/<environment> in the app directory', () => {

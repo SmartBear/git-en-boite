@@ -6,11 +6,11 @@ An experiment to put git in a box to make it easy to work with in your apps.
 
 ## Features
 
-* Clone repos from 3rd party git providers (GitHub, GitLab etc) and set up webhooks to stay in sync when that remote is updated
-* Emits events about changes in the repo
-* Query the repo for branches, file lists, file contents, etc.
-* Create new commits locally on a branch
-* Create pull requests on 3rd party providers from a local branch
+- Clone repos from 3rd party git providers (GitHub, GitLab etc) and set up webhooks to stay in sync when that remote is updated
+- Emits events about changes in the repo
+- Query the repo for branches, file lists, file contents, etc.
+- Create new commits locally on a branch
+- Create pull requests on 3rd party providers from a local branch
 
 ## Architecture
 
@@ -18,7 +18,7 @@ git-en-boite is written in Node-JS, but runs in a docker container. It exposes a
 
 It is separated into multiple Node packages which are all contained inside this Git repo.
 
-We use [Lerna]( https://lerna.js.org ) to manage the dependencies between those packages.
+We use [Lerna](https://lerna.js.org) to manage the dependencies between those packages.
 
 ## Sample app
 
@@ -36,13 +36,7 @@ docker-compose up
 
 ## Development
 
-### Installing lerna
-
-To install the dependencies, execute:
-
-```
-npx lerna bootstrap --hoist
-```
+- Install yarn
 
 Then, run the servers (frontend and backend):
 

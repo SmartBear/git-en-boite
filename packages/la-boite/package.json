@@ -2,7 +2,6 @@
   "name": "la-boite",
   "version": "0.0.1",
   "description": "",
-  "main": "src/index.js",
   "scripts": {
     "test": "./bin/test",
     "start": "./bin/start",
@@ -16,8 +15,8 @@
     "@types/supertest": "^2.0.8",
     "bullmq": "^1.8.7",
     "dugite": "^1.88.2",
-    "git-en-boite-core": "file:../core",
-    "git-en-boite-command-bus": "file:../command-bus",
+    "git-en-boite-command-bus": "0.0.0",
+    "git-en-boite-core": "0.0.0",
     "json": "^9.0.6",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
@@ -32,7 +31,6 @@
     "ssestream": "^1.1.0",
     "substitute": "^0.7.1",
     "ts-sinon": "^1.2.0",
-    "typeorm": "0.2.24",
     "uuid": "^7.0.2"
   },
   "devDependencies": {

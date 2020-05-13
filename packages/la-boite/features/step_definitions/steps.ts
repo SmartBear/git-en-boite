@@ -1,38 +1,9 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, When, Then, TableDefinition } from 'cucumber'
-import { ClientApp } from '../../src/entity/ClientApp'
-import { User } from '../../src/entity/User'
 import { assertThat, equalTo, containsInAnyOrder } from 'hamjest'
 import path from 'path'
 import { LocalGitRepo } from '../../src/repos/local_git_repo'
 import { GitRepoInfo } from '../../src/repos/interfaces'
-
-Given('an app {word}', async function (appId: string) {
-  const app = new ClientApp()
-  app.id = appId
-  const repository = this.connection.getRepository(ClientApp)
-  await repository.save(app)
-})
-
-When('{word} creates a user {word}', async function (appId: string, userId: string) {
-  const user = new User()
-  user.id = userId
-  const repository = this.connection.getRepository(ClientApp)
-  const app: ClientApp = await repository.findOneOrFail(appId)
-  app.users = app.users.concat([user])
-  await repository.save(app)
-})
-
-Then("the {word} app's users should be:", async function (
-  appId: string,
-  expectedUsers: TableDefinition,
-) {
-  const repository = this.connection.getRepository(ClientApp)
-  const clientApp: ClientApp = await repository.findOneOrFail(appId)
-  const userIds = clientApp.users.map(user => user.id)
-  const expectedUserIds = expectedUsers.raw().map(user => user[0])
-  assertThat(userIds, equalTo(expectedUserIds))
-})
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
