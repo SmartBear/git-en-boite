@@ -1,8 +1,5 @@
 {
-  "name": "git-en-boite-meta",
   "private": true,
-  "devDependencies": {},
-  "dependencies": {},
   "workspaces": [
     "packages/command-bus",
     "packages/core",
