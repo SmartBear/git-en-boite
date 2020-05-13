@@ -44,7 +44,7 @@ describe(LocalGitRepos.name, () => {
 
     it('returns an object with the refs in the repo', async () => {
       const repoId = 'a-new-repo'
-      const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
+      const remoteUrl = path.resolve(root, 'remote', repoId)
       const request: ConnectRepoRequest = {
         repoId,
         remoteUrl,
@@ -69,7 +69,7 @@ describe(LocalGitRepos.name, () => {
 
     it('returns an object with the local branches in the repo', async () => {
       const repoId = 'a-new-repo'
-      const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
+      const remoteUrl = path.resolve(root, 'remote', repoId)
       const request: ConnectRepoRequest = {
         repoId,
         remoteUrl,
@@ -94,12 +94,11 @@ describe(LocalGitRepos.name, () => {
 
   it('can connect a new repo by cloning from a remote URL', async () => {
     const repoId = 'a-new-repo'
-    const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
+    const remoteUrl = path.resolve(root, 'remote', repoId)
     const request: ConnectRepoRequest = {
       repoId,
       remoteUrl,
     }
-    await exec(`rm -rf ${remoteUrl}`)
     const repoPath = remoteUrl
     const branches = ['master']
     const git = await LocalGitRepo.openForCommands(repoPath)
@@ -116,9 +115,8 @@ describe(LocalGitRepos.name, () => {
 
   it('can fetch for an existing repo', async () => {
     const repoId = 'a-repo-id'
-    const remoteUrl = path.resolve(__dirname, '../../tmp/remote/', repoId)
-    const repoPath = remoteUrl
-    const git = await LocalGitRepo.openForCommands(repoPath)
+    const remoteUrl = path.resolve(root, 'remote', repoId)
+    const git = await LocalGitRepo.openForCommands(remoteUrl)
     await git(Init.withWorkingDirectory())
     await git(Commit.withMessage('Initial commit'))
     await repos.connectToRemote({ repoId, remoteUrl })
