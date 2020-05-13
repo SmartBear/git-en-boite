@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/command-bus.ts",
   "scripts": {
-    "test": "mocha",
+    "test": "npx mocha",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "author": "",
