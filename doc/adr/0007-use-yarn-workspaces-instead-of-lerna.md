@@ -12,7 +12,7 @@ Lerna was being a pain; not working as described in the docs. It seems a bit old
 
 ## Decision
 
-Switch to yarn workspaces. We may also use [mono](https://github.com/enzsft/mono) or [rush](https://rushjs.io) to add extra features for managing a monorepo.
+Switch to [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/). We may also use [mono](https://github.com/enzsft/mono) or [rush](https://rushjs.io) to add extra features for managing a monorepo.
 
 ## Consequences
 
