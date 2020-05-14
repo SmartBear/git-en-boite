@@ -1,4 +1,4 @@
-import { GitProcess, IGitResult } from 'dugite'
+import { GitProcess, IGitResult, GitError } from 'dugite'
 import { CommandBus } from 'git-en-boite-command-bus'
 import { GitRepo, Reference } from './interfaces'
 import fs from 'fs'
@@ -9,6 +9,10 @@ export class Commit {
   static withMessage(message: string) {
     return new Commit(message)
   }
+
+  static withAnyMessage() {
+    return new Commit('A commit message')
+  }
 }
 
 export class Init {
@@ -18,7 +22,7 @@ export class Init {
     return new Init(true)
   }
 
-  static withWorkingDirectory() {
+  static normalRepo() {
     return new Init(false)
   }
 }
@@ -35,6 +39,14 @@ export class Misc {
   }
 }
 
+export class GetRevision {
+  protected constructor(public readonly reference: string) {}
+
+  static forCurrentBranch() {
+    return new GetRevision('HEAD')
+  }
+}
+
 export class EnsureBranchExists {
   protected constructor(public readonly name: string) {}
 
@@ -43,7 +55,7 @@ export class EnsureBranchExists {
   }
 }
 
-type Commands = Init | Commit | Misc | EnsureBranchExists
+type Commands = Init | Commit | Misc | EnsureBranchExists | GetRevision
 
 const handleInit = (repo: LocalGitRepo, command: Init) =>
   repo.git('init', ...(command.isBare ? ['--bare'] : []))
@@ -62,6 +74,9 @@ const handleEnsureBranchExists = async (repo: LocalGitRepo, { name }: EnsureBran
   if (!(verifyBranchExists.exitCode === 0)) await repo.git('branch', name, 'HEAD')
 }
 
+const handleGetRevision = async (repo: LocalGitRepo, { reference }: GetRevision): Promise<string> =>
+  (await repo.git('rev-parse', reference)).stdout.trim()
+
 export class LocalGitRepo implements GitRepo {
   path: string
 
@@ -72,6 +87,7 @@ export class LocalGitRepo implements GitRepo {
     commandBus.handle(Commit, handleCommit)
     commandBus.handle(Misc, handleMisc)
     commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)
+    commandBus.handle(GetRevision, handleGetRevision)
     return commandBus.do.bind(commandBus)
   }
 
