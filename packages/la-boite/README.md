@@ -3,26 +3,25 @@
 ### Install dependencies
 
 ```
-npm install
-```
-
-### Make a directory to store git repos
-
-```
-mkdir -p git-repos/development
+yarn
 ```
 
 ## Run the app in development mode
 
+Start redis and postgres and set `REDIS_URL` and `DATABASE_URL` (see root project README.md)
+
 ```
-export NODE_ENV=development
-export DATABASE_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-development
-./bin/start
+yarn start
 ```
 
 ## Run the tests
 
 ```
-export DATABASE_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-development
-./bin/test
+yarn test
+```
+
+### Run the current WIP acceptance test
+
+```
+yarn test:acceptance -p wip
 ```

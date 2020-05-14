@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "./bin/test",
+    "test": "yarn test:unit && yarn test:acceptance",
+    "test:unit": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",
+    "test:acceptance": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js --require-module ts-node/register --require 'features/**/*.ts'",
     "start": "./bin/start",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },

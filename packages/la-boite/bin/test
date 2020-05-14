@@ -1,8 +1,0 @@
-#!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { execSync } = require('child_process')
-const exec = cmd => execSync(cmd, { stdio: 'inherit', env: { ...process.env, NODE_ENV: 'test' } })
-
-exec('npx mocha')
-
-exec('./bin/cucumber')
