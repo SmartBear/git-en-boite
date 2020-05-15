@@ -96,7 +96,7 @@ export class LocalGitRepo implements GitRepo {
     return new this(path)
   }
 
-  constructor(path: string) {
+  protected constructor(path: string) {
     this.path = path
   }
 

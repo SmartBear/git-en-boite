@@ -94,7 +94,7 @@ export class LocalGitRepos implements GitRepos {
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!this.exists(repoId)) return QueryResult.from()
-    const repo = new LocalGitRepo(this.repoFolder(repoId).gitRepoPath)
+    const repo = await LocalGitRepo.open(this.repoFolder(repoId).gitRepoPath)
     const refs = await repo.refs()
     const branches: Branch[] = refs
       .filter(ref => ref.name.startsWith('refs/remotes/origin/'))
