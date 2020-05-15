@@ -1,5 +1,5 @@
 import { CommandBus } from './command-bus'
-import { equalTo, assertThat } from 'hamjest'
+import { equalTo, assertThat, throws, hasProperty, matchesPattern } from 'hamjest'
 
 describe('CommandBus', () => {
   class Sing {
@@ -56,5 +56,16 @@ describe('CommandBus', () => {
     commandBus.handle(Sing, () => 'a-result')
     const result = commandBus.do(Sing.theSong('any song'))
     assertThat(result, equalTo('a-result'))
+  })
+
+  context('when there is no handler registered for a command', () => {
+    it('throws an error by default', () => {
+      const party = new BirthdayParty()
+      const commandBus = new CommandBus<BirthdayParty, BirthdayCommand>(party)
+      assertThat(
+        () => commandBus.do(new EatCake()),
+        throws(hasProperty('message', matchesPattern('No handler'))),
+      )
+    })
   })
 })
