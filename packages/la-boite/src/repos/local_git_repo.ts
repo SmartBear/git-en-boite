@@ -55,7 +55,7 @@ export class EnsureBranchExists {
   }
 }
 
-type Commands = Init | Commit | Misc | EnsureBranchExists | GetRevision
+type GitCommand = Init | Commit | Misc | EnsureBranchExists | GetRevision
 
 const handleInit = (repo: LocalGitRepo, command: Init) =>
   repo.git('init', ...(command.isBare ? ['--bare'] : []))
@@ -82,7 +82,7 @@ export class LocalGitRepo implements GitRepo {
 
   static async openForCommands(path: string) {
     const repo = await this.open(path)
-    const commandBus = new CommandBus<LocalGitRepo, Commands>(repo)
+    const commandBus = new CommandBus<LocalGitRepo, GitCommand>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(Commit, handleCommit)
     commandBus.handle(Misc, handleMisc)
