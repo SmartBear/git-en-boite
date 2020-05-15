@@ -1,11 +1,14 @@
 type Type<T> = Function & { prototype: T }
 
 export class CommandBus<Context, Command> {
-  private handlers = new Map<Function, Handler<Context>>()
+  private handlers = new Map<Function, Function>()
 
   constructor(readonly target: Context) {}
 
-  handle(commandType: Type<Command>, handler: Handler<Context>) {
+  handle<HandledCommand extends Command>(
+    commandType: Type<HandledCommand>,
+    handler: Handler<Context, HandledCommand>,
+  ) {
     this.handlers.set(commandType, handler)
   }
 
@@ -15,6 +18,6 @@ export class CommandBus<Context, Command> {
   }
 }
 
-export interface Handler<Context> {
-  (target: Context, command: any): unknown
+export interface Handler<Context, HandledCommand> {
+  (target: Context, command: HandledCommand): unknown
 }

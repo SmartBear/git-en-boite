@@ -19,27 +19,20 @@ describe('CommandBus', () => {
     public cake: string
   }
 
-  const singLoudly = (party: BirthdayParty, sing: Sing) =>
-    (party.sounds = sing.songName.toUpperCase())
-
-  const singQuietly = (party: BirthdayParty, sing: Sing) =>
-    (party.sounds = sing.songName.toLocaleLowerCase())
-
-  const eatAllTheCake = (party: BirthdayParty) => (party.cake = 'gone')
-
   it('runs the same command through different handlers', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
-
     const noisyParty = new BirthdayParty()
-    const noisyCommandBus = new CommandBus<BirthdayParty, BirthdayCommand>(noisyParty)
-    noisyCommandBus.handle(Sing, singLoudly)
-    noisyCommandBus.do(singHappyBirthday)
-    assertThat(noisyParty.sounds, equalTo('HAPPY BIRTHDAY'))
-
     const quietParty = new BirthdayParty()
+    const noisyCommandBus = new CommandBus<BirthdayParty, BirthdayCommand>(noisyParty)
     const quietCommandBus = new CommandBus<BirthdayParty, BirthdayCommand>(quietParty)
-    quietCommandBus.handle(Sing, singQuietly)
+    noisyCommandBus.handle(Sing, (party, { songName }) => (party.sounds = songName.toUpperCase()))
+    quietCommandBus.handle(
+      Sing,
+      (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()),
+    )
+    noisyCommandBus.do(singHappyBirthday)
     quietCommandBus.do(singHappyBirthday)
+    assertThat(noisyParty.sounds, equalTo('HAPPY BIRTHDAY'))
     assertThat(quietParty.sounds, equalTo('happy birthday'))
   })
 
@@ -49,8 +42,8 @@ describe('CommandBus', () => {
 
     const party = new BirthdayParty()
     const commandBus = new CommandBus<BirthdayParty, BirthdayCommand>(party)
-    commandBus.handle(Sing, singQuietly)
-    commandBus.handle(EatCake, eatAllTheCake)
+    commandBus.handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
+    commandBus.handle(EatCake, party => (party.cake = 'gone'))
     commandBus.do(singHappyBirthday)
     commandBus.do(eatCake)
     assertThat(party.sounds, equalTo('happy birthday'))
