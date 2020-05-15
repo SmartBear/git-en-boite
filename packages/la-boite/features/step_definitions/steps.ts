@@ -2,16 +2,9 @@
 import { Given, When, Then, TableDefinition } from 'cucumber'
 import { assertThat, equalTo, containsInAnyOrder } from 'hamjest'
 import path from 'path'
-import {
-  LocalGitRepo,
-  Init,
-  EnsureBranchExists,
-  Commit,
-  Misc,
-  GetRevision,
-} from '../../src/repos/local_git_repo'
+import { LocalGitRepo } from '../../src/repos/local_git_repo'
 import { GitRepoInfo } from '../../src/repos/interfaces'
-import { IGitResult } from 'dugite'
+import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core/git/commands'
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])

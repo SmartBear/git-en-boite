@@ -2,9 +2,8 @@
   "name": "git-en-boite-core",
   "version": "0.0.0",
   "description": "Core Domain for git-en-boite",
-  "main": "src/core.ts",
-  "scripts": {
-  },
+  "main": "index.ts",
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/smartbear/git-en-boite.git"

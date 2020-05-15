@@ -13,8 +13,8 @@ import {
   equalTo,
 } from 'hamjest'
 import { ConnectRepoRequest } from './interfaces'
-import { LocalGitRepo, Commit, Init, Misc, EnsureBranchExists, GetRevision } from './local_git_repo'
-import { IGitResult } from 'dugite'
+import { LocalGitRepo } from './local_git_repo'
+import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core/git/commands'
 const exec = promisify(childProcess.exec)
 
 describe(LocalGitRepos.name, () => {
