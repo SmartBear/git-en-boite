@@ -14,7 +14,7 @@ import {
 } from 'hamjest'
 import { ConnectRepoRequest } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
-import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core/git/commands'
+import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core-port-git'
 const exec = promisify(childProcess.exec)
 
 describe(LocalGitRepos.name, () => {

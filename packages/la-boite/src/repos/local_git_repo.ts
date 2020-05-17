@@ -9,7 +9,7 @@ import {
   EnsureBranchExists,
   GetRevision,
   GitCommand,
-} from 'git-en-boite-core/git/commands'
+} from 'git-en-boite-core-port-git'
 
 const handleInit = (repo: LocalGitRepo, command: Init) =>
   repo.execGit('init', ...(command.isBare ? ['--bare'] : []))

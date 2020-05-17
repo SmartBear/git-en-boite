@@ -1,0 +1,20 @@
+{
+  "name": "git-en-boite-core-port-git",
+  "version": "0.0.0",
+  "description": "Interface types for the port that talks to local git repos",
+  "main": "index.ts",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartbear/git-en-boite.git"
+  },
+  "keywords": [
+    "git"
+  ],
+  "author": "Matt Wynne <matt@mattwynne.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smartbear/git-en-boite/issues"
+  },
+  "homepage": "https://github.com/smartbear/git-en-boite#readme"
+}

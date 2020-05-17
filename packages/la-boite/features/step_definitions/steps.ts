@@ -4,7 +4,7 @@ import { assertThat, equalTo, containsInAnyOrder } from 'hamjest'
 import path from 'path'
 import { LocalGitRepo } from '../../src/repos/local_git_repo'
 import { GitRepoInfo } from '../../src/repos/interfaces'
-import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core/git/commands'
+import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core-port-git'
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
