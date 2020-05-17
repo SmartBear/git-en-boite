@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "Interface types for the port that talks to local git repos",
   "main": "index.ts",
-  "scripts": {},
+  "scripts": {
+    "test": "# noop"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/smartbear/git-en-boite.git"

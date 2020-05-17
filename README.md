@@ -14,9 +14,11 @@ An experiment to put git in a box to make it easy to work with in your apps.
 
 ## Architecture
 
-git-en-boite is written in typescript, and produces a [Docker image](https://hub.docker.com/repository/docker/smartbear/git-en-boite).
+git-en-boite is written in typescript, and produces a [Docker image](https://hub.docker.com/repository/docker/smartbear/git-en-boite) every time the tests pass on the master branch.
 
-It is separated into multiple NPM packages which are all contained inside this repo under `./packages`
+It's separated into multiple NPM packages which are all contained inside this repo under `./packages`.
+
+We use [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces) to manage these packages.
 
 ## Start the application
 
@@ -49,9 +51,8 @@ docker-compose run --detach --publish 5432:5432 postgres
 export DATABASE_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-test
 ```
 
-Run the tests in the main package:
+Run the tests in each package:
 
 ```
-cd packages/la-boite
-yarn test
+yarn workspaces run test
 ```
