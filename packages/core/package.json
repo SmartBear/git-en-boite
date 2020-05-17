@@ -2,9 +2,10 @@
   "name": "git-en-boite-core",
   "version": "0.0.0",
   "description": "Core Domain for git-en-boite",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "# noop"
+    "test": "# noop",
+    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {
     "type": "git",

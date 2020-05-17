@@ -2,9 +2,10 @@
   "name": "git-en-boite-core-port-git",
   "version": "0.0.0",
   "description": "Interface types for the port that talks to local git repos",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "# noop"
+    "test": "# noop",
+    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {
     "type": "git",
