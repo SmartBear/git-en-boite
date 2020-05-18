@@ -9,12 +9,18 @@ import {
   EnsureBranchExists,
   GetRevision,
   GitOperation,
+  SetOrigin,
 } from 'git-en-boite-core-port-git'
 
 const handleInit = async (repo: LocalGitRepo, command: Init) => {
   await repo.execGit('init', ...(command.isBare ? ['--bare'] : []))
   await repo.execGit('config', 'gc.auto', '0')
   await repo.execGit('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
+}
+
+const handleSetOrigin = async (repo: LocalGitRepo, command: SetOrigin) => {
+  const { url } = command
+  await repo.execGit('remote', 'add', 'origin', url)
 }
 
 const handleCommit = async (repo: LocalGitRepo, command: Commit) => {
@@ -42,6 +48,7 @@ export class LocalGitRepo implements GitRepo {
     const repo = await this.open(path)
     const commandBus = new CommandBus<LocalGitRepo, GitOperation>(repo)
     commandBus.handle(Init, handleInit)
+    commandBus.handle(SetOrigin, handleSetOrigin)
     commandBus.handle(Commit, handleCommit)
     commandBus.handle(Misc, handleMisc)
     commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)

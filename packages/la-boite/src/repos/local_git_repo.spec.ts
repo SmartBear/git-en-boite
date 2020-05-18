@@ -1,26 +1,24 @@
-import path from 'path'
 import childProcess from 'child_process'
-import { promisify } from 'util'
-const exec = promisify(childProcess.exec)
-import { LocalGitRepo } from './local_git_repo'
+import { Init, SetOrigin } from 'git-en-boite-core-port-git'
 import {
   assertThat,
-  startsWith,
-  rejected,
-  promiseThat,
   containsInAnyOrder,
+  equalTo,
+  fulfilled,
   hasProperty,
   matchesPattern,
   not,
-  equalTo,
+  promiseThat,
+  rejected,
+  startsWith,
   willBe,
-  fulfilled,
-  Matcher,
-  anyOf,
-  Description,
 } from 'hamjest'
-import { Init } from 'git-en-boite-core-port-git'
+import path from 'path'
+import { promisify } from 'util'
 
+import { LocalGitRepo } from './local_git_repo'
+
+const exec = promisify(childProcess.exec)
 describe(LocalGitRepo.name, () => {
   const root = path.resolve(__dirname, '../../tmp')
 
@@ -45,6 +43,20 @@ describe(LocalGitRepo.name, () => {
         await promiseThat(
           exec('git config --get gc.pruneExpire', { cwd: repoPath }),
           fulfilled(hasProperty('stdout', startsWith('never'))),
+        )
+      })
+    })
+
+    describe(SetOrigin.name, () => {
+      it('creates a remote called origin pointing to the URL', async () => {
+        const repoPath = path.resolve(root, 'a-repo-id')
+        const git = await LocalGitRepo.openForCommands(repoPath)
+        const repoUrl = 'git@host/repo'
+        await git(Init.bareRepo())
+        await git(SetOrigin.toUrl(repoUrl))
+        await promiseThat(
+          exec('git remote get-url origin', { cwd: repoPath }),
+          fulfilled(hasProperty('stdout', startsWith(repoUrl))),
         )
       })
     })
