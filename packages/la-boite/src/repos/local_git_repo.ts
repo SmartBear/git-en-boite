@@ -8,7 +8,7 @@ import {
   Misc,
   EnsureBranchExists,
   GetRevision,
-  GitCommand,
+  GitOperation,
 } from 'git-en-boite-core-port-git'
 
 const handleInit = (repo: LocalGitRepo, command: Init) =>
@@ -37,7 +37,7 @@ export class LocalGitRepo implements GitRepo {
 
   static async openForCommands(path: string) {
     const repo = await this.open(path)
-    const commandBus = new CommandBus<LocalGitRepo, GitCommand>(repo)
+    const commandBus = new CommandBus<LocalGitRepo, GitOperation>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(Commit, handleCommit)
     commandBus.handle(Misc, handleMisc)

@@ -50,4 +50,4 @@ export class EnsureBranchExists {
   }
 }
 
-export type GitCommand = Init | Commit | Misc | EnsureBranchExists | GetRevision
+export type GitOperation = Init | Commit | Misc | EnsureBranchExists | GetRevision
