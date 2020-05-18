@@ -14,13 +14,40 @@ import {
   not,
   equalTo,
   willBe,
+  fulfilled,
+  Matcher,
+  anyOf,
+  Description,
 } from 'hamjest'
+import { Init } from 'git-en-boite-core-port-git'
 
 describe(LocalGitRepo.name, () => {
   const root = path.resolve(__dirname, '../../tmp')
 
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
+  })
+
+  describe('executing a GitOperation', () => {
+    describe(Init.name, () => {
+      it('creates a new bare repo with conservative garbage collection settings', async () => {
+        const repoPath = path.resolve(root, 'a-repo-id')
+        const git = await LocalGitRepo.openForCommands(repoPath)
+        await git(Init.bareRepo())
+        await promiseThat(
+          exec('git config --get core.bare', { cwd: repoPath }),
+          fulfilled(hasProperty('stdout', startsWith('true'))),
+        )
+        await promiseThat(
+          exec('git config --get gc.auto', { cwd: repoPath }),
+          fulfilled(hasProperty('stdout', startsWith('0'))),
+        )
+        await promiseThat(
+          exec('git config --get gc.pruneExpire', { cwd: repoPath }),
+          fulfilled(hasProperty('stdout', startsWith('never'))),
+        )
+      })
+    })
   })
 
   describe('running arbitrary git commands', () => {

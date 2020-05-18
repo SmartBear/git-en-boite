@@ -7,6 +7,7 @@ import path from 'path'
 import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
+import { Init } from 'git-en-boite-core-port-git'
 
 const config = createConfig()
 
@@ -19,10 +20,9 @@ type QueueComponents = [Queue, Worker]
 const processors: Processors = {
   clone: async (job: Job) => {
     const { repoPath, remoteUrl } = job.data
+    const git = await LocalGitRepo.openForCommands(repoPath)
+    await git(Init.bareRepo())
     const repo = await LocalGitRepo.open(repoPath)
-    await repo.execGit('init', '--bare')
-    await repo.execGit('config', 'gc.auto', '0')
-    await repo.execGit('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
     await repo.execGit('remote', 'add', 'origin', remoteUrl)
     await repo.execGit('fetch', 'origin')
   },

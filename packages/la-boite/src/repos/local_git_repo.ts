@@ -11,8 +11,11 @@ import {
   GitOperation,
 } from 'git-en-boite-core-port-git'
 
-const handleInit = (repo: LocalGitRepo, command: Init) =>
-  repo.execGit('init', ...(command.isBare ? ['--bare'] : []))
+const handleInit = async (repo: LocalGitRepo, command: Init) => {
+  await repo.execGit('init', ...(command.isBare ? ['--bare'] : []))
+  await repo.execGit('config', 'gc.auto', '0')
+  await repo.execGit('config', 'gc.pruneExpire', 'never') // don't prune objects if GC runs
+}
 
 const handleCommit = async (repo: LocalGitRepo, command: Commit) => {
   const { message } = command
