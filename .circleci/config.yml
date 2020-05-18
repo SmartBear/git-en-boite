@@ -26,7 +26,7 @@ jobs:
           command: yarn workspaces run lint
       - run:
           name: Running tests
-          command: yarn workspaces run test
+          command: yarn test
 
 workflows:
   version: 2.1

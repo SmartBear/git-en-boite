@@ -46,13 +46,13 @@ The integration tests need redis and postgres to be running somewhere. If you do
 
 ```bash
 docker-compose run --detach --publish 6379:6379 redis
-export REDIS_URL=redis://localhost:6379
 docker-compose run --detach --publish 5432:5432 postgres
+export REDIS_URL=redis://localhost:6379
 export DATABASE_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-test
 ```
 
-Run the tests in each package:
+Run the tests in each of the packages:
 
 ```
-yarn workspaces run test
+yarn test
 ```

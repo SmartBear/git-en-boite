@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "test": "yarn workspaces run test"
+  },
   "workspaces": [
     "packages/command-bus",
     "packages/core",
