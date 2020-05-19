@@ -36,18 +36,6 @@ export class SetOrigin {
   }
 }
 
-export class Misc {
-  protected constructor(public readonly command: string, public readonly args: string[]) {}
-
-  static command(name: string) {
-    return new Misc(name, [])
-  }
-
-  withArgs(...args: string[]) {
-    return new Misc(this.command, args)
-  }
-}
-
 export class GetRevision {
   protected constructor(public readonly reference: string) {}
 
@@ -64,11 +52,4 @@ export class EnsureBranchExists {
   }
 }
 
-export type GitOperation =
-  | Init
-  | Commit
-  | Fetch
-  | Misc
-  | EnsureBranchExists
-  | GetRevision
-  | SetOrigin
+export type GitOperation = Init | Commit | Fetch | EnsureBranchExists | GetRevision | SetOrigin
