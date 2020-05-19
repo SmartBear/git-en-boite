@@ -91,7 +91,9 @@ describe(LocalGitRepo.name, () => {
           await git(SetOrigin.toUrl('invalid-remote-url'))
           await promiseThat(
             git(Fetch.fromOrigin()),
-            isRejectedWith(hasProperty('message', matchesPattern('Unable to fetch'))),
+            isRejectedWith(
+              hasProperty('message', matchesPattern('does not appear to be a git repository')),
+            ),
           )
         })
       })

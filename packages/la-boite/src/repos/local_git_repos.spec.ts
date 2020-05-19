@@ -54,6 +54,7 @@ describe(LocalGitRepos.name, () => {
       const branches = ['master', 'development']
       const git = await LocalGitRepo.openForCommands(repoPath)
       await git(Init.normalRepo())
+      await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
         await git(EnsureBranchExists.named(branchName))
         await git(Commit.withMessage('A commit'))
@@ -78,6 +79,7 @@ describe(LocalGitRepos.name, () => {
       const branches = ['master', 'development']
       const git = await LocalGitRepo.openForCommands(repoPath)
       await git(Init.normalRepo())
+      await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
         await git(EnsureBranchExists.named(branchName))
         await git(Commit.withMessage('A commit'))
@@ -103,6 +105,7 @@ describe(LocalGitRepos.name, () => {
     const branches = ['master']
     const git = await LocalGitRepo.openForCommands(repoPath)
     await git(Init.normalRepo())
+    await git(Commit.withMessage('Initial commit'))
     for (const branchName of branches) {
       await git(EnsureBranchExists.named(branchName))
       await git(Commit.withMessage('A commit'))
