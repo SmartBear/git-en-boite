@@ -26,11 +26,6 @@ export interface GitRepoInfo {
   branches: Branch[]
 }
 
-export interface GitRepo {
-  refs(): Promise<Reference[]>
-  path: string
-}
-
 export interface GitRepos {
   connectToRemote: (request: ConnectRepoRequest) => Promise<void>
   getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>

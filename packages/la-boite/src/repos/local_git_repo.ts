@@ -1,6 +1,6 @@
 import { GitProcess, IGitResult } from 'dugite'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { GitRepo, Reference } from './interfaces'
+import { Reference } from './interfaces'
 import fs from 'fs'
 import {
   Init,
@@ -50,7 +50,7 @@ const handleEnsureBranchExists = async (repo: LocalGitRepo, { name }: EnsureBran
 const handleGetRevision = async (repo: LocalGitRepo, { reference }: GetRevision): Promise<string> =>
   (await repo.execGit('rev-parse', reference)).stdout.trim()
 
-export class LocalGitRepo implements GitRepo {
+export class LocalGitRepo {
   path: string
 
   static async openForCommands(path: string) {
