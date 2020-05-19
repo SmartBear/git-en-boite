@@ -7,6 +7,7 @@
     "packages/adapter-git",
     "packages/command-bus",
     "packages/core",
+    "packages/core-port-git",
     "packages/la-boite"
   ]
 }
