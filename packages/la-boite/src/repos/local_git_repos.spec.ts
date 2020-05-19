@@ -49,7 +49,6 @@ describe(LocalGitRepos.name, () => {
         repoId,
         remoteUrl,
       }
-      await exec(`rm -rf ${remoteUrl}`)
       const repoPath = remoteUrl
       const branches = ['master', 'development']
       const git = await LocalGitRepo.openForCommands(repoPath)
