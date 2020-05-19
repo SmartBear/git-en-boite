@@ -98,7 +98,7 @@ describe(LocalGitRepo.name, () => {
     })
   })
 
-  describe.only('running arbitrary git commands', () => {
+  describe('running arbitrary git commands', () => {
     it('returns a promise of the result', async () => {
       const repoId = 'a-new-repo-id'
       const repoPath = path.resolve(root, repoId)
