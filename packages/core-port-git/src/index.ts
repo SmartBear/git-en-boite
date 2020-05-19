@@ -54,8 +54,8 @@ export class SetOrigin {
 
 export type GitOperation = Init | Commit | Fetch | EnsureBranchExists | GetRevision | SetOrigin
 
-export type GitRepo = (operation: GitOperation) => any // until we figure out how to do better about return types
+export type OperateGitRepo = (operation: GitOperation) => any // until we figure out how to do better about return types
 
 export interface OpensGitRepos {
-  open(path: string): Promise<GitRepo>
+  open(path: string): Promise<OperateGitRepo>
 }
