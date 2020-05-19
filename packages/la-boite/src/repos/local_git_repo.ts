@@ -10,6 +10,7 @@ import {
   GetRevision,
   GitOperation,
   SetOrigin,
+  Fetch,
 } from 'git-en-boite-core-port-git'
 
 const handleInit = async (repo: LocalGitRepo, command: Init) => {
@@ -30,12 +31,20 @@ const handleCommit = async (repo: LocalGitRepo, command: Commit) => {
   await repo.execGit('commit', '--allow-empty', '-m', message)
 }
 
+const handleFetch = async (repo: LocalGitRepo, command: Fetch) => {
+  await repo.execGit('fetch', 'origin')
+}
+
 const handleMisc = async (repo: LocalGitRepo, { command, args }: Misc) =>
   repo.execGit(command, ...args)
 
 const handleEnsureBranchExists = async (repo: LocalGitRepo, { name }: EnsureBranchExists) => {
-  const verifyBranchExists = await repo.execGit('rev-parse', '--verify', name)
-  if (!(verifyBranchExists.exitCode === 0)) await repo.execGit('branch', name, 'HEAD')
+  const branches: string[] = await (
+    await repo.execGit('branch', '--list', '--format=%(refname:short)')
+  ).stdout
+    .trim()
+    .split('\n')
+  if (!branches.includes(name)) await repo.execGit('branch', name, 'HEAD')
 }
 
 const handleGetRevision = async (repo: LocalGitRepo, { reference }: GetRevision): Promise<string> =>
@@ -50,6 +59,7 @@ export class LocalGitRepo implements GitRepo {
     commandBus.handle(Init, handleInit)
     commandBus.handle(SetOrigin, handleSetOrigin)
     commandBus.handle(Commit, handleCommit)
+    commandBus.handle(Fetch, handleFetch)
     commandBus.handle(Misc, handleMisc)
     commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)
     commandBus.handle(GetRevision, handleGetRevision)
@@ -66,7 +76,11 @@ export class LocalGitRepo implements GitRepo {
   }
 
   async execGit(cmd: string, ...args: string[]): Promise<IGitResult> {
-    return await GitProcess.exec([cmd, ...args], this.path)
+    const result = await GitProcess.exec([cmd, ...args], this.path)
+    if (result.exitCode !== 0) {
+      throw new Error(`Git command failed: ${result.stderr}`)
+    }
+    return result
   }
 
   async refs(): Promise<Reference[]> {

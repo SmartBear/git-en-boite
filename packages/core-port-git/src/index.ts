@@ -22,6 +22,12 @@ export class Init {
   }
 }
 
+export class Fetch {
+  static fromOrigin() {
+    return new this()
+  }
+}
+
 export class SetOrigin {
   protected constructor(public readonly url: string) {}
 
@@ -58,4 +64,11 @@ export class EnsureBranchExists {
   }
 }
 
-export type GitOperation = Init | Commit | Misc | EnsureBranchExists | GetRevision | SetOrigin
+export type GitOperation =
+  | Init
+  | Commit
+  | Fetch
+  | Misc
+  | EnsureBranchExists
+  | GetRevision
+  | SetOrigin

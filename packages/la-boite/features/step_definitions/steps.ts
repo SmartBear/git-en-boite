@@ -1,10 +1,11 @@
 /* tslint:disable: only-arrow-functions */
-import { Given, When, Then, TableDefinition } from 'cucumber'
-import { assertThat, equalTo, containsInAnyOrder } from 'hamjest'
+import { Given, TableDefinition, Then, When } from 'cucumber'
+import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-core-port-git'
+import { assertThat, containsInAnyOrder, equalTo } from 'hamjest'
 import path from 'path'
-import { LocalGitRepo } from '../../src/repos/local_git_repo'
+
 import { GitRepoInfo } from '../../src/repos/interfaces'
-import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core-port-git'
+import { LocalGitRepo } from '../../src/repos/local_git_repo'
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
@@ -12,6 +13,7 @@ Given('a repo with branches:', async function (branchesTable) {
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await LocalGitRepo.openForCommands(this.repoRemoteUrl)
   await git(Init.normalRepo())
+  await git(Commit.withMessage('Initial commit'))
   for (const branchName of branches) {
     await git(EnsureBranchExists.named(branchName))
     await git(Commit.withAnyMessage())

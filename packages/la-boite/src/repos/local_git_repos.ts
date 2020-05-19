@@ -7,7 +7,7 @@ import path from 'path'
 import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
-import { Init, SetOrigin } from 'git-en-boite-core-port-git'
+import { Init, SetOrigin, Fetch } from 'git-en-boite-core-port-git'
 
 const config = createConfig()
 
@@ -23,8 +23,7 @@ const processors: Processors = {
     const git = await LocalGitRepo.openForCommands(repoPath)
     await git(Init.bareRepo())
     await git(SetOrigin.toUrl(remoteUrl))
-    const repo = await LocalGitRepo.open(repoPath)
-    await repo.execGit('fetch', 'origin')
+    await git(Fetch.fromOrigin())
   },
 
   fetch: async (job: Job) => {
