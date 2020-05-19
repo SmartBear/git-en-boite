@@ -5,7 +5,6 @@ import fs from 'fs'
 import {
   Init,
   Commit,
-  Misc,
   EnsureBranchExists,
   GetRevision,
   GitOperation,
@@ -35,9 +34,6 @@ const handleFetch = async (repo: LocalGitRepo, command: Fetch) => {
   await repo.execGit('fetch', 'origin')
 }
 
-const handleMisc = async (repo: LocalGitRepo, { command, args }: Misc) =>
-  repo.execGit(command, ...args)
-
 const handleEnsureBranchExists = async (repo: LocalGitRepo, { name }: EnsureBranchExists) => {
   const branches: string[] = await (
     await repo.execGit('branch', '--list', '--format=%(refname:short)')
@@ -60,7 +56,6 @@ export class LocalGitRepo {
     commandBus.handle(SetOrigin, handleSetOrigin)
     commandBus.handle(Commit, handleCommit)
     commandBus.handle(Fetch, handleFetch)
-    commandBus.handle(Misc, handleMisc)
     commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)
     commandBus.handle(GetRevision, handleGetRevision)
     return commandBus.do.bind(commandBus)
