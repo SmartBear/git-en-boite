@@ -2,8 +2,8 @@ import { Commit } from 'git-en-boite-core-port-git'
 
 import { Handler } from './handler'
 
-export const handleCommit: Handler<Commit> = async (repo, { message }) => {
-  await repo.execGit('config', 'user.email', 'test@example.com')
-  await repo.execGit('config', 'user.name', 'Test User')
-  await repo.execGit('commit', '--allow-empty', '-m', message)
+export const handleCommit: Handler<Commit> = async (repo, { message, author }) => {
+  await repo.execGit('commit', ['--allow-empty', '-m', message], {
+    env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
+  })
 }

@@ -32,5 +32,9 @@ describe(GitRepo.name, () => {
         rejected(hasProperty('message', matchesPattern('is not a git command'))),
       )
     })
+
+    it('passes args')
+
+    it('passes options')
   })
 })

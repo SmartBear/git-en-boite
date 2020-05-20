@@ -1,4 +1,4 @@
-import { GitProcess, IGitResult } from 'dugite'
+import { GitProcess, IGitResult, IGitExecutionOptions } from 'dugite'
 
 export class GitRepo {
   path: string
@@ -7,8 +7,12 @@ export class GitRepo {
     this.path = path
   }
 
-  async execGit(cmd: string, ...args: string[]): Promise<IGitResult> {
-    const result = await GitProcess.exec([cmd, ...args], this.path)
+  async execGit(
+    cmd: string,
+    args: string[] = [],
+    options?: IGitExecutionOptions,
+  ): Promise<IGitResult> {
+    const result = await GitProcess.exec([cmd, ...args], this.path, options)
     if (result.exitCode !== 0) {
       throw new Error(`Git command failed: ${result.stderr}`)
     }

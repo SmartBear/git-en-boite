@@ -1,12 +1,18 @@
+import { Author } from 'git-en-boite-core'
+
 export class Commit {
-  protected constructor(public readonly message: string) {}
+  protected constructor(public readonly message: string, public readonly author: Author) {}
 
   static withMessage(message: string) {
-    return new Commit(message)
+    return new Commit(message, new Author('A user', 'unknown@unknown.com'))
   }
 
   static withAnyMessage() {
-    return new Commit('A commit message')
+    return Commit.withMessage('A commit message')
+  }
+
+  byAuthor(author: Author) {
+    return new Commit(this.message, author)
   }
 }
 
