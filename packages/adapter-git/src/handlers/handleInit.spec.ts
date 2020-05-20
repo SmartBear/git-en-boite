@@ -17,6 +17,7 @@ describe(handleInit.name, () => {
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
   })
+
   it('creates a new bare repo with conservative garbage collection settings', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     fs.mkdirSync(repoPath, { recursive: true })
