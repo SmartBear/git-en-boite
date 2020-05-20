@@ -22,7 +22,7 @@ import { handleSetOrigin } from './handleSetOrigin'
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
 
-describe(handleFetch.name, () => {
+describe('handleFetch', () => {
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
   })

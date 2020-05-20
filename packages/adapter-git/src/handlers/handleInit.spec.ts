@@ -13,7 +13,7 @@ const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
 console.log(root)
 
-describe(handleInit.name, () => {
+describe('handleInit', () => {
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
   })

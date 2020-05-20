@@ -13,7 +13,7 @@ import { handleSetOrigin } from './handleSetOrigin'
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
 
-describe(handleSetOrigin.name, () => {
+describe('handleSetOrigin', () => {
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
   })
