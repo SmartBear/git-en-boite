@@ -10,6 +10,28 @@ export class Commit {
   }
 }
 
+export class EnsureBranchExists {
+  protected constructor(public readonly name: string) {}
+
+  static named(name: string) {
+    return new EnsureBranchExists(name)
+  }
+}
+
+export class Fetch {
+  static fromOrigin() {
+    return new this()
+  }
+}
+
+export class GetRevision {
+  protected constructor(public readonly reference: string) {}
+
+  static forCurrentBranch() {
+    return new GetRevision('HEAD')
+  }
+}
+
 export class Init {
   protected constructor(public readonly isBare: boolean) {}
 
@@ -22,12 +44,6 @@ export class Init {
   }
 }
 
-export class Fetch {
-  static fromOrigin() {
-    return new this()
-  }
-}
-
 export class SetOrigin {
   protected constructor(public readonly url: string) {}
 
@@ -36,20 +52,10 @@ export class SetOrigin {
   }
 }
 
-export class GetRevision {
-  protected constructor(public readonly reference: string) {}
-
-  static forCurrentBranch() {
-    return new GetRevision('HEAD')
-  }
-}
-
-export class EnsureBranchExists {
-  protected constructor(public readonly name: string) {}
-
-  static named(name: string) {
-    return new EnsureBranchExists(name)
-  }
-}
-
 export type GitOperation = Init | Commit | Fetch | EnsureBranchExists | GetRevision | SetOrigin
+
+export type OperateGitRepo = (operation: GitOperation) => any // until we figure out how to do better about return types
+
+export interface OpensGitRepos {
+  open(path: string): Promise<OperateGitRepo>
+}
