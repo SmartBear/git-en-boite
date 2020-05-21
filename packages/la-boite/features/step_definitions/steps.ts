@@ -1,4 +1,5 @@
 /* tslint:disable: only-arrow-functions */
+import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
 import { Given, TableDefinition, Then, When } from 'cucumber'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-core-port-git'
 import { assertThat, containsInAnyOrder, equalTo } from 'hamjest'
@@ -11,7 +12,7 @@ Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
   const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
-  const git = await LocalGitRepo.openForCommands(this.repoRemoteUrl)
+  const git = await new TestableGitRepoFactory().open(this.repoRemoteUrl)
   await git(Init.normalRepo())
   await git(Commit.withMessage('Initial commit'))
   for (const branchName of branches) {
@@ -23,13 +24,13 @@ Given('a repo with branches:', async function (branchesTable) {
 Given('a remote repo with commits on the master branch', async function () {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
-  const git = await LocalGitRepo.openForCommands(this.repoRemoteUrl)
+  const git = await new TestableGitRepoFactory().open(this.repoRemoteUrl)
   await git(Init.normalRepo())
   await git(Commit.withAnyMessage())
 })
 
 When('a new commit is made in the remote repo', async function () {
-  const git = await LocalGitRepo.openForCommands(this.repoRemoteUrl)
+  const git = await new TestableGitRepoFactory().open(this.repoRemoteUrl)
   await git(Commit.withAnyMessage())
   this.lastCommitRevision = await git(GetRevision.forCurrentBranch())
 })

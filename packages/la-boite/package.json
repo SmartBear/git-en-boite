@@ -1,6 +1,6 @@
 {
-  "name": "la-boite",
-  "version": "0.0.1",
+  "name": "git-en-boite-la-boite",
+  "version": "0.0.0",
   "description": "",
   "scripts": {
     "test": "yarn test:unit && yarn test:acceptance",
@@ -20,6 +20,7 @@
     "git-en-boite-command-bus": "0.0.0",
     "git-en-boite-core": "0.0.0",
     "git-en-boite-core-port-git": "0.0.0",
+    "git-en-boite-adapter-git": "0.0.0",
     "json": "^9.0.6",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",

@@ -15,6 +15,7 @@ import {
 import { ConnectRepoRequest } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
 import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core-port-git'
+import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
 const exec = promisify(childProcess.exec)
 
 describe(LocalGitRepos.name, () => {
@@ -51,7 +52,7 @@ describe(LocalGitRepos.name, () => {
       }
       const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const git = await LocalGitRepo.openForCommands(repoPath)
+      const git = await new TestableGitRepoFactory().open(repoPath)
       await git(Init.normalRepo())
       await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
@@ -76,7 +77,7 @@ describe(LocalGitRepos.name, () => {
       }
       const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const git = await LocalGitRepo.openForCommands(repoPath)
+      const git = await new TestableGitRepoFactory().open(repoPath)
       await git(Init.normalRepo())
       await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
@@ -102,7 +103,7 @@ describe(LocalGitRepos.name, () => {
     }
     const repoPath = remoteUrl
     const branches = ['master']
-    const git = await LocalGitRepo.openForCommands(repoPath)
+    const git = await new TestableGitRepoFactory().open(repoPath)
     await git(Init.normalRepo())
     await git(Commit.withMessage('Initial commit'))
     for (const branchName of branches) {
@@ -117,11 +118,11 @@ describe(LocalGitRepos.name, () => {
 
   it('can fetch for an existing repo', async () => {
     const repoId = 'a-repo-id'
-    const remoteUrl = path.resolve(root, 'remote', repoId)
-    const git = await LocalGitRepo.openForCommands(remoteUrl)
+    const repoPath = path.resolve(root, 'remote', repoId)
+    const git = await new TestableGitRepoFactory().open(repoPath)
     await git(Init.normalRepo())
     await git(Commit.withMessage('Initial commit'))
-    await repos.connectToRemote({ repoId, remoteUrl })
+    await repos.connectToRemote({ repoId, remoteUrl: repoPath })
     await repos.waitUntilIdle(repoId)
     await git(Commit.withMessage('Another commit'))
     const expectedRevision = await git(GetRevision.forCurrentBranch())

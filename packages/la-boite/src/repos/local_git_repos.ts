@@ -8,6 +8,7 @@ import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
 import { LocalGitRepo } from './local_git_repo'
 import { Init, SetOrigin, Fetch } from 'git-en-boite-core-port-git'
+import { GitRepoFactory } from 'git-en-boite-adapter-git'
 
 const config = createConfig()
 
@@ -20,7 +21,7 @@ type QueueComponents = [Queue, Worker]
 const processors: Processors = {
   clone: async (job: Job) => {
     const { repoPath, remoteUrl } = job.data
-    const git = await LocalGitRepo.openForCommands(repoPath)
+    const git = await new GitRepoFactory().open(repoPath)
     await git(Init.bareRepo())
     await git(SetOrigin.toUrl(remoteUrl))
     await git(Fetch.fromOrigin())
@@ -28,8 +29,8 @@ const processors: Processors = {
 
   fetch: async (job: Job) => {
     const { repoPath } = job.data
-    const repo = await LocalGitRepo.open(repoPath)
-    await repo.execGit('fetch', '--prune', 'origin')
+    const git = await new GitRepoFactory().open(repoPath)
+    await git(Fetch.fromOrigin())
   },
 }
 
