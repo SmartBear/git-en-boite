@@ -4,10 +4,10 @@ import { assertThat, hasProperty, matchesPattern, promiseThat, rejected, startsW
 import path from 'path'
 import { promisify } from 'util'
 
-import { GitRepo } from './git_repo'
+import { GitDirectory } from './git_directory'
 
 const exec = promisify(childProcess.exec)
-describe(GitRepo.name, () => {
+describe(GitDirectory.name, () => {
   const root = path.resolve(__dirname, '../../tmp')
 
   beforeEach(async () => {
@@ -18,7 +18,7 @@ describe(GitRepo.name, () => {
     it('returns a promise of the result', async () => {
       const repoPath = path.resolve(root, 'a-repo')
       fs.mkdirSync(repoPath, { recursive: true })
-      const repo = new GitRepo(repoPath)
+      const repo = new GitDirectory(repoPath)
       const result = await repo.execGit('init')
       assertThat(result.stdout, startsWith('Initialized empty Git repository'))
     })
@@ -26,7 +26,7 @@ describe(GitRepo.name, () => {
     it('raises any error', async () => {
       const repoPath = path.resolve(root, 'a-repo')
       fs.mkdirSync(repoPath, { recursive: true })
-      const repo = new GitRepo(repoPath)
+      const repo = new GitDirectory(repoPath)
       await promiseThat(
         repo.execGit('not-a-command'),
         rejected(hasProperty('message', matchesPattern('is not a git command'))),

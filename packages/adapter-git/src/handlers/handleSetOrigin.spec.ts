@@ -6,7 +6,7 @@ import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
-import { GitRepo } from '../git_repo'
+import { GitDirectory } from '../git_directory'
 import { handleInit } from './handleInit'
 import { handleSetOrigin } from './handleSetOrigin'
 
@@ -20,8 +20,8 @@ describe('handleSetOrigin', () => {
 
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
-    const repo = new GitRepo(repoPath)
-    const commandBus = new CommandBus<GitRepo, Init | SetOrigin>(repo)
+    const repo = new GitDirectory(repoPath)
+    const commandBus = new CommandBus<GitDirectory, Init | SetOrigin>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(SetOrigin, handleSetOrigin)
     return commandBus.do.bind(commandBus)

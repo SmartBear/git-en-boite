@@ -1,21 +1,22 @@
-import path from 'path'
-import { LocalGitRepos } from './local_git_repos'
 import childProcess from 'child_process'
-import { promisify } from 'util'
+import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
+import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-core-port-git'
 import {
   assertThat,
-  promiseThat,
+  equalTo,
+  falsy,
   fulfilled,
   hasProperty,
   is,
+  promiseThat,
   truthy,
-  falsy,
-  equalTo,
 } from 'hamjest'
+import path from 'path'
+import { promisify } from 'util'
+
 import { ConnectRepoRequest } from './interfaces'
-import { LocalGitRepo } from './local_git_repo'
-import { Init, EnsureBranchExists, Commit, GetRevision } from 'git-en-boite-core-port-git'
-import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
+import { LocalGitRepos } from './local_git_repos'
+
 const exec = promisify(childProcess.exec)
 
 describe(LocalGitRepos.name, () => {

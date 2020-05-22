@@ -1,3 +1,6 @@
-import { GitRepo } from '../git_repo'
+import { GitDirectory } from '../git_directory'
 
-export type Handler<Command, Result = void> = (repo: GitRepo, command: Command) => Promise<Result>
+export type Handler<Command, Result = void> = (
+  repo: GitDirectory,
+  command: Command,
+) => Promise<Result>

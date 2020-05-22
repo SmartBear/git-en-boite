@@ -11,11 +11,11 @@ import {
 import path from 'path'
 import { promisify } from 'util'
 
-import { GitRepo } from './git_repo'
+import { GitDirectory } from './git_directory'
 import { GitRepoFactory, TestableGitRepoFactory } from './index'
 
 const exec = promisify(childProcess.exec)
-describe(GitRepo.name, () => {
+describe(GitDirectory.name, () => {
   const root = path.resolve(__dirname, '../tmp')
 
   beforeEach(async () => {

@@ -12,7 +12,7 @@ import {
   GetRevision,
 } from 'git-en-boite-core-port-git'
 
-import { GitRepo } from './git_repo'
+import { GitDirectory } from './git_directory'
 import {
   handleInit,
   handleSetOrigin,
@@ -25,8 +25,8 @@ import {
 export class GitRepoFactory implements OpensGitRepos {
   async open(path: string): Promise<OperateGitRepo> {
     fs.mkdirSync(path, { recursive: true })
-    const repo = new GitRepo(path)
-    const commandBus = new CommandBus<GitRepo, GitOperation>(repo)
+    const repo = new GitDirectory(path)
+    const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(SetOrigin, handleSetOrigin)
     commandBus.handle(Fetch, handleFetch)
@@ -37,8 +37,8 @@ export class GitRepoFactory implements OpensGitRepos {
 export class TestableGitRepoFactory implements OpensGitRepos {
   async open(path: string): Promise<OperateGitRepo> {
     fs.mkdirSync(path, { recursive: true })
-    const repo = new GitRepo(path)
-    const commandBus = new CommandBus<GitRepo, GitOperation>(repo)
+    const repo = new GitDirectory(path)
+    const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(SetOrigin, handleSetOrigin)
     commandBus.handle(Commit, handleCommit)

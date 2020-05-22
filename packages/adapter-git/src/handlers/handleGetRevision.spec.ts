@@ -6,7 +6,7 @@ import { fulfilled, promiseThat, rejected, equalTo } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
-import { GitRepo } from '../git_repo'
+import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
 import { handleInit } from './handleInit'
 import { handleEnsureBranchExists } from './handleEnsureBranchExists'
@@ -24,8 +24,8 @@ describe('handleGetRevision', () => {
 
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
-    const repo = new GitRepo(repoPath)
-    const commandBus = new CommandBus<GitRepo, Operation>(repo)
+    const repo = new GitDirectory(repoPath)
+    const commandBus = new CommandBus<GitDirectory, Operation>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(Commit, handleCommit)
     commandBus.handle(GetRevision, handleGetRevision)

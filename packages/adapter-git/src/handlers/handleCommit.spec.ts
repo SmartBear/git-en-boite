@@ -7,7 +7,7 @@ import { containsString, fulfilled, hasProperty, promiseThat } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
-import { GitRepo } from '../git_repo'
+import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
 import { handleInit } from './handleInit'
 
@@ -21,8 +21,8 @@ describe('handleCommit', () => {
 
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
-    const repo = new GitRepo(repoPath)
-    const commandBus = new CommandBus<GitRepo, Init | Commit>(repo)
+    const repo = new GitDirectory(repoPath)
+    const commandBus = new CommandBus<GitDirectory, Init | Commit>(repo)
     commandBus.handle(Init, handleInit)
     commandBus.handle(Commit, handleCommit)
     return commandBus.do.bind(commandBus)

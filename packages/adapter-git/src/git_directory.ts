@@ -1,6 +1,6 @@
 import { GitProcess, IGitResult, IGitExecutionOptions } from 'dugite'
 
-export class GitRepo {
+export class GitDirectory {
   path: string
 
   constructor(path: string) {
