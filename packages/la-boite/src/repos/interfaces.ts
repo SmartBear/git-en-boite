@@ -1,9 +1,5 @@
 import { QueryResult } from 'query_result'
-
-export interface Reference {
-  name: string
-  revision: string
-}
+import { Ref } from 'git-en-boite-core'
 
 export interface Branch {
   name: string
@@ -22,7 +18,7 @@ export interface FetchRepoRequest {
 
 export interface GitRepoInfo {
   repoId: string
-  refs: Reference[]
+  refs: Ref[]
   branches: Branch[]
 }
 

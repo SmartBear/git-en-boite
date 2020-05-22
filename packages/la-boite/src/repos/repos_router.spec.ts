@@ -6,6 +6,7 @@ import { Server } from 'http'
 import WebApp from '../web_app'
 import { stubInterface, StubbedInstance } from 'ts-sinon'
 import { QueryResult } from '../query_result'
+import { Ref } from 'git-en-boite-core'
 
 describe('/repos', () => {
   let request: SuperTest<Test>
@@ -27,15 +28,17 @@ describe('/repos', () => {
     server.close()
   })
 
+  const bareObject = (object: object): object => JSON.parse(JSON.stringify(object))
+
   describe('GET /repos/:repoId', () => {
     it('returns an object with info about the repo', async () => {
       const repoInfo = {
         repoId: 'a-repo-id',
-        refs: [{ name: 'refs/remotes/origin/master', revision: 'abc123' }],
+        refs: [new Ref('abc123', 'refs/remotes/origin/master')],
       }
       repos.getInfo.resolves(QueryResult.from(repoInfo))
       const response = await request.get('/repos/a-repo-id').expect(200)
-      assertThat(response.body, equalTo(repoInfo))
+      assertThat(response.body, equalTo(bareObject(repoInfo)))
     })
 
     it("responds 404 if the repo doesn't exist", async () => {
@@ -56,13 +59,13 @@ describe('/repos', () => {
     it('redirects to the repo if it already exists', async () => {
       const repoInfo = {
         repoId: 'a-repo-id',
-        refs: [{ name: 'refs/remotes/origin/master', revision: 'abc123' }],
+        refs: [new Ref('abc123', 'refs/remotes/origin/master')],
       }
       repos.getInfo.resolves(QueryResult.from(repoInfo))
       const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
       await request.post('/repos').send(connectRepoRequest).expect(302)
       const response = await request.post('/repos').send(connectRepoRequest).redirects(1)
-      assertThat(response.body, equalTo(repoInfo))
+      assertThat(response.body, equalTo(bareObject(repoInfo)))
     })
   })
 

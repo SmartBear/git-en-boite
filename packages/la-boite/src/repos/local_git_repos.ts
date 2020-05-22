@@ -6,9 +6,9 @@ import path from 'path'
 
 import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
-import { LocalGitRepo } from './local_git_repo'
-import { Init, SetOrigin, Fetch } from 'git-en-boite-core-port-git'
+import { Init, SetOrigin, Fetch, GetRefs } from 'git-en-boite-core-port-git'
 import { GitRepoFactory } from 'git-en-boite-adapter-git'
+import { Ref } from 'git-en-boite-core'
 
 const config = createConfig()
 
@@ -94,14 +94,15 @@ export class LocalGitRepos implements GitRepos {
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!this.exists(repoId)) return QueryResult.from()
-    const repo = await LocalGitRepo.open(this.repoFolder(repoId).gitRepoPath)
-    const refs = await repo.refs()
+    const repoPath = this.repoFolder(repoId).gitRepoPath
+    const git = await new GitRepoFactory().open(repoPath)
+    const refs = (await git(GetRefs.all())) as Ref[]
     const branches: Branch[] = refs
-      .filter(ref => ref.name.startsWith('refs/remotes/origin/'))
+      .filter(ref => ref.isRemote)
       .map(ref => {
         return {
-          name: ref.name.replace('refs/remotes/origin/', ''),
-          refName: ref.name,
+          name: ref.branchName,
+          refName: ref.refName,
           revision: ref.revision,
         }
       })
