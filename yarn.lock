@@ -504,6 +504,11 @@ assertion-error-formatter@^3.0.0:
     pad-right "^0.2.2"
     repeat-string "^1.6.1"
 
+assertion-error@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
+  integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
+
 assertion-error@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.0.2.tgz#13ca515d86206da0bac66e834dd397d87581094c"
@@ -1608,6 +1613,15 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
+
+hamjest@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/hamjest/-/hamjest-3.5.0.tgz#641df4b46451c7ebcd7f100f2eb8f7a6ba79e3ad"
+  integrity sha512-rpG2AymRWMbOKH2AnFiVkp/WAmlmNxSBMaZoNyNRr0HJip6YUmg6eEZ51aHIh77WSAqZhAXWPs2XIclaaH2bbA==
+  dependencies:
+    assertion-error "^1.1.0"
+    bluebird "^3.3.4"
+    lodash "^4.17.15"
 
 hamjest@mattwynne/hamjest#master:
   version "3.3.1"

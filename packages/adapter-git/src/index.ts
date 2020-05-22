@@ -10,6 +10,7 @@ import {
   Commit,
   EnsureBranchExists,
   GetRevision,
+  GetRefs,
 } from 'git-en-boite-core-port-git'
 
 import { GitDirectory } from './git_directory'
@@ -20,6 +21,7 @@ import {
   handleGetRevision,
   handleCommit,
   handleEnsureBranchExists,
+  handleGetRefs,
 } from './handlers'
 
 export class GitRepoFactory implements OpensGitRepos {
@@ -30,6 +32,7 @@ export class GitRepoFactory implements OpensGitRepos {
     commandBus.handle(Init, handleInit)
     commandBus.handle(SetOrigin, handleSetOrigin)
     commandBus.handle(Fetch, handleFetch)
+    commandBus.handle(GetRefs, handleGetRefs)
     return commandBus.do.bind(commandBus)
   }
 }

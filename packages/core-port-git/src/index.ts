@@ -30,6 +30,12 @@ export class Fetch {
   }
 }
 
+export class GetRefs {
+  static all() {
+    return new this()
+  }
+}
+
 export class GetRevision {
   protected constructor(public readonly reference: string) {}
 
@@ -58,7 +64,14 @@ export class SetOrigin {
   }
 }
 
-export type GitOperation = Init | Commit | Fetch | EnsureBranchExists | GetRevision | SetOrigin
+export type GitOperation =
+  | Init
+  | Commit
+  | Fetch
+  | EnsureBranchExists
+  | GetRevision
+  | GetRefs
+  | SetOrigin
 
 export type OperateGitRepo = (operation: GitOperation) => any // until we figure out how to do better about return types
 

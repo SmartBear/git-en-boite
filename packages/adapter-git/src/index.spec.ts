@@ -1,18 +1,32 @@
 import childProcess from 'child_process'
-import { Commit, Fetch, GetRevision, Init, SetOrigin } from 'git-en-boite-core-port-git'
+import { Ref } from 'git-en-boite-core'
 import {
+  Commit,
+  Fetch,
+  GetRefs,
+  GetRevision,
+  GitOperation,
+  Init,
+  SetOrigin,
+} from 'git-en-boite-core-port-git'
+import {
+  assertThat,
+  equalTo,
   fulfilled,
   hasProperty,
   isRejectedWith,
   matchesPattern,
   promiseThat,
   startsWith,
+  truthy,
 } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
+import { GitRepoFactory, TestableGitRepoFactory } from '.'
 import { GitDirectory } from './git_directory'
-import { GitRepoFactory, TestableGitRepoFactory } from './index'
+
+const SHA1_PATTERN = /[0-9a-f]{5,40}/
 
 const exec = promisify(childProcess.exec)
 describe(GitDirectory.name, () => {
@@ -58,7 +72,7 @@ describe(GitDirectory.name, () => {
     })
 
     describe(Fetch.name, () => {
-      context('an origin repo with commits on master', () => {
+      context('with an origin repo with commits on master', () => {
         let latestCommit: string
         let originUrl: string
 
@@ -93,6 +107,41 @@ describe(GitDirectory.name, () => {
               hasProperty('message', matchesPattern('does not appear to be a git repository')),
             ),
           )
+        })
+      })
+
+      describe(GetRefs.name, () => {
+        context('with an origin repo with commits on master', () => {
+          let latestCommit: string
+          let originUrl: string
+
+          beforeEach(async () => {
+            originUrl = path.resolve(root, 'remote', 'a-repo-id')
+            const origin = await new TestableGitRepoFactory().open(originUrl)
+            await origin(Init.normalRepo())
+            await origin(Commit.withAnyMessage())
+            latestCommit = await origin(GetRevision.forCurrentBranch())
+          })
+
+          context('and the repo has been fetched', () => {
+            const repoPath = path.resolve(root, 'a-repo-id')
+            let git: (operation: GitOperation) => unknown
+
+            beforeEach(async () => {
+              git = await new GitRepoFactory().open(repoPath)
+              await git(Init.bareRepo())
+              await git(SetOrigin.toUrl(originUrl))
+              await git(Fetch.fromOrigin())
+            })
+
+            it('returns a single Ref for the remote master branch', async () => {
+              const refs = (await git(GetRefs.all())) as Ref[]
+              assertThat(refs, hasProperty('length', equalTo(1)))
+              assertThat(refs[0].revision, matchesPattern(SHA1_PATTERN))
+              assertThat(refs[0].isRemote, truthy())
+              assertThat(refs[0].branchName, equalTo('master'))
+            })
+          })
         })
       })
     })
