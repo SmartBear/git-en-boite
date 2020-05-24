@@ -8,9 +8,9 @@ export class CommandBus<Context, Command> {
 
   constructor(readonly target: Context) {}
 
-  handle<HandledCommand extends Command>(
+  handle<HandledCommand extends Command, Result>(
     commandType: Type<HandledCommand>,
-    handler: Handler<Context, HandledCommand>,
+    handler: Handler<Context, HandledCommand, Result>,
   ) {
     this.handlers.set(commandType, handler)
     return this
@@ -22,6 +22,6 @@ export class CommandBus<Context, Command> {
   }
 }
 
-export interface Handler<Context, HandledCommand> {
-  (target: Context, command: HandledCommand): unknown
+export interface Handler<Context, HandledCommand, Result = void> {
+  (target: Context, command: HandledCommand): Result
 }

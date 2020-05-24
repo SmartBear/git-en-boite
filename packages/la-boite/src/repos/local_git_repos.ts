@@ -96,7 +96,7 @@ export class LocalGitRepos implements GitRepos {
     if (!this.exists(repoId)) return QueryResult.from()
     const repoPath = this.repoFolder(repoId).gitRepoPath
     const git = await new GitRepoFactory().open(repoPath)
-    const refs = (await git(GetRefs.all())) as Ref[]
+    const refs = await git<Promise<Ref[]>>(GetRefs.all())
     const branches: Branch[] = refs
       .filter(ref => ref.isRemote)
       .map(ref => {

@@ -73,7 +73,7 @@ export type GitOperation =
   | GetRefs
   | SetOrigin
 
-export type OperateGitRepo = (operation: GitOperation) => any // until we figure out how to do better about return types
+export type OperateGitRepo = <Result>(operation: GitOperation) => Result
 
 export interface OpensGitRepos {
   open(path: string): Promise<OperateGitRepo>
