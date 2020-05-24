@@ -1,12 +1,11 @@
 /* tslint:disable: only-arrow-functions */
-import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
 import { Given, TableDefinition, Then, When } from 'cucumber'
+import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-core-port-git'
 import { assertThat, containsInAnyOrder, equalTo } from 'hamjest'
 import path from 'path'
 
 import { GitRepoInfo } from '../../src/repos/interfaces'
-import { LocalGitRepo } from '../../src/repos/local_git_repo'
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
@@ -62,7 +61,7 @@ Then("Bob can see that the repo's refs are:", async function (expectedRefsTable:
     .set('Accept', 'application/json')
     .expect(200)
   assertThat(
-    (response.body as GitRepoInfo).refs.map(ref => ref.name),
+    (response.body as GitRepoInfo).refs.map(ref => ref.refName),
     containsInAnyOrder(...expectedRefNames),
   )
 })
