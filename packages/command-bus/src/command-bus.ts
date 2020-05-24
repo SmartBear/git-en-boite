@@ -13,6 +13,7 @@ export class CommandBus<Context, Command> {
     handler: Handler<Context, HandledCommand>,
   ) {
     this.handlers.set(commandType, handler)
+    return this
   }
 
   do(command: Command) {

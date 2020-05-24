@@ -26,10 +26,11 @@ describe('handleGetRevision', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Operation>(repo)
-    commandBus.handle(Init, handleInit)
-    commandBus.handle(Commit, handleCommit)
-    commandBus.handle(GetRevision, handleGetRevision)
-    commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)
+    commandBus
+      .handle(Init, handleInit)
+      .handle(Commit, handleCommit)
+      .handle(GetRevision, handleGetRevision)
+      .handle(EnsureBranchExists, handleEnsureBranchExists)
     return commandBus.do.bind(commandBus)
   }
 

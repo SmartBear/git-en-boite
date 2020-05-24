@@ -22,8 +22,7 @@ describe('handleSetOrigin', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Init | SetOrigin>(repo)
-    commandBus.handle(Init, handleInit)
-    commandBus.handle(SetOrigin, handleSetOrigin)
+    commandBus.handle(Init, handleInit).handle(SetOrigin, handleSetOrigin)
     return commandBus.do.bind(commandBus)
   }
 

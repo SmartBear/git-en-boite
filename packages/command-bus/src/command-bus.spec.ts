@@ -42,8 +42,9 @@ describe('CommandBus', () => {
 
     const party = new BirthdayParty()
     const commandBus = new CommandBus<BirthdayParty, BirthdayCommand>(party)
-    commandBus.handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
-    commandBus.handle(EatCake, party => (party.cake = 'gone'))
+    commandBus
+      .handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
+      .handle(EatCake, party => (party.cake = 'gone'))
     commandBus.do(singHappyBirthday)
     commandBus.do(eatCake)
     assertThat(party.sounds, equalTo('happy birthday'))

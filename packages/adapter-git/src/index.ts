@@ -29,10 +29,11 @@ export class GitRepoFactory implements OpensGitRepos {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
     const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
-    commandBus.handle(Init, handleInit)
-    commandBus.handle(SetOrigin, handleSetOrigin)
-    commandBus.handle(Fetch, handleFetch)
-    commandBus.handle(GetRefs, handleGetRefs)
+    commandBus
+      .handle(Init, handleInit)
+      .handle(SetOrigin, handleSetOrigin)
+      .handle(Fetch, handleFetch)
+      .handle(GetRefs, handleGetRefs)
     return commandBus.do.bind(commandBus)
   }
 }
@@ -42,12 +43,13 @@ export class TestableGitRepoFactory implements OpensGitRepos {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
     const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
-    commandBus.handle(Init, handleInit)
-    commandBus.handle(SetOrigin, handleSetOrigin)
-    commandBus.handle(Commit, handleCommit)
-    commandBus.handle(Fetch, handleFetch)
-    commandBus.handle(EnsureBranchExists, handleEnsureBranchExists)
-    commandBus.handle(GetRevision, handleGetRevision)
+    commandBus
+      .handle(Init, handleInit)
+      .handle(SetOrigin, handleSetOrigin)
+      .handle(Commit, handleCommit)
+      .handle(Fetch, handleFetch)
+      .handle(EnsureBranchExists, handleEnsureBranchExists)
+      .handle(GetRevision, handleGetRevision)
     return commandBus.do.bind(commandBus)
   }
 }
