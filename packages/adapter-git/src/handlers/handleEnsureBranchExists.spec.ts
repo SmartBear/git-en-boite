@@ -1,15 +1,16 @@
 import childProcess from 'child_process'
+import { GitProcess } from 'dugite'
 import fs from 'fs'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { Commit, Init, EnsureBranchExists } from 'git-en-boite-core-port-git'
-import { fulfilled, promiseThat, rejected, containsInAnyOrder } from 'hamjest'
+import { Commit, EnsureBranchExists, Init } from 'git-en-boite-core-port-git'
+import { containsInAnyOrder, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
-import { handleInit } from './handleInit'
 import { handleEnsureBranchExists } from './handleEnsureBranchExists'
+import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
@@ -33,7 +34,10 @@ describe('handleEnsureBranchExists', () => {
   }
 
   const branchesFound = async () => {
-    const result = await exec('git branch --list --format="%(refname:short)"', { cwd: repoPath })
+    const result = await GitProcess.exec(
+      ['branch', '--list', '--format=%(refname:short)'],
+      repoPath,
+    )
     return result.stdout.trim().split('\n')
   }
 
