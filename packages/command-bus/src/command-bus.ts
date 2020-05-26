@@ -23,5 +23,5 @@ export class CommandBus<Context, Command> {
 }
 
 export interface Handler<Context, HandledCommand, Result = void> {
-  (target: Context, command: HandledCommand): Result
+  (target: Context, command: HandledCommand, dispatch?: Function): Result
 }
