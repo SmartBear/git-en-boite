@@ -23,6 +23,11 @@ jobs:
           cache-key: yarn.lock
           pkg-manager: yarn
       - run:
+          name: Listing dependencies
+          command: yarn list
+      - run: git --version
+      - run: node_modules/dugite/git/bin/git --version
+      - run:
           name: Linting Typescript
           command: yarn workspaces run lint
       - run:
