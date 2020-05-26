@@ -56,3 +56,7 @@ export class TestableGitRepoFactory implements OpensGitRepos {
     return commandBus.do.bind(commandBus)
   }
 }
+
+// TODO: remove
+import { GitProcess } from 'dugite'
+GitProcess.exec(['--version'], '.').then(result => console.log(result.stdout))
