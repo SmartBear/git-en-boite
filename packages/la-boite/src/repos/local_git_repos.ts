@@ -19,7 +19,7 @@ interface Processors {
 type QueueComponents = [Queue, Worker]
 
 const processors: Processors = {
-  clone: async (job: Job) => {
+  connect: async (job: Job) => {
     const { repoPath, remoteUrl } = job.data
     const git = await new GitRepoFactory().open(repoPath)
     await git(Init.bareRepo())
@@ -85,7 +85,7 @@ export class LocalGitRepos implements GitRepos {
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
     const queue = this.getQueueForRepo(repoId)
-    await queue.add('clone', {
+    await queue.add('connect', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
       remoteUrl,
