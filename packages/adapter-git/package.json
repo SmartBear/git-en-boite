@@ -21,8 +21,9 @@
   },
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
-    "git-en-boite-core-port-git": "0.0.0",
-    "git-en-boite-command-bus": "0.0.0"
+    "dugite": "^1.88.7",
+    "git-en-boite-command-bus": "0.0.0",
+    "git-en-boite-core-port-git": "0.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",

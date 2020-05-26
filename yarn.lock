@@ -1072,7 +1072,7 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dugite@^1.88.2:
+dugite@^1.88.7:
   version "1.88.7"
   resolved "https://registry.yarnpkg.com/dugite/-/dugite-1.88.7.tgz#ed014b075495bcae5b9afa1551b22314a4e40ee2"
   integrity sha512-xb1PpR5BJX0OFlaNH67bUssfgb1f0bH5no1O8UgEd7cxOH6EOjlmEzu+tSP5uDX4xv6SXntmLq5lccJ15BymqQ==
