@@ -20,6 +20,7 @@ jobs:
       - checkout
       - node/install-packages:
           with-cache: true
+          cache-key: yarn.lock
           pkg-manager: yarn
       - run:
           name: Linting Typescript
