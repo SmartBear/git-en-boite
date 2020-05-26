@@ -112,7 +112,6 @@ describe(GitDirectory.name, () => {
 
       describe(GetRefs.name, () => {
         context('with an origin repo with commits on master', () => {
-          let latestCommit: string
           let originUrl: string
 
           beforeEach(async () => {
@@ -120,7 +119,6 @@ describe(GitDirectory.name, () => {
             const origin = await new TestableGitRepoFactory().open(originUrl)
             await origin(Init.normalRepo())
             await origin(Commit.withAnyMessage())
-            latestCommit = await origin(GetRevision.forCurrentBranch())
           })
 
           context('and the repo has been fetched', () => {
