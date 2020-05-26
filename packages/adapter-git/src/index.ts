@@ -1,27 +1,29 @@
 import fs from 'fs'
 import { CommandBus } from 'git-en-boite-command-bus'
 import {
+  Commit,
+  Connect,
+  EnsureBranchExists,
   Fetch,
+  GetRefs,
+  GetRevision,
   GitOperation,
   Init,
   OpensGitRepos,
   OperateGitRepo,
   SetOrigin,
-  Commit,
-  EnsureBranchExists,
-  GetRevision,
-  GetRefs,
 } from 'git-en-boite-core-port-git'
 
 import { GitDirectory } from './git_directory'
 import {
+  handleCommit,
+  handleConnect,
+  handleEnsureBranchExists,
+  handleFetch,
+  handleGetRefs,
+  handleGetRevision,
   handleInit,
   handleSetOrigin,
-  handleFetch,
-  handleGetRevision,
-  handleCommit,
-  handleEnsureBranchExists,
-  handleGetRefs,
 } from './handlers'
 
 export class GitRepoFactory implements OpensGitRepos {
@@ -31,6 +33,7 @@ export class GitRepoFactory implements OpensGitRepos {
     const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
     commandBus
       .handle(Init, handleInit)
+      .handle(Connect, handleConnect)
       .handle(SetOrigin, handleSetOrigin)
       .handle(Fetch, handleFetch)
       .handle(GetRefs, handleGetRefs)

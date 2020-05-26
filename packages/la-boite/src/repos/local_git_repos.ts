@@ -6,7 +6,7 @@ import path from 'path'
 
 import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
-import { Init, SetOrigin, Fetch, GetRefs } from 'git-en-boite-core-port-git'
+import { Connect, Fetch, GetRefs } from 'git-en-boite-core-port-git'
 import { GitRepoFactory } from 'git-en-boite-adapter-git'
 import { Ref } from 'git-en-boite-core'
 
@@ -22,9 +22,7 @@ const processors: Processors = {
   connect: async (job: Job) => {
     const { repoPath, remoteUrl } = job.data
     const git = await new GitRepoFactory().open(repoPath)
-    await git(Init.bareRepo())
-    await git(SetOrigin.toUrl(remoteUrl))
-    await git(Fetch.fromOrigin())
+    await git(Connect.toUrl(remoteUrl))
   },
 
   fetch: async (job: Job) => {

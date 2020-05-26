@@ -16,9 +16,9 @@ export class CommandBus<Context, Command> {
     return this
   }
 
-  do(command: Command) {
+  do<Result>(command: Command): Result {
     const handler = this.handlers.get(command.constructor) || this.defaultHandler
-    return handler(this.target, command)
+    return handler(this.target, command, this.do.bind(this))
   }
 }
 

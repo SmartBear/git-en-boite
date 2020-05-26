@@ -64,9 +64,18 @@ export class SetOrigin {
   }
 }
 
+export class Connect {
+  protected constructor(public readonly remoteUrl: string) {}
+
+  static toUrl(remoteUrl: string) {
+    return new this(remoteUrl)
+  }
+}
+
 export type GitOperation =
   | Init
   | Commit
+  | Connect
   | Fetch
   | EnsureBranchExists
   | GetRevision
