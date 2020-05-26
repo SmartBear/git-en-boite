@@ -8,6 +8,7 @@ import {
   GitOperation,
   Init,
   SetOrigin,
+  Connect,
 } from 'git-en-boite-core-port-git'
 import {
   assertThat,
@@ -37,6 +38,12 @@ describe(GitDirectory.name, () => {
   })
 
   describe('executing a GitOperation', () => {
+    describe(Connect.name, () => {
+      it('creates a new repo') // assert that GetRefs does not fail
+      it('fetches the latest revisions for each branch on the remote')
+      it('fails when the remote does not exist')
+    })
+
     describe(Init.name, () => {
       it('creates a new bare repo with conservative garbage collection settings', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
