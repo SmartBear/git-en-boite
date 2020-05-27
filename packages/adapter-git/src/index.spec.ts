@@ -2,13 +2,13 @@ import childProcess from 'child_process'
 import { Ref } from 'git-en-boite-core'
 import {
   Commit,
+  Connect,
   Fetch,
   GetRefs,
   GetRevision,
   GitOperation,
   Init,
   SetOrigin,
-  Connect,
 } from 'git-en-boite-core-port-git'
 import {
   assertThat,
@@ -22,6 +22,7 @@ import {
   truthy,
 } from 'hamjest'
 import path from 'path'
+import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitRepoFactory, TestableGitRepoFactory } from '.'
@@ -31,15 +32,28 @@ const SHA1_PATTERN = /[0-9a-f]{5,40}/
 
 const exec = promisify(childProcess.exec)
 describe(GitDirectory.name, () => {
-  const root = path.resolve(__dirname, '../tmp')
+  let root: string
 
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   describe('executing a GitOperation', () => {
     describe(Connect.name, () => {
-      it('creates a new repo') // assert that GetRefs does not fail
+      it('creates a new repo', async () => {
+        const remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
+        const origin = await new TestableGitRepoFactory().open(remoteUrl)
+        await origin(Init.normalRepo())
+        await origin(Commit.withAnyMessage())
+
+        const repoPath = path.resolve(root, 'a-repo-id')
+        const git = await new GitRepoFactory().open(repoPath)
+        await git(Connect.toUrl(remoteUrl))
+        await promiseThat(git(GetRefs.all()), fulfilled())
+      })
+
       it('fetches the latest revisions for each branch on the remote')
       it('fails when the remote does not exist')
     })
@@ -129,11 +143,10 @@ describe(GitDirectory.name, () => {
           })
 
           context('and the repo has been fetched', () => {
-            const repoPath = path.resolve(root, 'a-repo-id')
             let git: (operation: GitOperation) => unknown
 
             beforeEach(async () => {
-              git = await new GitRepoFactory().open(repoPath)
+              git = await new GitRepoFactory().open(path.resolve(root, 'a-repo-id'))
               await git(Init.bareRepo())
               await git(SetOrigin.toUrl(originUrl))
               await git(Fetch.fromOrigin())
