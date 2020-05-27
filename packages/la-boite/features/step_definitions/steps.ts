@@ -1,11 +1,10 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
+import { GitRepoInfo } from 'git-en-boite-client-port'
 import { TestableGitRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import { assertThat, containsInAnyOrder, equalTo } from 'hamjest'
 import path from 'path'
-
-import { GitRepoInfo } from '../../src/repos/interfaces'
 
 Given('a repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])

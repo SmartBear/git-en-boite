@@ -4,6 +4,7 @@
     "test": "yarn workspaces run test"
   },
   "workspaces": [
+    "packages/client-port",
     "packages/command-bus",
     "packages/core",
     "packages/git-adapter",

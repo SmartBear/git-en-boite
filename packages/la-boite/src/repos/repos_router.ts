@@ -1,7 +1,6 @@
+import { Application, ConnectRepoRequest } from 'git-en-boite-client-port'
 import { Context } from 'koa'
 import Router from 'koa-router'
-import { ConnectRepoRequest } from './interfaces'
-import { Application } from '../application'
 
 export function create({ repos }: Application): Router {
   const router = new Router({ prefix: '/repos' })

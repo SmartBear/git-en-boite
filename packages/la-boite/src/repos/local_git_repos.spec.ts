@@ -14,7 +14,7 @@ import {
 import path from 'path'
 import { promisify } from 'util'
 
-import { ConnectRepoRequest } from './interfaces'
+import { ConnectRepoRequest } from 'git-en-boite-client-port'
 import { LocalGitRepos } from './local_git_repos'
 
 const exec = promisify(childProcess.exec)

@@ -1,14 +1,20 @@
-import IORedis from 'ioredis'
 import { Job, Queue, QueueBase, Worker } from 'bullmq'
-import { createConfig } from '../config'
 import fs from 'fs'
+import {
+  Branch,
+  ConnectRepoRequest,
+  FetchRepoRequest,
+  GitRepoInfo,
+  GitRepos,
+  QueryResult,
+} from 'git-en-boite-client-port'
+import { Ref } from 'git-en-boite-core'
+import { GitRepoFactory } from 'git-en-boite-git-adapter'
+import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
+import IORedis from 'ioredis'
 import path from 'path'
 
-import { QueryResult } from '../query_result'
-import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
-import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
-import { GitRepoFactory } from 'git-en-boite-git-adapter'
-import { Ref } from 'git-en-boite-core'
+import { createConfig } from '../config'
 
 const config = createConfig()
 

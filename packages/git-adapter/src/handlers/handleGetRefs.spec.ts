@@ -1,17 +1,17 @@
 import childProcess from 'child_process'
+import { GitProcess } from 'dugite'
 import fs from 'fs'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { Commit, Init, EnsureBranchExists, GetRevision, GetRefs } from 'git-en-boite-git-port'
-import { fulfilled, promiseThat, rejected, equalTo } from 'hamjest'
+import { Ref } from 'git-en-boite-core'
+import { Commit, GetRefs, Init } from 'git-en-boite-git-port'
+import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
-import { handleInit } from './handleInit'
 import { handleGetRefs } from './handleGetRefs'
-import { GitProcess } from 'dugite'
-import { Ref } from 'git-en-boite-core'
+import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')

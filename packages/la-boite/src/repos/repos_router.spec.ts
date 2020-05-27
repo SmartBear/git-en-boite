@@ -1,12 +1,12 @@
-import supertest, { SuperTest, Test } from 'supertest'
-import { create } from './repos_router'
-import { GitRepos, FetchRepoRequest } from './interfaces'
+import { FetchRepoRequest, GitRepos, QueryResult } from 'git-en-boite-client-port'
+import { Ref } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
+import supertest, { SuperTest, Test } from 'supertest'
+import { StubbedInstance, stubInterface } from 'ts-sinon'
+
 import WebApp from '../web_app'
-import { stubInterface, StubbedInstance } from 'ts-sinon'
-import { QueryResult } from '../query_result'
-import { Ref } from 'git-en-boite-core'
+import { create } from './repos_router'
 
 describe('/repos', () => {
   let request: SuperTest<Test>

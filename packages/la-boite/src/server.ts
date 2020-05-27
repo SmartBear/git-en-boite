@@ -1,9 +1,10 @@
-import { createConfig } from './config'
-import WebApp from './web_app'
-import Router from './router'
-import { LocalGitRepos } from './repos/local_git_repos'
-import { Application } from './application'
+import { Application } from 'git-en-boite-client-port'
 import { core } from 'git-en-boite-core'
+
+import { createConfig } from './config'
+import { LocalGitRepos } from './repos/local_git_repos'
+import Router from './router'
+import WebApp from './web_app'
 
 const config = createConfig(process.env)
 console.log(`git-en-boite starting up`)
