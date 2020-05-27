@@ -1,4 +1,4 @@
-import childProcess from 'child_process'
+import { ConnectRepoRequest } from 'git-en-boite-client-port'
 import { TestableGitRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import {
@@ -12,22 +12,23 @@ import {
   truthy,
 } from 'hamjest'
 import path from 'path'
-import { promisify } from 'util'
+import { dirSync } from 'tmp'
 
-import { ConnectRepoRequest } from 'git-en-boite-client-port'
 import { LocalGitRepos } from './local_git_repos'
 
-const exec = promisify(childProcess.exec)
-
 describe(LocalGitRepos.name, () => {
-  const root = path.resolve(__dirname, '../../tmp')
-  let repos: LocalGitRepos
+  let root: string
 
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
-    repos = new LocalGitRepos(root)
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
+  let repos: LocalGitRepos
+  beforeEach(() => {
+    repos = new LocalGitRepos(root)
+  })
   afterEach(async () => {
     await repos.close()
   })

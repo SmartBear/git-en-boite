@@ -1,7 +1,7 @@
 import { Application } from 'git-en-boite-client-port'
 
 import { createConfig } from './config'
-import { LocalGitRepos } from './repos/local_git_repos'
+import { LocalGitRepos } from './local_git_repos'
 import { createWebApp } from 'git-en-boite-client-adapter-web'
 
 const config = createConfig(process.env)

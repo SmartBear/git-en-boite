@@ -4,7 +4,7 @@
   "description": "HTTP API Gateway for git-en-boite",
   "main": "src/index.ts",
   "scripts": {
-    "test": "mocha",
+    "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {

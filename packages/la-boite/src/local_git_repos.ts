@@ -14,7 +14,7 @@ import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
 import IORedis from 'ioredis'
 import path from 'path'
 
-import { createConfig } from '../config'
+import { createConfig } from './config'
 
 const config = createConfig()
 
