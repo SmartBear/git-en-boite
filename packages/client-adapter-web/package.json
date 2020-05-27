@@ -1,0 +1,26 @@
+{
+  "name": "git-en-boite-client-adapter-web",
+  "version": "0.0.0",
+  "description": "HTTP API Gateway for git-en-boite",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "mocha",
+    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartbear/git-en-boite.git"
+  },
+  "keywords": [
+    "git"
+  ],
+  "author": "Matt Wynne <matt@mattwynne.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smartbear/git-en-boite/issues"
+  },
+  "homepage": "https://github.com/smartbear/git-en-boite#readme",
+  "dependencies": {
+    "git-en-boite-client-port": "0.0.0"
+  }
+}

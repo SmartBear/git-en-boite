@@ -1,14 +1,12 @@
 import request from 'supertest'
-import WebApp from '../../../src/web_app'
-import Router from '../../../src/router'
 import { Before, After } from 'cucumber'
 import { Server } from 'http'
+import { createWebApp } from 'git-en-boite-client-adapter-web'
 
 let webServer: Server
 
 Before(function () {
-  const routes = Router.create(this.app)
-  const webApp = WebApp.withRoutes(routes)
+  const webApp = createWebApp(this.app)
   webServer = webApp.listen(8888)
   this.request = request(webServer)
 })

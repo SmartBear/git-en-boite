@@ -1,4 +1,5 @@
 import { Ref } from 'git-en-boite-core'
+import { Server } from 'http'
 
 import { QueryResult } from './query_result'
 export { QueryResult } from './query_result'
@@ -26,6 +27,7 @@ export interface GitRepoInfo {
 
 export interface Application {
   repos: GitRepos
+  version: string
 }
 
 export interface ConnectRepoRequest {
@@ -42,3 +44,5 @@ export interface GitRepos {
   getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>
   fetchFromRemote: (request: FetchRepoRequest) => Promise<void>
 }
+
+export type ListensOnPort = { listen: (port: number) => Server }

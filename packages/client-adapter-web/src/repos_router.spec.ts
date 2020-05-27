@@ -5,7 +5,7 @@ import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
 
-import WebApp from '../web_app'
+import WebApp from './web_app'
 import { create } from './repos_router'
 
 describe('/repos', () => {
@@ -18,7 +18,7 @@ describe('/repos', () => {
   })
 
   beforeEach(() => {
-    const routes = create({ repos })
+    const routes = create({ repos, version: '1' })
     const webApp = WebApp.withRoutes(routes)
     server = webApp.listen(8888)
     request = supertest(server)
