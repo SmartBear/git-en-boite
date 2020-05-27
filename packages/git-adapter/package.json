@@ -1,5 +1,5 @@
 {
-  "name": "git-en-boite-adapter-git",
+  "name": "git-en-boite-git-adapter",
   "version": "0.0.0",
   "description": "Concrete implementation of the interface defined by git-en-boite-core-git-port",
   "main": "src/index.ts",
@@ -23,7 +23,7 @@
   "dependencies": {
     "dugite": "^1.88.7",
     "git-en-boite-command-bus": "0.0.0",
-    "git-en-boite-core-port-git": "0.0.0"
+    "git-en-boite-git-port": "0.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",

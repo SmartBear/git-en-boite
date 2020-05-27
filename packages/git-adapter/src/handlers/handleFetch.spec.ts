@@ -1,7 +1,7 @@
 import fs from 'fs'
 import childProcess from 'child_process'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { Init, Commit, GetRevision, SetOrigin, Fetch } from 'git-en-boite-core-port-git'
+import { Init, Commit, GetRevision, SetOrigin, Fetch } from 'git-en-boite-git-port'
 import {
   fulfilled,
   hasProperty,

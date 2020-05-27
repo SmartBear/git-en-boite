@@ -12,7 +12,7 @@ import {
   OperateGitRepo,
   EnsureBranchExists,
   Checkout,
-} from 'git-en-boite-core-port-git'
+} from 'git-en-boite-git-port'
 import {
   assertThat,
   equalTo,

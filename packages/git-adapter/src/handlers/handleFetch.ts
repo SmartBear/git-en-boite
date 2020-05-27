@@ -1,4 +1,4 @@
-import { Fetch } from 'git-en-boite-core-port-git'
+import { Fetch } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 

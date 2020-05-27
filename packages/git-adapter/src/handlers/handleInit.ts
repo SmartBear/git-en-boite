@@ -1,4 +1,4 @@
-import { Init } from 'git-en-boite-core-port-git'
+import { Init } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 

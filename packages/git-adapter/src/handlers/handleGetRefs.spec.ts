@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import fs from 'fs'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { Commit, Init, EnsureBranchExists, GetRevision } from 'git-en-boite-core-port-git'
+import { Commit, Init, EnsureBranchExists, GetRevision, GetRefs } from 'git-en-boite-git-port'
 import { fulfilled, promiseThat, rejected, equalTo } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
@@ -9,14 +9,15 @@ import { promisify } from 'util'
 import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
 import { handleInit } from './handleInit'
-import { handleEnsureBranchExists } from './handleEnsureBranchExists'
-import { handleGetRevision } from './handleGetRevision'
+import { handleGetRefs } from './handleGetRefs'
+import { GitProcess } from 'dugite'
+import { Ref } from 'git-en-boite-core'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
-type Operation = Init | Commit | GetRevision | EnsureBranchExists
+type Operation = Init | Commit | GetRefs
 
-describe('handleGetRevision', () => {
+describe('handleGetRefs', () => {
   const repoPath = path.resolve(root, 'a-repo-id')
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
@@ -26,22 +27,18 @@ describe('handleGetRevision', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Operation>(repo)
-    commandBus
-      .handle(Init, handleInit)
-      .handle(Commit, handleCommit)
-      .handle(GetRevision, handleGetRevision)
-      .handle(EnsureBranchExists, handleEnsureBranchExists)
+    commandBus.handle(Init, handleInit).handle(Commit, handleCommit).handle(GetRefs, handleGetRefs)
     return commandBus.do.bind(commandBus)
   }
 
   const revisionForBranch = async (branchName: string) => {
-    const result = await exec(`git rev-parse ${branchName}`, { cwd: repoPath })
+    const result = await GitProcess.exec(['rev-parse', branchName], repoPath)
     return result.stdout.trim()
   }
 
-  context('in a non-bare repo', () => {
-    let git: (operation: Operation) => Promise<void>
+  let git: (operation: Operation) => Promise<void>
 
+  context('in a non-bare repo', () => {
     beforeEach(async () => {
       git = repo(repoPath)
       await git(Init.normalRepo())
@@ -49,7 +46,7 @@ describe('handleGetRevision', () => {
 
     context('with no commits in the repo', () => {
       it('fails', async () => {
-        await promiseThat(git(GetRevision.forBranchNamed('master')), rejected())
+        await promiseThat(git(GetRefs.all()), rejected())
       })
     })
 
@@ -60,10 +57,21 @@ describe('handleGetRevision', () => {
 
       it('returns the revision of the latest commit', async () => {
         await promiseThat(
-          git(GetRevision.forBranchNamed('master')),
-          fulfilled(equalTo(await revisionForBranch('master'))),
+          git(GetRefs.all()),
+          fulfilled(equalTo([new Ref(await revisionForBranch('master'), 'refs/heads/master')])),
         )
       })
+    })
+  })
+
+  context('in a bare repo', () => {
+    beforeEach(async () => {
+      git = repo(repoPath)
+      await git(Init.bareRepo())
+    })
+
+    context('with a remote branch', () => {
+      it('returns a ref for the remote branch')
     })
   })
 })

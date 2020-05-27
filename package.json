@@ -4,10 +4,10 @@
     "test": "yarn workspaces run test"
   },
   "workspaces": [
-    "packages/adapter-git",
     "packages/command-bus",
     "packages/core",
-    "packages/core-port-git",
+    "packages/git-adapter",
+    "packages/git-port",
     "packages/la-boite"
   ]
 }

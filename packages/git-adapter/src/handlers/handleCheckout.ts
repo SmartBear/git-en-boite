@@ -1,4 +1,4 @@
-import { Checkout } from 'git-en-boite-core-port-git'
+import { Checkout } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 

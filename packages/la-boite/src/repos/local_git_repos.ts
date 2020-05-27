@@ -6,8 +6,8 @@ import path from 'path'
 
 import { QueryResult } from '../query_result'
 import { Branch, ConnectRepoRequest, FetchRepoRequest, GitRepoInfo, GitRepos } from './interfaces'
-import { Connect, Fetch, GetRefs } from 'git-en-boite-core-port-git'
-import { GitRepoFactory } from 'git-en-boite-adapter-git'
+import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
+import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Ref } from 'git-en-boite-core'
 
 const config = createConfig()

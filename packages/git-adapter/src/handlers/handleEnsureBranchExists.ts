@@ -1,4 +1,4 @@
-import { EnsureBranchExists } from 'git-en-boite-core-port-git'
+import { EnsureBranchExists } from 'git-en-boite-git-port'
 import { Handler } from './handler'
 
 export const handleEnsureBranchExists: Handler<EnsureBranchExists> = async (repo, { name }) => {

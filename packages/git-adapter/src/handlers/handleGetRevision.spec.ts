@@ -1,22 +1,22 @@
 import childProcess from 'child_process'
-import { GitProcess } from 'dugite'
 import fs from 'fs'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { Commit, EnsureBranchExists, Init } from 'git-en-boite-core-port-git'
-import { containsInAnyOrder, fulfilled, promiseThat, rejected } from 'hamjest'
+import { Commit, Init, EnsureBranchExists, GetRevision } from 'git-en-boite-git-port'
+import { fulfilled, promiseThat, rejected, equalTo } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
-import { handleEnsureBranchExists } from './handleEnsureBranchExists'
 import { handleInit } from './handleInit'
+import { handleEnsureBranchExists } from './handleEnsureBranchExists'
+import { handleGetRevision } from './handleGetRevision'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
-type Operation = Init | Commit | EnsureBranchExists
+type Operation = Init | Commit | GetRevision | EnsureBranchExists
 
-describe('handleEnsureBranchExists', () => {
+describe('handleGetRevision', () => {
   const repoPath = path.resolve(root, 'a-repo-id')
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
@@ -29,16 +29,14 @@ describe('handleEnsureBranchExists', () => {
     commandBus
       .handle(Init, handleInit)
       .handle(Commit, handleCommit)
+      .handle(GetRevision, handleGetRevision)
       .handle(EnsureBranchExists, handleEnsureBranchExists)
     return commandBus.do.bind(commandBus)
   }
 
-  const branchesFound = async () => {
-    const result = await GitProcess.exec(
-      ['branch', '--list', '--format=%(refname:short)'],
-      repoPath,
-    )
-    return result.stdout.trim().split('\n')
+  const revisionForBranch = async (branchName: string) => {
+    const result = await exec(`git rev-parse ${branchName}`, { cwd: repoPath })
+    return result.stdout.trim()
   }
 
   context('in a non-bare repo', () => {
@@ -51,21 +49,20 @@ describe('handleEnsureBranchExists', () => {
 
     context('with no commits in the repo', () => {
       it('fails', async () => {
-        await promiseThat(git(EnsureBranchExists.named('master')), rejected())
+        await promiseThat(git(GetRevision.forBranchNamed('master')), rejected())
       })
     })
 
-    context('with a commit on the master branch', () => {
-      it('creates a new branch', async () => {
+    context('with a commit to the master branch', () => {
+      beforeEach(async () => {
         await git(Commit.withAnyMessage())
-        await git(EnsureBranchExists.named('develop'))
-        await promiseThat(branchesFound(), fulfilled(containsInAnyOrder('develop', 'master')))
       })
 
-      it('leaves the master branch', async () => {
-        await git(Commit.withAnyMessage())
-        await git(EnsureBranchExists.named('master'))
-        await promiseThat(branchesFound(), fulfilled(containsInAnyOrder('master')))
+      it('returns the revision of the latest commit', async () => {
+        await promiseThat(
+          git(GetRevision.forBranchNamed('master')),
+          fulfilled(equalTo(await revisionForBranch('master'))),
+        )
       })
     })
   })

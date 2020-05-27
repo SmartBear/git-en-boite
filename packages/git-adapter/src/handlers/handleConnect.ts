@@ -1,4 +1,4 @@
-import { Connect, Init, SetOrigin, Fetch } from 'git-en-boite-core-port-git'
+import { Connect, Init, SetOrigin, Fetch } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 

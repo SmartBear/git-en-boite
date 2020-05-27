@@ -1,7 +1,7 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { TestableGitRepoFactory } from 'git-en-boite-adapter-git'
-import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-core-port-git'
+import { TestableGitRepoFactory } from 'git-en-boite-git-adapter'
+import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import { assertThat, containsInAnyOrder, equalTo } from 'hamjest'
 import path from 'path'
 

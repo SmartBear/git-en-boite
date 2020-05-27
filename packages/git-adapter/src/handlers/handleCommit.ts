@@ -1,4 +1,4 @@
-import { Commit } from 'git-en-boite-core-port-git'
+import { Commit } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 

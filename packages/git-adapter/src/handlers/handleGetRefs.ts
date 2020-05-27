@@ -1,4 +1,4 @@
-import { GetRefs } from 'git-en-boite-core-port-git'
+import { GetRefs } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 import { Ref } from 'git-en-boite-core'

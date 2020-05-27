@@ -13,7 +13,7 @@ import {
   OperateGitRepo,
   SetOrigin,
   Checkout,
-} from 'git-en-boite-core-port-git'
+} from 'git-en-boite-git-port'
 
 import { GitDirectory } from './git_directory'
 import {

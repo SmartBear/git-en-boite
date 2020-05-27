@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import fs from 'fs'
 import { CommandBus } from 'git-en-boite-command-bus'
-import { Init } from 'git-en-boite-core-port-git'
+import { Init } from 'git-en-boite-git-port'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'

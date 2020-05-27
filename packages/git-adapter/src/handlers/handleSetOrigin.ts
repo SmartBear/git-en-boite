@@ -1,4 +1,4 @@
-import { SetOrigin } from 'git-en-boite-core-port-git'
+import { SetOrigin } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 

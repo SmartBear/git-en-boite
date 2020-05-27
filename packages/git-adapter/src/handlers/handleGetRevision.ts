@@ -1,4 +1,4 @@
-import { GetRevision } from 'git-en-boite-core-port-git'
+import { GetRevision } from 'git-en-boite-git-port'
 
 import { Handler } from './handler'
 
