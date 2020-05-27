@@ -12,12 +12,14 @@ import {
   OpensGitRepos,
   OperateGitRepo,
   SetOrigin,
+  Checkout,
 } from 'git-en-boite-core-port-git'
 
 import { GitDirectory } from './git_directory'
 import {
   handleCommit,
   handleConnect,
+  handleCheckout,
   handleEnsureBranchExists,
   handleFetch,
   handleGetRefs,
@@ -49,10 +51,12 @@ export class TestableGitRepoFactory implements OpensGitRepos {
     commandBus
       .handle(Init, handleInit)
       .handle(SetOrigin, handleSetOrigin)
+      .handle(Checkout, handleCheckout)
       .handle(Commit, handleCommit)
       .handle(Fetch, handleFetch)
       .handle(EnsureBranchExists, handleEnsureBranchExists)
       .handle(GetRevision, handleGetRevision)
+      .handle(GetRefs, handleGetRefs)
     return commandBus.do.bind(commandBus)
   }
 }

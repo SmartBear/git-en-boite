@@ -9,6 +9,9 @@ import {
   GitOperation,
   Init,
   SetOrigin,
+  OperateGitRepo,
+  EnsureBranchExists,
+  Checkout,
 } from 'git-en-boite-core-port-git'
 import {
   assertThat,
@@ -42,19 +45,45 @@ describe(GitDirectory.name, () => {
 
   describe('executing a GitOperation', () => {
     describe(Connect.name, () => {
-      it('creates a new repo', async () => {
-        const remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
-        const origin = await new TestableGitRepoFactory().open(remoteUrl)
+      let remoteUrl: string
+      let origin: OperateGitRepo
+
+      beforeEach(async () => {
+        remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
+        origin = await new TestableGitRepoFactory().open(remoteUrl)
         await origin(Init.normalRepo())
         await origin(Commit.withAnyMessage())
+      })
 
+      it('creates a new repo', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
         const git = await new GitRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
         await promiseThat(git(GetRefs.all()), fulfilled())
       })
 
-      it('fetches the latest revisions for each branch on the remote')
+      it('fetches the latest revisions for each branch on the remote', async () => {
+        const revisions: { [branchName: string]: string } = {}
+        for (const branchName of ['master', 'develop']) {
+          await origin(EnsureBranchExists.named(branchName))
+          await origin(Checkout.branch(branchName))
+          await origin(Commit.withAnyMessage())
+          const revision: string = await origin(GetRevision.forBranchNamed(branchName))
+          revisions[branchName] = revision
+        }
+        const repoPath = path.resolve(root, 'a-repo-id')
+        const git = await new GitRepoFactory().open(repoPath)
+        await git(Connect.toUrl(remoteUrl))
+        const refs = await git<Ref[]>(GetRefs.all())
+        assertThat(refs.length, equalTo(2))
+        for (const branchName of ['master', 'develop']) {
+          assertThat(
+            refs.find(ref => ref.branchName === branchName).revision,
+            equalTo(revisions[branchName]),
+          )
+        }
+      })
+
       it('fails when the remote does not exist')
     })
 
@@ -102,7 +131,7 @@ describe(GitDirectory.name, () => {
           const origin = await new TestableGitRepoFactory().open(originUrl)
           await origin(Init.normalRepo())
           await origin(Commit.withAnyMessage())
-          latestCommit = await origin(GetRevision.forCurrentBranch())
+          latestCommit = await origin(GetRevision.forBranchNamed('master'))
         })
 
         it('fetches commits from the origin remote', async () => {

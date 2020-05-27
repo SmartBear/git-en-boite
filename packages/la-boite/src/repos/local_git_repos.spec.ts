@@ -126,7 +126,7 @@ describe(LocalGitRepos.name, () => {
     await repos.connectToRemote({ repoId, remoteUrl: repoPath })
     await repos.waitUntilIdle(repoId)
     await git(Commit.withMessage('Another commit'))
-    const expectedRevision = await git(GetRevision.forCurrentBranch())
+    const expectedRevision = await git(GetRevision.forBranchNamed('master'))
     await repos.fetchFromRemote({ repoId })
     await repos.waitUntilIdle(repoId)
     const result = await repos.getInfo(repoId)

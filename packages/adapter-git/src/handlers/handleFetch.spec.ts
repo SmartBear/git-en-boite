@@ -36,7 +36,7 @@ describe('handleFetch', () => {
       const origin = await new TestableGitRepoFactory().open(originUrl)
       await origin(Init.normalRepo())
       await origin(Commit.withAnyMessage())
-      latestCommit = await origin(GetRevision.forCurrentBranch())
+      latestCommit = await origin(GetRevision.forBranchNamed('master'))
     })
 
     const repo = (repoPath: string) => {

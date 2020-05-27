@@ -8,4 +8,5 @@ export const handleEnsureBranchExists: Handler<EnsureBranchExists> = async (repo
     .trim()
     .split('\n')
   if (!branches.includes(name)) await repo.execGit('branch', [name, 'HEAD'])
+  // await repo.execGit('checkout', [name])
 }

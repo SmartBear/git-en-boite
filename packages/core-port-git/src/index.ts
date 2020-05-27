@@ -1,5 +1,13 @@
 import { Author } from 'git-en-boite-core'
 
+export class Checkout {
+  protected constructor(public readonly branchName: string) {}
+
+  static branch(branchName: string) {
+    return new this(branchName)
+  }
+}
+
 export class Commit {
   protected constructor(public readonly message: string, public readonly author: Author) {}
 
@@ -39,8 +47,8 @@ export class GetRefs {
 export class GetRevision {
   protected constructor(public readonly reference: string) {}
 
-  static forCurrentBranch() {
-    return new GetRevision('HEAD')
+  static forBranchNamed(reference: string) {
+    return new GetRevision(reference)
   }
 }
 
@@ -74,6 +82,7 @@ export class Connect {
 
 export type GitOperation =
   | Init
+  | Checkout
   | Commit
   | Connect
   | Fetch

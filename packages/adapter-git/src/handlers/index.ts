@@ -1,3 +1,4 @@
+export * from './handleCheckout'
 export * from './handleCommit'
 export * from './handleConnect'
 export * from './handleEnsureBranchExists'

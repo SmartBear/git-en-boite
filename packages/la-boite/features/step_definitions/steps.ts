@@ -31,7 +31,7 @@ Given('a remote repo with commits on the master branch', async function () {
 When('a new commit is made in the remote repo', async function () {
   const git = await new TestableGitRepoFactory().open(this.repoRemoteUrl)
   await git(Commit.withAnyMessage())
-  this.lastCommitRevision = await git(GetRevision.forCurrentBranch())
+  this.lastCommitRevision = await git(GetRevision.forBranchNamed('master'))
 })
 
 When('Bob connects an app to the repo', async function () {

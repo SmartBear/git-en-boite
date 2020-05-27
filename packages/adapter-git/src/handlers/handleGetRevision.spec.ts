@@ -49,7 +49,7 @@ describe('handleGetRevision', () => {
 
     context('with no commits in the repo', () => {
       it('fails', async () => {
-        await promiseThat(git(GetRevision.forCurrentBranch()), rejected())
+        await promiseThat(git(GetRevision.forBranchNamed('master')), rejected())
       })
     })
 
@@ -60,7 +60,7 @@ describe('handleGetRevision', () => {
 
       it('returns the revision of the latest commit', async () => {
         await promiseThat(
-          git(GetRevision.forCurrentBranch()),
+          git(GetRevision.forBranchNamed('master')),
           fulfilled(equalTo(await revisionForBranch('master'))),
         )
       })
