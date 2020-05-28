@@ -20,7 +20,7 @@
     "git-en-boite-core": "0.0.0",
     "git-en-boite-git-adapter": "0.0.0",
     "git-en-boite-git-port": "0.0.0",
-    "pg": "^8.0.3",
+    "pg": "^8.2.1",
     "ts-sinon": "^1.2.0",
     "uuid": "^8.1.0"
   },
