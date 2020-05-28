@@ -28,7 +28,7 @@ describe('/repos', () => {
     server.close()
   })
 
-  const bareObject = (object: object): object => JSON.parse(JSON.stringify(object))
+  const bareObject = <T>(object: T): Record<string, unknown> => JSON.parse(JSON.stringify(object))
 
   describe('GET /repos/:repoId', () => {
     it('returns an object with info about the repo', async () => {
