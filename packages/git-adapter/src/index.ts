@@ -39,7 +39,7 @@ export class GitRepoFactory implements OpensGitRepos {
       .handle(SetOrigin, handleSetOrigin)
       .handle(Fetch, handleFetch)
       .handle(GetRefs, handleGetRefs)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 }
 
@@ -57,6 +57,6 @@ export class TestableGitRepoFactory implements OpensGitRepos {
       .handle(EnsureBranchExists, handleEnsureBranchExists)
       .handle(GetRevision, handleGetRevision)
       .handle(GetRefs, handleGetRefs)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 }

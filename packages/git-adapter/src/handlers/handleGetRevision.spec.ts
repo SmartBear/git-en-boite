@@ -31,7 +31,7 @@ describe('handleGetRevision', () => {
       .handle(Commit, handleCommit)
       .handle(GetRevision, handleGetRevision)
       .handle(EnsureBranchExists, handleEnsureBranchExists)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 
   const revisionForBranch = async (branchName: string) => {

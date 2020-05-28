@@ -30,7 +30,7 @@ describe('handleEnsureBranchExists', () => {
       .handle(Init, handleInit)
       .handle(Commit, handleCommit)
       .handle(EnsureBranchExists, handleEnsureBranchExists)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 
   const branchesFound = async () => {

@@ -1,4 +1,4 @@
-import { CommandBus, HandlesCommands } from './command-bus'
+import { CommandBus, HandleCommands } from './command-bus'
 import { equalTo, assertThat, throws, hasProperty, matchesPattern } from 'hamjest'
 
 describe('CommandBus', () => {
@@ -28,8 +28,8 @@ describe('CommandBus', () => {
       Sing,
       (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()),
     )
-    noisyCommandBus.do(singHappyBirthday)
-    quietCommandBus.do(singHappyBirthday)
+    noisyCommandBus.dispatch(singHappyBirthday)
+    quietCommandBus.dispatch(singHappyBirthday)
     assertThat(noisyParty.sounds, equalTo('HAPPY BIRTHDAY'))
     assertThat(quietParty.sounds, equalTo('happy birthday'))
   })
@@ -43,8 +43,8 @@ describe('CommandBus', () => {
     commandBus
       .handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
       .handle(EatCake, party => (party.cake = 'gone'))
-    commandBus.do(singHappyBirthday)
-    commandBus.do(eatCake)
+    commandBus.dispatch(singHappyBirthday)
+    commandBus.dispatch(eatCake)
     assertThat(party.sounds, equalTo('happy birthday'))
     assertThat(party.cake, equalTo('gone'))
   })
@@ -53,7 +53,7 @@ describe('CommandBus', () => {
     const party = new Party()
     const commandBus = new CommandBus<Party, Sing>(party)
     commandBus.handle(Sing, () => 'a-result')
-    const result = commandBus.do(Sing.theSong('any song'))
+    const result = commandBus.dispatch(Sing.theSong('any song'))
     assertThat(result, equalTo('a-result'))
   })
 
@@ -67,9 +67,9 @@ describe('CommandBus', () => {
     }
 
     it('handles composite commands', () => {
-      const handleSing: HandlesCommands<Party, Sing> = (party, { songName }) =>
+      const handleSing: HandleCommands<Party, Sing> = (party, { songName }) =>
         (party.sounds = songName.toLocaleLowerCase())
-      const handleEatCake: HandlesCommands<Party, EatCake> = party => (party.cake = 'gone')
+      const handleEatCake: HandleCommands<Party, EatCake> = party => (party.cake = 'gone')
       const party = new Party()
       const commandBus = new CommandBus<Party, Sing | EatCake>(party)
       commandBus
@@ -79,27 +79,27 @@ describe('CommandBus', () => {
           dispatch(Sing.theSong(songName))
           dispatch(new EatCake())
         })
-      commandBus.do(ThrowParty.withSong('Happy birthday'))
+      commandBus.dispatch(ThrowParty.withSong('Happy birthday'))
       assertThat(party.sounds, equalTo('happy birthday'))
       assertThat(party.cake, equalTo('gone'))
     })
 
     it('works when the low-level commands are asynchronous', async () => {
-      const handleSingSlowly: HandlesCommands<Party, Sing> = async (party, { songName }) =>
+      const handleSingSlowly: HandleCommands<Party, Sing> = async (party, { songName }) =>
         new Promise(resolve =>
           setTimeout(() => {
             party.sounds = songName.toLocaleLowerCase()
             resolve()
           }, 0),
         )
-      const handleEatCakeSlowly: HandlesCommands<Party, EatCake, Promise<void>> = party =>
+      const handleEatCakeSlowly: HandleCommands<Party, EatCake, Promise<void>> = party =>
         new Promise(resolve =>
           setTimeout(() => {
             party.cake = 'gone'
             resolve()
           }, 0),
         )
-      const handleThrowParty: HandlesCommands<Party, ThrowParty> = async (
+      const handleThrowParty: HandleCommands<Party, ThrowParty> = async (
         _,
         { songName }: ThrowParty,
         dispatch,
@@ -113,7 +113,7 @@ describe('CommandBus', () => {
         .handle(Sing, handleSingSlowly)
         .handle(EatCake, handleEatCakeSlowly)
         .handle(ThrowParty, handleThrowParty)
-      await commandBus.do(ThrowParty.withSong('Happy birthday'))
+      await commandBus.dispatch(ThrowParty.withSong('Happy birthday'))
       assertThat(party.sounds, equalTo('happy birthday'))
     })
   })
@@ -123,7 +123,7 @@ describe('CommandBus', () => {
       const party = new Party()
       const commandBus = new CommandBus<Party, EatCake>(party)
       assertThat(
-        () => commandBus.do(new EatCake()),
+        () => commandBus.dispatch(new EatCake()),
         throws(hasProperty('message', matchesPattern('No handler'))),
       )
     })

@@ -24,7 +24,7 @@ describe('handleCommit', () => {
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Init | Commit>(repo)
     commandBus.handle(Init, handleInit).handle(Commit, handleCommit)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 
   context('in a non-bare repo', () => {

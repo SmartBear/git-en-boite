@@ -23,7 +23,7 @@ describe('handleInit', () => {
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Init>(repo)
     commandBus.handle(Init, handleInit)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 
   it('creates a new bare repo with conservative garbage collection settings', async () => {
