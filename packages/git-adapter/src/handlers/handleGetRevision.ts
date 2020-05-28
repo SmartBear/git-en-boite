@@ -1,6 +1,8 @@
 import { GetRevision } from 'git-en-boite-git-port'
 
-import { Handler } from './handler'
+import { HandlesGitOperations } from './handles_git_operations'
 
-export const handleGetRevision: Handler<GetRevision, string> = async (repo, { reference }) =>
-  (await repo.execGit('rev-parse', [reference])).stdout.trim()
+export const handleGetRevision: HandlesGitOperations<GetRevision, string> = async (
+  repo,
+  { reference },
+) => (await repo.execGit('rev-parse', [reference])).stdout.trim()
