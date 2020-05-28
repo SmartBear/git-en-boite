@@ -26,7 +26,6 @@ describe('handleGetRevision', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Operation>(repo)
-    commandBus
       .handle(Init, handleInit)
       .handle(Commit, handleCommit)
       .handle(GetRevision, handleGetRevision)
@@ -40,7 +39,7 @@ describe('handleGetRevision', () => {
   }
 
   context('in a non-bare repo', () => {
-    let git: (operation: Operation) => Promise<void>
+    let git: (operation: Operation) => Promise<void | string>
 
     beforeEach(async () => {
       git = repo(repoPath)

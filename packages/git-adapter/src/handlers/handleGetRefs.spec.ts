@@ -38,7 +38,7 @@ describe('handleGetRefs', () => {
     return result.stdout.trim()
   }
 
-  let git: (operation: Operation) => Promise<void>
+  let git: (operation: Operation) => Promise<void | Ref[]>
 
   context('in a non-bare repo', () => {
     beforeEach(async () => {
