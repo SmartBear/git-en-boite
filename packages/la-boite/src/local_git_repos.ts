@@ -1,4 +1,4 @@
-import { Job, Queue, QueueBase, Worker } from 'bullmq'
+import { Job, Queue, QueueBase, Worker, Processor } from 'bullmq'
 import fs from 'fs'
 import {
   Branch,
@@ -19,7 +19,7 @@ import { createConfig } from './config'
 const config = createConfig()
 
 interface Processors {
-  [jobName: string]: Function
+  [jobName: string]: Processor
 }
 
 type QueueComponents = [Queue, Worker]
@@ -38,8 +38,8 @@ const processors: Processors = {
   },
 }
 
-const getJobProcessor = (job: Job): Function => () =>
-  (processors[job.name] || ((): void => undefined))(job)
+const getJobProcessor = (job: Job) => () =>
+  (processors[job.name] || ((): Promise<void> => undefined))(job)
 
 class RepoFolder {
   readonly path: string

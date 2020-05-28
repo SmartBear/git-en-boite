@@ -1,6 +1,7 @@
+import { assertThat, equalTo, hasProperty, throws } from 'hamjest'
 import path from 'path'
+
 import { createConfig } from './config'
-import { assertThat, hasProperty, equalTo, not, throws } from 'hamjest'
 
 describe('createConfig', () => {
   const defaultConfig = {
@@ -45,7 +46,6 @@ describe('createConfig', () => {
           throw new Error(`path ${path} not faked`)
         },
       }
-      // eslint-disable-next-line @typescript-eslint/camelcase
       const config = createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs)
       assertThat(config, hasProperty('version', equalTo('1.2.3')))
     })
@@ -61,7 +61,6 @@ describe('createConfig', () => {
           throw new Error(`path ${path} not faked`)
         },
       }
-      // eslint-disable-next-line @typescript-eslint/camelcase
       const config = createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs)
       assertThat(config, hasProperty('version', equalTo('1.2.3.456')))
     })
