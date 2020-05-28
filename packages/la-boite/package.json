@@ -22,7 +22,7 @@
     "git-en-boite-git-port": "0.0.0",
     "pg": "^8.0.3",
     "ts-sinon": "^1.2.0",
-    "uuid": "^7.0.2"
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@types/cucumber": "^6.0.1",
