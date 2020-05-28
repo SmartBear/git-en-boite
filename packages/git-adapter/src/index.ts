@@ -33,7 +33,6 @@ export class GitRepoFactory implements OpensGitRepos {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
     const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
-    commandBus
       .handle(Init, handleInit)
       .handle(Connect, handleConnect)
       .handle(SetOrigin, handleSetOrigin)
@@ -48,7 +47,6 @@ export class TestableGitRepoFactory implements OpensGitRepos {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
     const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
-    commandBus
       .handle(Init, handleInit)
       .handle(SetOrigin, handleSetOrigin)
       .handle(Checkout, handleCheckout)

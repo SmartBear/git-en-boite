@@ -21,10 +21,11 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const noisyParty = new Party()
     const quietParty = new Party()
-    const noisyCommandBus = new CommandBus<Party, Sing | EatCake>(noisyParty)
-    const quietCommandBus = new CommandBus<Party, Sing | EatCake>(quietParty)
-    noisyCommandBus.handle(Sing, (party, { songName }) => (party.sounds = songName.toUpperCase()))
-    quietCommandBus.handle(
+    const noisyCommandBus = new CommandBus<Party, Sing | EatCake>(noisyParty).handle(
+      Sing,
+      (party, { songName }) => (party.sounds = songName.toUpperCase()),
+    )
+    const quietCommandBus = new CommandBus<Party, Sing | EatCake>(quietParty).handle(
       Sing,
       (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()),
     )
@@ -40,7 +41,6 @@ describe('CommandBus', () => {
 
     const party = new Party()
     const commandBus = new CommandBus<Party, Sing | EatCake>(party)
-    commandBus
       .handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
       .handle(EatCake, party => (party.cake = 'gone'))
     commandBus.dispatch(singHappyBirthday)
@@ -51,8 +51,7 @@ describe('CommandBus', () => {
 
   it('returns the value returned by the handler', () => {
     const party = new Party()
-    const commandBus = new CommandBus<Party, Sing>(party)
-    commandBus.handle(Sing, () => 'a-result')
+    const commandBus = new CommandBus<Party, Sing>(party).handle(Sing, () => 'a-result')
     const result = commandBus.dispatch(Sing.theSong('any song'))
     assertThat(result, equalTo('a-result'))
   })
@@ -72,7 +71,6 @@ describe('CommandBus', () => {
       const handleEatCake: HandleCommands<Party, EatCake> = party => (party.cake = 'gone')
       const party = new Party()
       const commandBus = new CommandBus<Party, Sing | EatCake>(party)
-      commandBus
         .handle(Sing, handleSing)
         .handle(EatCake, handleEatCake)
         .handle(ThrowParty, (_, { songName }: ThrowParty, dispatch) => {
@@ -109,23 +107,11 @@ describe('CommandBus', () => {
       }
       const party = new Party()
       const commandBus = new CommandBus<Party, Sing | EatCake>(party)
-      commandBus
         .handle(Sing, handleSingSlowly)
         .handle(EatCake, handleEatCakeSlowly)
         .handle(ThrowParty, handleThrowParty)
       await commandBus.dispatch(ThrowParty.withSong('Happy birthday'))
       assertThat(party.sounds, equalTo('happy birthday'))
-    })
-  })
-
-  context('when there is no handler registered for a command', () => {
-    it('throws an error by default', () => {
-      const party = new Party()
-      const commandBus = new CommandBus<Party, EatCake>(party)
-      assertThat(
-        () => commandBus.dispatch(new EatCake()),
-        throws(hasProperty('message', matchesPattern('No handler'))),
-      )
     })
   })
 })
