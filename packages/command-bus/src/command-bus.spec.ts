@@ -1,5 +1,6 @@
+import { assertThat, equalTo } from 'hamjest'
+
 import { CommandBus, HandleCommands } from './command-bus'
-import { equalTo, assertThat, throws, hasProperty, matchesPattern } from 'hamjest'
 
 describe('CommandBus', () => {
   class Sing {
@@ -21,11 +22,11 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const noisyParty = new Party()
     const quietParty = new Party()
-    const noisyCommandBus = new CommandBus<Party, Sing | EatCake>(noisyParty).handle(
+    const noisyCommandBus = new CommandBus(noisyParty).handle(
       Sing,
       (party, { songName }) => (party.sounds = songName.toUpperCase()),
     )
-    const quietCommandBus = new CommandBus<Party, Sing | EatCake>(quietParty).handle(
+    const quietCommandBus = new CommandBus(quietParty).handle(
       Sing,
       (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()),
     )
@@ -40,7 +41,7 @@ describe('CommandBus', () => {
     const eatCake = new EatCake()
 
     const party = new Party()
-    const commandBus = new CommandBus<Party, Sing | EatCake>(party)
+    const commandBus = new CommandBus(party)
       .handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
       .handle(EatCake, party => (party.cake = 'gone'))
     commandBus.dispatch(singHappyBirthday)
@@ -51,7 +52,7 @@ describe('CommandBus', () => {
 
   it('returns the value returned by the handler', () => {
     const party = new Party()
-    const commandBus = new CommandBus<Party, Sing>(party).handle(Sing, () => 'a-result')
+    const commandBus = new CommandBus(party).handle(Sing, () => 'a-result')
     const result = commandBus.dispatch(Sing.theSong('any song'))
     assertThat(result, equalTo('a-result'))
   })
@@ -70,7 +71,7 @@ describe('CommandBus', () => {
         (party.sounds = songName.toLocaleLowerCase())
       const handleEatCake: HandleCommands<Party, EatCake> = party => (party.cake = 'gone')
       const party = new Party()
-      const commandBus = new CommandBus<Party, Sing | EatCake>(party)
+      const commandBus = new CommandBus(party)
         .handle(Sing, handleSing)
         .handle(EatCake, handleEatCake)
         .handle(ThrowParty, (_, { songName }: ThrowParty, dispatch) => {
@@ -106,7 +107,7 @@ describe('CommandBus', () => {
         await dispatch(new EatCake())
       }
       const party = new Party()
-      const commandBus = new CommandBus<Party, Sing | EatCake>(party)
+      const commandBus = new CommandBus(party)
         .handle(Sing, handleSingSlowly)
         .handle(EatCake, handleEatCakeSlowly)
         .handle(ThrowParty, handleThrowParty)
