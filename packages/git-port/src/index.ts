@@ -1,3 +1,4 @@
+import { DispatchCommands } from 'git-en-boite-command-bus'
 import { Author } from 'git-en-boite-core'
 
 export class Checkout {
@@ -75,24 +76,11 @@ export class SetOrigin {
 export class Connect {
   protected constructor(public readonly remoteUrl: string) {}
 
-  static toUrl(remoteUrl: string) {
+  static toUrl(remoteUrl: string): Connect {
     return new this(remoteUrl)
   }
 }
 
-export type GitOperation =
-  | Init
-  | Checkout
-  | Commit
-  | Connect
-  | Fetch
-  | EnsureBranchExists
-  | GetRevision
-  | GetRefs
-  | SetOrigin
-
-export type OperateGitRepo = <Result>(operation: GitOperation) => Result
-
 export interface OpensGitRepos {
-  open(path: string): Promise<OperateGitRepo>
+  open(path: string): Promise<DispatchCommands>
 }

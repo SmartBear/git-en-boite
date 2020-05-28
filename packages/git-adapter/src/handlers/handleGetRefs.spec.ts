@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { CommandBus, DispatchCommands } from 'git-en-boite-command-bus'
 import { Ref } from 'git-en-boite-core'
 import { Commit, GetRefs, Init } from 'git-en-boite-git-port'
 import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
@@ -38,7 +38,7 @@ describe('handleGetRefs', () => {
     return result.stdout.trim()
   }
 
-  let git: (operation: Operation) => Promise<void | Ref[]>
+  let git: DispatchCommands
 
   context('in a non-bare repo', () => {
     beforeEach(async () => {

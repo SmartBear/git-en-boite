@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { CommandBus, DispatchCommands } from 'git-en-boite-command-bus'
 import {
   Commit,
   Connect,
@@ -7,10 +7,8 @@ import {
   Fetch,
   GetRefs,
   GetRevision,
-  GitOperation,
   Init,
   OpensGitRepos,
-  OperateGitRepo,
   SetOrigin,
   Checkout,
 } from 'git-en-boite-git-port'
@@ -29,10 +27,10 @@ import {
 } from './handlers'
 
 export class GitRepoFactory implements OpensGitRepos {
-  async open(path: string): Promise<OperateGitRepo> {
+  async open(path: string): Promise<DispatchCommands> {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
-    const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
+    const commandBus = new CommandBus(repo)
       .handle(Init, handleInit)
       .handle(Connect, handleConnect)
       .handle(SetOrigin, handleSetOrigin)
@@ -43,10 +41,10 @@ export class GitRepoFactory implements OpensGitRepos {
 }
 
 export class TestableGitRepoFactory implements OpensGitRepos {
-  async open(path: string): Promise<OperateGitRepo> {
+  async open(path: string): Promise<DispatchCommands> {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
-    const commandBus = new CommandBus<GitDirectory, GitOperation>(repo)
+    const commandBus = new CommandBus(repo)
       .handle(Init, handleInit)
       .handle(SetOrigin, handleSetOrigin)
       .handle(Checkout, handleCheckout)
