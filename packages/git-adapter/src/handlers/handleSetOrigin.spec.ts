@@ -23,7 +23,7 @@ describe('handleSetOrigin', () => {
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Init | SetOrigin>(repo)
     commandBus.handle(Init, handleInit).handle(SetOrigin, handleSetOrigin)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 
   it('creates a remote called origin pointing to the URL', async () => {

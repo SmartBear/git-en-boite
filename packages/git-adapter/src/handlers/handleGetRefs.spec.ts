@@ -28,7 +28,7 @@ describe('handleGetRefs', () => {
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Operation>(repo)
     commandBus.handle(Init, handleInit).handle(Commit, handleCommit).handle(GetRefs, handleGetRefs)
-    return commandBus.do.bind(commandBus)
+    return commandBus.dispatch.bind(commandBus)
   }
 
   const revisionForBranch = async (branchName: string) => {

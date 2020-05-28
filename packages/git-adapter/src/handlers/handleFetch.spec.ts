@@ -47,7 +47,7 @@ describe('handleFetch', () => {
         .handle(Init, handleInit)
         .handle(SetOrigin, handleSetOrigin)
         .handle(Fetch, handleFetch)
-      return commandBus.do.bind(commandBus)
+      return commandBus.dispatch.bind(commandBus)
     }
 
     it('fetches commits from the origin remote', async () => {
