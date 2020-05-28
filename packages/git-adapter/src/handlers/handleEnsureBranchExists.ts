@@ -1,7 +1,10 @@
 import { EnsureBranchExists } from 'git-en-boite-git-port'
-import { Handler } from './handler'
+import { HandlesGitOperations } from './handles_git_operations'
 
-export const handleEnsureBranchExists: Handler<EnsureBranchExists> = async (repo, { name }) => {
+export const handleEnsureBranchExists: HandlesGitOperations<EnsureBranchExists> = async (
+  repo,
+  { name },
+) => {
   const branches: string[] = await (
     await repo.execGit('branch', ['--list', '--format=%(refname:short)'])
   ).stdout

@@ -3,7 +3,7 @@ type Type<T> = Function & { prototype: T }
 
 export class CommandBus<Context, Command> {
   private handlers = new Map<Function, Function>()
-  private defaultHandler: Handler<Context, Command> = (_, command) => {
+  private defaultHandler: HandlesCommands<Context, Command> = (_, command) => {
     throw new Error(`No handler registered for commands of type ${command.constructor.name}`)
   }
 
@@ -11,7 +11,7 @@ export class CommandBus<Context, Command> {
 
   handle<HandledCommand extends Command, Result>(
     commandType: Type<HandledCommand>,
-    handler: Handler<Context, HandledCommand, Result>,
+    handler: HandlesCommands<Context, HandledCommand, Result>,
   ): CommandBus<Context, Command> {
     this.handlers.set(commandType, handler)
     return this
@@ -25,6 +25,10 @@ export class CommandBus<Context, Command> {
   }
 }
 
-export interface Handler<Context, HandledCommand, Result = void> {
-  (target: Context, command: HandledCommand, dispatch?: Function): Result
-}
+export type DispatchesCommands = <Result, Command>(command: Command) => Result
+
+export type HandlesCommands<Context, HandledCommand, Result = void> = (
+  target: Context,
+  command: HandledCommand,
+  dispatch?: DispatchesCommands,
+) => Result

@@ -1,4 +1,4 @@
-import { CommandBus, Handler } from './command-bus'
+import { CommandBus, HandlesCommands } from './command-bus'
 import { equalTo, assertThat, throws, hasProperty, matchesPattern } from 'hamjest'
 
 describe('CommandBus', () => {
@@ -67,9 +67,9 @@ describe('CommandBus', () => {
     }
 
     it('handles composite commands', () => {
-      const handleSing: Handler<Party, Sing> = (party, { songName }) =>
+      const handleSing: HandlesCommands<Party, Sing> = (party, { songName }) =>
         (party.sounds = songName.toLocaleLowerCase())
-      const handleEatCake: Handler<Party, EatCake> = party => (party.cake = 'gone')
+      const handleEatCake: HandlesCommands<Party, EatCake> = party => (party.cake = 'gone')
       const party = new Party()
       const commandBus = new CommandBus<Party, Sing | EatCake>(party)
       commandBus
@@ -85,21 +85,21 @@ describe('CommandBus', () => {
     })
 
     it('works when the low-level commands are asynchronous', async () => {
-      const handleSingSlowly: Handler<Party, Sing> = async (party, { songName }) =>
+      const handleSingSlowly: HandlesCommands<Party, Sing> = async (party, { songName }) =>
         new Promise(resolve =>
           setTimeout(() => {
             party.sounds = songName.toLocaleLowerCase()
             resolve()
           }, 0),
         )
-      const handleEatCakeSlowly: Handler<Party, EatCake, Promise<void>> = party =>
+      const handleEatCakeSlowly: HandlesCommands<Party, EatCake, Promise<void>> = party =>
         new Promise(resolve =>
           setTimeout(() => {
             party.cake = 'gone'
             resolve()
           }, 0),
         )
-      const handleThrowParty: Handler<Party, ThrowParty> = async (
+      const handleThrowParty: HandlesCommands<Party, ThrowParty> = async (
         _,
         { songName }: ThrowParty,
         dispatch,

@@ -1,7 +1,7 @@
 import { Checkout } from 'git-en-boite-git-port'
 
-import { Handler } from './handler'
+import { HandlesGitOperations } from './handles_git_operations'
 
-export const handleCheckout: Handler<Checkout> = async (repo, { branchName }) => {
+export const handleCheckout: HandlesGitOperations<Checkout> = async (repo, { branchName }) => {
   await repo.execGit('checkout', [branchName])
 }
