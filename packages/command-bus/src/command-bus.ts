@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 type Type<T> = Function & { prototype: T }
 
 export class CommandBus<Context, Command> {
@@ -11,7 +12,7 @@ export class CommandBus<Context, Command> {
   handle<HandledCommand extends Command, Result>(
     commandType: Type<HandledCommand>,
     handler: Handler<Context, HandledCommand, Result>,
-  ) {
+  ): CommandBus<Context, Command> {
     this.handlers.set(commandType, handler)
     return this
   }
