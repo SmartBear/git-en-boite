@@ -21,8 +21,7 @@ describe('handleInit', () => {
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const commandBus = new CommandBus<GitDirectory, Init>(repo)
-    commandBus.handle(Init, handleInit)
+    const commandBus = new CommandBus<GitDirectory, Init>(repo).handle(Init, handleInit)
     return commandBus.dispatch.bind(commandBus)
   }
 

@@ -23,7 +23,8 @@ describe('handleCommit', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Init | Commit>(repo)
-    commandBus.handle(Init, handleInit).handle(Commit, handleCommit)
+      .handle(Init, handleInit)
+      .handle(Commit, handleCommit)
     return commandBus.dispatch.bind(commandBus)
   }
 

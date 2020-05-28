@@ -43,7 +43,6 @@ describe('handleFetch', () => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
       const commandBus = new CommandBus<GitDirectory, Init | SetOrigin | Fetch>(repo)
-      commandBus
         .handle(Init, handleInit)
         .handle(SetOrigin, handleSetOrigin)
         .handle(Fetch, handleFetch)

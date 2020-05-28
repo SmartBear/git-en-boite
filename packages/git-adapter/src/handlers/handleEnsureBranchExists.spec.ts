@@ -26,7 +26,6 @@ describe('handleEnsureBranchExists', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const commandBus = new CommandBus<GitDirectory, Operation>(repo)
-    commandBus
       .handle(Init, handleInit)
       .handle(Commit, handleCommit)
       .handle(EnsureBranchExists, handleEnsureBranchExists)
