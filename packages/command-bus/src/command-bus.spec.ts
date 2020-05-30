@@ -55,7 +55,9 @@ describe('CommandBus', () => {
 
   it('returns the value returned by the handler', () => {
     const party = new Party()
-    const commandBus = new CommandBus(party).handle(Sing, () => 'a-result')
+    type Commands = [Sing, string]
+    const handlers: [Type<Sing>, Action<Party, Sing, string>][] = [[Sing, () => 'a-result']]
+    const commandBus = new CommandBus<Party, Sing, Commands>(party, new Map(handlers))
     const result = commandBus.dispatch(Sing.theSong('any song'))
     assertThat(result, equalTo('a-result'))
   })
