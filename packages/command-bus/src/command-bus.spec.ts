@@ -1,6 +1,6 @@
 import { assertThat, equalTo } from 'hamjest'
 
-import { CommandBus, HandleCommands, Type } from './command-bus'
+import { CommandBus, Action, Type } from './command-bus'
 
 describe('CommandBus', () => {
   class Sing {
@@ -22,7 +22,7 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const noisyParty = new Party()
     const quietParty = new Party()
-    const noisyHandlers: [Type<Sing>, HandleCommands<Party, Sing, void>][] = [
+    const noisyHandlers: [Type<Sing>, Action<Party, Sing, void>][] = [
       [Sing, (party, { songName }) => (party.sounds = songName.toUpperCase())],
     ]
     const noisyCommandBus = new CommandBus<Party, Sing, [Sing, void]>(
@@ -70,9 +70,9 @@ describe('CommandBus', () => {
     }
 
     it('handles composite commands', () => {
-      const handleSing: HandleCommands<Party, Sing> = (party, { songName }) =>
+      const handleSing: Action<Party, Sing> = (party, { songName }) =>
         (party.sounds = songName.toLocaleLowerCase())
-      const handleEatCake: HandleCommands<Party, EatCake> = party => (party.cake = 'gone')
+      const handleEatCake: Action<Party, EatCake> = party => (party.cake = 'gone')
       const party = new Party()
       const commandBus = new CommandBus(party)
         .handle(Sing, handleSing)
@@ -87,21 +87,21 @@ describe('CommandBus', () => {
     })
 
     it('works when the low-level commands are asynchronous', async () => {
-      const handleSingSlowly: HandleCommands<Party, Sing> = async (party, { songName }) =>
+      const handleSingSlowly: Action<Party, Sing> = async (party, { songName }) =>
         new Promise(resolve =>
           setTimeout(() => {
             party.sounds = songName.toLocaleLowerCase()
             resolve()
           }, 0),
         )
-      const handleEatCakeSlowly: HandleCommands<Party, EatCake, Promise<void>> = party =>
+      const handleEatCakeSlowly: Action<Party, EatCake, Promise<void>> = party =>
         new Promise(resolve =>
           setTimeout(() => {
             party.cake = 'gone'
             resolve()
           }, 0),
         )
-      const handleThrowParty: HandleCommands<Party, ThrowParty> = async (
+      const handleThrowParty: Action<Party, ThrowParty> = async (
         _,
         { songName }: ThrowParty,
         dispatch,

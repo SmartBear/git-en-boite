@@ -3,38 +3,34 @@ import { Context } from 'mocha'
 /* eslint-disable @typescript-eslint/ban-types */
 export type Type<T> = Function & { prototype: T }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Result<Commands, Command> = Extract<Commands, [Command, any]>[1]
+
 export class CommandBus<
   Context,
-  Command extends { constructor: Function },
-  CommandResults extends [Command, unknown] = never
+  Message extends { constructor: Function },
+  Commands extends [Message, unknown] = never
 > {
-  private defaultHandler: HandleCommands<Context, Command> = (_, command) => {
-    throw new Error(`No handler registered for commands of type ${command.constructor.name}`)
-  }
+  constructor(readonly context: Context, readonly actions: Map<Function, Function> = new Map()) {}
 
-  constructor(readonly context: Context, readonly handlers: Map<Function, Function> = new Map()) {}
-
-  handle<HandledCommand extends Command, Result>(
+  handle<HandledCommand extends Message, Result>(
     commandType: Type<HandledCommand>,
-    handler: HandleCommands<Context, HandledCommand, Result>,
-  ): CommandBus<Context, Command, CommandResults | [HandledCommand, Result]> {
-    this.handlers.set(commandType, handler)
-    return new CommandBus(this.context, this.handlers)
+    handler: Action<Context, HandledCommand, Result>,
+  ): CommandBus<Context, Message, Commands | [HandledCommand, Result]> {
+    this.actions.set(commandType, handler)
+    return new CommandBus(this.context, this.actions)
   }
 
-  dispatch<Command extends CommandResults[0]>(
-    command: Command,
-  ): Extract<CommandResults, [Command, any]>[1] {
-    const handler = this.handlers.get(command.constructor) || this.defaultHandler
-    const result = handler(this.context, command, this.dispatch.bind(this))
-    return result
+  dispatch<Message extends Commands[0]>(nessage: Message): Result<Commands, Message> {
+    const action = this.actions.get(nessage.constructor)
+    return action(this.context, nessage, this.dispatch.bind(this))
   }
 }
 
 export type DispatchCommands = <Result, Command>(command: Command) => Result
 
-export type HandleCommands<Context, HandledCommand, Result = void> = (
-  target: Context,
-  command: HandledCommand,
+export type Action<Context, Message, Result = void> = (
+  context: Context,
+  command: Message,
   dispatch?: DispatchCommands,
 ) => Result
