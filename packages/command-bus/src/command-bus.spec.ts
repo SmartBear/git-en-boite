@@ -1,6 +1,6 @@
 import { assertThat, equalTo } from 'hamjest'
 
-import { CommandBus, HandleCommands } from './command-bus'
+import { CommandBus, HandleCommands, Type } from './command-bus'
 
 describe('CommandBus', () => {
   class Sing {
@@ -22,9 +22,12 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const noisyParty = new Party()
     const quietParty = new Party()
-    const noisyCommandBus = new CommandBus(noisyParty).handle(
-      Sing,
-      (party, { songName }) => (party.sounds = songName.toUpperCase()),
+    const noisyHandlers: [Type<Sing>, HandleCommands<Party, Sing, void>][] = [
+      [Sing, (party, { songName }) => (party.sounds = songName.toUpperCase())],
+    ]
+    const noisyCommandBus = new CommandBus<Party, Sing, [Sing, void]>(
+      noisyParty,
+      new Map(noisyHandlers),
     )
     const quietCommandBus = new CommandBus(quietParty).handle(
       Sing,

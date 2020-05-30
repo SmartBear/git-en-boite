@@ -1,5 +1,7 @@
+import { Context } from 'mocha'
+
 /* eslint-disable @typescript-eslint/ban-types */
-type Type<T> = Function & { prototype: T }
+export type Type<T> = Function & { prototype: T }
 
 export class CommandBus<
   Context,
