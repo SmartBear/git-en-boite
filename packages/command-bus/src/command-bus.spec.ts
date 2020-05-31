@@ -42,11 +42,17 @@ describe('CommandBus', () => {
   it('finds the right handler for a given command', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const eatCake = new EatCake()
-
+    type Commands = [Sing, void] | [EatCake, void]
+    const handle = <Message>(
+      messageType: Type<Message>,
+      action: Action<Party, Message>,
+    ): [Type<Message>, Action<Party, Message>] => [messageType, action]
     const party = new Party()
-    const commandBus = new CommandBus(party)
-      .handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase()))
-      .handle(EatCake, party => (party.cake = 'gone'))
+    const actions = [
+      handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase())),
+      handle(EatCake, party => (party.cake = 'gone')),
+    ]
+    const commandBus = new CommandBus<Party, Commands[0], Commands>(party, new Map(actions))
     commandBus.dispatch(singHappyBirthday)
     commandBus.dispatch(eatCake)
     assertThat(party.sounds, equalTo('happy birthday'))
@@ -56,8 +62,9 @@ describe('CommandBus', () => {
   it('returns the value returned by the handler', () => {
     const party = new Party()
     type Commands = [Sing, string]
-    const handlers: [Type<Sing>, Action<Party, Sing, string>][] = [[Sing, () => 'a-result']]
-    const commandBus = new CommandBus<Party, Sing, Commands>(party, new Map(handlers))
+    type PartyAction = [Type<Commands[0]>, Action<Party, Commands[0], Commands[1]>]
+    const actions: PartyAction[] = [[Sing, () => 'a-result']]
+    const commandBus = new CommandBus<Party, Commands[0], Commands>(party, new Map(actions))
     const result = commandBus.dispatch(Sing.theSong('any song'))
     assertThat(result, equalTo('a-result'))
   })

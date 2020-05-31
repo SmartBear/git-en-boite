@@ -4,7 +4,7 @@ import { Context } from 'mocha'
 export type Type<T> = Function & { prototype: T }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Result<Commands, Command> = Extract<Commands, [Command, any]>[1]
+export type Result<Commands, Message> = Extract<Commands, [Message, any]>[1]
 
 export class CommandBus<
   Context,
