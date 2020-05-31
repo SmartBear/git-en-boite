@@ -6,6 +6,11 @@ export type Type<T> = Function & { prototype: T }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Result<Commands, Message> = Extract<Commands, [Message, any]>[1]
 
+export type Handler<Message, Context, Commands> = [
+  Type<Message>,
+  Action<Context, Message, Result<Commands, Message>>,
+]
+
 export class CommandBus<
   Context,
   Message extends { constructor: Function },

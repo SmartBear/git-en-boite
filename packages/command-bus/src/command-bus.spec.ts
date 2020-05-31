@@ -1,6 +1,7 @@
 import { assertThat, equalTo } from 'hamjest'
 
-import { CommandBus, Action, Type } from './command-bus'
+import { CommandBus, Action, Type, Result, Handler } from './command-bus'
+import { Context } from 'mocha'
 
 describe('CommandBus', () => {
   class Sing {
@@ -46,7 +47,7 @@ describe('CommandBus', () => {
     const handle = <Message>(
       messageType: Type<Message>,
       action: Action<Party, Message>,
-    ): [Type<Message>, Action<Party, Message>] => [messageType, action]
+    ): Handler<Message, Party, Commands> => [messageType, action]
     const party = new Party()
     const actions = [
       handle(Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase())),
