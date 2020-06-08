@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { commandBus, AsyncCommand, Dispatch } from 'git-en-boite-command-bus'
 import { Commit, EnsureBranchExists, Init } from 'git-en-boite-git-port'
 import { containsInAnyOrder, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
@@ -14,7 +14,6 @@ import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
-type Operation = Init | Commit | EnsureBranchExists
 
 describe('handleEnsureBranchExists', () => {
   const repoPath = path.resolve(root, 'a-repo-id')
@@ -22,15 +21,16 @@ describe('handleEnsureBranchExists', () => {
     await exec(`rm -rf ${root}`)
   })
 
-  const repo = (repoPath: string) => {
+  type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncCommand<EnsureBranchExists>]
+
+  const openRepo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const commandBus = new CommandBus<GitDirectory, Operation>(repo)
-    commandBus
-      .handle(Init, handleInit)
-      .handle(Commit, handleCommit)
-      .handle(EnsureBranchExists, handleEnsureBranchExists)
-    return commandBus.dispatch.bind(commandBus)
+    return commandBus<Protocol>().withHandlers(repo, [
+      [Init, handleInit],
+      [Commit, handleCommit],
+      [EnsureBranchExists, handleEnsureBranchExists],
+    ])
   }
 
   const branchesFound = async () => {
@@ -42,10 +42,10 @@ describe('handleEnsureBranchExists', () => {
   }
 
   context('in a non-bare repo', () => {
-    let git: (operation: Operation) => Promise<void>
+    let git: Dispatch<Protocol>
 
     beforeEach(async () => {
-      git = repo(repoPath)
+      git = openRepo(repoPath)
       await git(Init.normalRepo())
     })
 

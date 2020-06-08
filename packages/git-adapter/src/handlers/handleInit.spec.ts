@@ -19,16 +19,15 @@ describe('handleInit', () => {
     await exec(`rm -rf ${root}`)
   })
 
-  const repo = (repoPath: string) => {
+  const openRepo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const dispatch = commandBus<Protocol>().withHandlers(repo, [[Init, handleInit]])
-    return dispatch
+    return commandBus<Protocol>().withHandlers(repo, [[Init, handleInit]])
   }
 
   it('creates a new bare repo with conservative garbage collection settings', async () => {
     const repopath = path.resolve(root, 'a-repo-id')
-    const git = repo(repopath)
+    const git = openRepo(repopath)
     await git(Init.bareRepo())
     await promiseThat(
       exec('git config --get core.bare', { cwd: repopath }),
@@ -46,7 +45,7 @@ describe('handleInit', () => {
 
   it('configures default user name and email', async () => {
     const repopath = path.resolve(root, 'a-repo-id')
-    const git = repo(repopath)
+    const git = openRepo(repopath)
     await git(Init.bareRepo())
     await promiseThat(
       exec('git config --get user.name', { cwd: repopath }),

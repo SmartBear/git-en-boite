@@ -1,26 +1,28 @@
-import fs from 'fs'
 import childProcess from 'child_process'
-import { CommandBus } from 'git-en-boite-command-bus'
-import { Init, Commit, GetRevision, SetOrigin, Fetch } from 'git-en-boite-git-port'
+import fs from 'fs'
+import { AsyncCommand, commandBus } from 'git-en-boite-command-bus'
+import { Commit, Fetch, GetRevision, Init, SetOrigin } from 'git-en-boite-git-port'
 import {
   fulfilled,
   hasProperty,
-  promiseThat,
-  startsWith,
   isRejectedWith,
   matchesPattern,
+  promiseThat,
+  startsWith,
 } from 'hamjest'
 import path from 'path'
 import { promisify } from 'util'
 
+import { TestableGitRepoFactory } from '..'
 import { GitDirectory } from '../git_directory'
-import { handleInit } from './handleInit'
 import { handleFetch } from './handleFetch'
-import { TestableGitRepoFactory } from '../index'
+import { handleInit } from './handleInit'
 import { handleSetOrigin } from './handleSetOrigin'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
+
+type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
 describe('handleFetch', () => {
   beforeEach(async () => {
@@ -39,20 +41,19 @@ describe('handleFetch', () => {
       latestCommit = await origin(GetRevision.forBranchNamed('master'))
     })
 
-    const repo = (repoPath: string) => {
+    const openRepo = (repoPath: string) => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
-      const commandBus = new CommandBus<GitDirectory, Init | SetOrigin | Fetch>(repo)
-      commandBus
-        .handle(Init, handleInit)
-        .handle(SetOrigin, handleSetOrigin)
-        .handle(Fetch, handleFetch)
-      return commandBus.dispatch.bind(commandBus)
+      return commandBus<Protocol>().withHandlers(repo, [
+        [Init, handleInit],
+        [SetOrigin, handleSetOrigin],
+        [Fetch, handleFetch],
+      ])
     }
 
     it('fetches commits from the origin remote', async () => {
       const repoPath = path.resolve(root, 'a-repo-id')
-      const git = repo(repoPath)
+      const git = openRepo(repoPath)
       await git(Init.bareRepo())
       await git(SetOrigin.toUrl(originUrl))
       await git(Fetch.fromOrigin())
@@ -64,7 +65,7 @@ describe('handleFetch', () => {
 
     it('fails when the remote does not exist', async () => {
       const repoPath = path.resolve(root, 'a-repo-id')
-      const git = repo(repoPath)
+      const git = openRepo(repoPath)
       await git(Init.bareRepo())
       await git(SetOrigin.toUrl('invalid-remote-url'))
       await promiseThat(

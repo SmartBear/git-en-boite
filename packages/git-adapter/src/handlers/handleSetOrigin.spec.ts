@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { AsyncCommand, commandBus } from 'git-en-boite-command-bus'
 import { Init, SetOrigin } from 'git-en-boite-git-port'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
@@ -13,6 +13,8 @@ import { handleSetOrigin } from './handleSetOrigin'
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
 
+type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>]
+
 describe('handleSetOrigin', () => {
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
@@ -21,9 +23,10 @@ describe('handleSetOrigin', () => {
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const commandBus = new CommandBus<GitDirectory, Init | SetOrigin>(repo)
-    commandBus.handle(Init, handleInit).handle(SetOrigin, handleSetOrigin)
-    return commandBus.dispatch.bind(commandBus)
+    return commandBus<Protocol>().withHandlers(repo, [
+      [Init, handleInit],
+      [SetOrigin, handleSetOrigin],
+    ])
   }
 
   it('creates a remote called origin pointing to the URL', async () => {

@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { AsyncCommand, AsyncQuery, commandBus, Dispatch } from 'git-en-boite-command-bus'
 import { Ref } from 'git-en-boite-core'
 import { Commit, GetRefs, Init } from 'git-en-boite-git-port'
 import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
@@ -15,7 +15,7 @@ import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
-type Operation = Init | Commit | GetRefs
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetRefs, Ref[]>]
 
 describe('handleGetRefs', () => {
   const repoPath = path.resolve(root, 'a-repo-id')
@@ -23,12 +23,14 @@ describe('handleGetRefs', () => {
     await exec(`rm -rf ${root}`)
   })
 
-  const repo = (repoPath: string) => {
+  const openRepo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const commandBus = new CommandBus<GitDirectory, Operation>(repo)
-    commandBus.handle(Init, handleInit).handle(Commit, handleCommit).handle(GetRefs, handleGetRefs)
-    return commandBus.dispatch.bind(commandBus)
+    return commandBus<Protocol>().withHandlers(repo, [
+      [Init, handleInit],
+      [Commit, handleCommit],
+      [GetRefs, handleGetRefs],
+    ])
   }
 
   const revisionForBranch = async (branchName: string) => {
@@ -36,11 +38,11 @@ describe('handleGetRefs', () => {
     return result.stdout.trim()
   }
 
-  let git: (operation: Operation) => Promise<void>
+  let git: Dispatch<Protocol>
 
   context('in a non-bare repo', () => {
     beforeEach(async () => {
-      git = repo(repoPath)
+      git = openRepo(repoPath)
       await git(Init.normalRepo())
     })
 
@@ -66,7 +68,7 @@ describe('handleGetRefs', () => {
 
   context('in a bare repo', () => {
     beforeEach(async () => {
-      git = repo(repoPath)
+      git = openRepo(repoPath)
       await git(Init.bareRepo())
     })
 
