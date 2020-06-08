@@ -4,6 +4,7 @@ import { AsyncCommand, AsyncQuery, commandBus, Dispatch } from 'git-en-boite-com
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
+import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
@@ -13,7 +14,6 @@ import { handleGetRevision } from './handleGetRevision'
 import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
-const root = path.resolve(__dirname, '../../tmp')
 
 type Protocol = [
   AsyncCommand<Init>,
@@ -23,9 +23,12 @@ type Protocol = [
 ]
 
 describe('handleGetRevision', () => {
-  const repoPath = path.resolve(root, 'a-repo-id')
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  let root: string
+
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   const repo = (repoPath: string) => {
@@ -39,15 +42,17 @@ describe('handleGetRevision', () => {
     ])
   }
 
-  const revisionForBranch = async (branchName: string) => {
+  const revisionForBranch = async (branchName: string, repoPath: string) => {
     const result = await exec(`git rev-parse ${branchName}`, { cwd: repoPath })
     return result.stdout.trim()
   }
 
   context('in a non-bare repo', () => {
     let git: Dispatch<Protocol>
+    let repoPath: string
 
     beforeEach(async () => {
+      repoPath = path.resolve(root, 'a-repo-id')
       git = repo(repoPath)
       await git(Init.normalRepo())
     })
@@ -66,7 +71,7 @@ describe('handleGetRevision', () => {
       it('returns the revision of the latest commit', async () => {
         await promiseThat(
           git(GetRevision.forBranchNamed('master')),
-          fulfilled(equalTo(await revisionForBranch('master'))),
+          fulfilled(equalTo(await revisionForBranch('master', repoPath))),
         )
       })
     })

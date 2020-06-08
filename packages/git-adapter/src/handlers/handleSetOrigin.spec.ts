@@ -4,6 +4,7 @@ import { AsyncCommand, commandBus } from 'git-en-boite-command-bus'
 import { Init, SetOrigin } from 'git-en-boite-git-port'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
+import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
@@ -11,13 +12,16 @@ import { handleInit } from './handleInit'
 import { handleSetOrigin } from './handleSetOrigin'
 
 const exec = promisify(childProcess.exec)
-const root = path.resolve(__dirname, '../../tmp')
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>]
 
 describe('handleSetOrigin', () => {
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  let root: string
+
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   const repo = (repoPath: string) => {

@@ -1,10 +1,6 @@
-import path from 'path'
 import { Before } from 'cucumber'
-import childProcess from 'child_process'
-import { promisify } from 'util'
-const exec = promisify(childProcess.exec)
+import { dirSync } from 'tmp'
 
 Before(async function () {
-  this.tmpDir = path.resolve(__dirname, '../../../tmp')
-  await exec(`rm -rf ${this.tmpDir}`)
+  this.tmpDir = dirSync().name
 })

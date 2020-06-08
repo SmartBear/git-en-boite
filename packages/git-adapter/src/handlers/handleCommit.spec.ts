@@ -5,6 +5,7 @@ import { Author } from 'git-en-boite-core'
 import { Commit, Init } from 'git-en-boite-git-port'
 import { containsString, fulfilled, hasProperty, promiseThat } from 'hamjest'
 import path from 'path'
+import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
@@ -12,13 +13,16 @@ import { handleCommit } from './handleCommit'
 import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
-const root = path.resolve(__dirname, '../../tmp')
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>]
 
 describe('handleCommit', () => {
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  let root: string
+
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   const openRepo = (repoPath: string) => {
@@ -31,10 +35,11 @@ describe('handleCommit', () => {
   }
 
   context('in a non-bare repo', () => {
-    const repoPath = path.resolve(root, 'a-repo-id')
+    let repoPath: string
     let git: Dispatch<Protocol>
 
     beforeEach(async () => {
+      repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)
       await git(Init.normalRepo())
     })

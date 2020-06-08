@@ -11,6 +11,7 @@ import {
   startsWith,
 } from 'hamjest'
 import path from 'path'
+import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { TestableGitRepoFactory } from '..'
@@ -20,13 +21,16 @@ import { handleInit } from './handleInit'
 import { handleSetOrigin } from './handleSetOrigin'
 
 const exec = promisify(childProcess.exec)
-const root = path.resolve(__dirname, '../../tmp')
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
 describe('handleFetch', () => {
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  let root: string
+
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   context('an origin repo with commits on master', () => {

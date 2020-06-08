@@ -1,4 +1,3 @@
-import childProcess from 'child_process'
 import { GitProcess } from 'dugite'
 import fs from 'fs'
 import { AsyncCommand, AsyncQuery, commandBus, Dispatch } from 'git-en-boite-command-bus'
@@ -6,21 +5,22 @@ import { Ref } from 'git-en-boite-core'
 import { Commit, GetRefs, Init } from 'git-en-boite-git-port'
 import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
-import { promisify } from 'util'
+import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
 import { handleGetRefs } from './handleGetRefs'
 import { handleInit } from './handleInit'
 
-const exec = promisify(childProcess.exec)
-const root = path.resolve(__dirname, '../../tmp')
 type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetRefs, Ref[]>]
 
 describe('handleGetRefs', () => {
-  const repoPath = path.resolve(root, 'a-repo-id')
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  let root: string
+
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   const openRepo = (repoPath: string) => {
@@ -33,7 +33,7 @@ describe('handleGetRefs', () => {
     ])
   }
 
-  const revisionForBranch = async (branchName: string) => {
+  const revisionForBranch = async (branchName: string, repoPath: string) => {
     const result = await GitProcess.exec(['rev-parse', branchName], repoPath)
     return result.stdout.trim()
   }
@@ -41,7 +41,10 @@ describe('handleGetRefs', () => {
   let git: Dispatch<Protocol>
 
   context('in a non-bare repo', () => {
+    let repoPath: string
+
     beforeEach(async () => {
+      repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)
       await git(Init.normalRepo())
     })
@@ -60,7 +63,9 @@ describe('handleGetRefs', () => {
       it('returns the revision of the latest commit', async () => {
         await promiseThat(
           git(GetRefs.all()),
-          fulfilled(equalTo([new Ref(await revisionForBranch('master'), 'refs/heads/master')])),
+          fulfilled(
+            equalTo([new Ref(await revisionForBranch('master', repoPath), 'refs/heads/master')]),
+          ),
         )
       })
     })
@@ -68,6 +73,7 @@ describe('handleGetRefs', () => {
 
   context('in a bare repo', () => {
     beforeEach(async () => {
+      const repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)
       await git(Init.bareRepo())
     })

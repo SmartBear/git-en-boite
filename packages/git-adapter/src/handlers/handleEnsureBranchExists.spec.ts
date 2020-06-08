@@ -1,27 +1,27 @@
 import childProcess from 'child_process'
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { commandBus, AsyncCommand, Dispatch } from 'git-en-boite-command-bus'
+import { AsyncCommand, commandBus, Dispatch } from 'git-en-boite-command-bus'
 import { Commit, EnsureBranchExists, Init } from 'git-en-boite-git-port'
 import { containsInAnyOrder, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
-import { promisify } from 'util'
+import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
 import { handleCommit } from './handleCommit'
 import { handleEnsureBranchExists } from './handleEnsureBranchExists'
 import { handleInit } from './handleInit'
 
-const exec = promisify(childProcess.exec)
-const root = path.resolve(__dirname, '../../tmp')
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncCommand<EnsureBranchExists>]
 
 describe('handleEnsureBranchExists', () => {
-  const repoPath = path.resolve(root, 'a-repo-id')
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
-  })
+  let root: string
 
-  type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncCommand<EnsureBranchExists>]
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
+  })
 
   const openRepo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
@@ -33,7 +33,7 @@ describe('handleEnsureBranchExists', () => {
     ])
   }
 
-  const branchesFound = async () => {
+  const branchesFoundIn = async (repoPath: string) => {
     const result = await GitProcess.exec(
       ['branch', '--list', '--format=%(refname:short)'],
       repoPath,
@@ -43,8 +43,10 @@ describe('handleEnsureBranchExists', () => {
 
   context('in a non-bare repo', () => {
     let git: Dispatch<Protocol>
+    let repoPath: string
 
     beforeEach(async () => {
+      repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)
       await git(Init.normalRepo())
     })
@@ -59,13 +61,16 @@ describe('handleEnsureBranchExists', () => {
       it('creates a new branch', async () => {
         await git(Commit.withAnyMessage())
         await git(EnsureBranchExists.named('develop'))
-        await promiseThat(branchesFound(), fulfilled(containsInAnyOrder('develop', 'master')))
+        await promiseThat(
+          branchesFoundIn(repoPath),
+          fulfilled(containsInAnyOrder('develop', 'master')),
+        )
       })
 
       it('leaves the master branch', async () => {
         await git(Commit.withAnyMessage())
         await git(EnsureBranchExists.named('master'))
-        await promiseThat(branchesFound(), fulfilled(containsInAnyOrder('master')))
+        await promiseThat(branchesFoundIn(repoPath), fulfilled(containsInAnyOrder('master')))
       })
     })
   })

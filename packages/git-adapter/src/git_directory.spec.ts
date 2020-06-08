@@ -1,17 +1,17 @@
 import fs from 'fs'
-import childProcess from 'child_process'
 import { assertThat, hasProperty, matchesPattern, promiseThat, rejected, startsWith } from 'hamjest'
 import path from 'path'
-import { promisify } from 'util'
+import { dirSync } from 'tmp'
 
 import { GitDirectory } from './git_directory'
 
-const exec = promisify(childProcess.exec)
 describe(GitDirectory.name, () => {
-  const root = path.resolve(__dirname, '../../tmp')
+  let root: string
 
-  beforeEach(async () => {
-    await exec(`rm -rf ${root}`)
+  beforeEach(() => (root = dirSync().name))
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   describe('running arbitrary git commands', () => {
