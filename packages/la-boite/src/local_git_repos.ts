@@ -8,7 +8,6 @@ import {
   GitRepos,
   QueryResult,
 } from 'git-en-boite-client-port'
-import { Ref } from 'git-en-boite-core'
 import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
 import IORedis from 'ioredis'
@@ -61,7 +60,7 @@ export class LocalGitRepos implements GitRepos {
     this.basePath = basePath
   }
 
-  async close() {
+  async close(): Promise<void> {
     await Promise.all(
       this.closables.map(async closable => {
         await closable.close()
@@ -100,7 +99,7 @@ export class LocalGitRepos implements GitRepos {
     if (!this.exists(repoId)) return QueryResult.from()
     const repoPath = this.repoFolder(repoId).gitRepoPath
     const git = await new GitRepoFactory().open(repoPath)
-    const refs = await git<Promise<Ref[]>>(GetRefs.all())
+    const refs = await git(GetRefs.all())
     const branches: Branch[] = refs
       .filter(ref => ref.isRemote)
       .map(ref => {
@@ -113,7 +112,7 @@ export class LocalGitRepos implements GitRepos {
     return QueryResult.from({ repoId, refs, branches })
   }
 
-  async fetchFromRemote({ repoId }: FetchRepoRequest) {
+  async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
     const queue = this.getQueueForRepo(repoId)
     await queue.add('fetch', {
       repoId,

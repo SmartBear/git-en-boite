@@ -6,10 +6,8 @@ import {
   Fetch,
   GetRefs,
   GetRevision,
-  GitOperation,
   Init,
   SetOrigin,
-  OperateGitRepo,
   EnsureBranchExists,
   Checkout,
 } from 'git-en-boite-git-port'
@@ -28,7 +26,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
-import { GitRepoFactory, TestableGitRepoFactory } from '.'
+import { GitRepoFactory, TestableGitRepoFactory, TestableGitRepo, GitRepo } from '.'
 import { GitDirectory } from './git_directory'
 
 const SHA1_PATTERN = /[0-9a-f]{5,40}/
@@ -43,10 +41,10 @@ describe(GitDirectory.name, () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  describe('executing a GitOperation', () => {
+  describe('executing a Git Operation', () => {
     describe(Connect.name, () => {
       let remoteUrl: string
-      let origin: OperateGitRepo
+      let origin: TestableGitRepo
 
       beforeEach(async () => {
         remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
@@ -74,7 +72,7 @@ describe(GitDirectory.name, () => {
         const repoPath = path.resolve(root, 'a-repo-id')
         const git = await new GitRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
-        const refs = await git<Ref[]>(GetRefs.all())
+        const refs = await git(GetRefs.all())
         assertThat(refs.length, equalTo(2))
         for (const branchName of ['master', 'develop']) {
           assertThat(
@@ -172,7 +170,7 @@ describe(GitDirectory.name, () => {
           })
 
           context('and the repo has been fetched', () => {
-            let git: (operation: GitOperation) => unknown
+            let git: GitRepo
 
             beforeEach(async () => {
               git = await new GitRepoFactory().open(path.resolve(root, 'a-repo-id'))

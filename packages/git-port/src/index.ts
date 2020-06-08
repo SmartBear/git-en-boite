@@ -1,3 +1,4 @@
+import { Dispatch, ValidProtocol } from 'git-en-boite-command-bus'
 import { Author } from 'git-en-boite-core'
 
 export class Checkout {
@@ -39,6 +40,8 @@ export class Fetch {
 }
 
 export class GetRefs {
+  private unique: void
+
   static all() {
     return new this()
   }
@@ -80,19 +83,6 @@ export class Connect {
   }
 }
 
-export type GitOperation =
-  | Init
-  | Checkout
-  | Commit
-  | Connect
-  | Fetch
-  | EnsureBranchExists
-  | GetRevision
-  | GetRefs
-  | SetOrigin
-
-export type OperateGitRepo = <Result>(operation: GitOperation) => Result
-
-export interface OpensGitRepos {
-  open(path: string): Promise<OperateGitRepo>
+export interface OpensGitRepos<Protocol extends ValidProtocol<Protocol>> {
+  open(path: string): Promise<Dispatch<Protocol>>
 }
