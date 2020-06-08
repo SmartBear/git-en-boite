@@ -1,6 +1,6 @@
 import { assertThat, equalTo, instanceOf } from 'hamjest'
 
-import { commandBus, Handle } from './command-bus'
+import { commandBus, Handle, Command, AsyncCommand, Query } from './command-bus'
 
 describe('CommandBus', () => {
   class Sing {
@@ -25,13 +25,14 @@ describe('CommandBus', () => {
   }
 
   it('runs the same command through different handlers', () => {
+    type Protocol = [Command<Sing>]
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const mattsBirthday = new Party()
     const bobsBirthday = new Party()
-    const noisyParty = commandBus<[[Sing, void]]>().withHandlers(mattsBirthday, [
+    const noisyParty = commandBus<Protocol>().withHandlers(mattsBirthday, [
       [Sing, (party, { songName }) => (party.sounds = songName.toUpperCase())],
     ])
-    const quietParty = commandBus<[[Sing, void]]>().withHandlers(bobsBirthday, [
+    const quietParty = commandBus<Protocol>().withHandlers(bobsBirthday, [
       [Sing, (party, { songName }) => (party.sounds = songName.toLowerCase())],
     ])
     noisyParty(singHappyBirthday)
@@ -41,10 +42,11 @@ describe('CommandBus', () => {
   })
 
   it('finds the right handler for a given command', () => {
+    type Protocol = [Command<Sing>, Command<EatCake>]
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const eatCake = new EatCake()
     const party = new Party()
-    const dispatch = commandBus<[[Sing, void], [EatCake, void]]>().withHandlers(party, [
+    const dispatch = commandBus<Protocol>().withHandlers(party, [
       [Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase())],
       [EatCake, party => (party.cake = 'gone')],
     ])
@@ -55,12 +57,13 @@ describe('CommandBus', () => {
   })
 
   it('returns the value returned by the handler', () => {
+    type Protocol = [Query<GetGift, Gift>, Command<EatCake>]
     class Gift {
       constructor(public readonly name: string) {}
     }
     const pony = new Gift('pony')
     const party = new Party()
-    const dispatch = commandBus<[[GetGift, Gift], [EatCake, void]]>().withHandlers(party, [
+    const dispatch = commandBus<Protocol>().withHandlers(party, [
       [GetGift, () => pony],
       [EatCake, party => (party.cake = 'gone')],
     ])
@@ -79,11 +82,11 @@ describe('CommandBus', () => {
     }
 
     it('handles composite commands', () => {
-      type Protocol = [[Sing, void], [EatCake, void], [ThrowParty, void]]
-      const handleSing: Handle<Party, Sing, Protocol> = (party, { songName }) =>
+      type Protocol = [Command<Sing>, Command<EatCake>, Command<ThrowParty>]
+      const handleSing: Handle<Party, Command<Sing>> = (party, { songName }) =>
         (party.sounds = songName.toLocaleLowerCase())
-      const handleEatCake: Handle<Party, EatCake, Protocol> = party => (party.cake = 'gone')
-      const handleThrowParty: Handle<Party, ThrowParty, Protocol> = (
+      const handleEatCake: Handle<Party, Command<EatCake>> = party => (party.cake = 'gone')
+      const handleThrowParty: Handle<Party, Command<ThrowParty>> = (
         _,
         { songName }: ThrowParty,
         dispatch,
@@ -103,22 +106,22 @@ describe('CommandBus', () => {
     })
 
     it('works when the low-level commands are asynchronous', async () => {
-      type Protocol = [[Sing, Promise<void>], [EatCake, Promise<void>], [ThrowParty, Promise<void>]]
-      const handleSingSlowly: Handle<Party, Sing, Protocol> = async (party, { songName }) =>
+      type Protocol = [AsyncCommand<Sing>, AsyncCommand<EatCake>, AsyncCommand<ThrowParty>]
+      const handleSingSlowly: Handle<Party, AsyncCommand<Sing>> = async (party, { songName }) =>
         new Promise(resolve =>
           setTimeout(() => {
             party.sounds = songName.toLocaleLowerCase()
             resolve()
           }, 0),
         )
-      const handleEatCakeSlowly: Handle<Party, EatCake, Protocol> = party =>
+      const handleEatCakeSlowly: Handle<Party, AsyncCommand<EatCake>> = party =>
         new Promise(resolve =>
           setTimeout(() => {
             party.cake = 'gone'
             resolve()
           }, 0),
         )
-      const handleThrowParty: Handle<Party, ThrowParty, Protocol> = async (
+      const handleThrowParty: Handle<Party, AsyncCommand<ThrowParty>> = async (
         _,
         { songName }: ThrowParty,
         dispatch,

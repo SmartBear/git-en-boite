@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { AsyncCommand, commandBus } from 'git-en-boite-command-bus'
 import { Author } from 'git-en-boite-core'
 import { Commit, Init } from 'git-en-boite-git-port'
 import { containsString, fulfilled, hasProperty, promiseThat } from 'hamjest'
@@ -14,6 +14,8 @@ import { handleInit } from './handleInit'
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
 
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>]
+
 describe('handleCommit', () => {
   beforeEach(async () => {
     await exec(`rm -rf ${root}`)
@@ -22,9 +24,10 @@ describe('handleCommit', () => {
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const commandBus = new CommandBus<GitDirectory, Init | Commit>(repo)
-    commandBus.handle(Init, handleInit).handle(Commit, handleCommit)
-    return commandBus.dispatch.bind(commandBus)
+    return commandBus<Protocol>().withHandlers(repo, [
+      [Init, handleInit],
+      [Commit, handleCommit],
+    ])
   }
 
   context('in a non-bare repo', () => {

@@ -36,21 +36,28 @@ export type HandleCommands<Context, HandledCommand, Result = void> = (
   dispatch?: DispatchCommands,
 ) => Result
 
-type ValidProtocol<P> = { [K in keyof P]: [unknown, unknown] } & [unknown, unknown][]
+export type ValidProtocol<P> = { [K in keyof P]: [unknown, unknown] } & [unknown, unknown][]
 
-type Result<Message, Protocol extends ValidProtocol<Protocol>> = Extract<
+export type Result<Message, Protocol extends ValidProtocol<Protocol>> = Extract<
   Protocol[number],
   [Message, unknown]
 >[1]
 
-export type Handle<Context, Message, Protocol extends ValidProtocol<Protocol>> = (
+export type Handle<Context, Command extends [unknown, unknown]> = <
+  Protocol extends ValidProtocol<Protocol>
+>(
   context: Context,
-  message: Message,
+  message: Command[0],
   dispatch?: Dispatch<Protocol>,
-) => Result<Message, Protocol>
+) => Command[1]
 
-type Handlers<C, T extends ValidProtocol<T>> = {
-  [K in keyof T]: [Type<T[K][0]>, Handle<C, T[K][0], T>]
+export type AsyncCommand<Message> = AsyncQuery<Message, void>
+export type AsyncQuery<Message, Result> = Query<Message, Promise<Result>>
+export type Command<Message> = Query<Message, void>
+export type Query<Message, Result> = [Message, Result]
+
+type HandlerSet<C, T extends ValidProtocol<T>> = {
+  [K in keyof T]: [Type<T[K][0]>, Handle<C, T[K]>]
 }
 
 type ValidMessage<Protocol extends ValidProtocol<Protocol>> = Protocol[number][0]
@@ -64,21 +71,18 @@ export type Dispatch<Protocol extends ValidProtocol<Protocol>> = <
 export const commandBus = <Protocol extends ValidProtocol<Protocol>>() => ({
   withHandlers: <Context>(
     context: Context,
-    handlers: Handlers<Context, Protocol>,
+    handlerSet: HandlerSet<Context, Protocol>,
   ): Dispatch<Protocol> => {
-    const actions = new Map<
-      ValidMessage<Protocol>,
-      Handle<Context, ValidMessage<Protocol>, Protocol>
-    >()
+    const handlers = new Map<ValidMessage<Protocol>, Handle<Context, any>>() // TODO: make a ValidHandler union type
 
     // TODO: work out how to make handlers iterable
-    for (let i = 0; i < Number(handlers.length); i++) {
-      const handler = handlers[i]
-      actions.set(handler[0], handler[1])
+    for (let i = 0; i < Number(handlerSet.length); i++) {
+      const handler = handlerSet[i]
+      handlers.set(handler[0], handler[1])
     }
 
     const dispatch: Dispatch<Protocol> = message =>
-      actions.get(message.constructor)(context, message, dispatch)
+      handlers.get(message.constructor)(context, message, dispatch)
     return dispatch
   },
 })

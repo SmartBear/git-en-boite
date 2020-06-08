@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { CommandBus } from 'git-en-boite-command-bus'
+import { commandBus, AsyncCommand } from 'git-en-boite-command-bus'
 import { Init } from 'git-en-boite-git-port'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
@@ -11,7 +11,8 @@ import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 const root = path.resolve(__dirname, '../../tmp')
-console.log(root)
+
+type Protocol = [AsyncCommand<Init>]
 
 describe('handleInit', () => {
   beforeEach(async () => {
@@ -21,9 +22,8 @@ describe('handleInit', () => {
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const commandBus = new CommandBus<GitDirectory, Init>(repo)
-    commandBus.handle(Init, handleInit)
-    return commandBus.dispatch.bind(commandBus)
+    const dispatch = commandBus<Protocol>().withHandlers(repo, [[Init, handleInit]])
+    return dispatch
   }
 
   it('creates a new bare repo with conservative garbage collection settings', async () => {
