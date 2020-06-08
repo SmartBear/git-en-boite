@@ -561,10 +561,10 @@ buffer-writer@2.0.0:
   resolved "https://registry.yarnpkg.com/buffer-writer/-/buffer-writer-2.0.0.tgz#ce7eb81a38f7829db09c873f2fbb792c0c98ec04"
   integrity sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==
 
-bullmq@^1.8.12:
-  version "1.8.12"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.8.12.tgz#1640b12dd4909f2cd6145afb93cdf97d00242576"
-  integrity sha512-I90o65VKyYUtKdwBh8Oj55GW3Cd70hg931ZvC9jFPt/vNs2EjYnvrSL/zeUfMEPEtotczouUYEcIRWsJh6wACQ==
+bullmq@^1.8.13:
+  version "1.8.13"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.8.13.tgz#07f240b2f93691847686330e73d617d500986c7a"
+  integrity sha512-WEYuI2I4X5gmtKA00s9wrrMzgaZCcwYXFAuGP0Zb+sc3YQvKRhNnXX+K1ikaeb14K+CaFLjojry7hPNVyITwhw==
   dependencies:
     "@types/ioredis" "^4.0.13"
     cron-parser "^2.7.3"
