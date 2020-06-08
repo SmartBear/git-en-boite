@@ -1,9 +1,9 @@
-import { GetRefs } from 'git-en-boite-git-port'
-
-import { HandlesGitOperations } from './handles_git_operations'
+import { AsyncQuery, Handle } from 'git-en-boite-command-bus'
 import { Ref } from 'git-en-boite-core'
+import { GetRefs } from 'git-en-boite-git-port'
+import { GitDirectory } from 'git_directory'
 
-export const handleGetRefs: HandlesGitOperations<GetRefs, Ref[]> = async repo => {
+export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Ref[]>> = async repo => {
   const { stdout } = await repo.execGit('show-ref')
   return stdout
     .trim()

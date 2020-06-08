@@ -1,7 +1,7 @@
+import { AsyncCommand, Handle } from 'git-en-boite-command-bus'
 import { Fetch } from 'git-en-boite-git-port'
+import { GitDirectory } from 'git_directory'
 
-import { HandlesGitOperations } from './handles_git_operations'
-
-export const handleFetch: HandlesGitOperations<Fetch> = async repo => {
+export const handleFetch: Handle<GitDirectory, AsyncCommand<Fetch>> = async repo => {
   await repo.execGit('fetch', ['origin'])
 }

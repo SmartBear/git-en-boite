@@ -1,10 +1,11 @@
+import { AsyncCommand, Handle } from 'git-en-boite-command-bus'
 import { EnsureBranchExists } from 'git-en-boite-git-port'
-import { HandlesGitOperations } from './handles_git_operations'
+import { GitDirectory } from 'git_directory'
 
-export const handleEnsureBranchExists: HandlesGitOperations<EnsureBranchExists> = async (
-  repo,
-  { name },
-) => {
+export const handleEnsureBranchExists: Handle<
+  GitDirectory,
+  AsyncCommand<EnsureBranchExists>
+> = async (repo, { name }) => {
   const branches: string[] = await (
     await repo.execGit('branch', ['--list', '--format=%(refname:short)'])
   ).stdout
