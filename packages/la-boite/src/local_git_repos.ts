@@ -1,4 +1,4 @@
-import { Job, Queue, QueueBase, Worker, Processor } from 'bullmq'
+import { Job, Queue, QueueBase, Worker } from 'bullmq'
 import fs from 'fs'
 import {
   Branch,
@@ -18,7 +18,7 @@ import { createConfig } from './config'
 const config = createConfig()
 
 interface Processors {
-  [jobName: string]: Processor
+  [jobName: string]: (job: { data: any }) => Promise<any>
 }
 
 type QueueComponents = [Queue, Worker]
@@ -43,19 +43,8 @@ interface RepoTaskScheduler {
 class BullRepoTaskScheduler implements RepoTaskScheduler {
   private repoQueueComponents: Map<string, QueueComponents> = new Map()
   private closables: QueueBase[] = []
-  private processors: Processors = {
-    connect: async (job: Job) => {
-      const { repoPath, remoteUrl } = job.data
-      const git = await new GitRepoFactory().open(repoPath)
-      await git(Connect.toUrl(remoteUrl))
-    },
 
-    fetch: async (job: Job) => {
-      const { repoPath } = job.data
-      const git = await new GitRepoFactory().open(repoPath)
-      await git(Fetch.fromOrigin())
-    },
-  }
+  constructor(private readonly processors: Processors) {}
 
   async close(): Promise<void> {
     await Promise.all(
@@ -123,7 +112,20 @@ export class LocalGitRepos implements GitRepos {
   private readonly taskScheduler: RepoTaskScheduler
 
   constructor(private readonly basePath: string) {
-    this.taskScheduler = new BullRepoTaskScheduler()
+    const processors: Processors = {
+      connect: async ({ data }) => {
+        const { repoPath, remoteUrl } = data
+        const git = await new GitRepoFactory().open(repoPath)
+        await git(Connect.toUrl(remoteUrl))
+      },
+
+      fetch: async ({ data }) => {
+        const { repoPath } = data
+        const git = await new GitRepoFactory().open(repoPath)
+        await git(Fetch.fromOrigin())
+      },
+    }
+    this.taskScheduler = new BullRepoTaskScheduler(processors)
   }
 
   async close(): Promise<void> {
