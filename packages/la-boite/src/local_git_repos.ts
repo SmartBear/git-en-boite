@@ -52,6 +52,7 @@ class RepoFolder {
 }
 
 interface RepoTaskScheduler {
+  schedule(repoId: string, name: string, taskData: { [key: string]: any }): Promise<void>
   waitUntilIdle(repoId: string): Promise<void>
   getQueue(repoId: string): Queue
   close(): Promise<void>
@@ -74,6 +75,11 @@ class BullRepoTaskScheduler implements RepoTaskScheduler {
         await closable.disconnect()
       }),
     )
+  }
+
+  public async schedule(repoId: string, taskName: string, taskData: { [key: string]: any }) {
+    const queue = this.getQueue(repoId)
+    await queue.add(taskName, taskData)
   }
 
   public getQueue(repoId: string): Queue {
@@ -159,8 +165,7 @@ export class LocalGitRepos implements GitRepos {
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
-    const queue = this.taskScheduler.getQueue(repoId)
-    await queue.add('fetch', {
+    this.taskScheduler.schedule(repoId, 'fetch', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
     })
