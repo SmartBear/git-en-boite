@@ -1,3 +1,7 @@
+export interface Processors {
+  [jobName: string]: (jobData: { [key: string]: any }) => Promise<any>
+}
+
 export interface RepoTaskScheduler {
   schedule(
     repoId: string,

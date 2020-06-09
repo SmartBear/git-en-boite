@@ -10,17 +10,13 @@ import {
 } from 'git-en-boite-client-port'
 import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
-import { RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
+import { Processors, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import IORedis from 'ioredis'
 import path from 'path'
 
 import { createConfig } from './config'
 
 const config = createConfig()
-
-interface Processors {
-  [jobName: string]: (jobData: { [key: string]: any }) => Promise<any>
-}
 
 type QueueComponents = [Queue, Worker]
 
