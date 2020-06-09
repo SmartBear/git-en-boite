@@ -10,7 +10,14 @@ import {
 } from 'git-en-boite-client-port'
 import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
-import { Processors, RepoTaskScheduler, Processor } from 'git-en-boite-task-scheduler-port'
+import {
+  Processors,
+  RepoTaskScheduler,
+  Processor,
+  ConnectTask,
+  FetchTask,
+  Task,
+} from 'git-en-boite-task-scheduler-port'
 import IORedis from 'ioredis'
 import path from 'path'
 
@@ -65,9 +72,9 @@ class BullRepoTaskScheduler implements RepoTaskScheduler {
     )
   }
 
-  public async schedule(repoId: string, taskName: string, taskData: { [key: string]: any }) {
+  public async schedule(repoId: string, task: Task) {
     const queue = this.getQueue(repoId)
-    await queue.add(taskName, taskData)
+    await queue.add(task.name, task)
   }
 
   async waitUntilIdle(repoId: string): Promise<void> {
@@ -141,11 +148,14 @@ export class LocalGitRepos implements GitRepos {
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
-    await this.taskScheduler.schedule(repoId, 'connect', {
+    await this.taskScheduler.schedule(
       repoId,
-      repoPath: this.repoFolder(repoId).gitRepoPath,
-      remoteUrl,
-    })
+      new ConnectTask(remoteUrl, this.repoFolder(repoId).gitRepoPath),
+    )
+  }
+
+  async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
+    this.taskScheduler.schedule(repoId, new FetchTask(this.repoFolder(repoId).gitRepoPath))
   }
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
@@ -163,13 +173,6 @@ export class LocalGitRepos implements GitRepos {
         }
       })
     return QueryResult.from({ repoId, refs, branches })
-  }
-
-  async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
-    this.taskScheduler.schedule(repoId, 'fetch', {
-      repoId,
-      repoPath: this.repoFolder(repoId).gitRepoPath,
-    })
   }
 
   private repoFolder(repoId: string) {
