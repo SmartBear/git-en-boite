@@ -10,7 +10,7 @@ import {
 } from 'git-en-boite-client-port'
 import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
-import { Processors, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
+import { Processors, RepoTaskScheduler, Processor } from 'git-en-boite-task-scheduler-port'
 import IORedis from 'ioredis'
 import path from 'path'
 
@@ -32,10 +32,23 @@ class RepoFolder {
 }
 
 class BullRepoTaskScheduler implements RepoTaskScheduler {
-  private repoQueueComponents: Map<string, QueueComponents> = new Map()
-  private closables: QueueBase[] = []
+  private constructor(
+    private readonly processors: Processors,
+    private repoQueueComponents: Map<string, QueueComponents>,
+    private closables: QueueBase[],
+  ) {}
 
-  constructor(private readonly processors: Processors) {}
+  static make(): BullRepoTaskScheduler {
+    return new this({}, new Map(), [])
+  }
+
+  withProcessor(jobName: string, processor: Processor): RepoTaskScheduler {
+    return new BullRepoTaskScheduler(
+      { ...this.processors, [jobName]: processor },
+      this.repoQueueComponents,
+      this.closables,
+    )
+  }
 
   async close(): Promise<void> {
     await Promise.all(
@@ -107,18 +120,15 @@ export class LocalGitRepos implements GitRepos {
   private readonly taskScheduler: RepoTaskScheduler
 
   constructor(private readonly basePath: string) {
-    const processors: Processors = {
-      connect: async ({ repoPath, remoteUrl }) => {
+    this.taskScheduler = BullRepoTaskScheduler.make()
+      .withProcessor('connect', async ({ repoPath, remoteUrl }) => {
         const git = await new GitRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
-      },
-
-      fetch: async ({ repoPath }) => {
+      })
+      .withProcessor('fetch', async ({ repoPath }) => {
         const git = await new GitRepoFactory().open(repoPath)
         await git(Fetch.fromOrigin())
-      },
-    }
-    this.taskScheduler = new BullRepoTaskScheduler(processors)
+      })
   }
 
   async close(): Promise<void> {

@@ -1,5 +1,7 @@
+export type Processor = (jobData: { [key: string]: any }) => Promise<any>
+
 export interface Processors {
-  [jobName: string]: (jobData: { [key: string]: any }) => Promise<any>
+  [jobName: string]: Processor
 }
 
 export interface RepoTaskScheduler {
@@ -12,4 +14,5 @@ export interface RepoTaskScheduler {
   ): Promise<void>
   waitUntilIdle(repoId: string): Promise<void>
   close(): Promise<void>
+  withProcessor(jobName: string, processor: Processor): RepoTaskScheduler
 }
