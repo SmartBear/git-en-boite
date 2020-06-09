@@ -23,23 +23,6 @@ interface Processors {
 
 type QueueComponents = [Queue, Worker]
 
-const processors: Processors = {
-  connect: async (job: Job) => {
-    const { repoPath, remoteUrl } = job.data
-    const git = await new GitRepoFactory().open(repoPath)
-    await git(Connect.toUrl(remoteUrl))
-  },
-
-  fetch: async (job: Job) => {
-    const { repoPath } = job.data
-    const git = await new GitRepoFactory().open(repoPath)
-    await git(Fetch.fromOrigin())
-  },
-}
-
-const getJobProcessor = (job: Job) => () =>
-  (processors[job.name] || ((): Promise<void> => undefined))(job)
-
 class RepoFolder {
   readonly path: string
   readonly gitRepoPath: string
@@ -54,13 +37,25 @@ class RepoFolder {
 interface RepoTaskScheduler {
   schedule(repoId: string, name: string, taskData: { [key: string]: any }): Promise<void>
   waitUntilIdle(repoId: string): Promise<void>
-  getQueue(repoId: string): Queue
   close(): Promise<void>
 }
 
 class BullRepoTaskScheduler implements RepoTaskScheduler {
   private repoQueueComponents: Map<string, QueueComponents> = new Map()
   private closables: QueueBase[] = []
+  private processors: Processors = {
+    connect: async (job: Job) => {
+      const { repoPath, remoteUrl } = job.data
+      const git = await new GitRepoFactory().open(repoPath)
+      await git(Connect.toUrl(remoteUrl))
+    },
+
+    fetch: async (job: Job) => {
+      const { repoPath } = job.data
+      const git = await new GitRepoFactory().open(repoPath)
+      await git(Fetch.fromOrigin())
+    },
+  }
 
   async close(): Promise<void> {
     await Promise.all(
@@ -82,11 +77,6 @@ class BullRepoTaskScheduler implements RepoTaskScheduler {
     await queue.add(taskName, taskData)
   }
 
-  public getQueue(repoId: string): Queue {
-    const [queue] = this.getQueueComponentsForRepo(repoId)
-    return queue
-  }
-
   async waitUntilIdle(repoId: string): Promise<void> {
     const [queue, worker] = this.getQueueComponentsForRepo(repoId)
     const counts = await queue.getJobCounts()
@@ -94,6 +84,11 @@ class BullRepoTaskScheduler implements RepoTaskScheduler {
     if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
       return Promise.resolve()
     return new Promise(resolve => worker.on('drained', resolve))
+  }
+
+  private getQueue(repoId: string): Queue {
+    const [queue] = this.getQueueComponentsForRepo(repoId)
+    return queue
   }
 
   private getQueueComponentsForRepo(repoId: string): QueueComponents {
@@ -105,6 +100,8 @@ class BullRepoTaskScheduler implements RepoTaskScheduler {
   private createRepoQueue(repoId: string): QueueComponents {
     const connection = new IORedis(config.redis)
     const queue = new Queue(repoId, { connection })
+    const getJobProcessor = (job: Job) => () =>
+      (this.processors[job.name] || ((): Promise<void> => undefined))(job)
     const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
       connection,
     })
@@ -139,8 +136,7 @@ export class LocalGitRepos implements GitRepos {
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
-    const queue = this.taskScheduler.getQueue(repoId)
-    await queue.add('connect', {
+    await this.taskScheduler.schedule(repoId, 'connect', {
       repoId,
       repoPath: this.repoFolder(repoId).gitRepoPath,
       remoteUrl,
