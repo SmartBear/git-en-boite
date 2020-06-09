@@ -15,6 +15,8 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { LocalGitRepos } from './local_git_repos'
+import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
+import { createConfig } from './config'
 
 describe(LocalGitRepos.name, () => {
   let root: string
@@ -27,7 +29,8 @@ describe(LocalGitRepos.name, () => {
 
   let repos: LocalGitRepos
   beforeEach(() => {
-    repos = new LocalGitRepos(root)
+    const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
+    repos = new LocalGitRepos(root, taskScheduler)
   })
   afterEach(async () => {
     await repos.close()

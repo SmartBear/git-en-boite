@@ -1,4 +1,3 @@
-import { Job, Queue, QueueBase, Worker } from 'bullmq'
 import fs from 'fs'
 import {
   Branch,
@@ -10,22 +9,8 @@ import {
 } from 'git-en-boite-client-port'
 import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
-import {
-  Processors,
-  RepoTaskScheduler,
-  Processor,
-  ConnectTask,
-  FetchTask,
-  Task,
-} from 'git-en-boite-task-scheduler-port'
-import IORedis from 'ioredis'
+import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import path from 'path'
-
-import { createConfig } from './config'
-
-const config = createConfig()
-
-type QueueComponents = [Queue, Worker]
 
 class RepoFolder {
   readonly path: string
@@ -38,96 +23,12 @@ class RepoFolder {
   }
 }
 
-class BullRepoTaskScheduler implements RepoTaskScheduler {
-  private constructor(
-    private readonly processors: Processors,
-    private repoQueueComponents: Map<string, QueueComponents>,
-    private closables: QueueBase[],
-  ) {}
-
-  static make(): BullRepoTaskScheduler {
-    return new this({}, new Map(), [])
-  }
-
-  withProcessor(jobName: string, processor: Processor): RepoTaskScheduler {
-    return new BullRepoTaskScheduler(
-      { ...this.processors, [jobName]: processor },
-      this.repoQueueComponents,
-      this.closables,
-    )
-  }
-
-  async close(): Promise<void> {
-    await Promise.all(
-      this.closables.map(async closable => {
-        await closable.close()
-        // TODO: remove workaround when issues are fixed in bullmq:
-        // https://github.com/taskforcesh/bullmq/issues/180
-        // https://github.com/taskforcesh/bullmq/issues/159
-        if (closable instanceof Worker)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (await (closable as any).blockingConnection.client).disconnect()
-        await closable.disconnect()
-      }),
-    )
-  }
-
-  public async schedule(repoId: string, task: Task) {
-    const queue = this.getQueue(repoId)
-    await queue.add(task.name, task)
-  }
-
-  async waitUntilIdle(repoId: string): Promise<void> {
-    const [queue, worker] = this.getQueueComponentsForRepo(repoId)
-    const counts = await queue.getJobCounts()
-
-    if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
-      return Promise.resolve()
-    return new Promise(resolve => worker.on('drained', resolve))
-  }
-
-  private getQueue(repoId: string): Queue {
-    const [queue] = this.getQueueComponentsForRepo(repoId)
-    return queue
-  }
-
-  private getQueueComponentsForRepo(repoId: string): QueueComponents {
-    if (!this.repoQueueComponents.has(repoId))
-      this.repoQueueComponents.set(repoId, this.createRepoQueue(repoId))
-    return this.repoQueueComponents.get(repoId)
-  }
-
-  private createRepoQueue(repoId: string): QueueComponents {
-    const connection = new IORedis(config.redis)
-    const queue = new Queue(repoId, { connection })
-
-    const worker = new Worker(
-      repoId,
-      (job: Job) => {
-        const processor = this.processors[job.name] || ((): Promise<void> => undefined)
-        return processor(job.data)
-      },
-      { connection },
-    )
-    worker.on('failed', (job, err) =>
-      console.error(
-        `Worker failed while processing job #${job.id} "${job.name}" for repo "${repoId}"`,
-        err,
-      ),
-    )
-
-    this.closables.push(queue)
-    this.closables.push(worker)
-
-    return [queue, worker]
-  }
-}
-
 export class LocalGitRepos implements GitRepos {
-  private readonly taskScheduler: RepoTaskScheduler
-
-  constructor(private readonly basePath: string) {
-    this.taskScheduler = BullRepoTaskScheduler.make()
+  constructor(
+    private readonly basePath: string,
+    private readonly taskScheduler: RepoTaskScheduler,
+  ) {
+    this.taskScheduler = taskScheduler
       .withProcessor('connect', async ({ repoPath, remoteUrl }) => {
         const git = await new GitRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
