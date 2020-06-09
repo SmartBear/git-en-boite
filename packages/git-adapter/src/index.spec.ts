@@ -1,15 +1,14 @@
-import childProcess from 'child_process'
 import { Ref } from 'git-en-boite-core'
 import {
+  Checkout,
   Commit,
   Connect,
+  EnsureBranchExists,
   Fetch,
   GetRefs,
   GetRevision,
   Init,
   SetOrigin,
-  EnsureBranchExists,
-  Checkout,
 } from 'git-en-boite-git-port'
 import {
   assertThat,
@@ -19,20 +18,16 @@ import {
   isRejectedWith,
   matchesPattern,
   promiseThat,
-  startsWith,
   truthy,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
-import { promisify } from 'util'
 
-import { GitRepoFactory, TestableGitRepoFactory, TestableGitRepo, GitRepo } from '.'
-import { GitDirectory } from './git_directory'
+import { GitRepo, GitRepoFactory, TestableGitRepo, TestableGitRepoFactory } from '.'
 
 const SHA1_PATTERN = /[0-9a-f]{5,40}/
 
-const exec = promisify(childProcess.exec)
-describe(GitDirectory.name, () => {
+describe('Git port', () => {
   let root: string
 
   beforeEach(() => (root = dirSync().name))
@@ -85,40 +80,6 @@ describe(GitDirectory.name, () => {
       it('fails when the remote does not exist')
     })
 
-    describe(Init.name, () => {
-      it('creates a new bare repo with conservative garbage collection settings', async () => {
-        const repoPath = path.resolve(root, 'a-repo-id')
-        const git = await new GitRepoFactory().open(repoPath)
-        await git(Init.bareRepo())
-        await promiseThat(
-          exec('git config --get core.bare', { cwd: repoPath }),
-          fulfilled(hasProperty('stdout', startsWith('true'))),
-        )
-        await promiseThat(
-          exec('git config --get gc.auto', { cwd: repoPath }),
-          fulfilled(hasProperty('stdout', startsWith('0'))),
-        )
-        await promiseThat(
-          exec('git config --get gc.pruneExpire', { cwd: repoPath }),
-          fulfilled(hasProperty('stdout', startsWith('never'))),
-        )
-      })
-    })
-
-    describe(SetOrigin.name, () => {
-      it('creates a remote called origin pointing to the URL', async () => {
-        const repoPath = path.resolve(root, 'a-repo-id')
-        const git = await new GitRepoFactory().open(repoPath)
-        const repoUrl = 'git@host/repo'
-        await git(Init.bareRepo())
-        await git(SetOrigin.toUrl(repoUrl))
-        await promiseThat(
-          exec('git remote get-url origin', { cwd: repoPath }),
-          fulfilled(hasProperty('stdout', startsWith(repoUrl))),
-        )
-      })
-    })
-
     describe(Fetch.name, () => {
       context('with an origin repo with commits on master', () => {
         let latestCommit: string
@@ -138,10 +99,8 @@ describe(GitDirectory.name, () => {
           await git(Init.bareRepo())
           await git(SetOrigin.toUrl(originUrl))
           await git(Fetch.fromOrigin())
-          await promiseThat(
-            exec('git rev-parse refs/remotes/origin/master', { cwd: repoPath }),
-            fulfilled(hasProperty('stdout', startsWith(latestCommit))),
-          )
+          const refs = (await git(GetRefs.all())) as Ref[]
+          await assertThat(refs[0].revision, equalTo(latestCommit))
         })
 
         it('fails when the remote does not exist', async () => {
@@ -157,35 +116,35 @@ describe(GitDirectory.name, () => {
           )
         })
       })
+    })
 
-      describe(GetRefs.name, () => {
-        context('with an origin repo with commits on master', () => {
-          let originUrl: string
+    describe(GetRefs.name, () => {
+      context('with an origin repo with commits on master', () => {
+        let originUrl: string
+
+        beforeEach(async () => {
+          originUrl = path.resolve(root, 'remote', 'a-repo-id')
+          const origin = await new TestableGitRepoFactory().open(originUrl)
+          await origin(Init.normalRepo())
+          await origin(Commit.withAnyMessage())
+        })
+
+        context('and the repo has been fetched', () => {
+          let git: GitRepo
 
           beforeEach(async () => {
-            originUrl = path.resolve(root, 'remote', 'a-repo-id')
-            const origin = await new TestableGitRepoFactory().open(originUrl)
-            await origin(Init.normalRepo())
-            await origin(Commit.withAnyMessage())
+            git = await new GitRepoFactory().open(path.resolve(root, 'a-repo-id'))
+            await git(Init.bareRepo())
+            await git(SetOrigin.toUrl(originUrl))
+            await git(Fetch.fromOrigin())
           })
 
-          context('and the repo has been fetched', () => {
-            let git: GitRepo
-
-            beforeEach(async () => {
-              git = await new GitRepoFactory().open(path.resolve(root, 'a-repo-id'))
-              await git(Init.bareRepo())
-              await git(SetOrigin.toUrl(originUrl))
-              await git(Fetch.fromOrigin())
-            })
-
-            it('returns a single Ref for the remote master branch', async () => {
-              const refs = (await git(GetRefs.all())) as Ref[]
-              assertThat(refs, hasProperty('length', equalTo(1)))
-              assertThat(refs[0].revision, matchesPattern(SHA1_PATTERN))
-              assertThat(refs[0].isRemote, truthy())
-              assertThat(refs[0].branchName, equalTo('master'))
-            })
+          it('returns a single Ref for the remote master branch', async () => {
+            const refs = (await git(GetRefs.all())) as Ref[]
+            assertThat(refs, hasProperty('length', equalTo(1)))
+            assertThat(refs[0].revision, matchesPattern(SHA1_PATTERN))
+            assertThat(refs[0].isRemote, truthy())
+            assertThat(refs[0].branchName, equalTo('master'))
           })
         })
       })
