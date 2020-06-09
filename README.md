@@ -8,13 +8,13 @@ Put git in a box to make it easy to work with in your apps.
 
 - Clone repos from 3rd party git providers - GitHub, GitLab, BitBucket etc. (DONE)
 - Fetch updates from origin on demand (DONE)
+- Create new commits on a branch and push to the origin (TODO)
 - Set up webhooks to automatically fetch when origin is updated (TODO)
 - Emit events about changes in the repo (TODO)
 - Query the repo for:
   - branches revisions (DONE)
   - file lists (TODO)
   - file contents (TODO)
-- Create new commits on a branch and push to the origin (TODO)
 - Create pull requests on 3rd party providers from a local branch (TODO)
 - Read user info (orgs, repos) from 3rd party providers (TODO)
 
