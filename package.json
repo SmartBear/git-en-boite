@@ -11,6 +11,7 @@
     "packages/core",
     "packages/git-adapter",
     "packages/git-port",
+    "packages/task-scheduler-port",
     "packages/la-boite"
   ]
 }

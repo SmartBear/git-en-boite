@@ -10,6 +10,7 @@ import {
 } from 'git-en-boite-client-port'
 import { GitRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
+import { RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import IORedis from 'ioredis'
 import path from 'path'
 
@@ -32,12 +33,6 @@ class RepoFolder {
     this.path = path.resolve(basePath, folderName)
     this.gitRepoPath = path.resolve(this.path, 'git')
   }
-}
-
-interface RepoTaskScheduler {
-  schedule(repoId: string, name: string, taskData: { [key: string]: any }): Promise<void>
-  waitUntilIdle(repoId: string): Promise<void>
-  close(): Promise<void>
 }
 
 class BullRepoTaskScheduler implements RepoTaskScheduler {
