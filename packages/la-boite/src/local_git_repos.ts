@@ -51,14 +51,15 @@ class RepoFolder {
   }
 }
 
-export class LocalGitRepos implements GitRepos {
-  basePath: string
+interface RepoTaskScheduler {
+  waitUntilIdle(repoId: string): Promise<void>
+  getQueue(repoId: string): Queue
+  close(): Promise<void>
+}
+
+class BullRepoTaskScheduler implements RepoTaskScheduler {
   private repoQueueComponents: Map<string, QueueComponents> = new Map()
   private closables: QueueBase[] = []
-
-  constructor(basePath: string) {
-    this.basePath = basePath
-  }
 
   async close(): Promise<void> {
     await Promise.all(
@@ -75,62 +76,18 @@ export class LocalGitRepos implements GitRepos {
     )
   }
 
-  async waitUntilIdle(repoId: string): Promise<unknown> {
+  public getQueue(repoId: string): Queue {
+    const [queue] = this.getQueueComponentsForRepo(repoId)
+    return queue
+  }
+
+  async waitUntilIdle(repoId: string): Promise<void> {
     const [queue, worker] = this.getQueueComponentsForRepo(repoId)
     const counts = await queue.getJobCounts()
 
     if (counts.active === 0 && counts.delayed === 0 && counts.waiting === 0)
       return Promise.resolve()
-    // return new Promise(resolve => setTimeout(resolve, 150))
     return new Promise(resolve => worker.on('drained', resolve))
-  }
-
-  async connectToRemote(request: ConnectRepoRequest): Promise<void> {
-    const { repoId, remoteUrl } = request
-    const queue = this.getQueueForRepo(repoId)
-    await queue.add('connect', {
-      repoId,
-      repoPath: this.repoFolder(repoId).gitRepoPath,
-      remoteUrl,
-    })
-  }
-
-  async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
-    if (!this.exists(repoId)) return QueryResult.from()
-    const repoPath = this.repoFolder(repoId).gitRepoPath
-    const git = await new GitRepoFactory().open(repoPath)
-    const refs = await git(GetRefs.all())
-    const branches: Branch[] = refs
-      .filter(ref => ref.isRemote)
-      .map(ref => {
-        return {
-          name: ref.branchName,
-          refName: ref.refName,
-          revision: ref.revision,
-        }
-      })
-    return QueryResult.from({ repoId, refs, branches })
-  }
-
-  async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
-    const queue = this.getQueueForRepo(repoId)
-    await queue.add('fetch', {
-      repoId,
-      repoPath: this.repoFolder(repoId).gitRepoPath,
-    })
-  }
-
-  private repoFolder(repoId: string) {
-    return new RepoFolder(this.basePath, repoId)
-  }
-
-  private exists(repoId: string): boolean {
-    return fs.existsSync(this.repoFolder(repoId).path)
-  }
-
-  private getQueueForRepo(repoId: string): Queue {
-    const [queue] = this.getQueueComponentsForRepo(repoId)
-    return queue
   }
 
   private getQueueComponentsForRepo(repoId: string): QueueComponents {
@@ -156,5 +113,64 @@ export class LocalGitRepos implements GitRepos {
     this.closables.push(worker)
 
     return [queue, worker]
+  }
+}
+
+export class LocalGitRepos implements GitRepos {
+  private readonly taskScheduler: RepoTaskScheduler
+
+  constructor(private readonly basePath: string) {
+    this.taskScheduler = new BullRepoTaskScheduler()
+  }
+
+  async close(): Promise<void> {
+    await this.taskScheduler.close()
+  }
+
+  async waitUntilIdle(repoId: string): Promise<void> {
+    return this.taskScheduler.waitUntilIdle(repoId)
+  }
+
+  async connectToRemote(request: ConnectRepoRequest): Promise<void> {
+    const { repoId, remoteUrl } = request
+    const queue = this.taskScheduler.getQueue(repoId)
+    await queue.add('connect', {
+      repoId,
+      repoPath: this.repoFolder(repoId).gitRepoPath,
+      remoteUrl,
+    })
+  }
+
+  async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
+    if (!this.exists(repoId)) return QueryResult.from()
+    const repoPath = this.repoFolder(repoId).gitRepoPath
+    const git = await new GitRepoFactory().open(repoPath)
+    const refs = await git(GetRefs.all())
+    const branches: Branch[] = refs
+      .filter(ref => ref.isRemote)
+      .map(ref => {
+        return {
+          name: ref.branchName,
+          refName: ref.refName,
+          revision: ref.revision,
+        }
+      })
+    return QueryResult.from({ repoId, refs, branches })
+  }
+
+  async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
+    const queue = this.taskScheduler.getQueue(repoId)
+    await queue.add('fetch', {
+      repoId,
+      repoPath: this.repoFolder(repoId).gitRepoPath,
+    })
+  }
+
+  private repoFolder(repoId: string) {
+    return new RepoFolder(this.basePath, repoId)
+  }
+
+  private exists(repoId: string): boolean {
+    return fs.existsSync(this.repoFolder(repoId).path)
   }
 }
