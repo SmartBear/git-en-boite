@@ -18,7 +18,7 @@ import { createConfig } from './config'
 const config = createConfig()
 
 interface Processors {
-  [jobName: string]: (job: { data: any }) => Promise<any>
+  [jobName: string]: (jobData: { [key: string]: any }) => Promise<any>
 }
 
 type QueueComponents = [Queue, Worker]
@@ -89,11 +89,15 @@ class BullRepoTaskScheduler implements RepoTaskScheduler {
   private createRepoQueue(repoId: string): QueueComponents {
     const connection = new IORedis(config.redis)
     const queue = new Queue(repoId, { connection })
-    const getJobProcessor = (job: Job) => () =>
-      (this.processors[job.name] || ((): Promise<void> => undefined))(job)
-    const worker = new Worker(repoId, (job: Job) => getJobProcessor(job)(), {
-      connection,
-    })
+
+    const worker = new Worker(
+      repoId,
+      (job: Job) => {
+        const processor = this.processors[job.name] || ((): Promise<void> => undefined)
+        return processor(job.data)
+      },
+      { connection },
+    )
     worker.on('failed', (job, err) =>
       console.error(
         `Worker failed while processing job #${job.id} "${job.name}" for repo "${repoId}"`,
@@ -113,14 +117,12 @@ export class LocalGitRepos implements GitRepos {
 
   constructor(private readonly basePath: string) {
     const processors: Processors = {
-      connect: async ({ data }) => {
-        const { repoPath, remoteUrl } = data
+      connect: async ({ repoPath, remoteUrl }) => {
         const git = await new GitRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
       },
 
-      fetch: async ({ data }) => {
-        const { repoPath } = data
+      fetch: async ({ repoPath }) => {
         const git = await new GitRepoFactory().open(repoPath)
         await git(Fetch.fromOrigin())
       },
