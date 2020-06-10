@@ -1,7 +1,7 @@
 import { assertThat, equalTo, hasProperty, throws } from 'hamjest'
 import path from 'path'
 
-import { createConfig } from './config'
+import { createConfig } from 'git-en-boite-config'
 
 describe('createConfig', () => {
   const defaultConfig = {
@@ -20,7 +20,7 @@ describe('createConfig', () => {
     context('when running in development or test', () => {
       it('sets the root to ./git-repos/<environment> in the app directory', () => {
         for (const NODE_ENV of ['development', 'test']) {
-          const expectedRoot = path.resolve(__dirname, '../git-repos', NODE_ENV)
+          const expectedRoot = path.resolve(__dirname, '../../../git-repos', NODE_ENV)
           const config = createConfig({ ...defaultConfig, NODE_ENV })
           assertThat(config, hasProperty('git'))
           assertThat(config.git, hasProperty('root', equalTo(expectedRoot)))

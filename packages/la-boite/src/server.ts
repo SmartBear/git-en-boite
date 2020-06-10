@@ -1,6 +1,6 @@
 import { Application } from 'git-en-boite-client-port'
 
-import { createConfig } from './config'
+import { createConfig } from 'git-en-boite-config'
 import { LocalGitRepos } from './local_git_repos'
 import { createWebApp } from 'git-en-boite-client-adapter-web'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'

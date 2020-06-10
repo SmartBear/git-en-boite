@@ -3,7 +3,7 @@ import path from 'path'
 
 import { ProcessEnv } from './environment'
 
-const appRoot = path.resolve(__dirname, '..')
+const appRoot = path.resolve(__dirname, '../../..')
 
 export interface Config {
   git: GitOptions

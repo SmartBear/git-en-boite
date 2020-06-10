@@ -2,3 +2,4 @@ package-lock.json
 *.log
 out
 **/node_modules
+git-repos

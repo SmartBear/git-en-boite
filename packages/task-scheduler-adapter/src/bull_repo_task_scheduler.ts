@@ -40,7 +40,7 @@ export class BullRepoTaskScheduler implements RepoTaskScheduler {
     )
   }
 
-  public async schedule(repoId: string, task: Task): Promise<void> {
+  async schedule(repoId: string, task: Task): Promise<void> {
     const queue = this.getQueue(repoId)
     await queue.add(task.name, task)
   }

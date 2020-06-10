@@ -5,6 +5,7 @@
     "lint": "yarn workspaces run lint"
   },
   "workspaces": [
+    "packages/config",
     "packages/client-adapter-web",
     "packages/client-port",
     "packages/command-bus",

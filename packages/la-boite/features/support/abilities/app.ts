@@ -1,5 +1,5 @@
 import { Before, After } from 'cucumber'
-import { createConfig } from '../../../src/config'
+import { createConfig } from 'git-en-boite-config'
 import { LocalGitRepos } from '../../../src/local_git_repos'
 import childProcess from 'child_process'
 import { promisify } from 'util'
