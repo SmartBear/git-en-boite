@@ -1,5 +1,5 @@
-import { Dispatch, ValidProtocol } from 'git-en-boite-command-bus'
-import { Author } from 'git-en-boite-core'
+import { Dispatch, ValidProtocol, AsyncCommand, AsyncQuery } from 'git-en-boite-command-bus'
+import { Author, Ref } from 'git-en-boite-core'
 
 export class Checkout {
   protected constructor(public readonly branchName: string) {}
@@ -83,6 +83,16 @@ export class Connect {
   }
 }
 
+export type GitRepo = Dispatch<GitRepoProtocol>
+
 export interface OpensGitRepos<Protocol extends ValidProtocol<Protocol>> {
-  open(path: string): Promise<Dispatch<Protocol>>
+  open(path: string): Dispatch<Protocol>
 }
+
+export type GitRepoProtocol = [
+  AsyncCommand<Connect>,
+  AsyncCommand<Fetch>,
+  AsyncCommand<Init>,
+  AsyncCommand<SetOrigin>,
+  AsyncQuery<GetRefs, Ref[]>,
+]
