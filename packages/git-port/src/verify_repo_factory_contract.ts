@@ -16,18 +16,18 @@ import {
   Fetch,
   GetRefs,
   GetRevision,
-  GitRepoProtocol,
+  BareRepoProtocol,
   Init,
   OpensGitRepos,
   SetOrigin,
-  TestableGitRepoProtocol,
+  NonBareRepoProtocol,
 } from '.'
 
 export const verifyRepoFactoryContract = <
-  Protocol extends ValidProtocol<Protocol> & (GitRepoProtocol | TestableGitRepoProtocol)
+  Protocol extends ValidProtocol<Protocol> & (BareRepoProtocol | NonBareRepoProtocol)
 >(
   factory: OpensGitRepos<Protocol>,
-  nonBareRepoFactory: OpensGitRepos<TestableGitRepoProtocol>,
+  nonBareRepoFactory: OpensGitRepos<NonBareRepoProtocol>,
 ): void => {
   let root: string
 
@@ -44,7 +44,7 @@ export const verifyRepoFactoryContract = <
 
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
-        const origin = await nonBareRepoFactory.open(originUrl)
+        const origin = nonBareRepoFactory.open(originUrl)
         await origin(Init.normalRepo())
         await origin(Commit.withAnyMessage())
         latestCommit = await origin(GetRevision.forBranchNamed('master'))
@@ -52,7 +52,7 @@ export const verifyRepoFactoryContract = <
 
       it('fetches commits from the origin remote', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
-        const git = await factory.open(repoPath)
+        const git = factory.open(repoPath)
         await git(Init.bareRepo())
         await git(SetOrigin.toUrl(originUrl))
         await git(Fetch.fromOrigin())
@@ -62,7 +62,7 @@ export const verifyRepoFactoryContract = <
 
       it('fails when the remote does not exist', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
-        const git = await factory.open(repoPath)
+        const git = factory.open(repoPath)
         await git(Init.bareRepo())
         await git(SetOrigin.toUrl('invalid-remote-url'))
         await promiseThat(
@@ -81,7 +81,7 @@ export const verifyRepoFactoryContract = <
 
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
-        const origin = await nonBareRepoFactory.open(originUrl)
+        const origin = nonBareRepoFactory.open(originUrl)
         await origin(Init.normalRepo())
         await origin(Commit.withAnyMessage())
       })
@@ -90,7 +90,7 @@ export const verifyRepoFactoryContract = <
         let git: Dispatch<Protocol>
 
         beforeEach(async () => {
-          git = await factory.open(path.resolve(root, 'a-repo-id'))
+          git = factory.open(path.resolve(root, 'a-repo-id'))
           await git(Init.bareRepo())
           await git(SetOrigin.toUrl(originUrl))
           await git(Fetch.fromOrigin())

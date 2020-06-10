@@ -1,6 +1,5 @@
 import fs from 'fs'
-import { AsyncCommand, AsyncQuery, commandBus, Dispatch } from 'git-en-boite-command-bus'
-import { Ref } from 'git-en-boite-core'
+import { commandBus, Dispatch } from 'git-en-boite-command-bus'
 import {
   Checkout,
   Commit,
@@ -9,9 +8,9 @@ import {
   GetRefs,
   GetRevision,
   Init,
+  NonBareRepoProtocol,
   OpensGitRepos,
   SetOrigin,
-  TestableGitRepoProtocol,
 } from 'git-en-boite-git-port'
 
 import { GitDirectory } from './git_directory'
@@ -26,13 +25,13 @@ import {
   handleSetOrigin,
 } from './handlers'
 
-type TestableGitRepo = Dispatch<TestableGitRepoProtocol>
+type NonBareRepo = Dispatch<NonBareRepoProtocol>
 
-export class TestableGitRepoFactory implements OpensGitRepos<TestableGitRepoProtocol> {
-  open(path: string): TestableGitRepo {
+export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
+  open(path: string): NonBareRepo {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
-    return commandBus<TestableGitRepoProtocol>().withHandlers(repo, [
+    return commandBus<NonBareRepoProtocol>().withHandlers(repo, [
       [Checkout, handleCheckout],
       [Commit, handleCommit],
       [EnsureBranchExists, handleEnsureBranchExists],

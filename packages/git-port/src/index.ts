@@ -83,13 +83,13 @@ export class Connect {
   }
 }
 
-export type GitRepo = Dispatch<GitRepoProtocol>
+export type GitRepo = Dispatch<BareRepoProtocol>
 
 export interface OpensGitRepos<Protocol extends ValidProtocol<Protocol>> {
   open(path: string): Dispatch<Protocol>
 }
 
-export type GitRepoProtocol = [
+export type BareRepoProtocol = [
   AsyncCommand<Connect>,
   AsyncCommand<Fetch>,
   AsyncCommand<Init>,
@@ -97,7 +97,8 @@ export type GitRepoProtocol = [
   AsyncQuery<GetRefs, Ref[]>,
 ]
 
-export type TestableGitRepoProtocol = [
+// only used to create origin repos for testing
+export type NonBareRepoProtocol = [
   AsyncCommand<Checkout>,
   AsyncCommand<Commit>,
   AsyncCommand<EnsureBranchExists>,

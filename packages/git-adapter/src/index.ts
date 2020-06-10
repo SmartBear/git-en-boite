@@ -1,2 +1,2 @@
-export { GitRepoFactory } from './git_repo_factory'
-export { TestableGitRepoFactory } from './testable_git_repo_factory'
+export { BareRepoFactory } from './bare_repo_factory'
+export { NonBareRepoFactory } from './non_bare_repo_factory'

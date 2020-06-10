@@ -5,7 +5,7 @@ import {
   Fetch,
   GetRefs,
   GitRepo,
-  GitRepoProtocol,
+  BareRepoProtocol,
   Init,
   OpensGitRepos,
   SetOrigin,
@@ -14,11 +14,11 @@ import {
 import { GitDirectory } from './git_directory'
 import { handleConnect, handleFetch, handleGetRefs, handleInit, handleSetOrigin } from './handlers'
 
-export class GitRepoFactory implements OpensGitRepos<GitRepoProtocol> {
+export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
   open(path: string): GitRepo {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
-    return commandBus<GitRepoProtocol>().withHandlers(repo, [
+    return commandBus<BareRepoProtocol>().withHandlers(repo, [
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],

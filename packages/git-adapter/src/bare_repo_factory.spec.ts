@@ -5,18 +5,18 @@ import {
   GetRefs,
   Init,
   verifyRepoFactoryContract,
-  TestableGitRepoProtocol,
+  NonBareRepoProtocol,
 } from 'git-en-boite-git-port'
 import { fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { TestableGitRepoFactory } from '.'
-import { GitRepoFactory } from './git_repo_factory'
+import { NonBareRepoFactory, BareRepoFactory } from '.'
 
-describe(GitRepoFactory.name, () => {
-  const factory = new GitRepoFactory()
-  verifyRepoFactoryContract(factory, new TestableGitRepoFactory())
+describe(BareRepoFactory.name, () => {
+  const factory = new BareRepoFactory()
+  const nonBareRepoFactory = new NonBareRepoFactory()
+  verifyRepoFactoryContract(factory, nonBareRepoFactory)
 
   let root: string
 
@@ -28,11 +28,11 @@ describe(GitRepoFactory.name, () => {
 
   describe(Connect.name, () => {
     let remoteUrl: string
-    let origin: Dispatch<TestableGitRepoProtocol>
+    let origin: Dispatch<NonBareRepoProtocol>
 
     beforeEach(async () => {
       remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
-      origin = await new TestableGitRepoFactory().open(remoteUrl)
+      origin = await nonBareRepoFactory.open(remoteUrl)
       await origin(Init.normalRepo())
       await origin(Commit.withAnyMessage())
     })

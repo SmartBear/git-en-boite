@@ -14,7 +14,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
-import { TestableGitRepoFactory } from '..'
+import { NonBareRepoFactory } from '..'
 import { GitDirectory } from '../git_directory'
 import { handleFetch } from './handleFetch'
 import { handleInit } from './handleInit'
@@ -39,7 +39,7 @@ describe('handleFetch', () => {
 
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
-      const origin = await new TestableGitRepoFactory().open(originUrl)
+      const origin = await new NonBareRepoFactory().open(originUrl)
       await origin(Init.normalRepo())
       await origin(Commit.withAnyMessage())
       latestCommit = await origin(GetRevision.forBranchNamed('master'))

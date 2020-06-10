@@ -1,5 +1,5 @@
 import { ConnectRepoRequest } from 'git-en-boite-client-port'
-import { TestableGitRepoFactory } from 'git-en-boite-git-adapter'
+import { NonBareRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import {
   assertThat,
@@ -57,7 +57,7 @@ describe(LocalGitRepos.name, () => {
       }
       const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const git = await new TestableGitRepoFactory().open(repoPath)
+      const git = await new NonBareRepoFactory().open(repoPath)
       await git(Init.normalRepo())
       await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
@@ -82,7 +82,7 @@ describe(LocalGitRepos.name, () => {
       }
       const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const git = await new TestableGitRepoFactory().open(repoPath)
+      const git = await new NonBareRepoFactory().open(repoPath)
       await git(Init.normalRepo())
       await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
@@ -108,7 +108,7 @@ describe(LocalGitRepos.name, () => {
     }
     const repoPath = remoteUrl
     const branches = ['master']
-    const git = await new TestableGitRepoFactory().open(repoPath)
+    const git = await new NonBareRepoFactory().open(repoPath)
     await git(Init.normalRepo())
     await git(Commit.withMessage('Initial commit'))
     for (const branchName of branches) {
@@ -124,7 +124,7 @@ describe(LocalGitRepos.name, () => {
   it('can fetch for an existing repo', async () => {
     const repoId = 'a-repo-id'
     const repoPath = path.resolve(root, 'remote', repoId)
-    const git = await new TestableGitRepoFactory().open(repoPath)
+    const git = await new NonBareRepoFactory().open(repoPath)
     await git(Init.normalRepo())
     await git(Commit.withMessage('Initial commit'))
     await repos.connectToRemote({ repoId, remoteUrl: repoPath })

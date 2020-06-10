@@ -7,7 +7,7 @@ import {
   GitRepos,
   QueryResult,
 } from 'git-en-boite-client-port'
-import { GitRepoFactory } from 'git-en-boite-git-adapter'
+import { BareRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import path from 'path'
@@ -30,11 +30,11 @@ export class LocalGitRepos implements GitRepos {
   ) {
     this.taskScheduler = taskScheduler
       .withProcessor('connect', async ({ repoPath, remoteUrl }) => {
-        const git = await new GitRepoFactory().open(repoPath)
+        const git = new BareRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
       })
       .withProcessor('fetch', async ({ repoPath }) => {
-        const git = await new GitRepoFactory().open(repoPath)
+        const git = new BareRepoFactory().open(repoPath)
         await git(Fetch.fromOrigin())
       })
   }
@@ -62,7 +62,7 @@ export class LocalGitRepos implements GitRepos {
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!this.exists(repoId)) return QueryResult.from()
     const repoPath = this.repoFolder(repoId).gitRepoPath
-    const git = await new GitRepoFactory().open(repoPath)
+    const git = new BareRepoFactory().open(repoPath)
     const refs = await git(GetRefs.all())
     const branches: Branch[] = refs
       .filter(ref => ref.isRemote)
