@@ -11,15 +11,12 @@ import { BareRepoFactory } from 'git-en-boite-git-adapter'
 import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import path from 'path'
+import { TinyTypeOf } from 'tiny-types'
 
-class RepoFolder {
-  readonly path: string
-  readonly gitRepoPath: string
-
-  constructor(basePath: string, repoId: string) {
+class RepoPath extends TinyTypeOf<string>() {
+  static for(basePath: string, repoId: string): RepoPath {
     const folderName = Buffer.from(repoId).toString('hex')
-    this.path = path.resolve(basePath, folderName)
-    this.gitRepoPath = path.resolve(this.path, 'git')
+    return new RepoPath(path.resolve(basePath, folderName))
   }
 }
 
@@ -51,17 +48,17 @@ export class LocalGitRepos implements GitRepos {
     const { repoId, remoteUrl } = request
     await this.taskScheduler.schedule(
       repoId,
-      new ConnectTask(remoteUrl, this.repoFolder(repoId).gitRepoPath),
+      new ConnectTask(remoteUrl, RepoPath.for(this.basePath, repoId).value),
     )
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
-    this.taskScheduler.schedule(repoId, new FetchTask(this.repoFolder(repoId).gitRepoPath))
+    this.taskScheduler.schedule(repoId, new FetchTask(RepoPath.for(this.basePath, repoId).value))
   }
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!this.exists(repoId)) return QueryResult.from()
-    const repoPath = this.repoFolder(repoId).gitRepoPath
+    const repoPath = RepoPath.for(this.basePath, repoId).value
     const git = new BareRepoFactory().open(repoPath)
     const refs = await git(GetRefs.all())
     const branches: Branch[] = refs
@@ -76,11 +73,8 @@ export class LocalGitRepos implements GitRepos {
     return QueryResult.from({ repoId, refs, branches })
   }
 
-  private repoFolder(repoId: string) {
-    return new RepoFolder(this.basePath, repoId)
-  }
-
   private exists(repoId: string): boolean {
-    return fs.existsSync(this.repoFolder(repoId).path)
+    const repoPath = RepoPath.for(this.basePath, repoId).value
+    return fs.existsSync(repoPath)
   }
 }
