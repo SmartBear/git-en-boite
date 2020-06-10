@@ -96,3 +96,16 @@ export type GitRepoProtocol = [
   AsyncCommand<SetOrigin>,
   AsyncQuery<GetRefs, Ref[]>,
 ]
+
+export type TestableGitRepoProtocol = [
+  AsyncCommand<Checkout>,
+  AsyncCommand<Commit>,
+  AsyncCommand<EnsureBranchExists>,
+  AsyncCommand<Fetch>,
+  AsyncCommand<Init>,
+  AsyncCommand<SetOrigin>,
+  AsyncQuery<GetRefs, Ref[]>,
+  AsyncQuery<GetRevision, string>,
+]
+
+export { verifyRepoFactoryContract } from './verify_repo_factory_contract'

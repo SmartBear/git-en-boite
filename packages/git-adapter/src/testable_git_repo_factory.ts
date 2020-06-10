@@ -11,6 +11,7 @@ import {
   Init,
   OpensGitRepos,
   SetOrigin,
+  TestableGitRepoProtocol,
 } from 'git-en-boite-git-port'
 
 import { GitDirectory } from './git_directory'
@@ -24,17 +25,6 @@ import {
   handleInit,
   handleSetOrigin,
 } from './handlers'
-
-export type TestableGitRepoProtocol = [
-  AsyncCommand<Checkout>,
-  AsyncCommand<Commit>,
-  AsyncCommand<EnsureBranchExists>,
-  AsyncCommand<Fetch>,
-  AsyncCommand<Init>,
-  AsyncCommand<SetOrigin>,
-  AsyncQuery<GetRefs, Ref[]>,
-  AsyncQuery<GetRevision, string>,
-]
 
 type TestableGitRepo = Dispatch<TestableGitRepoProtocol>
 
