@@ -10,10 +10,19 @@ import {
   Init,
   OpensGitRepos,
   SetOrigin,
+  GetRevision,
+  GetConfig,
 } from 'git-en-boite-git-port'
 
 import { GitDirectory } from './git_directory'
-import { handleConnect, handleFetch, handleGetRefs, handleInit, handleSetOrigin } from './handlers'
+import {
+  handleConnect,
+  handleFetch,
+  handleGetRefs,
+  handleInit,
+  handleSetOrigin,
+  handleGetConfig,
+} from './handlers'
 
 export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
   open(containingPath: string): GitRepo {
@@ -26,6 +35,7 @@ export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
       [Init, handleInit],
       [SetOrigin, handleSetOrigin],
       [GetRefs, handleGetRefs],
+      [GetConfig, handleGetConfig],
     ])
   }
 }

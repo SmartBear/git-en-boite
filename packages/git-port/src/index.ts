@@ -83,6 +83,18 @@ export class Connect {
   }
 }
 
+export class GetConfig {
+  protected constructor(public readonly scope: 'local' | 'worktree' | 'file') {}
+
+  static forRepo(): GetConfig {
+    return new this('local')
+  }
+}
+
+export interface Config {
+  [key: string]: string
+}
+
 export type GitRepo = Dispatch<BareRepoProtocol>
 
 export interface OpensGitRepos<Protocol extends ValidProtocol<Protocol>> {
@@ -95,6 +107,7 @@ export type BareRepoProtocol = [
   AsyncCommand<Init>,
   AsyncCommand<SetOrigin>,
   AsyncQuery<GetRefs, Ref[]>,
+  AsyncQuery<GetConfig, Config>,
 ]
 
 // only used to create origin repos for testing
@@ -107,6 +120,7 @@ export type NonBareRepoProtocol = [
   AsyncCommand<SetOrigin>,
   AsyncQuery<GetRefs, Ref[]>,
   AsyncQuery<GetRevision, string>,
+  AsyncQuery<GetConfig, Config>,
 ]
 
 export { verifyRepoFactoryContract } from './verify_repo_factory_contract'

@@ -11,6 +11,7 @@ import {
   NonBareRepoProtocol,
   OpensGitRepos,
   SetOrigin,
+  GetConfig,
 } from 'git-en-boite-git-port'
 
 import { GitDirectory } from './git_directory'
@@ -23,6 +24,7 @@ import {
   handleGetRevision,
   handleInit,
   handleSetOrigin,
+  handleGetConfig,
 } from './handlers'
 
 type NonBareRepo = Dispatch<NonBareRepoProtocol>
@@ -40,6 +42,7 @@ export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
       [SetOrigin, handleSetOrigin],
       [GetRefs, handleGetRefs],
       [GetRevision, handleGetRevision],
+      [GetConfig, handleGetConfig],
     ])
   }
 }

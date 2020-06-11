@@ -3,5 +3,6 @@ module.exports = {
   "extension": ["ts"],
   "spec": "src/**/*.spec.ts",
   "require": "ts-node/register",
-  "color": true
+  "color": true,
+  "watch-files": ["../git-port/**/*.ts", "**/*.ts"]
 }

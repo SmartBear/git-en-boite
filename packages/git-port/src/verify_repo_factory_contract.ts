@@ -21,7 +21,10 @@ import {
   OpensGitRepos,
   SetOrigin,
   NonBareRepoProtocol,
+  GetConfig,
 } from '.'
+
+const SHA1_PATTERN = /[0-9a-f]{5,40}/
 
 export const verifyRepoFactoryContract = <
   Protocol extends ValidProtocol<Protocol> & (BareRepoProtocol | NonBareRepoProtocol)
@@ -35,6 +38,23 @@ export const verifyRepoFactoryContract = <
   afterEach(function () {
     if (this.currentTest.state === 'failed' && this.currentTest.err)
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
+  })
+
+  describe('opening a repo path', () => {
+    context('when the directory does not exist', () => {
+      it('creates an initialised repo', async () => {
+        const repoPath = path.resolve(root, 'a-repo-id')
+        const git = factory.open(repoPath)
+        // TODO: move this command inside the `open` call
+        await git(Init.bareRepo())
+        const config = await git(GetConfig.forRepo())
+        await assertThat(config['user.name'], equalTo('Git en boîte'))
+      })
+    })
+
+    context('when there is already a repo in the directory', () => {
+      it('opens the existing repo')
+    })
   })
 
   describe(Fetch.name, () => {
@@ -97,7 +117,6 @@ export const verifyRepoFactoryContract = <
         })
 
         it('returns a single Ref for the remote master branch', async () => {
-          const SHA1_PATTERN = /[0-9a-f]{5,40}/
           const refs = await git(GetRefs.all())
           assertThat(refs, hasProperty('length', equalTo(1)))
           assertThat(refs[0].revision, matchesPattern(SHA1_PATTERN))

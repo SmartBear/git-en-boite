@@ -14,7 +14,11 @@ export class GitDirectory {
   ): Promise<IGitResult> {
     const result = await GitProcess.exec([cmd, ...args], this.path, options)
     if (result.exitCode !== 0) {
-      throw new Error(`Git command failed: ${result.stderr}`)
+      throw new Error(
+        `Git command \`${cmd} ${args.join(' ')}\` returned exit code ${result.exitCode}:\n${
+          result.stderr
+        }`,
+      )
     }
     return result
   }
