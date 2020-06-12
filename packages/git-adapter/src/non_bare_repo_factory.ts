@@ -30,7 +30,7 @@ import {
 type NonBareRepo = Dispatch<NonBareRepoProtocol>
 
 export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
-  open(path: string): NonBareRepo {
+  async open(path: string): Promise<NonBareRepo> {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
     return commandBus<NonBareRepoProtocol>().withHandlers(repo, [

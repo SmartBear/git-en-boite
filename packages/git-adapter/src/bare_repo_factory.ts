@@ -25,7 +25,7 @@ import {
 } from './handlers'
 
 export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
-  open(containingPath: string): GitRepo {
+  async open(containingPath: string): Promise<GitRepo> {
     const repoPath = path.resolve(containingPath, 'git')
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)

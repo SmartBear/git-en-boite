@@ -98,7 +98,7 @@ export interface Config {
 export type GitRepo = Dispatch<BareRepoProtocol>
 
 export interface OpensGitRepos<Protocol extends ValidProtocol<Protocol>> {
-  open(path: string): Dispatch<Protocol>
+  open(path: string): Promise<Dispatch<Protocol>>
 }
 
 export type BareRepoProtocol = [

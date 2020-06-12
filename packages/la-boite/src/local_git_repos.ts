@@ -27,11 +27,11 @@ export class LocalGitRepos implements GitRepos {
   ) {
     this.taskScheduler = taskScheduler
       .withProcessor('connect', async ({ repoPath, remoteUrl }) => {
-        const git = new BareRepoFactory().open(repoPath)
+        const git = await new BareRepoFactory().open(repoPath)
         await git(Connect.toUrl(remoteUrl))
       })
       .withProcessor('fetch', async ({ repoPath }) => {
-        const git = new BareRepoFactory().open(repoPath)
+        const git = await new BareRepoFactory().open(repoPath)
         await git(Fetch.fromOrigin())
       })
   }
@@ -59,7 +59,7 @@ export class LocalGitRepos implements GitRepos {
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!this.exists(repoId)) return QueryResult.from()
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    const git = new BareRepoFactory().open(repoPath)
+    const git = await new BareRepoFactory().open(repoPath)
     const refs = await git(GetRefs.all())
     const branches: Branch[] = refs
       .filter(ref => ref.isRemote)
