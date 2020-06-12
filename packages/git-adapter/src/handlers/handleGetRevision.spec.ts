@@ -53,8 +53,8 @@ describe('handleGetRevision', () => {
 
     beforeEach(async () => {
       repoPath = path.resolve(root, 'a-repo-id')
-      git = repo(repoPath)
-      await git(Init.normalRepo())
+      git = await repo(repoPath)
+      await git(Init.nonBareRepo())
     })
 
     context('with no commits in the repo', () => {

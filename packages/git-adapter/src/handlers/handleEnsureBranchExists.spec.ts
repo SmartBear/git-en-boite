@@ -47,8 +47,8 @@ describe('handleEnsureBranchExists', () => {
 
     beforeEach(async () => {
       repoPath = path.resolve(root, 'a-repo-id')
-      git = openRepo(repoPath)
-      await git(Init.normalRepo())
+      git = await openRepo(repoPath)
+      await git(Init.nonBareRepo())
     })
 
     context('with no commits in the repo', () => {

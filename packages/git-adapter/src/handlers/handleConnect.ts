@@ -7,7 +7,6 @@ export const handleConnect: Handle<GitDirectory, AsyncCommand<Connect>> = async 
   { remoteUrl },
   dispatch,
 ) => {
-  await dispatch(Init.bareRepo())
   await dispatch(SetOrigin.toUrl(remoteUrl))
   await dispatch(Fetch.fromOrigin())
 }

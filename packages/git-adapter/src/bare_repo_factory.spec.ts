@@ -33,7 +33,6 @@ describe(BareRepoFactory.name, () => {
     beforeEach(async () => {
       remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await nonBareRepoFactory.open(remoteUrl)
-      await origin(Init.normalRepo())
       await origin(Commit.withAnyMessage())
     })
 

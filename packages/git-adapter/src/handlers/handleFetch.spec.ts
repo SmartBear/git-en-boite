@@ -40,7 +40,6 @@ describe('handleFetch', () => {
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       const origin = await new NonBareRepoFactory().open(originUrl)
-      await origin(Init.normalRepo())
       await origin(Commit.withAnyMessage())
       latestCommit = await origin(GetRevision.forBranchNamed('master'))
     })

@@ -40,8 +40,8 @@ describe('handleGetConfig', () => {
 
     beforeEach(async () => {
       repoPath = path.resolve(root, 'a-repo-id')
-      git = openRepo(repoPath)
-      await git(Init.normalRepo())
+      git = await openRepo(repoPath)
+      await git(Init.nonBareRepo())
     })
 
     it('returns a list include core.bare=false', async () => {

@@ -12,6 +12,7 @@ import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import path from 'path'
 import { TinyTypeOf } from 'tiny-types'
+import { Ref } from 'git-en-boite-core'
 
 class RepoPath extends TinyTypeOf<string>() {
   static for(basePath: string, repoId: string): RepoPath {

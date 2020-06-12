@@ -11,7 +11,6 @@ Given('a repo with branches:', async function (branchesTable) {
   const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await new NonBareRepoFactory().open(this.repoRemoteUrl)
-  await git(Init.normalRepo())
   await git(Commit.withMessage('Initial commit'))
   for (const branchName of branches) {
     await git(EnsureBranchExists.named(branchName))
@@ -23,7 +22,6 @@ Given('a remote repo with commits on the master branch', async function () {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new NonBareRepoFactory().open(this.repoRemoteUrl)
-  await git(Init.normalRepo())
   await git(Commit.withAnyMessage())
 })
 

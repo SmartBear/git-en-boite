@@ -58,7 +58,6 @@ describe(LocalGitRepos.name, () => {
       const repoPath = remoteUrl
       const branches = ['master', 'development']
       const git = await new NonBareRepoFactory().open(repoPath)
-      await git(Init.normalRepo())
       await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
         await git(EnsureBranchExists.named(branchName))
@@ -83,8 +82,6 @@ describe(LocalGitRepos.name, () => {
       const repoPath = remoteUrl
       const branches = ['master', 'development']
       const git = await new NonBareRepoFactory().open(repoPath)
-      await git(Init.normalRepo())
-      await git(Commit.withMessage('Initial commit'))
       for (const branchName of branches) {
         await git(EnsureBranchExists.named(branchName))
         await git(Commit.withMessage('A commit'))
@@ -109,7 +106,7 @@ describe(LocalGitRepos.name, () => {
     const repoPath = remoteUrl
     const branches = ['master']
     const git = await new NonBareRepoFactory().open(repoPath)
-    await git(Init.normalRepo())
+    await git(Init.nonBareRepo())
     await git(Commit.withMessage('Initial commit'))
     for (const branchName of branches) {
       await git(EnsureBranchExists.named(branchName))
@@ -125,7 +122,6 @@ describe(LocalGitRepos.name, () => {
     const repoId = 'a-repo-id'
     const repoPath = path.resolve(root, 'remote', repoId)
     const git = await new NonBareRepoFactory().open(repoPath)
-    await git(Init.normalRepo())
     await git(Commit.withMessage('Initial commit'))
     await repos.connectToRemote({ repoId, remoteUrl: repoPath })
     await repos.waitUntilIdle(repoId)

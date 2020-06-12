@@ -33,7 +33,7 @@ export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
   async open(path: string): Promise<NonBareRepo> {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
-    return commandBus<NonBareRepoProtocol>().withHandlers(repo, [
+    const git = commandBus<NonBareRepoProtocol>().withHandlers(repo, [
       [Checkout, handleCheckout],
       [Commit, handleCommit],
       [EnsureBranchExists, handleEnsureBranchExists],
@@ -44,5 +44,8 @@ export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
       [GetRevision, handleGetRevision],
       [GetConfig, handleGetConfig],
     ])
+    await git(Init.nonBareRepo())
+    await git(Commit.withMessage('Initial commit'))
+    return git
   }
 }

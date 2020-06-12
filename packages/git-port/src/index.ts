@@ -34,6 +34,7 @@ export class EnsureBranchExists {
 }
 
 export class Fetch {
+  private unique: void
   static fromOrigin() {
     return new this()
   }
@@ -62,7 +63,7 @@ export class Init {
     return new Init(true)
   }
 
-  static normalRepo() {
+  static nonBareRepo() {
     return new Init(false)
   }
 }

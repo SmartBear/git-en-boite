@@ -8,9 +8,9 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
 }));
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.core = exports.Author = void 0;
+exports.Author = void 0;
 class Author {
     constructor(name, email) {
         this.name = name;
@@ -19,7 +19,3 @@ class Author {
 }
 exports.Author = Author;
 __exportStar(require("./ref"), exports);
-function core() {
-    console.log('TODO: this is a test to see we can call code in other packages');
-}
-exports.core = core;

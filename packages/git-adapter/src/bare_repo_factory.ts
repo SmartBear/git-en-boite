@@ -29,7 +29,7 @@ export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
     const repoPath = path.resolve(containingPath, 'git')
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    return commandBus<BareRepoProtocol>().withHandlers(repo, [
+    const git = commandBus<BareRepoProtocol>().withHandlers(repo, [
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],
@@ -37,5 +37,7 @@ export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
       [GetRefs, handleGetRefs],
       [GetConfig, handleGetConfig],
     ])
+    await git(Init.bareRepo())
+    return git
   }
 }
