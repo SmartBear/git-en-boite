@@ -1,5 +1,5 @@
 import { ConnectRepoRequest } from 'git-en-boite-client-port'
-import { NonBareRepoFactory } from 'git-en-boite-git-adapter'
+import { NonBareRepoFactory, BareRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import {
   assertThat,
@@ -30,7 +30,8 @@ describe(LocalGitRepos.name, () => {
   let repos: LocalGitRepos
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
-    repos = new LocalGitRepos(root, taskScheduler)
+    const gitRepoFactory = new BareRepoFactory()
+    repos = new LocalGitRepos(root, taskScheduler, gitRepoFactory)
   })
   afterEach(async () => {
     await repos.close()

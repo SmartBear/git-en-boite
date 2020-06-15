@@ -8,8 +8,14 @@ import {
   QueryResult,
 } from 'git-en-boite-client-port'
 import { Ref } from 'git-en-boite-core'
-import { BareRepoFactory } from 'git-en-boite-git-adapter'
-import { Connect, Fetch, GetRefs, GitRepo } from 'git-en-boite-git-port'
+import {
+  BareRepoProtocol,
+  Connect,
+  Fetch,
+  GetRefs,
+  GitRepo,
+  OpensGitRepos,
+} from 'git-en-boite-git-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import path from 'path'
 import { TinyTypeOf } from 'tiny-types'
@@ -48,6 +54,7 @@ export class LocalGitRepos implements GitRepos, RepoIndex {
   constructor(
     private readonly basePath: string,
     private readonly taskScheduler: RepoTaskScheduler,
+    private readonly gitRepos: OpensGitRepos<BareRepoProtocol>,
   ) {
     this.taskScheduler = taskScheduler
       .withProcessor('connect', async ({ repoId, remoteUrl }) => {
@@ -96,8 +103,7 @@ export class LocalGitRepos implements GitRepos, RepoIndex {
 
   async find(repoId: string): Promise<Repo> {
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    const gitRepoFactory = new BareRepoFactory()
-    return new Repo(repoId, await gitRepoFactory.open(repoPath))
+    return new Repo(repoId, await this.gitRepos.open(repoPath))
   }
 
   public exists(repoId: string): boolean {
