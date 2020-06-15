@@ -5,6 +5,7 @@ import { LocalGitRepos } from './local_git_repos'
 import { createWebApp } from 'git-en-boite-client-adapter-web'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { BareRepoFactory } from 'git-en-boite-git-adapter'
+import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 
 const config = createConfig(process.env)
 console.log(`git-en-boite starting up`)
@@ -12,8 +13,9 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 const taskScheduler = BullRepoTaskScheduler.make(config.redis)
 const gitRepoFactory = new BareRepoFactory()
+const repoIndex = new DiskRepoIndex(config.git.root, gitRepoFactory)
 const app: Application = {
-  repos: new LocalGitRepos(taskScheduler, config.git.root, gitRepoFactory),
+  repos: new LocalGitRepos(taskScheduler, repoIndex),
   version: config.version,
 }
 

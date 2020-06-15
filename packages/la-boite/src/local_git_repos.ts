@@ -6,18 +6,13 @@ import {
   GitRepos,
   QueryResult,
 } from 'git-en-boite-client-port'
-import { BareRepoProtocol, OpensGitRepos } from 'git-en-boite-git-port'
-import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import { RepoIndex } from 'git-en-boite-repo-index-port'
-import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
+import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 export class LocalGitRepos implements GitRepos {
-  private readonly repoIndex: RepoIndex
-
   constructor(
     private readonly taskScheduler: RepoTaskScheduler,
-    readonly basePath: string,
-    readonly gitRepos: OpensGitRepos<BareRepoProtocol>,
+    private readonly repoIndex: RepoIndex,
   ) {
     this.taskScheduler = taskScheduler
       .withProcessor('connect', async ({ repoId, remoteUrl }) => {
@@ -28,7 +23,6 @@ export class LocalGitRepos implements GitRepos {
         const repo = await this.repoIndex.find(repoId)
         return repo.fetch()
       })
-    this.repoIndex = new DiskRepoIndex(basePath, gitRepos)
   }
 
   async close(): Promise<void> {

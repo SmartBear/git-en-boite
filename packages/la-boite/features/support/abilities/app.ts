@@ -5,6 +5,7 @@ import childProcess from 'child_process'
 import { promisify } from 'util'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { BareRepoFactory } from 'git-en-boite-git-adapter'
+import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 const exec = promisify(childProcess.exec)
 
 Before(async function () {
@@ -13,7 +14,8 @@ Before(async function () {
   await exec(`mkdir -p ${gitReposPath}`)
   const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
   const gitRepoFactory = new BareRepoFactory()
-  this.app = { repos: new LocalGitRepos(taskScheduler, gitReposPath, gitRepoFactory) }
+  const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory)
+  this.app = { repos: new LocalGitRepos(taskScheduler, repoIndex) }
   let nextRepoId = 0
   this.getNextRepoId = () => `repo-${nextRepoId++}`
 })

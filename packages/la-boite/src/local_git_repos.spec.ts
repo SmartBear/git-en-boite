@@ -17,6 +17,7 @@ import { dirSync } from 'tmp'
 import { LocalGitRepos } from './local_git_repos'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { createConfig } from 'git-en-boite-config'
+import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 
 describe(LocalGitRepos.name, () => {
   let root: string
@@ -31,7 +32,8 @@ describe(LocalGitRepos.name, () => {
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
-    repos = new LocalGitRepos(taskScheduler, root, gitRepoFactory)
+    const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
+    repos = new LocalGitRepos(taskScheduler, repoIndex)
   })
   afterEach(async () => {
     await repos.close()
