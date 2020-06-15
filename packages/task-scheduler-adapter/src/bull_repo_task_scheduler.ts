@@ -71,7 +71,7 @@ export class BullRepoTaskScheduler implements RepoTaskScheduler {
       repoId,
       (job: Job) => {
         const processor = this.processors[job.name] || ((): Promise<void> => undefined)
-        return processor(job.data)
+        return processor({ repoId, ...job.data })
       },
       { connection },
     )

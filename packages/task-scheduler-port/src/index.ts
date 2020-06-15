@@ -7,12 +7,11 @@ export interface Task {
 
 export class ConnectTask implements Task {
   public readonly name = 'connect'
-  constructor(public readonly remoteUrl: string, public readonly repoPath: string) {}
+  constructor(public readonly remoteUrl: string) {}
 }
 
 export class FetchTask implements Task {
   public readonly name = 'fetch'
-  constructor(public readonly repoPath: string) {}
 }
 
 export interface Processors {

@@ -7,12 +7,12 @@ import {
   GitRepos,
   QueryResult,
 } from 'git-en-boite-client-port'
+import { Ref } from 'git-en-boite-core'
 import { BareRepoFactory } from 'git-en-boite-git-adapter'
-import { Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
+import { Connect, Fetch, GetRefs, GitRepo } from 'git-en-boite-git-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 import path from 'path'
 import { TinyTypeOf } from 'tiny-types'
-import { Ref } from 'git-en-boite-core'
 
 class RepoPath extends TinyTypeOf<string>() {
   static for(basePath: string, repoId: string): RepoPath {
@@ -21,20 +21,44 @@ class RepoPath extends TinyTypeOf<string>() {
   }
 }
 
-export class LocalGitRepos implements GitRepos {
+class Repo {
+  constructor(private readonly repoId: string, private readonly git: GitRepo) {}
+
+  async fetch(): Promise<void> {
+    await this.git(Fetch.fromOrigin())
+  }
+
+  async connect(remoteUrl: string): Promise<void> {
+    await this.git(Connect.toUrl(remoteUrl))
+  }
+
+  public async getRefs(): Promise<Ref[]> {
+    return await this.git(GetRefs.all())
+  }
+}
+
+interface RepoIndex {
+  exists(repoId: string): boolean
+  find(repoId: string): Promise<Repo>
+}
+
+export class LocalGitRepos implements GitRepos, RepoIndex {
+  private readonly repoIndex: RepoIndex
+
   constructor(
     private readonly basePath: string,
     private readonly taskScheduler: RepoTaskScheduler,
   ) {
     this.taskScheduler = taskScheduler
-      .withProcessor('connect', async ({ repoPath, remoteUrl }) => {
-        const git = await new BareRepoFactory().open(repoPath)
-        await git(Connect.toUrl(remoteUrl))
+      .withProcessor('connect', async ({ repoId, remoteUrl }) => {
+        const repo = await this.repoIndex.find(repoId)
+        return repo.connect(remoteUrl)
       })
-      .withProcessor('fetch', async ({ repoPath }) => {
-        const git = await new BareRepoFactory().open(repoPath)
-        await git(Fetch.fromOrigin())
+      .withProcessor('fetch', async ({ repoId }) => {
+        const repo = await this.repoIndex.find(repoId)
+        return repo.fetch()
       })
+    this.repoIndex = this as RepoIndex
   }
 
   async close(): Promise<void> {
@@ -47,21 +71,17 @@ export class LocalGitRepos implements GitRepos {
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
-    await this.taskScheduler.schedule(
-      repoId,
-      new ConnectTask(remoteUrl, RepoPath.for(this.basePath, repoId).value),
-    )
+    await this.taskScheduler.schedule(repoId, new ConnectTask(remoteUrl))
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
-    this.taskScheduler.schedule(repoId, new FetchTask(RepoPath.for(this.basePath, repoId).value))
+    this.taskScheduler.schedule(repoId, new FetchTask())
   }
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
-    if (!this.exists(repoId)) return QueryResult.from()
-    const repoPath = RepoPath.for(this.basePath, repoId).value
-    const git = await new BareRepoFactory().open(repoPath)
-    const refs = await git(GetRefs.all())
+    if (!this.repoIndex.exists(repoId)) return QueryResult.from()
+    const repo = await this.repoIndex.find(repoId)
+    const refs = await repo.getRefs()
     const branches: Branch[] = refs
       .filter(ref => ref.isRemote)
       .map(ref => {
@@ -74,7 +94,13 @@ export class LocalGitRepos implements GitRepos {
     return QueryResult.from({ repoId, refs, branches })
   }
 
-  private exists(repoId: string): boolean {
+  async find(repoId: string): Promise<Repo> {
+    const repoPath = RepoPath.for(this.basePath, repoId).value
+    const gitRepoFactory = new BareRepoFactory()
+    return new Repo(repoId, await gitRepoFactory.open(repoPath))
+  }
+
+  public exists(repoId: string): boolean {
     const repoPath = RepoPath.for(this.basePath, repoId).value
     return fs.existsSync(repoPath)
   }

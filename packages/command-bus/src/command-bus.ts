@@ -44,7 +44,7 @@ export function commandBus<Protocol extends ValidProtocol<Protocol>>() {
   }
 }
 
-type Result<Message, Protocol extends ValidProtocol<Protocol>> = Extract<
+export type Result<Message, Protocol extends ValidProtocol<Protocol>> = Extract<
   Protocol[number],
   [Message, unknown]
 >[1]
