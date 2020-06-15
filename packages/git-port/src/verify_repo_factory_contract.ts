@@ -7,6 +7,7 @@ import {
   matchesPattern,
   promiseThat,
   truthy,
+  hasItem,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -73,7 +74,8 @@ export const verifyRepoFactoryContract = <
         await git(SetOrigin.toUrl(originUrl))
         await git(Fetch.fromOrigin())
         const refs = await git(GetRefs.all())
-        await assertThat(refs[0].revision, equalTo(latestCommit))
+        const ref = refs.find(ref => ref.isRemote)
+        await assertThat(ref.revision, equalTo(latestCommit))
       })
 
       it('fails when the remote does not exist', async () => {
@@ -109,12 +111,13 @@ export const verifyRepoFactoryContract = <
           await git(Fetch.fromOrigin())
         })
 
-        it('returns a single Ref for the remote master branch', async () => {
+        it('returns a Ref for the remote master branch', async () => {
           const refs = await git(GetRefs.all())
-          assertThat(refs, hasProperty('length', equalTo(1)))
-          assertThat(refs[0].revision, matchesPattern(SHA1_PATTERN))
-          assertThat(refs[0].isRemote, truthy())
-          assertThat(refs[0].branchName, equalTo('master'))
+          assertThat(refs, hasItem(hasProperty('isRemote', truthy())))
+          const ref = refs.find(ref => ref.isRemote)
+          assertThat(ref.revision, matchesPattern(SHA1_PATTERN))
+          assertThat(ref.isRemote, truthy())
+          assertThat(ref.branchName, equalTo('master'))
         })
       })
     })
