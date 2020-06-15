@@ -14,6 +14,8 @@
     "packages/git-port",
     "packages/task-scheduler-port",
     "packages/task-scheduler-adapter",
+    "packages/repo-index-port",
+    "packages/repo-index-adapter",
     "packages/la-boite"
   ]
 }

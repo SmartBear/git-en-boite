@@ -31,7 +31,7 @@ describe(LocalGitRepos.name, () => {
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
-    repos = new LocalGitRepos(root, taskScheduler, gitRepoFactory)
+    repos = new LocalGitRepos(taskScheduler, root, gitRepoFactory)
   })
   afterEach(async () => {
     await repos.close()

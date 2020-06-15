@@ -13,7 +13,7 @@ Before(async function () {
   await exec(`mkdir -p ${gitReposPath}`)
   const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
   const gitRepoFactory = new BareRepoFactory()
-  this.app = { repos: new LocalGitRepos(gitReposPath, taskScheduler, gitRepoFactory) }
+  this.app = { repos: new LocalGitRepos(taskScheduler, gitReposPath, gitRepoFactory) }
   let nextRepoId = 0
   this.getNextRepoId = () => `repo-${nextRepoId++}`
 })

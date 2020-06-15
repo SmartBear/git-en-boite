@@ -125,3 +125,4 @@ export type NonBareRepoProtocol = [
 ]
 
 export { verifyRepoFactoryContract } from './verify_repo_factory_contract'
+export * from './repo_path'

@@ -1,7 +1,7 @@
 {
-  "name": "git-en-boite-git-port",
+  "name": "git-en-boite-repo-index-port",
   "version": "0.0.0",
-  "description": "Interface types for the port that talks to local git repos",
+  "description": "Interface types for the port that holds the index of info about all repos",
   "main": "src/index.ts",
   "scripts": {
     "test": "# noop",
@@ -21,11 +21,6 @@
   },
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
-    "git-en-boite-core": "0.0.0",
-    "tiny-types": "^1.14.1"
-  },
-  "devDependencies": {
-    "hamjest": "^3.5.0",
-    "tmp": "^0.2.1"
+    "git-en-boite-core": "0.0.0"
   }
 }

@@ -3,3 +3,4 @@ export class Author {
 }
 
 export * from './ref'
+export * from './repo'

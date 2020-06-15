@@ -13,7 +13,7 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 const taskScheduler = BullRepoTaskScheduler.make(config.redis)
 const gitRepoFactory = new BareRepoFactory()
 const app: Application = {
-  repos: new LocalGitRepos(config.git.root, taskScheduler, gitRepoFactory),
+  repos: new LocalGitRepos(taskScheduler, config.git.root, gitRepoFactory),
   version: config.version,
 }
 

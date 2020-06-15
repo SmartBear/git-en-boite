@@ -22,5 +22,8 @@
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "devDependencies": {
     "hamjest": "^3.5.0"
+  },
+  "dependencies": {
+    "git-en-boite-git-port": "0.0.0"
   }
 }
