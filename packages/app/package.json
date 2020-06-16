@@ -1,7 +1,7 @@
 {
-  "name": "git-en-boite-la-boite",
+  "name": "git-en-boite-app",
   "version": "0.0.0",
-  "description": "",
+  "description": "Main entry point for Git-en-Boîte",
   "scripts": {
     "test": "yarn test:unit && yarn test:acceptance",
     "test:unit": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",

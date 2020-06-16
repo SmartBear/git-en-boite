@@ -5,17 +5,17 @@
     "lint": "yarn workspaces run lint"
   },
   "workspaces": [
-    "packages/config",
+    "packages/app",
     "packages/client-adapter-web",
     "packages/client-port",
     "packages/command-bus",
+    "packages/config",
     "packages/core",
     "packages/git-adapter",
     "packages/git-port",
-    "packages/task-scheduler-port",
-    "packages/task-scheduler-adapter",
-    "packages/repo-index-port",
     "packages/repo-index-adapter",
-    "packages/la-boite"
+    "packages/repo-index-port",
+    "packages/task-scheduler-adapter",
+    "packages/task-scheduler-port"
   ]
 }
