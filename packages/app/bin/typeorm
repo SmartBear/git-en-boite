@@ -1,2 +1,0 @@
-#!/bin/sh
-ts-node ./node_modules/typeorm/cli.js $@
