@@ -2,8 +2,8 @@
 import { Given, TableDefinition, Then, When } from 'cucumber'
 import { GitRepoInfo } from 'git-en-boite-client-port'
 import { NonBareRepoFactory } from 'git-en-boite-git-adapter'
-import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
-import { assertThat, containsInAnyOrder, equalTo } from 'hamjest'
+import { Commit, EnsureBranchExists, GetRevision } from 'git-en-boite-git-port'
+import { assertThat, containsInAnyOrder, equalTo, hasProperty } from 'hamjest'
 import path from 'path'
 
 Given('a repo with branches:', async function (branchesTable) {
@@ -33,6 +33,12 @@ When('a new commit is made in the remote repo', async function () {
 
 When('Bob connects an app to the repo', async function () {
   const repoInfo = { repoId: this.repoId, remoteUrl: this.repoRemoteUrl }
+  await this.request.post('/repos').send(repoInfo).expect(202)
+})
+
+When('someone tries to connect a repo to a bad URL', async function () {
+  this.repoId = this.getNextRepoId()
+  const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
   await this.request.post('/repos').send(repoInfo).expect(202)
 })
 
@@ -88,4 +94,16 @@ Then('the repo should have the new commit at the head of the master branch', asy
     (response.body as GitRepoInfo).branches.find(branch => branch.name === 'master').revision,
     equalTo(this.lastCommitRevision),
   )
+})
+
+Then('the repo should have a connection status of {string}', async function (
+  expectedConnectionStatus: string,
+) {
+  const response = await this.request
+    .get(`/repos/${this.repoId}`)
+    .set('Accept', 'application/json')
+    .expect(200)
+
+  const repoInfo: GitRepoInfo = response.body
+  assertThat(repoInfo, hasProperty('connectionStatus', equalTo(expectedConnectionStatus)))
 })
