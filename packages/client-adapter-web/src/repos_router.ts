@@ -2,12 +2,12 @@ import { Application, ConnectRepoRequest } from 'git-en-boite-client-port'
 import { Context } from 'koa'
 import Router from 'koa-router'
 
-export function create({ repos }: Application): Router {
+export function create(app: Application): Router {
   const router = new Router({ prefix: '/repos' })
 
   router.get('repo', '/:repoId', async (ctx: Context) => {
     const { repoId } = ctx.params
-    const result = await repos.getInfo(repoId)
+    const result = await app.getInfo(repoId)
     result.respond({
       foundOne: async repoInfo => {
         ctx.body = repoInfo
@@ -20,20 +20,20 @@ export function create({ repos }: Application): Router {
 
   router.post('/', async (ctx: Context) => {
     const request: ConnectRepoRequest = ctx.request.body
-    const result = await repos.getInfo(request.repoId)
+    const result = await app.getInfo(request.repoId)
     await result.respond({
       foundOne: async repoInfo => {
         ctx.response.redirect(router.url('repo', repoInfo))
       },
       foundNone: async () => {
-        await repos.connectToRemote(request)
+        await app.connectToRemote(request)
         ctx.response.status = 202
       },
     })
   })
 
   router.post('/:repoId', async (ctx: Context) => {
-    await repos.fetchFromRemote({ repoId: ctx.params.repoId })
+    await app.fetchFromRemote({ repoId: ctx.params.repoId })
     ctx.response.status = 202
   })
 

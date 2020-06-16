@@ -1,4 +1,4 @@
-import { FetchRepoRequest, GitRepos, QueryResult } from 'git-en-boite-client-port'
+import { FetchRepoRequest, QueryResult, Application } from 'git-en-boite-client-port'
 import { Ref } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
@@ -11,14 +11,14 @@ import { create } from './repos_router'
 describe('/repos', () => {
   let request: SuperTest<Test>
   let server: Server
-  let repos: StubbedInstance<GitRepos>
+  let app: StubbedInstance<Application>
 
   beforeEach(() => {
-    repos = stubInterface<GitRepos>()
+    app = stubInterface<Application>()
   })
 
   beforeEach(() => {
-    const routes = create({ repos, version: '1' })
+    const routes = create(app)
     const webApp = WebApp.withRoutes(routes)
     server = webApp.listen(8888)
     request = supertest(server)
@@ -36,13 +36,13 @@ describe('/repos', () => {
         repoId: 'a-repo-id',
         refs: [new Ref('abc123', 'refs/remotes/origin/master')],
       }
-      repos.getInfo.resolves(QueryResult.from(repoInfo))
+      app.getInfo.resolves(QueryResult.from(repoInfo))
       const response = await request.get('/repos/a-repo-id').expect(200)
       assertThat(response.body, equalTo(bareObject(repoInfo)))
     })
 
     it("responds 404 if the repo doesn't exist", async () => {
-      repos.getInfo.resolves(QueryResult.from())
+      app.getInfo.resolves(QueryResult.from())
       await request.get('/repos/a-repo-id').expect(404)
     })
   })
@@ -50,10 +50,10 @@ describe('/repos', () => {
   describe('POST /repos/', () => {
     it('connects to the remote repo', async () => {
       const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
-      repos.getInfo.resolves(QueryResult.from())
-      repos.connectToRemote.withArgs(connectRepoRequest).resolves()
+      app.getInfo.resolves(QueryResult.from())
+      app.connectToRemote.withArgs(connectRepoRequest).resolves()
       await request.post('/repos').send(connectRepoRequest).expect(202)
-      assertThat(repos.connectToRemote.called, equalTo(true))
+      assertThat(app.connectToRemote.called, equalTo(true))
     })
 
     it('redirects to the repo if it already exists', async () => {
@@ -61,7 +61,7 @@ describe('/repos', () => {
         repoId: 'a-repo-id',
         refs: [new Ref('abc123', 'refs/remotes/origin/master')],
       }
-      repos.getInfo.resolves(QueryResult.from(repoInfo))
+      app.getInfo.resolves(QueryResult.from(repoInfo))
       const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
       await request.post('/repos').send(connectRepoRequest).expect(302)
       const response = await request.post('/repos').send(connectRepoRequest).redirects(1)
@@ -72,9 +72,9 @@ describe('/repos', () => {
   describe('POST /repos/:repoId', () => {
     it('triggers a fetch for the repo', async () => {
       const fetchRepoRequest: FetchRepoRequest = { repoId: 'a-repo-id' }
-      repos.fetchFromRemote.withArgs(fetchRepoRequest).resolves()
+      app.fetchFromRemote.withArgs(fetchRepoRequest).resolves()
       await request.post('/repos/a-repo-id').expect(202)
-      assertThat(repos.fetchFromRemote.called, equalTo(true))
+      assertThat(app.fetchFromRemote.called, equalTo(true))
     })
   })
 })

@@ -9,17 +9,18 @@ import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 const exec = promisify(childProcess.exec)
 
 Before(async function () {
-  const gitReposPath = createConfig().git.root
+  const config = createConfig()
+  const gitReposPath = config.git.root
   await exec(`rm -rf ${gitReposPath}`)
   await exec(`mkdir -p ${gitReposPath}`)
-  const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
+  const taskScheduler = BullRepoTaskScheduler.make(config.redis)
   const gitRepoFactory = new BareRepoFactory()
   const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory)
-  this.app = { repos: new LocalGitRepos(taskScheduler, repoIndex) }
+  this.app = new LocalGitRepos(taskScheduler, repoIndex, config.version)
   let nextRepoId = 0
   this.getNextRepoId = () => `repo-${nextRepoId++}`
 })
 
 After(async function () {
-  this.app.repos.close()
+  this.app.close()
 })

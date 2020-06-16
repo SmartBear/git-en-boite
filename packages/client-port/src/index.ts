@@ -26,7 +26,9 @@ export interface GitRepoInfo {
 }
 
 export interface Application {
-  repos: GitRepos
+  connectToRemote: (request: ConnectRepoRequest) => Promise<void>
+  getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>
+  fetchFromRemote: (request: FetchRepoRequest) => Promise<void>
   version: string
 }
 
@@ -37,12 +39,6 @@ export interface ConnectRepoRequest {
 
 export interface FetchRepoRequest {
   repoId: string
-}
-
-export interface GitRepos {
-  connectToRemote: (request: ConnectRepoRequest) => Promise<void>
-  getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>
-  fetchFromRemote: (request: FetchRepoRequest) => Promise<void>
 }
 
 export type ListensOnPort = { listen: (port: number) => Server }

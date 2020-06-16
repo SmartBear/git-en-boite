@@ -33,7 +33,7 @@ describe(LocalGitRepos.name, () => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
     const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
-    repos = new LocalGitRepos(taskScheduler, repoIndex)
+    repos = new LocalGitRepos(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {
     await repos.close()

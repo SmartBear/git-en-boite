@@ -3,16 +3,17 @@ import {
   ConnectRepoRequest,
   FetchRepoRequest,
   GitRepoInfo,
-  GitRepos,
   QueryResult,
+  Application,
 } from 'git-en-boite-client-port'
 import { RepoIndex } from 'git-en-boite-repo-index-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
-export class LocalGitRepos implements GitRepos {
+export class LocalGitRepos implements Application {
   constructor(
     private readonly taskScheduler: RepoTaskScheduler,
     private readonly repoIndex: RepoIndex,
+    public readonly version: string,
   ) {
     this.taskScheduler = taskScheduler
       .withProcessor('connect', async ({ repoId, remoteUrl }) => {

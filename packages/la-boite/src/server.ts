@@ -14,10 +14,7 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 const taskScheduler = BullRepoTaskScheduler.make(config.redis)
 const gitRepoFactory = new BareRepoFactory()
 const repoIndex = new DiskRepoIndex(config.git.root, gitRepoFactory)
-const app: Application = {
-  repos: new LocalGitRepos(taskScheduler, repoIndex),
-  version: config.version,
-}
+const app: Application = new LocalGitRepos(taskScheduler, repoIndex, config.version)
 
 const port = 3001
 const host = 'localhost'

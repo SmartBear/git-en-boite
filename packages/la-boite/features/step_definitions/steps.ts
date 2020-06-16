@@ -41,14 +41,14 @@ When('a consumer triggers a manual fetch of the repo', async function () {
 })
 
 When('the repo has synchronised', async function () {
-  await this.app.repos.waitUntilIdle(this.repoId)
+  await this.app.waitUntilIdle(this.repoId)
 })
 
 Given('the repo has been connected', async function () {
   const { request } = this
   const repoInfo = { repoId: this.repoId, remoteUrl: this.repoRemoteUrl }
   await request.post('/repos').send(repoInfo).expect(202)
-  await this.app.repos.waitUntilIdle(this.repoId)
+  await this.app.waitUntilIdle(this.repoId)
 })
 
 Then("Bob can see that the repo's refs are:", async function (expectedRefsTable: TableDefinition) {
