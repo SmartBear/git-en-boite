@@ -9,7 +9,7 @@ import {
 import { RepoIndex } from 'git-en-boite-repo-index-port'
 import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
-export class LocalGitRepos implements Application {
+export class LaBoîte implements Application {
   constructor(
     private readonly taskScheduler: RepoTaskScheduler,
     private readonly repoIndex: RepoIndex,

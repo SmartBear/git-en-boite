@@ -14,12 +14,12 @@ import {
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { LocalGitRepos } from './local_git_repos'
+import { LaBoîte } from './la_boîte'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { createConfig } from 'git-en-boite-config'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 
-describe(LocalGitRepos.name, () => {
+describe(LaBoîte.name, () => {
   let root: string
 
   beforeEach(() => (root = dirSync().name))
@@ -28,12 +28,12 @@ describe(LocalGitRepos.name, () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  let repos: LocalGitRepos
+  let repos: LaBoîte
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
     const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
-    repos = new LocalGitRepos(taskScheduler, repoIndex, '999.9.9-test')
+    repos = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {
     await repos.close()
