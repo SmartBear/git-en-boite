@@ -2,6 +2,7 @@ import { Ref } from 'git-en-boite-core'
 import { Server } from 'http'
 
 import { QueryResult } from './query_result'
+import { Command } from 'git-en-boite-command-bus'
 export { QueryResult } from './query_result'
 
 export interface Branch {
@@ -25,10 +26,18 @@ export interface GitRepoInfo {
   branches: Branch[]
 }
 
-export interface Application {
+export type Application = CommandsApplication & QueriesApplication & Versioned
+
+export interface CommandsApplication {
   connectToRemote: (request: ConnectRepoRequest) => Promise<void>
-  getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>
   fetchFromRemote: (request: FetchRepoRequest) => Promise<void>
+}
+
+export interface QueriesApplication {
+  getInfo: (repoId: string) => Promise<QueryResult<GitRepoInfo>>
+}
+
+export interface Versioned {
   version: string
 }
 
