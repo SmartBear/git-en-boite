@@ -64,4 +64,5 @@ workflows:
             branches:
               only:
                 - master
+                - main
                 - ci
