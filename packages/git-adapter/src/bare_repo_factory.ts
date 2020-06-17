@@ -1,27 +1,26 @@
 import fs from 'fs'
-import path from 'path'
 import { commandBus } from 'git-en-boite-command-bus'
 import {
+  BareRepoProtocol,
   Connect,
   Fetch,
+  GetConfig,
   GetRefs,
   GitRepo,
-  BareRepoProtocol,
   Init,
   OpensGitRepos,
   SetOrigin,
-  GetRevision,
-  GetConfig,
 } from 'git-en-boite-git-port'
+import path from 'path'
 
 import { GitDirectory } from './git_directory'
 import {
   handleConnect,
   handleFetch,
+  handleGetConfig,
   handleGetRefs,
   handleInit,
   handleSetOrigin,
-  handleGetConfig,
 } from './handlers'
 
 export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
