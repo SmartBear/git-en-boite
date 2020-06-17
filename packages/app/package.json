@@ -6,6 +6,7 @@
     "test": "yarn test:unit && yarn test:acceptance",
     "test:unit": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",
     "test:acceptance": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js",
+    "test:acceptance:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js -p wip",
     "start": "./bin/start",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
