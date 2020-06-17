@@ -4,7 +4,7 @@
   "description": "Core Domain for git-en-boite",
   "main": "src/index.ts",
   "scripts": {
-    "test": "# noop",
+    "test": "mocha",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {
