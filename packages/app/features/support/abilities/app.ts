@@ -1,18 +1,15 @@
-import { Before, After } from 'cucumber'
+import { After, Before } from 'cucumber'
 import { createConfig } from 'git-en-boite-config'
-import { LaBoîte } from '../../../src/la_boîte'
-import childProcess from 'child_process'
-import { promisify } from 'util'
-import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { BareRepoFactory } from 'git-en-boite-git-adapter'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
-const exec = promisify(childProcess.exec)
+import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
+import { dirSync } from 'tmp'
+
+import { LaBoîte } from '../../../src/la_boîte'
 
 Before(async function () {
   const config = createConfig()
-  const gitReposPath = config.git.root
-  await exec(`rm -rf ${gitReposPath}`)
-  await exec(`mkdir -p ${gitReposPath}`)
+  const gitReposPath = dirSync().name
   const taskScheduler = BullRepoTaskScheduler.make(config.redis)
   const gitRepoFactory = new BareRepoFactory()
   const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory)
