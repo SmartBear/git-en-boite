@@ -14,8 +14,6 @@ Before(async function () {
   const gitRepoFactory = new BareRepoFactory()
   const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory)
   this.app = new LaBoîte(taskScheduler, repoIndex, config.version)
-  let nextRepoId = 0
-  this.getNextRepoId = () => `repo-${nextRepoId++}`
 })
 
 After(async function () {
