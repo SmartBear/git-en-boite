@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/smartbear/git-en-boite/issues"
   },
-  "homepage": "https://github.com/smartbear/git-en-boite#readme"
+  "homepage": "https://github.com/smartbear/git-en-boite#readme",
+  "dependencies": {
+    "git-en-boite-git-port": "0.0.0"
+  }
 }

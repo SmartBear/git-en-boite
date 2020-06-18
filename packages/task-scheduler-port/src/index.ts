@@ -1,3 +1,5 @@
+import { Connect } from 'git-en-boite-git-port'
+
 export type Processor = (task: Task) => Promise<any>
 
 export interface Task {
@@ -23,4 +25,12 @@ export interface RepoTaskScheduler {
   waitUntilIdle(repoId: string): Promise<void>
   close(): Promise<void>
   withProcessor(jobName: string, processor: Processor): RepoTaskScheduler
+}
+
+export interface SingleRepoTaskScheduler {
+  schedule: (message: Connect) => Promise<void>
+}
+
+export interface GitTasksFactory {
+  forRepo: (repoId: string) => SingleRepoTaskScheduler
 }

@@ -1,10 +1,27 @@
-import { Job, Queue, QueueBase, Worker, RedisOptions } from 'bullmq'
-import { Processors, RepoTaskScheduler, Processor, Task } from 'git-en-boite-task-scheduler-port'
+import { Job, Queue, QueueBase, RedisOptions, Worker } from 'bullmq'
+import { Connect } from 'git-en-boite-git-port'
+import {
+  GitTasksFactory,
+  Processor,
+  Processors,
+  RepoTaskScheduler,
+  SingleRepoTaskScheduler,
+  Task,
+  ConnectTask,
+} from 'git-en-boite-task-scheduler-port'
 import IORedis from 'ioredis'
 
 export type QueueComponents = [Queue, Worker]
 
-export class BullRepoTaskScheduler implements RepoTaskScheduler {
+class GitTasks implements SingleRepoTaskScheduler {
+  constructor(private readonly taskScheduler: RepoTaskScheduler, private readonly repoId: string) {}
+
+  async schedule(message: Connect) {
+    await this.taskScheduler.schedule(this.repoId, new ConnectTask(message.remoteUrl))
+  }
+}
+
+export class BullRepoTaskScheduler implements RepoTaskScheduler, GitTasksFactory {
   private constructor(
     private readonly processors: Processors,
     private repoQueueComponents: Map<string, QueueComponents>,
@@ -23,6 +40,10 @@ export class BullRepoTaskScheduler implements RepoTaskScheduler {
       this.closables,
       this.redisOptions,
     )
+  }
+
+  forRepo(repoId: string): SingleRepoTaskScheduler {
+    return new GitTasks(this, repoId)
   }
 
   async close(): Promise<void> {

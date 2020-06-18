@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
-    "bullmq": "^1.8.13"
+    "bullmq": "^1.8.13",
+    "git-en-boite-git-port": "0.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
