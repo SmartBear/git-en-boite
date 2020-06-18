@@ -14,7 +14,7 @@ export class Repo {
   }
 
   async connect(remoteUrl: string): Promise<void> {
-    this.gitTasks.schedule(Connect.toUrl(remoteUrl))
+    await this.gitTasks.schedule(Connect.toUrl(remoteUrl))
   }
 
   public async getRefs(): Promise<Ref[]> {

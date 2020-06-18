@@ -12,7 +12,8 @@ import { assertThat, equalTo } from 'hamjest'
 import sinon from 'sinon'
 import { stubInterface } from 'ts-sinon'
 
-import { Ref, Repo, SingleRepoTaskScheduler } from '.'
+import { Ref, Repo } from '.'
+import { SingleRepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 describe(Repo.name, () => {
   context('handling a query for the latest Refs', () => {
@@ -26,14 +27,15 @@ describe(Repo.name, () => {
         [GetRefs, sinon.stub().resolves(expectedRefs)],
         [GetConfig, sinon.stub()],
       ])
-      const repo = new Repo('a-repo-id', fakeGit)
+      const taskScheduler = stubInterface<SingleRepoTaskScheduler>()
+      const repo = new Repo('a-repo-id', fakeGit, taskScheduler)
       const refs = await repo.getRefs()
       assertThat(refs, equalTo(expectedRefs))
     })
   })
 
   context('connecting', () => {
-    it.only('delegates the Connect git command to the task scheduler', async () => {
+    it('delegates the Connect git command to the task scheduler', async () => {
       const expectedRefs = [new Ref('a-revision', 'a-branch')]
       const fakeGit = commandBus<BareRepoProtocol>().withHandlers({}, [
         [Connect, sinon.stub()],

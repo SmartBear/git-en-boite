@@ -32,7 +32,7 @@ describe(LaBoîte.name, () => {
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
-    const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
+    const repoIndex = new DiskRepoIndex(root, gitRepoFactory, taskScheduler)
     repos = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {
@@ -99,7 +99,7 @@ describe(LaBoîte.name, () => {
     })
   })
 
-  it('can connect a new repo by cloning from a remote URL', async () => {
+  it.only('can connect a new repo by cloning from a remote URL', async () => {
     const repoId = 'a-new-repo'
     const remoteUrl = path.resolve(root, 'remote', repoId)
     const request: ConnectRepoRequest = {

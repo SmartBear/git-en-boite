@@ -13,7 +13,7 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 const taskScheduler = BullRepoTaskScheduler.make(config.redis)
 const gitRepoFactory = new BareRepoFactory()
-const repoIndex = new DiskRepoIndex(config.git.root, gitRepoFactory)
+const repoIndex = new DiskRepoIndex(config.git.root, gitRepoFactory, taskScheduler)
 const app: Application = new LaBoîte(taskScheduler, repoIndex, config.version)
 
 const port = 3001
