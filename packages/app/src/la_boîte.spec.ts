@@ -99,7 +99,7 @@ describe(LaBoîte.name, () => {
     })
   })
 
-  it.only('can connect a new repo by cloning from a remote URL', async () => {
+  it('can connect a new repo by cloning from a remote URL', async () => {
     const repoId = 'a-new-repo'
     const remoteUrl = path.resolve(root, 'remote', repoId)
     const request: ConnectRepoRequest = {

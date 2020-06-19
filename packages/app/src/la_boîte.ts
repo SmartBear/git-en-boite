@@ -1,37 +1,27 @@
 import {
+  Application,
   Branch,
   ConnectRepoRequest,
   FetchRepoRequest,
   GitRepoInfo,
   QueryResult,
-  Application,
 } from 'git-en-boite-client-port'
 import { RepoIndex } from 'git-en-boite-repo-index-port'
-import { ConnectTask, FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
+import { FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 export class LaBoîte implements Application {
   constructor(
     private readonly taskScheduler: RepoTaskScheduler,
     private readonly repoIndex: RepoIndex,
     public readonly version: string,
-  ) {
-    this.taskScheduler = taskScheduler
-      .withProcessor('connect', async ({ repoId, remoteUrl }) => {
-        const repo = await this.repoIndex.find(repoId)
-        return repo.connect(remoteUrl)
-      })
-      .withProcessor('fetch', async ({ repoId }) => {
-        const repo = await this.repoIndex.find(repoId)
-        return repo.fetch()
-      })
-  }
+  ) {}
 
   async close(): Promise<void> {
     await this.taskScheduler.close()
   }
 
   async waitUntilIdle(repoId: string): Promise<void> {
-    return this.taskScheduler.waitUntilIdle(repoId)
+    // return this.taskScheduler.waitUntilIdle(repoId)
   }
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
@@ -42,6 +32,8 @@ export class LaBoîte implements Application {
 
   async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
     this.taskScheduler.schedule(repoId, new FetchTask())
+    const repo = await this.repoIndex.find(repoId)
+    await repo.fetch()
   }
 
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
@@ -57,6 +49,6 @@ export class LaBoîte implements Application {
           revision: ref.revision,
         }
       })
-    return QueryResult.from({ repoId, refs, branches })
+    return QueryResult.from({ repoId, refs, branches, ...repo })
   }
 }

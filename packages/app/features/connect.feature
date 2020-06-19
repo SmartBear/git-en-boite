@@ -6,7 +6,6 @@ Feature: Connect
 
   Depending on the size of your repo, this may take some time.
 
-  @wip
   Scenario: Connection fails due to bad URL
     When someone tries to connect a repo to a bad URL
     And the repo has synchronised
