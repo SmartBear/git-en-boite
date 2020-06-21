@@ -27,8 +27,7 @@ describe(Repo.name, () => {
         [GetRefs, sinon.stub().resolves(expectedRefs)],
         [GetConfig, sinon.stub()],
       ])
-      const taskScheduler = stubInterface<SingleRepoTaskScheduler>()
-      const repo = new Repo('a-repo-id', fakeGit, taskScheduler)
+      const repo = new Repo('a-repo-id', fakeGit)
       await repo.connect('a-remote-url')
       const refs = await repo.getRefs()
       assertThat(refs, equalTo(expectedRefs))
@@ -47,7 +46,7 @@ describe(Repo.name, () => {
         [GetConfig, sinon.stub()],
       ])
       const taskScheduler = stubInterface<SingleRepoTaskScheduler>()
-      const repo = new Repo('a-repo-id', fakeGit, taskScheduler)
+      const repo = new Repo('a-repo-id', fakeGit)
       const remoteUrl = 'repo-remote-url'
       await repo.connect(remoteUrl)
       assertThat(taskScheduler.schedule.calledWith(Connect.toUrl(remoteUrl)), equalTo(true))

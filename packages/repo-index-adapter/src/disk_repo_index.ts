@@ -1,12 +1,11 @@
 import fs from 'fs'
-import { Repo } from 'git-en-boite-core'
+import { Repo, RepoProps } from 'git-en-boite-core'
 import { BareRepoProtocol, OpensGitRepos, RepoPath } from 'git-en-boite-git-port'
 import { RepoIndex } from 'git-en-boite-repo-index-port'
 import { GitTasksFactory } from 'git-en-boite-task-scheduler-port'
-import { string } from 'hamjest'
 
 export class DiskRepoIndex implements RepoIndex {
-  private readonly repos: Map<string, Repo> = new Map()
+  private readonly repos: Map<string, RepoProps> = new Map()
   constructor(
     private basePath: string,
     private gitRepos: OpensGitRepos<BareRepoProtocol>,
@@ -15,14 +14,14 @@ export class DiskRepoIndex implements RepoIndex {
 
   public async find(repoId: string): Promise<Repo> {
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    if (this.repos.has(repoId)) return this.repos.get(repoId)
-    const repo = new Repo(
-      repoId,
-      await this.gitRepos.open(repoPath),
-      this.gitTasksFactory.forRepo(repoId),
-    )
-    this.repos.set(repoId, repo)
+    const repo = this.repos.has(repoId)
+      ? new Repo(repoId, await this.gitRepos.open(repoPath), this.repos.get(repoId))
+      : new Repo(repoId, await this.gitRepos.open(repoPath))
     return repo
+  }
+
+  public async save(repo: Repo): Promise<void> {
+    this.repos.set(repo.repoId, repo)
   }
 
   public async exists(repoId: string): Promise<boolean> {
