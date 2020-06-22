@@ -9,6 +9,8 @@ import {
   matchesPattern,
   promiseThat,
   startsWith,
+  assertThat,
+  equalTo,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -54,16 +56,26 @@ describe('handleFetch', () => {
       ])
     }
 
-    it('fetches commits from the origin remote', async () => {
+    it('fetches the lastest commit from the origin remote', async () => {
       const repoPath = path.resolve(root, 'a-repo-id')
       const git = openRepo(repoPath)
       await git(Init.bareRepo())
       await git(SetOrigin.toUrl(originUrl))
       await git(Fetch.fromOrigin())
-      await promiseThat(
-        exec('git rev-parse refs/remotes/origin/master', { cwd: repoPath }),
-        fulfilled(hasProperty('stdout', startsWith(latestCommit))),
-      )
+      const { stdout } = await exec('git rev-parse refs/remotes/origin/master', { cwd: repoPath })
+      assertThat(stdout, startsWith(latestCommit))
+    })
+
+    it('fetches only 1 commit from the origin remote', async () => {
+      const repoPath = path.resolve(root, 'a-repo-id')
+      const git = openRepo(repoPath)
+      await git(Init.bareRepo())
+      await git(SetOrigin.toUrl(originUrl))
+      await git(Fetch.fromOrigin())
+      const { stdout } = await exec('git rev-list --count refs/remotes/origin/master', {
+        cwd: repoPath,
+      })
+      assertThat(stdout.trim(), equalTo('1'))
     })
 
     it('fails when the remote does not exist', async () => {
