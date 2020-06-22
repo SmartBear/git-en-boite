@@ -10,10 +10,8 @@ import {
 } from 'git-en-boite-git-port'
 import { assertThat, equalTo } from 'hamjest'
 import sinon from 'sinon'
-import { stubInterface } from 'ts-sinon'
 
 import { Ref, Repo } from '.'
-import { SingleRepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 describe(Repo.name, () => {
   context('handling a query for the latest Refs', () => {
@@ -35,24 +33,11 @@ describe(Repo.name, () => {
   })
 
   context('connecting', () => {
-    it.skip('delegates the Connect git command to the task scheduler', async () => {
-      const expectedRefs = [new Ref('a-revision', 'a-branch')]
-      const fakeGit = commandBus<BareRepoProtocol>().withHandlers({}, [
-        [Connect, sinon.stub()],
-        [Fetch, sinon.stub()],
-        [Init, sinon.stub()],
-        [SetOrigin, sinon.stub()],
-        [GetRefs, sinon.stub().resolves(expectedRefs)],
-        [GetConfig, sinon.stub()],
-      ])
-      const taskScheduler = stubInterface<SingleRepoTaskScheduler>()
-      const repo = new Repo('a-repo-id', fakeGit)
-      const remoteUrl = 'repo-remote-url'
-      await repo.connect(remoteUrl)
-      assertThat(taskScheduler.schedule.calledWith(Connect.toUrl(remoteUrl)), equalTo(true))
-    })
+    it('calls the git repo to connect')
 
     it('marks the connection status as "connecting"')
+
+    it('emits an event that the connection status has changed')
 
     context('when the task succeeds', () => {
       it('marks the connection status as "conected"')

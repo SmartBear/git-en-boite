@@ -1,5 +1,4 @@
 import { Connect, Fetch, GetRefs, GitRepo } from 'git-en-boite-git-port'
-import { SingleRepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 import { Ref } from '.'
 

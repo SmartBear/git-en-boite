@@ -19,3 +19,4 @@ class Author {
 }
 exports.Author = Author;
 __exportStar(require("./ref"), exports);
+__exportStar(require("./repo"), exports);

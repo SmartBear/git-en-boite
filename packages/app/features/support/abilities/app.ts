@@ -12,7 +12,7 @@ Before(async function () {
   const gitReposPath = dirSync().name
   const taskScheduler = BullRepoTaskScheduler.make(config.redis)
   const gitRepoFactory = new BareRepoFactory()
-  const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory, taskScheduler)
+  const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory)
   this.app = new LaBoîte(taskScheduler, repoIndex, config.version)
 })
 

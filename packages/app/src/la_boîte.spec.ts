@@ -32,7 +32,7 @@ describe(LaBoîte.name, () => {
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
-    const repoIndex = new DiskRepoIndex(root, gitRepoFactory, taskScheduler)
+    const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
     repos = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {
