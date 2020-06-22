@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { commandBus, Dispatch } from 'git-en-boite-command-bus'
+import { messageDispatch, Dispatch } from 'git-en-boite-command-bus'
 import {
   Checkout,
   Commit,
@@ -33,7 +33,7 @@ export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
   async open(path: string): Promise<NonBareRepo> {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)
-    const git = commandBus<NonBareRepoProtocol>().withHandlers(repo, [
+    const git = messageDispatch<NonBareRepoProtocol>().withHandlers(repo, [
       [Checkout, handleCheckout],
       [Commit, handleCommit],
       [EnsureBranchExists, handleEnsureBranchExists],

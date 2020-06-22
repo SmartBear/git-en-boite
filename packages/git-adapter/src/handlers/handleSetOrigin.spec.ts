@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { AsyncCommand, commandBus } from 'git-en-boite-command-bus'
+import { AsyncCommand, messageDispatch } from 'git-en-boite-command-bus'
 import { Init, SetOrigin } from 'git-en-boite-git-port'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
@@ -27,7 +27,7 @@ describe('handleSetOrigin', () => {
   const repo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    return commandBus<Protocol>().withHandlers(repo, [
+    return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
       [SetOrigin, handleSetOrigin],
     ])

@@ -20,7 +20,7 @@ export type Handle<Context, Command extends [unknown, unknown]> = <
 ) => Command[1]
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function commandBus<Protocol extends ValidProtocol<Protocol>>() {
+export function messageDispatch<Protocol extends ValidProtocol<Protocol>>() {
   return {
     withHandlers: <Context>(
       context: Context,

@@ -1,17 +1,13 @@
-import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { AsyncCommand, AsyncQuery, commandBus, Dispatch } from 'git-en-boite-command-bus'
-import { Ref } from 'git-en-boite-core'
-import { Commit, GetRefs, Init, GetConfig, Config } from 'git-en-boite-git-port'
-import { equalTo, fulfilled, promiseThat, rejected, assertThat } from 'hamjest'
+import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-command-bus'
+import { Config, GetConfig, Init } from 'git-en-boite-git-port'
+import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { GitDirectory } from '../git_directory'
-import { handleCommit } from './handleCommit'
-import { handleGetRefs } from './handleGetRefs'
-import { handleInit } from './handleInit'
 import { handleGetConfig } from '.'
+import { GitDirectory } from '../git_directory'
+import { handleInit } from './handleInit'
 
 type Protocol = [AsyncCommand<Init>, AsyncQuery<GetConfig, Config>]
 
@@ -27,7 +23,7 @@ describe('handleGetConfig', () => {
   const openRepo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    return commandBus<Protocol>().withHandlers(repo, [
+    return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
       [GetConfig, handleGetConfig],
     ])

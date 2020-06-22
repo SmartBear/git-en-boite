@@ -1,7 +1,6 @@
-import childProcess from 'child_process'
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { AsyncCommand, commandBus, Dispatch } from 'git-en-boite-command-bus'
+import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-command-bus'
 import { Commit, EnsureBranchExists, Init } from 'git-en-boite-git-port'
 import { containsInAnyOrder, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
@@ -26,7 +25,7 @@ describe('handleEnsureBranchExists', () => {
   const openRepo = (repoPath: string) => {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    return commandBus<Protocol>().withHandlers(repo, [
+    return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
       [Commit, handleCommit],
       [EnsureBranchExists, handleEnsureBranchExists],

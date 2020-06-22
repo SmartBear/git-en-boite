@@ -2,7 +2,7 @@
   "name": "git-en-boite-command-bus",
   "version": "0.0.0",
   "description": "",
-  "main": "src/command-bus.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "npx mocha",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"

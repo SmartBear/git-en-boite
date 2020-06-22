@@ -1,8 +1,8 @@
 import { assertThat, equalTo, instanceOf } from 'hamjest'
 
-import { commandBus, Handle, Command, AsyncCommand, Query } from './command-bus'
+import { messageDispatch, Handle, Command, AsyncCommand, Query } from '.'
 
-describe('CommandBus', () => {
+describe('dispatch', () => {
   class Sing {
     static theSong(name: string) {
       return new Sing(name)
@@ -29,10 +29,10 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const mattsBirthday = new Party()
     const bobsBirthday = new Party()
-    const noisyParty = commandBus<Protocol>().withHandlers(mattsBirthday, [
+    const noisyParty = messageDispatch<Protocol>().withHandlers(mattsBirthday, [
       [Sing, (party, { songName }) => (party.sounds = songName.toUpperCase())],
     ])
-    const quietParty = commandBus<Protocol>().withHandlers(bobsBirthday, [
+    const quietParty = messageDispatch<Protocol>().withHandlers(bobsBirthday, [
       [Sing, (party, { songName }) => (party.sounds = songName.toLowerCase())],
     ])
     noisyParty(singHappyBirthday)
@@ -46,7 +46,7 @@ describe('CommandBus', () => {
     const singHappyBirthday = Sing.theSong('Happy birthday')
     const eatCake = new EatCake()
     const party = new Party()
-    const dispatch = commandBus<Protocol>().withHandlers(party, [
+    const dispatch = messageDispatch<Protocol>().withHandlers(party, [
       [Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase())],
       [EatCake, party => (party.cake = 'gone')],
     ])
@@ -63,7 +63,7 @@ describe('CommandBus', () => {
     }
     const pony = new Gift('pony')
     const party = new Party()
-    const dispatch = commandBus<Protocol>().withHandlers(party, [
+    const dispatch = messageDispatch<Protocol>().withHandlers(party, [
       [GetGift, () => pony],
       [EatCake, party => (party.cake = 'gone')],
     ])
@@ -95,7 +95,7 @@ describe('CommandBus', () => {
         dispatch(new EatCake())
       }
       const party = new Party()
-      const dispatch = commandBus<Protocol>().withHandlers(party, [
+      const dispatch = messageDispatch<Protocol>().withHandlers(party, [
         [Sing, handleSing],
         [EatCake, handleEatCake],
         [ThrowParty, handleThrowParty],
@@ -130,7 +130,7 @@ describe('CommandBus', () => {
         await dispatch(new EatCake())
       }
       const party = new Party()
-      const dispatch = commandBus<Protocol>().withHandlers(party, [
+      const dispatch = messageDispatch<Protocol>().withHandlers(party, [
         [Sing, handleSingSlowly],
         [EatCake, handleEatCakeSlowly],
         [ThrowParty, handleThrowParty],

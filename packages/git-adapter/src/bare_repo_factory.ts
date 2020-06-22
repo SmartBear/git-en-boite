@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { commandBus } from 'git-en-boite-command-bus'
+import { messageDispatch } from 'git-en-boite-command-bus'
 import {
   BareRepoProtocol,
   Connect,
@@ -28,7 +28,7 @@ export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
     const repoPath = path.resolve(containingPath, 'git')
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const git = commandBus<BareRepoProtocol>().withHandlers(repo, [
+    const git = messageDispatch<BareRepoProtocol>().withHandlers(repo, [
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],

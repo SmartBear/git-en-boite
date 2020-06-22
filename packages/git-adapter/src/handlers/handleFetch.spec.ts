@@ -1,16 +1,15 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { AsyncCommand, commandBus } from 'git-en-boite-command-bus'
+import { AsyncCommand, messageDispatch } from 'git-en-boite-command-bus'
 import { Commit, Fetch, GetRevision, Init, SetOrigin } from 'git-en-boite-git-port'
 import {
-  fulfilled,
+  assertThat,
+  equalTo,
   hasProperty,
   isRejectedWith,
   matchesPattern,
   promiseThat,
   startsWith,
-  assertThat,
-  equalTo,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -49,7 +48,7 @@ describe('handleFetch', () => {
     const openRepo = (repoPath: string) => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
-      return commandBus<Protocol>().withHandlers(repo, [
+      return messageDispatch<Protocol>().withHandlers(repo, [
         [Init, handleInit],
         [SetOrigin, handleSetOrigin],
         [Fetch, handleFetch],

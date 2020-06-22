@@ -1,4 +1,4 @@
-import { commandBus } from 'git-en-boite-command-bus'
+import { messageDispatch } from 'git-en-boite-command-bus'
 import {
   BareRepoProtocol,
   Connect,
@@ -17,7 +17,7 @@ describe(Repo.name, () => {
   context('handling a query for the latest Refs', () => {
     it('queries the git repo and returns (a promise of) the result', async () => {
       const expectedRefs = [new Ref('a-revision', 'a-branch')]
-      const fakeGit = commandBus<BareRepoProtocol>().withHandlers({}, [
+      const fakeGit = messageDispatch<BareRepoProtocol>().withHandlers({}, [
         [Connect, sinon.stub().resolves()],
         [Fetch, sinon.stub()],
         [Init, sinon.stub()],
