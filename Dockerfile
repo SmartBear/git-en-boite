@@ -6,7 +6,7 @@ COPY yarn.lock .
 COPY package.json .
 WORKDIR /app/packages/app
 RUN yarn
-RUN node_modules/.bin/tsc
+RUN yarn lint
 
 EXPOSE 3001
 CMD yarn start
