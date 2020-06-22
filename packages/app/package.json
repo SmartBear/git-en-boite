@@ -47,7 +47,7 @@
     "supertest": "^5.0.0-0",
     "tmp": "^0.2.1",
     "ts-node": "8",
-    "ts-node-dev": "^1.0.0-pre.48",
+    "ts-node-dev": "^1.0.0-pre.49",
     "typescript": "^3.9.5"
   }
 }
