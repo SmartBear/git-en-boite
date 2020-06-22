@@ -4,7 +4,7 @@ WORKDIR /app
 COPY packages packages
 COPY yarn.lock .
 COPY package.json .
-WORKDIR /app/packages/la-boite
+WORKDIR /app/packages/app
 RUN yarn
 RUN node_modules/.bin/tsc
 
