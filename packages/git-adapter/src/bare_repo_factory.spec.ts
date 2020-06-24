@@ -2,16 +2,14 @@ import { Dispatch } from 'git-en-boite-command-bus'
 import {
   Commit,
   Connect,
-  GetRefs,
-  Init,
-  verifyRepoFactoryContract,
   NonBareRepoProtocol,
+  verifyRepoFactoryContract,
 } from 'git-en-boite-git-port'
-import { fulfilled, promiseThat } from 'hamjest'
+import { fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { NonBareRepoFactory, BareRepoFactory } from '.'
+import { BareRepoFactory, NonBareRepoFactory } from '.'
 
 describe(BareRepoFactory.name, () => {
   const factory = new BareRepoFactory()
@@ -36,11 +34,16 @@ describe(BareRepoFactory.name, () => {
       await origin(Commit.withAnyMessage())
     })
 
-    it('creates a new repo', async () => {
+    it('connects to a valid remote', async () => {
       const repoPath = path.resolve(root, 'a-repo-id')
       const git = await factory.open(repoPath)
-      await git(Connect.toUrl(remoteUrl))
-      await promiseThat(git(GetRefs.all()), fulfilled())
+      await promiseThat(git(Connect.toUrl(remoteUrl)), fulfilled())
+    })
+
+    it('fails with a bad remote', async () => {
+      const repoPath = path.resolve(root, 'a-repo-id')
+      const git = await factory.open(repoPath)
+      await promiseThat(git(Connect.toUrl('a-bad-url')), rejected())
     })
   })
 })

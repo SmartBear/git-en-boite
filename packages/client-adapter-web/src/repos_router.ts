@@ -26,8 +26,12 @@ export function create(app: Application): Router {
         ctx.response.redirect(router.url('repo', repoInfo))
       },
       foundNone: async () => {
-        await app.connectToRemote(request)
-        ctx.response.status = 202
+        try {
+          await app.connectToRemote(request)
+          ctx.response.status = 202
+        } catch {
+          ctx.response.status = 400
+        }
       },
     })
   })

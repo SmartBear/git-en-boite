@@ -8,5 +8,4 @@ Feature: Connect
 
   Scenario: Connection fails due to bad URL
     When someone tries to connect a repo to a bad URL
-    And the repo has synchronised
-    Then the repo should have a connection status of "failed"
+    Then it should respond with an error

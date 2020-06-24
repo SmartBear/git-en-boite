@@ -24,14 +24,11 @@ export class Repo implements RepoProps {
   }
 
   async connect(remoteUrl: string): Promise<void> {
-    this.connectionStatus = 'connecting'
     await this.git(Connect.toUrl(remoteUrl))
-      .then(() => (this.connectionStatus = 'connected'))
-      .catch(() => (this.connectionStatus = 'failed'))
+    await this.git(Fetch.fromOrigin())
   }
 
   public async getRefs(): Promise<Ref[]> {
-    if (this.connectionStatus !== 'connected') return []
     return await this.git(GetRefs.all())
   }
 }

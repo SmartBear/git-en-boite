@@ -3,7 +3,15 @@ import { Given, TableDefinition, Then, When } from 'cucumber'
 import { GitRepoInfo } from 'git-en-boite-client-port'
 import { NonBareRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision } from 'git-en-boite-git-port'
-import { assertThat, containsInAnyOrder, equalTo, hasProperty } from 'hamjest'
+import {
+  assertThat,
+  containsInAnyOrder,
+  equalTo,
+  hasProperty,
+  greaterThan,
+  not,
+  matchesPattern,
+} from 'hamjest'
 import path from 'path'
 
 Given('a repo with branches:', async function (branchesTable) {
@@ -39,7 +47,8 @@ When('Bob connects an app to the repo', async function () {
 When('someone tries to connect a repo to a bad URL', async function () {
   this.repoId = this.getNextRepoId()
   const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
-  await this.request.post('/repos').send(repoInfo).expect(202)
+  const response = await this.request.post('/repos').send(repoInfo)
+  this.lastResponseCode = response.res.statusCode
 })
 
 When('a consumer triggers a manual fetch of the repo', async function () {
@@ -106,4 +115,8 @@ Then('the repo should have a connection status of {string}', async function (
 
   const repoInfo: GitRepoInfo = response.body
   assertThat(repoInfo, hasProperty('connectionStatus', equalTo(expectedConnectionStatus)))
+})
+
+Then('it should respond with an error', function () {
+  assertThat(String(this.lastResponseCode), not(matchesPattern(/2\d\d/)))
 })
