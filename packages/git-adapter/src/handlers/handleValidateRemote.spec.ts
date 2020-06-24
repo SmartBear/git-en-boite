@@ -12,7 +12,7 @@ import { handleValidateRemote } from './handleValidateRemote'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<ValidateRemote>]
 
-describe.only('handleValidateRemote', () => {
+describe('handleValidateRemote', () => {
   let root: string
 
   beforeEach(() => (root = dirSync().name))
