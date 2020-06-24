@@ -7,6 +7,7 @@ import {
   GetRefs,
   Init,
   SetOrigin,
+  ValidateRemote,
 } from 'git-en-boite-git-port'
 import { assertThat, equalTo } from 'hamjest'
 import sinon from 'sinon'
@@ -22,6 +23,7 @@ describe(Repo.name, () => {
         [Fetch, sinon.stub()],
         [Init, sinon.stub()],
         [SetOrigin, sinon.stub()],
+        [ValidateRemote, sinon.stub()],
         [GetRefs, sinon.stub().resolves(expectedRefs)],
         [GetConfig, sinon.stub()],
       ])
@@ -48,6 +50,7 @@ describe(Repo.name, () => {
         [Fetch, sinon.stub()],
         [Init, sinon.stub()],
         [SetOrigin, sinon.stub()],
+        [ValidateRemote, sinon.stub()],
         [GetRefs, sinon.stub()],
         [GetConfig, sinon.stub()],
       ])

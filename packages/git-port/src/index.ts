@@ -92,6 +92,14 @@ export class GetConfig {
   }
 }
 
+export class ValidateRemote {
+  protected constructor(public readonly url: string) {}
+
+  static url(url: string): ValidateRemote {
+    return new this(url)
+  }
+}
+
 export interface Config {
   [key: string]: string
 }
@@ -107,6 +115,7 @@ export type BareRepoProtocol = [
   AsyncCommand<Fetch>,
   AsyncCommand<Init>,
   AsyncCommand<SetOrigin>,
+  AsyncCommand<ValidateRemote>,
   AsyncQuery<GetRefs, Ref[]>,
   AsyncQuery<GetConfig, Config>,
 ]

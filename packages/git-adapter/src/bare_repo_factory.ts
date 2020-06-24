@@ -10,6 +10,7 @@ import {
   Init,
   OpensGitRepos,
   SetOrigin,
+  ValidateRemote,
 } from 'git-en-boite-git-port'
 import path from 'path'
 
@@ -21,6 +22,7 @@ import {
   handleGetRefs,
   handleInit,
   handleSetOrigin,
+  handleValidateRemote,
 } from './handlers'
 
 export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
@@ -33,6 +35,7 @@ export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
       [Fetch, handleFetch],
       [Init, handleInit],
       [SetOrigin, handleSetOrigin],
+      [ValidateRemote, handleValidateRemote],
       [GetRefs, handleGetRefs],
       [GetConfig, handleGetConfig],
     ])
