@@ -33,6 +33,28 @@ describe(GitDirectory.name, () => {
       )
     })
 
+    it('never ask for prompt', async () => {
+      const repoPath = path.resolve(root, 'a-repo')
+      fs.mkdirSync(repoPath, { recursive: true })
+      const repo = new GitDirectory(repoPath)
+      await promiseThat(
+        repo.execGit('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git']),
+        rejected(),
+      )
+    })
+
+    it('is not possible to ask for terminal prompt', async () => {
+      const repoPath = path.resolve(root, 'a-repo')
+      fs.mkdirSync(repoPath, { recursive: true })
+      const repo = new GitDirectory(repoPath)
+      await promiseThat(
+        repo.execGit('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git'], {
+          env: { GIT_TERMINAL_PROMPT: 1 },
+        }),
+        rejected(),
+      )
+    })
+
     it('passes args')
 
     it('passes options')

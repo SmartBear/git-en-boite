@@ -6,10 +6,5 @@ export const handleValidateRemote: Handle<GitDirectory, AsyncCommand<ValidateRem
   repo,
   { url },
 ) => {
-  await repo.execGit('ls-remote', [url], {
-    env: {
-      GIT_TERMINAL_PROMPT: 0,
-      GIT_ASKPASS: '$echo',
-    },
-  })
+  await repo.execGit('ls-remote', [url])
 }
