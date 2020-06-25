@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "test": "yarn workspaces run test",
-    "lint": "yarn workspaces run lint"
+    "lint": "yarn workspaces run lint",
+    "start": "yarn workspace git-en-boite-app start"
   },
   "workspaces": [
     "packages/app",
