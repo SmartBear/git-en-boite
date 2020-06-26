@@ -21,6 +21,7 @@ describe(Repo.name, () => {
       const gitRepo = fakeGitRepo({
         handleConnect: sinon.stub().resolves(),
         handleGetRefs: sinon.stub().resolves(expectedRefs),
+        handleFetch: sinon.stub(),
       })
       const repo = new Repo('a-repo-id', gitRepo)
       await repo.connect('a-remote-url')
@@ -50,26 +51,33 @@ describe(Repo.name, () => {
       promiseThat(repo.connect('a-bad-url'), isRejectedWith(new Error('Unable to connect')))
     })
   })
+
+  context('fetching', () => {
+    it('calls the git repo to fetch', () => {
+      const gitRepo = fakeGitRepo({
+        handleFetch: sinon.stub().resolves(),
+      })
+      const repo = new Repo('a-repo-id', gitRepo)
+      promiseThat(repo.connect('a-remote-url'), fulfilled())
+    })
+  })
 })
 
-const fakeGitRepo = (
-  {
-    handleConnect,
-    handleGetRefs,
-  }: {
-    handleConnect?: Handle<unknown, AsyncCommand<Connect>>
-    handleGetRefs?: Handle<unknown, AsyncQuery<GetRefs, Ref[]>>
-  } = {
-    handleConnect: sinon.stub(),
-    handleGetRefs: sinon.stub(),
-  },
-) =>
+const fakeGitRepo = ({
+  handleConnect,
+  handleFetch,
+  handleGetRefs,
+}: {
+  handleConnect?: Handle<unknown, AsyncCommand<Connect>>
+  handleFetch?: Handle<unknown, AsyncCommand<Fetch>>
+  handleGetRefs?: Handle<unknown, AsyncQuery<GetRefs, Ref[]>>
+}) =>
   messageDispatch<BareRepoProtocol>().withHandlers({}, [
-    [Connect, handleConnect],
-    [Fetch, sinon.stub()],
+    [Connect, handleConnect || sinon.stub()],
+    [Fetch, handleFetch || sinon.stub()],
     [Init, sinon.stub()],
     [SetOrigin, sinon.stub()],
     [ValidateRemote, sinon.stub()],
-    [GetRefs, handleGetRefs],
+    [GetRefs, handleGetRefs || sinon.stub()],
     [GetConfig, sinon.stub()],
   ])
