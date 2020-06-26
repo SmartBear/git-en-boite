@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { messageDispatch, Dispatch } from 'git-en-boite-command-bus'
+import { messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
 import {
   Checkout,
   Commit,

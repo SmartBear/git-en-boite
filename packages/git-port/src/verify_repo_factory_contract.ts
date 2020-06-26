@@ -1,4 +1,4 @@
-import { Dispatch, ValidProtocol } from 'git-en-boite-command-bus'
+import { Dispatch, ValidProtocol } from 'git-en-boite-message-dispatch'
 import {
   assertThat,
   equalTo,

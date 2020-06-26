@@ -1,4 +1,4 @@
-import { Dispatch } from 'git-en-boite-command-bus'
+import { Dispatch } from 'git-en-boite-message-dispatch'
 import {
   Commit,
   Connect,

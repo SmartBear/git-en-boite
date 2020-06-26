@@ -9,7 +9,7 @@
     "packages/app",
     "packages/client-adapter-web",
     "packages/client-port",
-    "packages/command-bus",
+    "packages/message-dispatch",
     "packages/config",
     "packages/core",
     "packages/git-adapter",

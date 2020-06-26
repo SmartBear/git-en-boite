@@ -1,6 +1,6 @@
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-command-bus'
+import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { Commit, EnsureBranchExists, Init } from 'git-en-boite-git-port'
 import { containsInAnyOrder, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'

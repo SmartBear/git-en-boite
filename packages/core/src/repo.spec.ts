@@ -1,4 +1,4 @@
-import { AsyncCommand, AsyncQuery, Handle, messageDispatch } from 'git-en-boite-command-bus'
+import { AsyncCommand, AsyncQuery, Handle, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   BareRepoProtocol,
   Connect,

@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { AsyncCommand, messageDispatch, Dispatch } from 'git-en-boite-command-bus'
+import { AsyncCommand, messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
 import { Author } from 'git-en-boite-core'
 import { Commit, Init } from 'git-en-boite-git-port'
 import { containsString, fulfilled, hasProperty, promiseThat } from 'hamjest'

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-command-bus'
+import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { Config, GetConfig, Init } from 'git-en-boite-git-port'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'

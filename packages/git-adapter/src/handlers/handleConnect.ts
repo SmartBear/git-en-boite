@@ -1,4 +1,4 @@
-import { AsyncCommand, Handle } from 'git-en-boite-command-bus'
+import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 import { Connect, Fetch, SetOrigin, ValidateRemote } from 'git-en-boite-git-port'
 
 import { GitDirectory } from '../git_directory'

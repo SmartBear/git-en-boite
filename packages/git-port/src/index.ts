@@ -1,4 +1,4 @@
-import { Dispatch, ValidProtocol, AsyncCommand, AsyncQuery } from 'git-en-boite-command-bus'
+import { Dispatch, ValidProtocol, AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 import { Author, Ref } from 'git-en-boite-core'
 
 export class Checkout {

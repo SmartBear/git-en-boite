@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { messageDispatch } from 'git-en-boite-command-bus'
+import { messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   BareRepoProtocol,
   Connect,

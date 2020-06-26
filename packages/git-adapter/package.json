@@ -22,7 +22,7 @@
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
     "dugite": "^1.88.7",
-    "git-en-boite-command-bus": "0.0.0",
+    "git-en-boite-message-dispatch": "0.0.0",
     "git-en-boite-git-port": "0.0.0"
   },
   "devDependencies": {
