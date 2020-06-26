@@ -3,14 +3,15 @@ Feature: Repo info
   Once you've connected a repo, you can see information about it.
 
   Scenario: List refs and branches
-    Given a repo with branches:
+    Given a remote repo with branches:
       | master  |
       | develop |
-    When Bob connects an app to the repo
-    And the repo has synchronised
-    Then Bob can see that the repo's refs are:
+    And the remote repo has been connected
+    When a consumer triggers a manual fetch of the repo
+    And the fetch has finished
+    Then the repo's refs should be:
       | refs/remotes/origin/master  |
       | refs/remotes/origin/develop |
-    And Bob can see that the repo's branches are:
+    And the repo's branches should be:
       | master  |
       | develop |

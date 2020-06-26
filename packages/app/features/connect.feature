@@ -7,5 +7,5 @@ Feature: Connect
   Depending on the size of your repo, this may take some time.
 
   Scenario: Connection fails due to bad URL
-    When someone tries to connect a repo to a bad URL
+    When a consumer tries to connect to a bad remote URL
     Then it should respond with an error

@@ -14,7 +14,7 @@ import {
 } from 'hamjest'
 import path from 'path'
 
-Given('a repo with branches:', async function (branchesTable) {
+Given('a remote repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
   const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
@@ -39,12 +39,12 @@ When('a new commit is made in the remote repo', async function () {
   this.lastCommitRevision = await git(GetRevision.forBranchNamed('master'))
 })
 
-When('Bob connects an app to the repo', async function () {
+Given('the remote repo has been connected', async function () {
   const repoInfo = { repoId: this.repoId, remoteUrl: this.repoRemoteUrl }
   await this.request.post('/repos').send(repoInfo).expect(202)
 })
 
-When('someone tries to connect a repo to a bad URL', async function () {
+When('a consumer tries to connect to a bad remote URL', async function () {
   this.repoId = this.getNextRepoId()
   const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
   const response = await this.request.post('/repos').send(repoInfo)
@@ -55,18 +55,11 @@ When('a consumer triggers a manual fetch of the repo', async function () {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
 })
 
-When('the repo has synchronised', async function () {
-  await this.app.waitUntilIdle(this.repoId)
+When('the fetch has finished', async function () {
+  // nothing to do for now - the fetch is immeditately consistent
 })
 
-Given('the repo has been connected', async function () {
-  const { request } = this
-  const repoInfo = { repoId: this.repoId, remoteUrl: this.repoRemoteUrl }
-  await request.post('/repos').send(repoInfo).expect(202)
-  await this.app.waitUntilIdle(this.repoId)
-})
-
-Then("Bob can see that the repo's refs are:", async function (expectedRefsTable: TableDefinition) {
+Then("the repo's refs should be:", async function (expectedRefsTable: TableDefinition) {
   const expectedRefNames = expectedRefsTable.raw().map(row => row[0])
   const response = await this.request
     .get(`/repos/${this.repoId}`)
@@ -78,9 +71,7 @@ Then("Bob can see that the repo's refs are:", async function (expectedRefsTable:
   )
 })
 
-Then("Bob can see that the repo's branches are:", async function (
-  expectedBranchesTable: TableDefinition,
-) {
+Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
   const response = await this.request
     .get(`/repos/${this.repoId}`)
