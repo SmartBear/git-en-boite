@@ -1,4 +1,4 @@
-import { Ref, RepoConnectionStatus } from 'git-en-boite-core'
+import { Ref } from 'git-en-boite-core'
 import { Server } from 'http'
 
 import { QueryResult } from './query_result'
@@ -21,7 +21,6 @@ export interface FetchRepoRequest {
 }
 
 export interface GitRepoInfo {
-  connectionStatus: RepoConnectionStatus
   repoId: string
   refs: Ref[]
   branches: Branch[]
