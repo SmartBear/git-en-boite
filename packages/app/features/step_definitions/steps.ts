@@ -3,15 +3,7 @@ import { Given, TableDefinition, Then, When } from 'cucumber'
 import { GitRepoInfo } from 'git-en-boite-client-port'
 import { NonBareRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision } from 'git-en-boite-git-port'
-import {
-  assertThat,
-  containsInAnyOrder,
-  equalTo,
-  hasProperty,
-  greaterThan,
-  not,
-  matchesPattern,
-} from 'hamjest'
+import { assertThat, containsInAnyOrder, equalTo, hasProperty, matchesPattern, not } from 'hamjest'
 import path from 'path'
 
 Given('a remote repo with branches:', async function (branchesTable) {

@@ -1,23 +1,14 @@
 import { ConnectRepoRequest } from 'git-en-boite-client-port'
-import { NonBareRepoFactory, BareRepoFactory } from 'git-en-boite-git-adapter'
+import { createConfig } from 'git-en-boite-config'
+import { BareRepoFactory, NonBareRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
-import {
-  assertThat,
-  equalTo,
-  falsy,
-  fulfilled,
-  hasProperty,
-  is,
-  promiseThat,
-  truthy,
-} from 'hamjest'
+import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
+import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
+import { assertThat, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { LaBoîte } from './la_boîte'
-import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
-import { createConfig } from 'git-en-boite-config'
-import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 
 describe(LaBoîte.name, () => {
   let root: string
@@ -28,26 +19,20 @@ describe(LaBoîte.name, () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  let repos: LaBoîte
+  let app: LaBoîte
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
     const gitRepoFactory = new BareRepoFactory()
     const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
-    repos = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
+    app = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {
-    await repos.close()
-  })
-
-  describe('waiting for a repo to become idle', () => {
-    it('resolves immediately if the repo is already idle', async () => {
-      await promiseThat(repos.waitUntilIdle('a-repo'), fulfilled())
-    })
+    await app.close()
   })
 
   describe('getting repo info', () => {
     it('returns an empty QueryResult if the repo does not exist', async () => {
-      const result = await repos.getInfo('a-repo-id')
+      const result = await app.getInfo('a-repo-id')
       assertThat(result.isSuccess, is(falsy()))
     })
 
@@ -66,9 +51,8 @@ describe(LaBoîte.name, () => {
         await git(EnsureBranchExists.named(branchName))
         await git(Commit.withMessage('A commit'))
       }
-      await repos.connectToRemote(request)
-      await repos.waitUntilIdle(repoId)
-      const result = await repos.getInfo(repoId)
+      await app.connectToRemote(request)
+      const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
         foundOne: repoInfo => assertThat(repoInfo.refs, hasProperty('length', equalTo(2))),
@@ -89,9 +73,8 @@ describe(LaBoîte.name, () => {
         await git(EnsureBranchExists.named(branchName))
         await git(Commit.withMessage('A commit'))
       }
-      await repos.connectToRemote(request)
-      await repos.waitUntilIdle(repoId)
-      const result = await repos.getInfo(repoId)
+      await app.connectToRemote(request)
+      const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
         foundOne: repoInfo => assertThat(repoInfo.branches, hasProperty('length', equalTo(2))),
@@ -115,9 +98,8 @@ describe(LaBoîte.name, () => {
       await git(EnsureBranchExists.named(branchName))
       await git(Commit.withMessage('A commit'))
     }
-    await repos.connectToRemote(request)
-    await repos.waitUntilIdle(repoId)
-    const result = await repos.getInfo(repoId)
+    await app.connectToRemote(request)
+    const result = await app.getInfo(repoId)
     assertThat(result.isSuccess, is(truthy()))
   })
 
@@ -126,13 +108,11 @@ describe(LaBoîte.name, () => {
     const repoPath = path.resolve(root, 'remote', repoId)
     const git = await new NonBareRepoFactory().open(repoPath)
     await git(Commit.withMessage('Initial commit'))
-    await repos.connectToRemote({ repoId, remoteUrl: repoPath })
-    await repos.waitUntilIdle(repoId)
+    await app.connectToRemote({ repoId, remoteUrl: repoPath })
     await git(Commit.withMessage('Another commit'))
     const expectedRevision = await git(GetRevision.forBranchNamed('master'))
-    await repos.fetchFromRemote({ repoId })
-    await repos.waitUntilIdle(repoId)
-    const result = await repos.getInfo(repoId)
+    await app.fetchFromRemote({ repoId })
+    const result = await app.getInfo(repoId)
     await result.respond({
       foundOne: repoInfo =>
         assertThat(

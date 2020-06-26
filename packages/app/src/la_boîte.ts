@@ -20,10 +20,6 @@ export class LaBoîte implements Application {
     await this.taskScheduler.close()
   }
 
-  async waitUntilIdle(repoId: string): Promise<void> {
-    // return this.taskScheduler.waitUntilIdle(repoId)
-  }
-
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
     const repo = await this.repoIndex.find(repoId)
