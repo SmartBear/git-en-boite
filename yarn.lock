@@ -1230,10 +1230,10 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
-dugite@^1.88.7:
-  version "1.88.7"
-  resolved "https://registry.yarnpkg.com/dugite/-/dugite-1.88.7.tgz#ed014b075495bcae5b9afa1551b22314a4e40ee2"
-  integrity sha512-xb1PpR5BJX0OFlaNH67bUssfgb1f0bH5no1O8UgEd7cxOH6EOjlmEzu+tSP5uDX4xv6SXntmLq5lccJ15BymqQ==
+dugite@^1.91.2:
+  version "1.91.2"
+  resolved "https://registry.yarnpkg.com/dugite/-/dugite-1.91.2.tgz#ad54b337932ebb6a476b82d4829540a94958fffe"
+  integrity sha512-wvwHJh1m6nQoxVO0d7utGMGn9IF+bSjnmt/gsA/jaCa8wN0Ok6JfbrXDL7x8l/DFcZEw+MimmvMr7EcRifR5kQ==
   dependencies:
     checksum "^0.1.1"
     got "^9.6.0"
