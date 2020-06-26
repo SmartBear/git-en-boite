@@ -67,6 +67,13 @@ describe('/repos', () => {
       const response = await request.post('/repos').send(connectRepoRequest).redirects(1)
       assertThat(response.body, equalTo(bareObject(repoInfo)))
     })
+
+    it('responds with 400 if the connection attempt fails', async () => {
+      const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: 'a-bad-url' }
+      app.getInfo.resolves(QueryResult.from())
+      app.connectToRemote.withArgs(connectRepoRequest).rejects()
+      await request.post('/repos').send(connectRepoRequest).expect(400)
+    })
   })
 
   describe('POST /repos/:repoId', () => {
