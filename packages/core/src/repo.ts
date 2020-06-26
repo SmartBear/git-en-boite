@@ -25,7 +25,6 @@ export class Repo implements RepoProps {
 
   async connect(remoteUrl: string): Promise<void> {
     await this.git(Connect.toUrl(remoteUrl))
-    await this.git(Fetch.fromOrigin())
   }
 
   public async getRefs(): Promise<Ref[]> {

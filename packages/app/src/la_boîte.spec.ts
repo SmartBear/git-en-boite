@@ -52,6 +52,7 @@ describe(LaBoîte.name, () => {
         await git(Commit.withMessage('A commit'))
       }
       await app.connectToRemote(request)
+      await app.fetchFromRemote({ repoId })
       const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
@@ -74,6 +75,7 @@ describe(LaBoîte.name, () => {
         await git(Commit.withMessage('A commit'))
       }
       await app.connectToRemote(request)
+      await app.fetchFromRemote({ repoId })
       const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
@@ -99,6 +101,7 @@ describe(LaBoîte.name, () => {
       await git(Commit.withMessage('A commit'))
     }
     await app.connectToRemote(request)
+    await app.fetchFromRemote({ repoId })
     const result = await app.getInfo(repoId)
     assertThat(result.isSuccess, is(truthy()))
   })
@@ -109,6 +112,7 @@ describe(LaBoîte.name, () => {
     const git = await new NonBareRepoFactory().open(repoPath)
     await git(Commit.withMessage('Initial commit'))
     await app.connectToRemote({ repoId, remoteUrl: repoPath })
+    await app.fetchFromRemote({ repoId })
     await git(Commit.withMessage('Another commit'))
     const expectedRevision = await git(GetRevision.forBranchNamed('master'))
     await app.fetchFromRemote({ repoId })
