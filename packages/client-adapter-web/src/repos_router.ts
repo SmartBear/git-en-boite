@@ -1,4 +1,4 @@
-import { Application, ConnectRepoRequest } from 'git-en-boite-client-port'
+import { Application, ConnectRepoRequest, GitRepoInfo } from 'git-en-boite-client-port'
 import { Context } from 'koa'
 import Router from 'koa-router'
 
@@ -22,18 +22,22 @@ export function create(app: Application): Router {
     const request: ConnectRepoRequest = ctx.request.body
     const result = await app.getInfo(request.repoId)
     await result.respond({
-      foundOne: async repoInfo => {
-        ctx.response.redirect(router.url('repo', repoInfo))
-      },
-      foundNone: async () => {
-        try {
-          await app.connectToRemote(request)
-          ctx.response.status = 202
-        } catch {
-          ctx.response.status = 400
-        }
-      },
+      foundOne: redirectToExisting,
+      foundNone: connect,
     })
+
+    async function connect() {
+      try {
+        await app.connectToRemote(request)
+        ctx.response.status = 202
+      } catch {
+        ctx.response.status = 400
+      }
+    }
+
+    async function redirectToExisting(repoInfo: GitRepoInfo) {
+      ctx.response.redirect(router.url('repo', repoInfo))
+    }
   })
 
   router.post('/:repoId', async (ctx: Context) => {
