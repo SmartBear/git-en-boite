@@ -2,22 +2,8 @@ import { Connect, Fetch, GetRefs, GitRepo } from 'git-en-boite-git-port'
 
 import { Ref } from '.'
 
-export type RepoConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'failed'
-
-export interface RepoProps {
-  connectionStatus: RepoConnectionStatus
-}
-
-export class Repo implements RepoProps {
-  public connectionStatus: RepoConnectionStatus
-
-  constructor(
-    public readonly repoId: string,
-    private readonly git: GitRepo,
-    { connectionStatus }: RepoProps = { connectionStatus: 'disconnected' },
-  ) {
-    this.connectionStatus = connectionStatus
-  }
+export class Repo {
+  constructor(public readonly repoId: string, private readonly git: GitRepo) {}
 
   async fetch(): Promise<void> {
     await this.git(Fetch.fromOrigin())
