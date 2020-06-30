@@ -6,7 +6,7 @@ import {
   GitRepoInfo,
   QueryResult,
 } from 'git-en-boite-client-port'
-import { RepoIndex } from 'git-en-boite-repo-index-port'
+import { RepoIndex } from 'git-en-boite-core'
 import { FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 export class LaBoîte implements Application {

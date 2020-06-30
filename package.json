@@ -13,9 +13,7 @@
     "packages/config",
     "packages/core",
     "packages/git-adapter",
-    "packages/git-port",
     "packages/repo-index-adapter",
-    "packages/repo-index-port",
     "packages/task-scheduler-adapter",
     "packages/task-scheduler-port"
   ]

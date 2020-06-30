@@ -1,4 +1,4 @@
-import { Repo } from 'git-en-boite-core'
+import { Repo } from '.'
 
 export interface RepoIndex {
   exists(repoId: string): Promise<boolean>
