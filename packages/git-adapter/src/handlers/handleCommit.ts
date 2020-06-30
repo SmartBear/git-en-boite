@@ -1,5 +1,5 @@
 import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
-import { Commit } from 'git-en-boite-git-port'
+import { Commit } from '../operations'
 import { GitDirectory } from '../git_directory'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (

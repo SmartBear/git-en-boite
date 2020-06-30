@@ -1,12 +1,11 @@
-import childProcess from 'child_process'
 import fs from 'fs'
 import { AsyncCommand, messageDispatch } from 'git-en-boite-message-dispatch'
-import { Init, ValidateRemote } from 'git-en-boite-git-port'
-import { promiseThat, rejected, fulfilled } from 'hamjest'
+import { fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
+import { Init, ValidateRemote } from '../operations'
 import { handleInit } from './handleInit'
 import { handleValidateRemote } from './handleValidateRemote'
 

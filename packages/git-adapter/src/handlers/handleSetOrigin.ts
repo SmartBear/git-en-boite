@@ -1,4 +1,4 @@
-import { SetOrigin } from 'git-en-boite-git-port'
+import { SetOrigin } from '../operations'
 import { Handle, AsyncCommand } from 'git-en-boite-message-dispatch'
 import { GitDirectory } from '../git_directory'
 

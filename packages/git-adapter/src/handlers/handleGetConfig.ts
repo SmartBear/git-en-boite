@@ -1,5 +1,5 @@
 import { AsyncQuery, Handle } from 'git-en-boite-message-dispatch'
-import { Config, GetConfig } from 'git-en-boite-git-port'
+import { Config, GetConfig } from '../operations'
 import { GitDirectory } from '../git_directory'
 
 export const handleGetConfig: Handle<GitDirectory, AsyncQuery<GetConfig, Config>> = async (

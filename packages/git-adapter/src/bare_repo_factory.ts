@@ -8,7 +8,7 @@ import {
   Init,
   SetOrigin,
   ValidateRemote,
-} from 'git-en-boite-git-port'
+} from './operations'
 import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import path from 'path'
 

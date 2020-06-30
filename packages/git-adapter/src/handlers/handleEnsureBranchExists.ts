@@ -1,5 +1,5 @@
 import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
-import { EnsureBranchExists } from 'git-en-boite-git-port'
+import { EnsureBranchExists } from '../operations'
 import { GitDirectory } from '../git_directory'
 
 export const handleEnsureBranchExists: Handle<

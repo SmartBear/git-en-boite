@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { Config, GetConfig, Init } from 'git-en-boite-git-port'
+import { Config, GetConfig, Init } from '../operations'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'

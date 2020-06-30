@@ -1,7 +1,7 @@
 import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
-import { Connect, Fetch, SetOrigin, ValidateRemote } from 'git-en-boite-git-port'
 
 import { GitDirectory } from '../git_directory'
+import { Connect, SetOrigin, ValidateRemote } from '../operations'
 
 export const handleConnect: Handle<GitDirectory, AsyncCommand<Connect>> = async (
   _,

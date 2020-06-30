@@ -1,7 +1,7 @@
 import { ConnectRepoRequest } from 'git-en-boite-client-port'
 import { createConfig } from 'git-en-boite-config'
 import { DugiteGitRepo, NonBareRepoFactory } from 'git-en-boite-git-adapter'
-import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
+import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-adapter'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { assertThat, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'

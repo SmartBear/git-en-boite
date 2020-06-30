@@ -1,6 +1,6 @@
 import { GitRepo, Ref } from 'git-en-boite-core'
 import { BareRepoFactory } from './bare_repo_factory'
-import { BareRepoProtocol, Connect, Fetch, GetRefs } from 'git-en-boite-git-port'
+import { BareRepoProtocol, Connect, Fetch, GetRefs } from './operations'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 export class DugiteGitRepo implements GitRepo {

@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import fs from 'fs'
 import { AsyncCommand, messageDispatch } from 'git-en-boite-message-dispatch'
-import { Init, SetOrigin } from 'git-en-boite-git-port'
+import { Init, SetOrigin } from '../operations'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'

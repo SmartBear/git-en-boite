@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { Repo, OpenGitRepo } from 'git-en-boite-core'
-import { RepoPath } from 'git-en-boite-git-port'
+import { RepoPath } from 'git-en-boite-core'
 import { RepoIndex } from 'git-en-boite-repo-index-port'
 
 export class DiskRepoIndex implements RepoIndex {

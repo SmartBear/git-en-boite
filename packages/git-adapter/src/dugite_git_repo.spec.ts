@@ -1,9 +1,9 @@
-import { verifyRepoFactoryContract } from 'git-en-boite-git-port'
+import { verifyRepoFactoryContract } from './verify_repo_factory_contract'
 import { dirSync } from 'tmp'
 
 import { BareRepoFactory, NonBareRepoFactory } from '.'
 import { DugiteGitRepo } from './dugite_git_repo'
-import { verifyRepoContract } from 'git-en-boite-git-port/src/verify_repo_factory_contract'
+import { verifyRepoContract } from './verify_repo_factory_contract'
 
 describe(DugiteGitRepo.name, () => {
   const openRepo = DugiteGitRepo.open

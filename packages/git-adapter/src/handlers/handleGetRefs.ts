@@ -1,6 +1,6 @@
 import { AsyncQuery, Handle } from 'git-en-boite-message-dispatch'
 import { Ref } from 'git-en-boite-core'
-import { GetRefs } from 'git-en-boite-git-port'
+import { GetRefs } from '../operations'
 import { GitDirectory } from '../git_directory'
 
 export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Ref[]>> = async repo => {

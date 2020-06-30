@@ -127,6 +127,3 @@ export type NonBareRepoProtocol = [
   AsyncQuery<GetRevision, string>,
   AsyncQuery<GetConfig, Config>,
 ]
-
-export { verifyRepoFactoryContract } from './verify_repo_factory_contract'
-export * from './repo_path'

@@ -1,15 +1,10 @@
 import { Dispatch } from 'git-en-boite-message-dispatch'
-import {
-  Commit,
-  Connect,
-  NonBareRepoProtocol,
-  verifyRepoFactoryContract,
-} from 'git-en-boite-git-port'
 import { fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { BareRepoFactory, NonBareRepoFactory } from '.'
+import { Commit, Connect, NonBareRepoProtocol } from './operations'
 
 describe(BareRepoFactory.name, () => {
   const factory = new BareRepoFactory()

@@ -10,7 +10,7 @@ import {
   Init,
   NonBareRepoProtocol,
   SetOrigin,
-} from 'git-en-boite-git-port'
+} from './operations'
 import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from './git_directory'
