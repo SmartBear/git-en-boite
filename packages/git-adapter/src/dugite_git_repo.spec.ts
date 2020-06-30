@@ -1,9 +1,9 @@
-import { verifyRepoFactoryContract } from './verify_repo_factory_contract'
 import { dirSync } from 'tmp'
 
 import { BareRepoFactory, NonBareRepoFactory } from '.'
+import { verifyRepoContract } from './contracts/verify_repo_contract'
+import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
-import { verifyRepoContract } from './verify_repo_factory_contract'
 
 describe(DugiteGitRepo.name, () => {
   const openRepo = DugiteGitRepo.open
