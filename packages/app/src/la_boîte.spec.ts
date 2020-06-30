@@ -1,6 +1,6 @@
 import { ConnectRepoRequest } from 'git-en-boite-client-port'
 import { createConfig } from 'git-en-boite-config'
-import { BareRepoFactory, NonBareRepoFactory } from 'git-en-boite-git-adapter'
+import { DugiteGitRepo, NonBareRepoFactory } from 'git-en-boite-git-adapter'
 import { Commit, EnsureBranchExists, GetRevision, Init } from 'git-en-boite-git-port'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
@@ -22,8 +22,7 @@ describe(LaBoîte.name, () => {
   let app: LaBoîte
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
-    const gitRepoFactory = new BareRepoFactory()
-    const repoIndex = new DiskRepoIndex(root, gitRepoFactory)
+    const repoIndex = new DiskRepoIndex(root, DugiteGitRepo.open)
     app = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {

@@ -1,19 +1,18 @@
-import { Application } from 'git-en-boite-client-port'
-
-import { createConfig } from 'git-en-boite-config'
-import { LaBoîte } from './la_boîte'
 import { createWebApp } from 'git-en-boite-client-adapter-web'
-import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
-import { BareRepoFactory } from 'git-en-boite-git-adapter'
+import { Application } from 'git-en-boite-client-port'
+import { createConfig } from 'git-en-boite-config'
+import { DugiteGitRepo } from 'git-en-boite-git-adapter'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
+import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
+
+import { LaBoîte } from './la_boîte'
 
 const config = createConfig(process.env)
 console.log(`git-en-boite starting up`)
 console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 const taskScheduler = BullRepoTaskScheduler.make(config.redis)
-const gitRepoFactory = new BareRepoFactory()
-const repoIndex = new DiskRepoIndex(config.git.root, gitRepoFactory)
+const repoIndex = new DiskRepoIndex(config.git.root, DugiteGitRepo.open)
 const app: Application = new LaBoîte(taskScheduler, repoIndex, config.version)
 
 const port = 3001

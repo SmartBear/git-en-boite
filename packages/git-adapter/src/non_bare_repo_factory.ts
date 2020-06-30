@@ -1,18 +1,17 @@
 import fs from 'fs'
-import { messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
 import {
   Checkout,
   Commit,
   EnsureBranchExists,
   Fetch,
+  GetConfig,
   GetRefs,
   GetRevision,
   Init,
   NonBareRepoProtocol,
-  OpensGitRepos,
   SetOrigin,
-  GetConfig,
 } from 'git-en-boite-git-port'
+import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from './git_directory'
 import {
@@ -20,16 +19,16 @@ import {
   handleCommit,
   handleEnsureBranchExists,
   handleFetch,
+  handleGetConfig,
   handleGetRefs,
   handleGetRevision,
   handleInit,
   handleSetOrigin,
-  handleGetConfig,
 } from './handlers'
 
 type NonBareRepo = Dispatch<NonBareRepoProtocol>
 
-export class NonBareRepoFactory implements OpensGitRepos<NonBareRepoProtocol> {
+export class NonBareRepoFactory {
   async open(path: string): Promise<NonBareRepo> {
     fs.mkdirSync(path, { recursive: true })
     const repo = new GitDirectory(path)

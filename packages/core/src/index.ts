@@ -4,3 +4,4 @@ export class Author {
 
 export * from './ref'
 export * from './repo'
+export * from './git_repo'

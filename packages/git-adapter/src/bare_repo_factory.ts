@@ -1,17 +1,15 @@
 import fs from 'fs'
-import { messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   BareRepoProtocol,
   Connect,
   Fetch,
   GetConfig,
   GetRefs,
-  GitRepo,
   Init,
-  OpensGitRepos,
   SetOrigin,
   ValidateRemote,
 } from 'git-en-boite-git-port'
+import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import path from 'path'
 
 import { GitDirectory } from './git_directory'
@@ -25,8 +23,10 @@ import {
   handleValidateRemote,
 } from './handlers'
 
-export class BareRepoFactory implements OpensGitRepos<BareRepoProtocol> {
-  async open(containingPath: string): Promise<GitRepo> {
+type BareRepo = Dispatch<BareRepoProtocol>
+
+export class BareRepoFactory {
+  async open(containingPath: string): Promise<BareRepo> {
     const repoPath = path.resolve(containingPath, 'git')
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)

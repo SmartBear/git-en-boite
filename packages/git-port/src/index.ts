@@ -1,10 +1,10 @@
-import { Dispatch, ValidProtocol, AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 import { Author, Ref } from 'git-en-boite-core'
+import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Checkout {
   protected constructor(public readonly branchName: string) {}
 
-  static branch(branchName: string) {
+  static branch(branchName: string): Checkout {
     return new this(branchName)
   }
 }
@@ -12,15 +12,15 @@ export class Checkout {
 export class Commit {
   protected constructor(public readonly message: string, public readonly author: Author) {}
 
-  static withMessage(message: string) {
+  static withMessage(message: string): Commit {
     return new Commit(message, new Author('A user', 'unknown@unknown.com'))
   }
 
-  static withAnyMessage() {
+  static withAnyMessage(): Commit {
     return Commit.withMessage('A commit message')
   }
 
-  byAuthor(author: Author) {
+  byAuthor(author: Author): Commit {
     return new Commit(this.message, author)
   }
 }
@@ -28,14 +28,15 @@ export class Commit {
 export class EnsureBranchExists {
   protected constructor(public readonly name: string) {}
 
-  static named(name: string) {
+  static named(name: string): EnsureBranchExists {
     return new EnsureBranchExists(name)
   }
 }
 
 export class Fetch {
   private unique: void
-  static fromOrigin() {
+
+  static fromOrigin(): Fetch {
     return new this()
   }
 }
@@ -43,7 +44,7 @@ export class Fetch {
 export class GetRefs {
   private unique: void
 
-  static all() {
+  static all(): GetRefs {
     return new this()
   }
 }
@@ -51,7 +52,7 @@ export class GetRefs {
 export class GetRevision {
   protected constructor(public readonly reference: string) {}
 
-  static forBranchNamed(reference: string) {
+  static forBranchNamed(reference: string): GetRevision {
     return new GetRevision(reference)
   }
 }
@@ -59,11 +60,11 @@ export class GetRevision {
 export class Init {
   protected constructor(public readonly isBare: boolean) {}
 
-  static bareRepo() {
+  static bareRepo(): Init {
     return new Init(true)
   }
 
-  static nonBareRepo() {
+  static nonBareRepo(): Init {
     return new Init(false)
   }
 }
@@ -71,7 +72,7 @@ export class Init {
 export class SetOrigin {
   protected constructor(public readonly url: string) {}
 
-  static toUrl(url: string) {
+  static toUrl(url: string): SetOrigin {
     return new this(url)
   }
 }
@@ -79,7 +80,7 @@ export class SetOrigin {
 export class Connect {
   protected constructor(public readonly remoteUrl: string) {}
 
-  static toUrl(remoteUrl: string) {
+  static toUrl(remoteUrl: string): Connect {
     return new this(remoteUrl)
   }
 }
@@ -102,12 +103,6 @@ export class ValidateRemote {
 
 export interface Config {
   [key: string]: string
-}
-
-export type GitRepo = Dispatch<BareRepoProtocol>
-
-export interface OpensGitRepos<Protocol extends ValidProtocol<Protocol>> {
-  open(path: string): Promise<Dispatch<Protocol>>
 }
 
 export type BareRepoProtocol = [

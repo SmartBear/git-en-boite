@@ -1,6 +1,6 @@
 import { After, Before } from 'cucumber'
 import { createConfig } from 'git-en-boite-config'
-import { BareRepoFactory } from 'git-en-boite-git-adapter'
+import { DugiteGitRepo } from 'git-en-boite-git-adapter'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 import { BullRepoTaskScheduler } from 'git-en-boite-task-scheduler-adapter'
 import { dirSync } from 'tmp'
@@ -11,8 +11,8 @@ Before(async function () {
   const config = createConfig()
   const gitReposPath = dirSync().name
   const taskScheduler = BullRepoTaskScheduler.make(config.redis)
-  const gitRepoFactory = new BareRepoFactory()
-  const repoIndex = new DiskRepoIndex(gitReposPath, gitRepoFactory)
+  const openGitRepo = DugiteGitRepo.open
+  const repoIndex = new DiskRepoIndex(gitReposPath, openGitRepo)
   this.app = new LaBoîte(taskScheduler, repoIndex, config.version)
 })
 

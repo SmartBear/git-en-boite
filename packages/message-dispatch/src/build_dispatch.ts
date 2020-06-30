@@ -36,8 +36,16 @@ export function messageDispatch<Protocol extends ValidProtocol<Protocol>>() {
       }
 
       const dispatch: Dispatch<Protocol> = message => {
-        // console.log(message)
-        return handlers.get(message.constructor)(context, message, dispatch)
+        console.log(message)
+
+        const handler = handlers.get(message.constructor)
+        if (!handler)
+          throw new Error(
+            `No handler found for message ${JSON.stringify(message)} in\n${JSON.stringify(
+              handlers,
+            )}`,
+          )
+        return handler(context, message, dispatch)
       }
       return dispatch
     },
