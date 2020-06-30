@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
+    "bullmq": "^1.8.13",
     "dugite": "^1.91.2",
     "git-en-boite-message-dispatch": "0.0.0"
   },
