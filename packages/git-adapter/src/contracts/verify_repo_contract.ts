@@ -40,6 +40,7 @@ export const verifyRepoContract = (
         const refs = await git.getRefs()
         const ref = refs.find(ref => ref.isRemote)
         await assertThat(ref.revision, equalTo(latestCommit))
+        await git.close()
       })
     })
   })

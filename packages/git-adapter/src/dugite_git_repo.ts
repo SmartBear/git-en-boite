@@ -14,10 +14,16 @@ export class DugiteGitRepo implements GitRepo {
   connect(remoteUrl: string): Promise<void> {
     return this.git(Connect.toUrl(remoteUrl))
   }
+
   fetch(): Promise<void> {
     return this.git(Fetch.fromOrigin())
   }
+
   getRefs(): Promise<Ref[]> {
     return this.git(GetRefs.all())
+  }
+
+  close(): Promise<void> {
+    return Promise.resolve()
   }
 }

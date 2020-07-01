@@ -23,7 +23,9 @@
   "dependencies": {
     "bullmq": "^1.8.13",
     "dugite": "^1.91.2",
-    "git-en-boite-message-dispatch": "0.0.0"
+    "git-en-boite-config": "0.0.0",
+    "git-en-boite-message-dispatch": "0.0.0",
+    "ioredis": "^4.17.3"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",

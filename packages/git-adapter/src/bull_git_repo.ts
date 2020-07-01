@@ -1,22 +1,28 @@
-import { Queue, QueueEvents } from 'bullmq'
-import { GitRepo, Ref, OpenGitRepo } from 'git-en-boite-core'
-
-import { DugiteGitRepo } from './dugite_git_repo'
+import { Queue, QueueEvents, RedisOptions } from 'bullmq'
+import { GitRepo, OpenGitRepo, Ref } from 'git-en-boite-core'
+import IORedis from 'ioredis'
 
 export class BullGitRepo implements GitRepo {
-  static async open(path: string, openGitRepo: OpenGitRepo = DugiteGitRepo.open): Promise<GitRepo> {
-    const gitRepo = await openGitRepo(path)
-    return new BullGitRepo(path, gitRepo)
+  static open(
+    openGitRepo: OpenGitRepo,
+    connection: RedisOptions,
+  ): (path: string) => Promise<GitRepo> {
+    return async path => {
+      const gitRepo = await openGitRepo(path)
+      return await new BullGitRepo(path, gitRepo, connection)
+    }
   }
 
   queue: Queue<any>
   queueEvents: QueueEvents
-  gitRepo: GitRepo
 
-  protected constructor(private readonly path: string, gitRepo: GitRepo) {
-    this.queue = new Queue('main')
-    this.queueEvents = new QueueEvents('main')
-    this.gitRepo = gitRepo
+  protected constructor(
+    private readonly path: string,
+    private readonly gitRepo: GitRepo,
+    connection: RedisOptions,
+  ) {
+    this.queue = new Queue('main', { connection })
+    this.queueEvents = new QueueEvents('main', { connection })
   }
 
   async connect(remoteUrl: string): Promise<void> {
@@ -31,5 +37,9 @@ export class BullGitRepo implements GitRepo {
 
   getRefs(): Promise<Ref[]> {
     return this.gitRepo.getRefs()
+  }
+
+  async close(): Promise<void> {
+    await Promise.all([this.queue.close(), this.queueEvents.close()])
   }
 }

@@ -1,32 +1,33 @@
-import { Job, Worker } from 'bullmq'
-import { DugiteGitRepo } from '.'
+import { Job, RedisOptions, Worker } from 'bullmq'
+import { OpenGitRepo } from 'git-en-boite-core'
+import IORedis, { Redis } from 'ioredis'
 
 export class BullGitRepoWorker {
   protected worker: Worker<any>
 
-  static async open(): Promise<BullGitRepoWorker> {
-    return new BullGitRepoWorker().waitUntilReady()
+  static async open(
+    connection: RedisOptions,
+    openGitRepo: OpenGitRepo,
+  ): Promise<BullGitRepoWorker> {
+    return await new BullGitRepoWorker(connection, openGitRepo)
   }
 
-  protected async waitUntilReady(): Promise<BullGitRepoWorker> {
-    await this.worker.waitUntilReady()
-    return this
-  }
-
-  protected constructor() {
-    this.worker = new Worker('main', async (job: Job) => {
-      const { path } = job.data
-      const git = await DugiteGitRepo.open(path)
-      if (job.name === 'connect') {
-        const { remoteUrl } = job.data
-        await git.connect(remoteUrl)
-        return
-      }
-      if (job.name === 'fetch') {
-        await git.fetch()
-        return
-      }
-    })
+  protected constructor(connection: RedisOptions, openGitRepo: OpenGitRepo) {
+    this.worker = new Worker(
+      'main',
+      async (job: Job) => {
+        const { path } = job.data
+        const git = await openGitRepo(path)
+        if (job.name === 'connect') {
+          const { remoteUrl } = job.data
+          return await git.connect(remoteUrl)
+        }
+        if (job.name === 'fetch') {
+          return await git.fetch()
+        }
+      },
+      { connection },
+    )
   }
 
   async close(): Promise<void> {
