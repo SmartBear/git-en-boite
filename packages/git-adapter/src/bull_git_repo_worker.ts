@@ -1,6 +1,5 @@
 import { Job, RedisOptions, Worker } from 'bullmq'
 import { OpenGitRepo } from 'git-en-boite-core'
-import IORedis, { Redis } from 'ioredis'
 
 export class BullGitRepoWorker {
   protected worker: Worker<any>

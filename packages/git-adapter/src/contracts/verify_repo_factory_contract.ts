@@ -27,8 +27,7 @@ export const verifyRepoFactoryContract = (
     context('when the directory does not exist', () => {
       it('creates an initialised repo', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
-        const repo = await openGitRepo(repoPath)
-        await repo.close()
+        await openGitRepo(repoPath)
         const git = await openBareRepo(repoPath)
         const config = await git(GetConfig.forRepo())
         await assertThat(config['user.name'], equalTo('Git en boîte'))
