@@ -3,7 +3,7 @@ import fs from 'fs'
 import { AsyncCommand, AsyncQuery, messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
 import { Ref } from 'git-en-boite-core'
 import { Commit, GetRefs, Init } from '../operations'
-import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
+import { equalTo, fulfilled, promiseThat, rejected, assertThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -49,12 +49,6 @@ describe('handleGetRefs', () => {
       await git(Init.nonBareRepo())
     })
 
-    context('with no commits in the repo', () => {
-      it('fails', async () => {
-        await promiseThat(git(GetRefs.all()), rejected())
-      })
-    })
-
     context('with a commit to the master branch', () => {
       beforeEach(async () => {
         await git(Commit.withAnyMessage())
@@ -76,6 +70,10 @@ describe('handleGetRefs', () => {
       const repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)
       await git(Init.bareRepo())
+    })
+
+    it('returns an empty array when there are no commits', async () => {
+      assertThat(await git(GetRefs.all()), equalTo([]))
     })
 
     context('with a remote branch', () => {
