@@ -22,7 +22,7 @@ describe(BullGitRepo.name, () => {
 
   let worker: BullGitRepoWorker
   beforeEach(async () => {
-    worker = await BullGitRepoWorker.open(config.redis, DugiteGitRepo.open)
+    worker = await BullGitRepoWorker.start(config.redis, DugiteGitRepo.open)
   })
   afterEach(() => worker.close())
 })

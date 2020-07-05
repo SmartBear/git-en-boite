@@ -4,7 +4,7 @@ import { OpenGitRepo } from 'git-en-boite-core'
 export class BullGitRepoWorker {
   protected worker: Worker<any>
 
-  static async open(
+  static async start(
     connection: RedisOptions,
     openGitRepo: OpenGitRepo,
   ): Promise<BullGitRepoWorker> {
