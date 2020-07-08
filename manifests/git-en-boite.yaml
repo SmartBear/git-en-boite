@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: git-en-boite
-        image: smartbear/git-en-boite:latest
+        image: smartbear/git-en-boite:stable
         env:
         - name: DATABASE_URL
           value: postgresql://postgres:proNounc3dGiT0nbwoT@git-en-boite-antmag.cluster-ch7agk2v6qho.us-east-1.rds.amazonaws.com:5432/gitenboite
@@ -40,6 +40,6 @@ spec:
   selector:
     app: git-en-boite
   ports:
-    - port: 3002  # port for the service WITHIN THE CLUSTER
-      targetPort: 3001 # port for the POD
-      nodePort: 30000  # port to expose ON THE HOST
+  - port: 3002    # port for the service WITHIN THE CLUSTER
+    targetPort: 3001   # port for the POD
+    nodePort: 30000    # port to expose ON THE HOST
