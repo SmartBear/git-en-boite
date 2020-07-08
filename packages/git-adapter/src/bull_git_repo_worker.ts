@@ -1,8 +1,10 @@
 import { Job, RedisOptions, Worker } from 'bullmq'
 import { OpenGitRepo } from 'git-en-boite-core'
+import IORedis from 'ioredis'
 
 export class BullGitRepoWorker {
   protected worker: Worker<any>
+  private redisClient: IORedis.Redis
 
   static async start(
     connection: RedisOptions,
@@ -11,7 +13,9 @@ export class BullGitRepoWorker {
     return await new BullGitRepoWorker(connection, openGitRepo)
   }
 
-  protected constructor(connection: RedisOptions, openGitRepo: OpenGitRepo) {
+  protected constructor(redisOptions: RedisOptions, openGitRepo: OpenGitRepo) {
+    // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
+    this.redisClient = new IORedis(redisOptions)
     this.worker = new Worker(
       'main',
       async (job: Job) => {
@@ -25,13 +29,15 @@ export class BullGitRepoWorker {
           return await git.fetch()
         }
       },
-      { connection },
+      { connection: this.redisClient },
     )
   }
 
   async close(): Promise<void> {
-    await this.worker.close()
-    await (await (this.worker as any).blockingConnection.client).disconnect()
-    return this.worker.disconnect()
+    await Promise.all([
+      this.worker.close(),
+      this.redisClient.disconnect(),
+      this.worker.disconnect(),
+    ])
   }
 }
