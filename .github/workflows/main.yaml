@@ -23,5 +23,4 @@ jobs:
         password: ${{ secrets.DOCKER_KEY }}
         repository: smartbear/git-en-boite
         tags: actiontest
-        dockerfile: /Dockerfile
         push: true
