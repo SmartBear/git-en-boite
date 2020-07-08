@@ -8,7 +8,7 @@ metadata:
   annotations:
     fluxcd.io/automated: "true"
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: git-en-boite
