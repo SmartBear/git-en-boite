@@ -20,26 +20,8 @@ jobs:
       with:
         build_args: GITHUB_TOKEN=${{ secrets.SWAG_BOT_TOKEN }}
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        password: ${{ secrets.DOCKER_KEY }}
         repository: smartbear/git-en-boite
         tags: actiontest
         dockerfile: /Dockerfile
         push: true
-
-#        uses: docker/build-push-action@v1
-#        with:
-#          build_args: GITHUB_TOKEN=${{ secrets.SWAG_BOT_TOKEN }}
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#          repository: smartbear/portal-api-proxy
-#          tags: latest
-#          path: packages/api
-#
-#      - name: Build & push docker images - portal-ui-kit
-#        uses: docker/build-push-action@v1
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#          repository: smartbear/portal-ui-kit
-#          tags: latest
-#          path: packages/ui
