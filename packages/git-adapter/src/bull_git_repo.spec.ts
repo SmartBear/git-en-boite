@@ -9,7 +9,7 @@ import { DugiteGitRepo } from './dugite_git_repo'
 
 const config = createConfig()
 
-describe.only(BullGitRepo.name, () => {
+describe(BullGitRepo.name, () => {
   const repoFactory = new BullGitRepoFactory(DugiteGitRepo.open, config.redis)
   after(() => repoFactory.close())
 

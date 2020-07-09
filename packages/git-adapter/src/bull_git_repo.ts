@@ -5,14 +5,14 @@ import IORedis from 'ioredis'
 export class BullGitRepoFactory {
   private readonly queue: Queue<any>
   private readonly queueEvents: QueueEvents
-  private redisClient: IORedis.Redis
+  private queueClient: IORedis.Redis
 
   constructor(private readonly openGitRepo: OpenGitRepo, redisOptions: RedisOptions) {
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.redisClient = new IORedis(redisOptions)
-    this.queue = new Queue('main', { connection: this.redisClient })
-    // according to the docs, the QueueEvents needs it's own connection
-    this.queueEvents = new QueueEvents('main', { connection: redisOptions })
+    this.queueClient = new IORedis(redisOptions)
+    this.queue = new Queue('main', { connection: this.queueClient })
+    // according to the docs, the QueueEvents needs its own connection
+    this.queueEvents = new QueueEvents('main', { connection: new IORedis(redisOptions) })
   }
 
   async open(path: string): Promise<GitRepo> {
@@ -21,7 +21,7 @@ export class BullGitRepoFactory {
   }
 
   async close(): Promise<void> {
-    await Promise.all([this.queue.close(), this.queueEvents.close(), this.redisClient.disconnect()])
+    await Promise.all([this.queue.close(), this.queueEvents.close(), this.queueClient.disconnect()])
   }
 }
 
