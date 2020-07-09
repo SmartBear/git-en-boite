@@ -33,7 +33,7 @@ describe(GitDirectory.name, () => {
       )
     })
 
-    it('never ask for prompt', async () => {
+    it('never asks for a prompt @slow', async () => {
       const repoPath = path.resolve(root, 'a-repo')
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
@@ -41,9 +41,9 @@ describe(GitDirectory.name, () => {
         repo.execGit('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git']),
         rejected(),
       )
-    })
+    }).timeout(5000)
 
-    it('is not possible to ask for terminal prompt', async () => {
+    it('is not possible to ask for terminal prompt @slow', async () => {
       const repoPath = path.resolve(root, 'a-repo')
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
@@ -53,7 +53,7 @@ describe(GitDirectory.name, () => {
         }),
         rejected(),
       )
-    })
+    }).timeout(5000)
 
     it('passes args')
 

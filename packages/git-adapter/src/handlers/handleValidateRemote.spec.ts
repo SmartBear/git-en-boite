@@ -29,27 +29,27 @@ describe('handleValidateRemote', () => {
     ])
   }
 
-  it('fails if the remote Url returns 404', async () => {
+  it('fails if the remote Url returns 404 @slow', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
     const repoUrl = 'https://token@host.com/repo'
     await promiseThat(git(ValidateRemote.url(repoUrl)), rejected())
-  })
+  }).timeout(5000)
 
-  it('works if the remote Url is valid', async () => {
+  it('works if the remote Url is valid @slow', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
     const repoUrl = 'https://github.com/smartbear/git-en-boite.git'
     await promiseThat(git(ValidateRemote.url(repoUrl)), fulfilled())
-  })
+  }).timeout(5000)
 
-  it('fails if the remote Url requires authentication', async () => {
+  it('fails if the remote Url requires authentication @slow', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
     const repoUrl = 'https://github.com/smartbear/git-en-boite-test-private.git'
     await promiseThat(git(ValidateRemote.url(repoUrl)), rejected())
-  })
+  }).timeout(5000)
 })
