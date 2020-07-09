@@ -22,7 +22,7 @@ describe(LaBoîte.name, () => {
   let app: LaBoîte
   beforeEach(() => {
     const taskScheduler = BullRepoTaskScheduler.make(createConfig().redis)
-    const repoIndex = new DiskRepoIndex(root, DugiteGitRepo.open)
+    const repoIndex = new DiskRepoIndex(root, DugiteGitRepo)
     app = new LaBoîte(taskScheduler, repoIndex, '999.9.9-test')
   })
   afterEach(async () => {

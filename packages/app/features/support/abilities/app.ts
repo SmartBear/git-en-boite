@@ -11,8 +11,7 @@ Before(async function () {
   const config = createConfig()
   const gitReposPath = dirSync().name
   const taskScheduler = BullRepoTaskScheduler.make(config.redis)
-  const openGitRepo = DugiteGitRepo.open
-  const repoIndex = new DiskRepoIndex(gitReposPath, openGitRepo)
+  const repoIndex = new DiskRepoIndex(gitReposPath, DugiteGitRepo)
   this.app = new LaBoîte(taskScheduler, repoIndex, config.version)
 })
 

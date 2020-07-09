@@ -7,3 +7,4 @@ export interface GitRepo {
 }
 
 export type OpenGitRepo = (path: string) => Promise<GitRepo>
+export type OpensGitRepos = { openGitRepo: OpenGitRepo }

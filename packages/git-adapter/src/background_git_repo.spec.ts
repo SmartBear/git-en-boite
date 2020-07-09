@@ -1,28 +1,28 @@
 import { createConfig } from 'git-en-boite-config'
 
-import { BareRepoFactory, NonBareRepoFactory } from '.'
-import { BullGitRepo, BullGitRepoFactory } from './bull_git_repo'
-import { BullGitRepoWorker } from './bull_git_repo_worker'
+import { BareRepoFactory, NonBareRepoFactory } from './'
+import { BackgroundGitRepos } from './background_git_repos'
+import { BackgroundGitRepoWorker } from './background_git_repo_worker'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
 
 const config = createConfig()
 
-describe(BullGitRepo.name, () => {
-  const repoFactory = new BullGitRepoFactory(DugiteGitRepo.open, config.redis)
-  after(() => repoFactory.close())
+describe(BackgroundGitRepos.name, () => {
+  const gitRepos = new BackgroundGitRepos(DugiteGitRepo, config.redis)
+  after(() => gitRepos.close())
 
-  const openRepo = (path: string) => repoFactory.open(path)
+  const openRepo = (path: string) => gitRepos.openGitRepo(path)
 
   const bareRepoFactory = new BareRepoFactory()
   const nonBareRepoFactory = new NonBareRepoFactory()
   verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
   verifyRepoContract(openRepo, nonBareRepoFactory.open)
 
-  let worker: BullGitRepoWorker
+  let worker: BackgroundGitRepoWorker
   beforeEach(async () => {
-    worker = await BullGitRepoWorker.start(config.redis, DugiteGitRepo.open)
+    worker = await BackgroundGitRepoWorker.start(config.redis, DugiteGitRepo)
   })
   afterEach(() => worker.close())
 })

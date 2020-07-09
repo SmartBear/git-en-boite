@@ -4,7 +4,7 @@ import { BareRepoProtocol, Connect, Fetch, GetRefs } from './operations'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 export class DugiteGitRepo implements GitRepo {
-  static async open(path: string): Promise<GitRepo> {
+  static async openGitRepo(path: string): Promise<GitRepo> {
     const dispatch = await new BareRepoFactory().open(path)
     return new DugiteGitRepo(dispatch)
   }

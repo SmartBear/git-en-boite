@@ -6,7 +6,7 @@ import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contr
 import { DugiteGitRepo } from './dugite_git_repo'
 
 describe(DugiteGitRepo.name, () => {
-  const openRepo = DugiteGitRepo.open
+  const openRepo = DugiteGitRepo.openGitRepo
   const bareRepoFactory = new BareRepoFactory()
   const nonBareRepoFactory = new NonBareRepoFactory()
   verifyRepoFactoryContract(openRepo, bareRepoFactory.open)

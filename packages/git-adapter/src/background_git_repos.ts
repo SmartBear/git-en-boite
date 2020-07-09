@@ -2,12 +2,12 @@ import { Queue, QueueEvents, RedisOptions } from 'bullmq'
 import { GitRepo, OpenGitRepo, Ref } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
-export class BullGitRepoFactory {
+export class BackgroundGitRepos {
   private readonly queue: Queue<any>
   private readonly queueEvents: QueueEvents
   private queueClient: IORedis.Redis
 
-  constructor(private readonly openGitRepo: OpenGitRepo, redisOptions: RedisOptions) {
+  constructor(private readonly gitRepos: { openGitRepo: OpenGitRepo }, redisOptions: RedisOptions) {
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
     this.queueClient = new IORedis(redisOptions)
     this.queue = new Queue('main', { connection: this.queueClient })
@@ -15,9 +15,9 @@ export class BullGitRepoFactory {
     this.queueEvents = new QueueEvents('main', { connection: new IORedis(redisOptions) })
   }
 
-  async open(path: string): Promise<GitRepo> {
-    const gitRepo = await this.openGitRepo(path)
-    return new BullGitRepo(path, gitRepo, this.queue, this.queueEvents)
+  async openGitRepo(path: string): Promise<GitRepo> {
+    const gitRepo = await this.gitRepos.openGitRepo(path)
+    return new BackgroundGitRepo(path, gitRepo, this.queue, this.queueEvents)
   }
 
   async close(): Promise<void> {
@@ -25,7 +25,7 @@ export class BullGitRepoFactory {
   }
 }
 
-export class BullGitRepo implements GitRepo {
+export class BackgroundGitRepo implements GitRepo {
   constructor(
     private readonly path: string,
     private readonly gitRepo: GitRepo,

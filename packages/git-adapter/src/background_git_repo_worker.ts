@@ -1,26 +1,26 @@
 import { Job, RedisOptions, Worker } from 'bullmq'
-import { OpenGitRepo } from 'git-en-boite-core'
+import { OpensGitRepos } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
-export class BullGitRepoWorker {
+export class BackgroundGitRepoWorker {
   protected worker: Worker<any>
   private redisClient: IORedis.Redis
 
   static async start(
     connection: RedisOptions,
-    openGitRepo: OpenGitRepo,
-  ): Promise<BullGitRepoWorker> {
-    return await new BullGitRepoWorker(connection, openGitRepo)
+    gitRepos: OpensGitRepos,
+  ): Promise<BackgroundGitRepoWorker> {
+    return new BackgroundGitRepoWorker(connection, gitRepos)
   }
 
-  protected constructor(redisOptions: RedisOptions, openGitRepo: OpenGitRepo) {
+  protected constructor(redisOptions: RedisOptions, gitRepos: OpensGitRepos) {
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
     this.redisClient = new IORedis(redisOptions)
     this.worker = new Worker(
       'main',
       async (job: Job) => {
         const { path } = job.data
-        const git = await openGitRepo(path)
+        const git = await gitRepos.openGitRepo(path)
         if (job.name === 'connect') {
           const { remoteUrl } = job.data
           return await git.connect(remoteUrl)
