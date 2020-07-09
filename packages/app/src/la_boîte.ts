@@ -7,18 +7,9 @@ import {
   QueryResult,
 } from 'git-en-boite-client-port'
 import { RepoIndex } from 'git-en-boite-core'
-import { FetchTask, RepoTaskScheduler } from 'git-en-boite-task-scheduler-port'
 
 export class LaBoîte implements Application {
-  constructor(
-    private readonly taskScheduler: RepoTaskScheduler,
-    private readonly repoIndex: RepoIndex,
-    public readonly version: string,
-  ) {}
-
-  async close(): Promise<void> {
-    await this.taskScheduler.close()
-  }
+  constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
@@ -27,7 +18,6 @@ export class LaBoîte implements Application {
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {
-    this.taskScheduler.schedule(repoId, new FetchTask())
     const repo = await this.repoIndex.find(repoId)
     await repo.fetch()
   }
