@@ -2,7 +2,6 @@ import { createConfig } from 'git-en-boite-config'
 
 import { BareRepoFactory, NonBareRepoFactory } from './'
 import { BackgroundGitRepos } from './background_git_repos'
-import { BackgroundGitRepoWorker } from './background_git_repo_worker'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -13,6 +12,7 @@ describe(BackgroundGitRepos.name, () => {
   let gitRepos: BackgroundGitRepos
   before(async () => {
     gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+    await gitRepos.startWorker()
   })
   after(() => gitRepos.close())
 
@@ -22,10 +22,4 @@ describe(BackgroundGitRepos.name, () => {
   const nonBareRepoFactory = new NonBareRepoFactory()
   verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
   verifyRepoContract(openRepo, nonBareRepoFactory.open)
-
-  let worker: BackgroundGitRepoWorker
-  beforeEach(async () => {
-    worker = await BackgroundGitRepoWorker.start(config.redis, DugiteGitRepo)
-  })
-  afterEach(() => worker.close())
 })
