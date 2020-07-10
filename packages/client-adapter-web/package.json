@@ -30,7 +30,7 @@
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-log": "^2.1.0",
-    "koa-router": "^9.0.1",
+    "koa-router": "^9.1.0",
     "koa2-cors": "^2.0.6"
   },
   "devDependencies": {
