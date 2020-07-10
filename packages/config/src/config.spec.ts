@@ -1,4 +1,4 @@
-import { assertThat, equalTo, hasProperty, throws } from 'hamjest'
+import { assertThat, equalTo, hasProperty, throws, matchesPattern } from 'hamjest'
 import path from 'path'
 
 import { createConfig } from 'git-en-boite-config'
@@ -39,15 +39,17 @@ describe('createConfig', () => {
   })
 
   context('version', () => {
-    it('returns the version from package.json by default', () => {
+    it('raises an error if the .build-number file cannot be found', () => {
       const fakeFs = {
         existsSync: (path: string) => {
           if (path.match(/\.build-number$/)) return false
           throw new Error(`path ${path} not faked`)
         },
       }
-      const config = createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs)
-      assertThat(config, hasProperty('version', equalTo('1.2.3')))
+      assertThat(
+        () => createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs),
+        throws(hasProperty('message', matchesPattern('Build number file not found'))),
+      )
     })
 
     it('returns the version from package.json with appended build number if a .build-number file exists', () => {
