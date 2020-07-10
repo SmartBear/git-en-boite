@@ -165,10 +165,10 @@
   resolved "https://registry.yarnpkg.com/@types/http-assert/-/http-assert-1.5.1.tgz#d775e93630c2469c2f980fc27e3143240335db3b"
   integrity sha512-PGAK759pxyfXE78NbKxyfRcWYA/KwW17X290cNev/qAsn9eQIxkH4shoNBafH37wewhDG/0p1cHPbK6+SzZjWQ==
 
-"@types/ioredis@^4.0.13":
-  version "4.16.2"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.16.2.tgz#192c487a003463a6881dbc29faaa168902ef851a"
-  integrity sha512-b1wSWCLx5ygzDZ2d1BYBzsTzUcPEOcJH8d5O6AJGGJXjE6C+HrlA61sw5GQNqtqTPVo2Hpc4rPA30lI0T6QSLQ==
+"@types/ioredis@^4.16.3":
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.17.2.tgz#2a9b0aeba5cf8d5f38afdeb85ef77ec95040d80c"
+  integrity sha512-T0sEKyqkhr4/RfgM2iTtmy0uPI4QZ9c0syq3mmAPNS5ZZMzjdtKv1ziuTdyNUvh0mZihXfKcRcWZI2wRYnxO7Q==
   dependencies:
     "@types/node" "*"
 
@@ -608,15 +608,15 @@ buffer-writer@2.0.0:
   resolved "https://registry.yarnpkg.com/buffer-writer/-/buffer-writer-2.0.0.tgz#ce7eb81a38f7829db09c873f2fbb792c0c98ec04"
   integrity sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==
 
-bullmq@^1.8.13:
-  version "1.8.13"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.8.13.tgz#07f240b2f93691847686330e73d617d500986c7a"
-  integrity sha512-WEYuI2I4X5gmtKA00s9wrrMzgaZCcwYXFAuGP0Zb+sc3YQvKRhNnXX+K1ikaeb14K+CaFLjojry7hPNVyITwhw==
+bullmq@^1.8.14:
+  version "1.8.14"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.8.14.tgz#9941ed1a8ba47e8f1658bf7bdaceb37d79c8667e"
+  integrity sha512-drecpV+5/ylKPmbOwxuTH/tjOivi02FRjTiCYoezgRlJjv7nJ6uQYDrEyzZ08qIUtETjhkYSc2h3XgsMgt/j9g==
   dependencies:
-    "@types/ioredis" "^4.0.13"
+    "@types/ioredis" "^4.16.3"
     cron-parser "^2.7.3"
     get-port "^5.0.0"
-    ioredis "^4.3.0"
+    ioredis "^4.17.3"
     lodash "^4.17.11"
     semver "^6.3.0"
     tslib "^1.10.0"
@@ -1750,21 +1750,6 @@ ioredis@^4.17.3:
   version "4.17.3"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.17.3.tgz#9938c60e4ca685f75326337177bdc2e73ae9c9dc"
   integrity sha512-iRvq4BOYzNFkDnSyhx7cmJNOi1x/HWYe+A4VXHBu4qpwJaGT1Mp+D2bVGJntH9K/Z/GeOM/Nprb8gB3bmitz1Q==
-  dependencies:
-    cluster-key-slot "^1.1.0"
-    debug "^4.1.1"
-    denque "^1.1.0"
-    lodash.defaults "^4.2.0"
-    lodash.flatten "^4.4.0"
-    redis-commands "1.5.0"
-    redis-errors "^1.2.0"
-    redis-parser "^3.0.0"
-    standard-as-callback "^2.0.1"
-
-ioredis@^4.3.0:
-  version "4.16.3"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.16.3.tgz#6a6b85830206fd98353b7ff8536521f17943be53"
-  integrity sha512-Ejvcs2yW19Vq8AipvbtfcX3Ig8XG9EAyFOvGbhI/Q1QoVOK9ZdgY092kdOyOWIYBnPHjfjMJhU9qhsnp0i0K1w==
   dependencies:
     cluster-key-slot "^1.1.0"
     debug "^4.1.1"
