@@ -21,7 +21,7 @@
     "git-en-boite-core": "0.0.0",
     "git-en-boite-git-adapter": "0.0.0",
     "git-en-boite-repo-index-adapter": "0.0.0",
-    "pg": "^8.2.1",
+    "pg": "^8.3.0",
     "tiny-types": "^1.14.1",
     "ts-sinon": "^1.2.0",
     "uuid": "^8.2.0"
