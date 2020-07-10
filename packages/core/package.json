@@ -24,7 +24,5 @@
     "hamjest": "^3.5.0",
     "ts-sinon": "^1.2.0"
   },
-  "dependencies": {
-    "git-en-boite-task-scheduler-port": "0.0.0"
-  }
+  "dependencies": {}
 }
