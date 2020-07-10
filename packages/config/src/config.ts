@@ -1,4 +1,3 @@
-import { RedisOptions } from 'ioredis'
 import path from 'path'
 
 import { ProcessEnv } from './environment'
@@ -8,7 +7,7 @@ const appRoot = path.resolve(__dirname, '../../..')
 export interface Config {
   git: GitOptions
   version: string
-  redis: RedisOptions
+  redis: string
 }
 
 interface GitOptions {
@@ -35,7 +34,7 @@ const createVersionConfig = (env: ProcessEnv, fs: any): string => {
   return `${env.npm_package_version}.${fs.readFileSync(buildNumPath)}`
 }
 
-const createRedisConfig = (env: ProcessEnv): RedisOptions => {
+const createRedisConfig = (env: ProcessEnv): string => {
   if (!env.REDIS_URL) throw new Error('Please set REDIS_URL')
   return env.REDIS_URL
 }

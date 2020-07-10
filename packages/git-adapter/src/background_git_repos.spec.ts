@@ -1,10 +1,12 @@
 import { createConfig } from 'git-en-boite-config'
+import { RedisOptions } from 'ioredis'
 
 import { BareRepoFactory, NonBareRepoFactory } from './'
 import { BackgroundGitRepos } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
+import { promiseThat, rejected } from 'hamjest'
 
 const config = createConfig()
 
@@ -22,4 +24,12 @@ describe(BackgroundGitRepos.name, () => {
   const nonBareRepoFactory = new NonBareRepoFactory()
   verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
   verifyRepoContract(openRepo, nonBareRepoFactory.open)
+
+  context('connecting', () => {
+    it('throws an error if the redis connection cannot be established', async () => {
+      const badRedisOptions = 'redis://localhost:1234'
+      const connecting = BackgroundGitRepos.connect(DugiteGitRepo, badRedisOptions)
+      await promiseThat(connecting, rejected())
+    })
+  })
 })

@@ -1,29 +1,33 @@
-import { Queue, QueueEvents, RedisOptions, Job, Worker } from 'bullmq'
-import { GitRepo, OpenGitRepo, Ref, OpensGitRepos } from 'git-en-boite-core'
+import { Job, Queue, QueueEvents, Worker } from 'bullmq'
+import { GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 export class BackgroundGitRepos {
-  private readonly queue: Queue<any>
-  private readonly queueEvents: QueueEvents
+  private queue: Queue<any>
+  private queueEvents: QueueEvents
   private queueClient: IORedis.Redis
   private worker: BackgroundGitRepoWorker
 
   static async connect(
     gitRepos: { openGitRepo: OpenGitRepo },
-    redisOptions: RedisOptions,
+    redisUrl: string,
   ): Promise<BackgroundGitRepos> {
-    return new BackgroundGitRepos(gitRepos, redisOptions)
+    const createRedisClient = () => connectToRedis(redisUrl)
+    return await new BackgroundGitRepos(gitRepos, createRedisClient).connect()
   }
 
   protected constructor(
     private readonly gitRepos: { openGitRepo: OpenGitRepo },
-    private readonly redisOptions: RedisOptions,
-  ) {
+    private readonly createRedisClient: () => Promise<IORedis.Redis>,
+  ) {}
+
+  protected async connect(): Promise<BackgroundGitRepos> {
+    this.queueClient = await this.createRedisClient()
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.queueClient = new IORedis(redisOptions)
     this.queue = new Queue('main', { connection: this.queueClient })
     // according to the docs, the QueueEvents needs its own connection
-    this.queueEvents = new QueueEvents('main', { connection: new IORedis(redisOptions) })
+    this.queueEvents = new QueueEvents('main', { connection: await this.createRedisClient() })
+    return this
   }
 
   async openGitRepo(path: string): Promise<GitRepo> {
@@ -32,7 +36,7 @@ export class BackgroundGitRepos {
   }
 
   async startWorker(): Promise<void> {
-    this.worker = await BackgroundGitRepoWorker.start(this.gitRepos, this.redisOptions)
+    this.worker = await BackgroundGitRepoWorker.start(this.gitRepos, this.createRedisClient)
   }
 
   async close(): Promise<void> {
@@ -74,18 +78,17 @@ export class BackgroundGitRepo implements GitRepo {
 
 export class BackgroundGitRepoWorker {
   protected worker: Worker<any>
-  private redisClient: IORedis.Redis
 
   static async start(
     gitRepos: OpensGitRepos,
-    redisOptions: RedisOptions,
+    createRedisClient: () => Promise<IORedis.Redis>,
   ): Promise<BackgroundGitRepoWorker> {
-    return new BackgroundGitRepoWorker(gitRepos, redisOptions)
+    const connection = await createRedisClient()
+    return new BackgroundGitRepoWorker(gitRepos, connection)
   }
 
-  protected constructor(gitRepos: OpensGitRepos, redisOptions: RedisOptions) {
-    // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.redisClient = new IORedis(redisOptions)
+  protected constructor(gitRepos: OpensGitRepos, readonly redisClient: IORedis.Redis) {
+    // TODO: pass redisUrl to Worker once https://github.com/taskforcesh/bullmq/issues/171 fixed
     this.worker = new Worker(
       'main',
       async (job: Job) => {
@@ -110,4 +113,16 @@ export class BackgroundGitRepoWorker {
       this.worker.disconnect(),
     ])
   }
+}
+
+async function connectToRedis(url: string): Promise<IORedis.Redis> {
+  const connection = new IORedis(url)
+  return new Promise((resolve, reject) =>
+    connection
+      .on('connect', () => resolve(connection))
+      .on('error', error => {
+        connection.disconnect()
+        reject(new Error(`Unable to connect to Redis: ${error.message}`))
+      }),
+  )
 }
