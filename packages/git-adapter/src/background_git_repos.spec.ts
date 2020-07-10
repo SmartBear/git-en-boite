@@ -10,7 +10,10 @@ import { DugiteGitRepo } from './dugite_git_repo'
 const config = createConfig()
 
 describe(BackgroundGitRepos.name, () => {
-  const gitRepos = new BackgroundGitRepos(DugiteGitRepo, config.redis)
+  let gitRepos: BackgroundGitRepos
+  before(async () => {
+    gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+  })
   after(() => gitRepos.close())
 
   const openRepo = (path: string) => gitRepos.openGitRepo(path)

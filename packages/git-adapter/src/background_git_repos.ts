@@ -1,5 +1,5 @@
 import { Queue, QueueEvents, RedisOptions } from 'bullmq'
-import { GitRepo, OpenGitRepo, Ref } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo, Ref, OpensGitRepos } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 export class BackgroundGitRepos {
@@ -7,7 +7,17 @@ export class BackgroundGitRepos {
   private readonly queueEvents: QueueEvents
   private queueClient: IORedis.Redis
 
-  constructor(private readonly gitRepos: { openGitRepo: OpenGitRepo }, redisOptions: RedisOptions) {
+  static async connect(
+    gitRepos: { openGitRepo: OpenGitRepo },
+    redisOptions: RedisOptions,
+  ): Promise<BackgroundGitRepos> {
+    return new BackgroundGitRepos(gitRepos, redisOptions)
+  }
+
+  protected constructor(
+    private readonly gitRepos: { openGitRepo: OpenGitRepo },
+    redisOptions: RedisOptions,
+  ) {
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
     this.queueClient = new IORedis(redisOptions)
     this.queue = new Queue('main', { connection: this.queueClient })

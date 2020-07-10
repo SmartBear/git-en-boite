@@ -15,7 +15,7 @@ console.log(`git-en-boite starting up...`)
 console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 inConsole(async () => {
-  const gitRepos = new BackgroundGitRepos(DugiteGitRepo, config.redis)
+  const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
   const repoIndex = new DiskRepoIndex(config.git.root, gitRepos)
   const app: Application = new LaBoîte(repoIndex, config.version)
   await BackgroundGitRepoWorker.start(config.redis, DugiteGitRepo)
