@@ -6,6 +6,7 @@ import { Server } from 'http'
 import WebApp from '../web_app'
 import { stubInterface, StubbedInstance } from 'ts-sinon'
 import { QueryResult } from '../query_result'
+import { InvalidRepoIdError } from './intercept_request'
 
 describe('/repos', () => {
   let request: SuperTest<Test>
@@ -63,6 +64,21 @@ describe('/repos', () => {
       await request.post('/repos').send(connectRepoRequest).expect(302)
       const response = await request.post('/repos').send(connectRepoRequest).redirects(1)
       assertThat(response.body, equalTo(repoInfo))
+    })
+
+    it('responds with a message when request body is missing required content', async () => {
+      const connectRepoRequest = {}
+      const response = await request.post('/repos').send(connectRepoRequest).expect(400)
+      assertThat(
+        response.body.error,
+        equalTo('Missing information from the request: repoId, remoteUrl'),
+      )
+    })
+
+    it('responds with a message when repoId is not valid', async () => {
+      const connectRepoRequest = { repoId: 'a/repo/id', remoteUrl: '../tmp' }
+      const response = await request.post('/repos').send(connectRepoRequest).expect(400)
+      assertThat(response.body.error, equalTo(InvalidRepoIdError.message))
     })
   })
 

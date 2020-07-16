@@ -2,9 +2,11 @@ import { Context } from 'koa'
 import Router from 'koa-router'
 import { ConnectRepoRequest } from './interfaces'
 import { Application } from '../application'
+import { interceptRequestBody } from './intercept_request'
 
 export function create({ repos }: Application): Router {
   const router = new Router({ prefix: '/repos' })
+  router.use(interceptRequestBody)
 
   router.get('repo', '/:repoId', async (ctx: Context) => {
     const { repoId } = ctx.params
