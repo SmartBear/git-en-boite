@@ -1,9 +1,12 @@
 import { Application, ConnectRepoRequest, GitRepoInfo } from 'git-en-boite-client-port'
 import { Context } from 'koa'
 import Router from 'koa-router'
+import { interceptRequestBody } from './intercept_request'
+
 
 export function create(app: Application): Router {
   const router = new Router({ prefix: '/repos' })
+  router.use(interceptRequestBody)
 
   router.get('repo', '/:repoId', async (ctx: Context) => {
     const { repoId } = ctx.params
