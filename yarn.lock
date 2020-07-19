@@ -585,10 +585,10 @@ buffer-writer@2.0.0:
   resolved "https://registry.yarnpkg.com/buffer-writer/-/buffer-writer-2.0.0.tgz#ce7eb81a38f7829db09c873f2fbb792c0c98ec04"
   integrity sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==
 
-bullmq@^1.8.14:
-  version "1.8.14"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.8.14.tgz#9941ed1a8ba47e8f1658bf7bdaceb37d79c8667e"
-  integrity sha512-drecpV+5/ylKPmbOwxuTH/tjOivi02FRjTiCYoezgRlJjv7nJ6uQYDrEyzZ08qIUtETjhkYSc2h3XgsMgt/j9g==
+bullmq@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.9.0.tgz#32716edddd5ab74a96b9c13f802d27c494fac2c7"
+  integrity sha512-Bo7pFsoeI7hdZMQaMGVFglkCoS7DNLSUPK7A4BZlXsBRPHtaasmFMXyZ154lbe/P+FzNrXsw32OXSiodr9Im8Q==
   dependencies:
     "@types/ioredis" "^4.16.3"
     cron-parser "^2.7.3"
@@ -597,7 +597,7 @@ bullmq@^1.8.14:
     lodash "^4.17.11"
     semver "^6.3.0"
     tslib "^1.10.0"
-    uuid "^3.3.3"
+    uuid "^8.2.0"
 
 bytes@3.1.0:
   version "3.1.0"
@@ -3427,11 +3427,6 @@ util-deprecate@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
-
-uuid@^3.3.3:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
-  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
 uuid@^8.2.0:
   version "8.2.0"
