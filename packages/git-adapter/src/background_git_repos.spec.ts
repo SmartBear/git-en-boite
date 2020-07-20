@@ -1,12 +1,11 @@
 import { createConfig } from 'git-en-boite-config'
-import { RedisOptions } from 'ioredis'
+import { promiseThat, rejected } from 'hamjest'
 
 import { BareRepoFactory, NonBareRepoFactory } from './'
 import { BackgroundGitRepos } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
-import { promiseThat, rejected } from 'hamjest'
 
 const config = createConfig()
 
