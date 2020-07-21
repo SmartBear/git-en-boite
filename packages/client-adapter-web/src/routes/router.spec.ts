@@ -6,7 +6,7 @@ import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
 
 import { InvalidRepoIdError } from '../intercept_request'
-import createWebApp from '../web_app'
+import createWebApp from '../create_web_app'
 import router from './router'
 
 describe('/repos', () => {
