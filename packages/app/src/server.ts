@@ -1,11 +1,7 @@
-import { createWebApp } from 'git-en-boite-client-adapter-web'
+import createWebApp from 'git-en-boite-client-adapter-web'
 import { Application } from 'git-en-boite-client-port'
 import { createConfig } from 'git-en-boite-config'
-import {
-  BackgroundGitRepos,
-  BackgroundGitRepoWorker,
-  DugiteGitRepo,
-} from 'git-en-boite-git-adapter'
+import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-git-adapter'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 
 import { LaBoîte } from './la_boîte'

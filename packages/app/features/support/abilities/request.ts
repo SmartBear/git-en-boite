@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { Before, After } from 'cucumber'
 import { Server } from 'http'
-import { createWebApp } from 'git-en-boite-client-adapter-web'
+import createWebApp from 'git-en-boite-client-adapter-web'
 
 let webServer: Server
 

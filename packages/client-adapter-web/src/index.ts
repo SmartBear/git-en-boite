@@ -1,9 +1,11 @@
 import { Application, ListensOnPort } from 'git-en-boite-client-port'
-import Router from './router'
-import WebApp from './web_app'
 
-export function createWebApp(app: Application): ListensOnPort {
-  const routes = Router.create(app)
-  const webApp = WebApp.withRoutes(routes)
+import createRouter from './routes/router'
+import createWebApp from './create_web_app'
+
+export default (app: Application): ListensOnPort => {
+  const webApp = createWebApp()
+    .use(createRouter(app).routes())
+    .use(createRouter(app).allowedMethods())
   return webApp
 }

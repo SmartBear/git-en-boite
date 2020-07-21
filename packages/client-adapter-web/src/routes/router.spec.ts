@@ -1,12 +1,13 @@
-import { FetchRepoRequest, QueryResult, Application } from 'git-en-boite-client-port'
+import { Application, FetchRepoRequest, QueryResult } from 'git-en-boite-client-port'
 import { Ref } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
-import { InvalidRepoIdError } from './intercept_request'
-import WebApp from './web_app'
-import { create } from './repos_router'
+
+import { InvalidRepoIdError } from '../intercept_request'
+import createWebApp from '../web_app'
+import router from './router'
 
 describe('/repos', () => {
   let request: SuperTest<Test>
@@ -18,8 +19,7 @@ describe('/repos', () => {
   })
 
   beforeEach(() => {
-    const routes = create(app)
-    const webApp = WebApp.withRoutes(routes)
+    const webApp = createWebApp().use(router(app).routes()).use(router(app).allowedMethods())
     server = webApp.listen(8888)
     request = supertest(server)
   })
