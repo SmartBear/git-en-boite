@@ -1,5 +1,5 @@
 import { Application } from 'git-en-boite-client-port'
-import Router from 'koa-router'
+import Router from '@koa/router'
 
 import { interceptRequestBody } from '../../intercept_request'
 import create from './create'
