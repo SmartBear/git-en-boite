@@ -16,7 +16,7 @@ describe(BackgroundGitRepos.name, () => {
       gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
       await gitRepos.startWorker()
     })
-    after(() => gitRepos.close())
+    after(async () => await gitRepos.close())
 
     const openRepo = (path: string) => gitRepos.openGitRepo(path)
 
@@ -31,7 +31,7 @@ describe(BackgroundGitRepos.name, () => {
     beforeEach(async function () {
       gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
     })
-    afterEach(() => gitRepos.close())
+    afterEach(async () => await gitRepos.close())
 
     it('throws an error when no workers are running', async () => {
       const pinging = gitRepos.pingWorkers(1)
