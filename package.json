@@ -13,6 +13,6 @@
     "packages/config",
     "packages/core",
     "packages/local-git",
-    "packages/repo-index-adapter"
+    "packages/repo-index"
   ]
 }

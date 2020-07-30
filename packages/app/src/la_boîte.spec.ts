@@ -7,7 +7,7 @@ import {
   Init,
   NonBareRepoFactory,
 } from 'git-en-boite-local-git'
-import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
+import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { assertThat, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
