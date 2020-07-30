@@ -12,7 +12,8 @@ export class BackgroundGitRepos {
   private queue: Queue<any>
   private queueEvents: QueueEvents
   private queueClient: IORedis.Redis
-  private workers: Closable[] = []
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private worker: Closable = { close: async () => {} }
 
   static async connect(
     gitRepos: { openGitRepo: OpenGitRepo },
@@ -55,12 +56,12 @@ export class BackgroundGitRepos {
   }
 
   async startWorker(): Promise<void> {
-    this.workers = [await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient)]
+    this.worker = await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient)
   }
 
   async close(): Promise<void> {
     await Promise.all([
-      Promise.all(this.workers.map(worker => worker.close())),
+      this.worker.close(),
       this.queue.close(),
       this.queueEvents.close(),
       this.queueClient.disconnect(),
