@@ -11,7 +11,8 @@ const config = createConfig()
 
 describe(BackgroundGitRepos.name, () => {
   let gitRepos: BackgroundGitRepos
-  before(async () => {
+  before(async function () {
+    this.timeout(5000)
     gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
     await gitRepos.startWorker()
   })

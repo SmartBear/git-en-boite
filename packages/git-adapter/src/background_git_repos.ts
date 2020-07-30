@@ -1,12 +1,13 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import { GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
 import IORedis from 'ioredis'
+import { fork, ChildProcess } from 'child_process'
 
 export class BackgroundGitRepos {
   private queue: Queue<any>
   private queueEvents: QueueEvents
   private queueClient: IORedis.Redis
-  private worker: BackgroundGitRepoWorker
+  private workers: ChildProcess[] = []
 
   static async connect(
     gitRepos: { openGitRepo: OpenGitRepo },
@@ -32,20 +33,24 @@ export class BackgroundGitRepos {
 
   async openGitRepo(path: string): Promise<GitRepo> {
     const gitRepo = await this.gitRepos.openGitRepo(path)
-    return new BackgroundGitRepo(path, gitRepo, this.queue, this.queueEvents)
+    return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
   async startWorker(): Promise<void> {
-    this.worker = await BackgroundGitRepoWorker.start(this.gitRepos, this.createRedisClient)
+    const workerScript = __dirname + '/background_git_worker_start.ts'
+    const workerStarting = new Promise<ChildProcess>((resolve, reject) => {
+      const child = fork(workerScript, [], {
+        execArgv: ['--require', 'ts-node/register'],
+      })
+      child.on('exit', status => reject(new Error(`Process exited with status: ${status}`)))
+      child.on('message', () => resolve(child))
+    })
+    this.workers = [await workerStarting]
   }
 
   async close(): Promise<void> {
-    const closeWorker = async () => {
-      if (!this.worker) return
-      return this.worker.close()
-    }
     await Promise.all([
-      closeWorker(),
+      Promise.all(this.workers.map(worker => worker.kill())),
       this.queue.close(),
       this.queueEvents.close(),
       this.queueClient.disconnect(),
@@ -53,7 +58,7 @@ export class BackgroundGitRepos {
   }
 }
 
-export class BackgroundGitRepo implements GitRepo {
+export class BackgroundGitRepoProxy implements GitRepo {
   constructor(
     private readonly path: string,
     private readonly gitRepo: GitRepo,
