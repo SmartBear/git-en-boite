@@ -41,25 +41,8 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
-  async startWorker(mode: 'In process' | 'Spawn' = 'Spawn'): Promise<void> {
-    if (mode === 'Spawn') {
-      const workerScript = __dirname + '/background_git_worker_start.ts'
-      const workerStarting = new Promise<ChildProcess>((resolve, reject) => {
-        const child = fork(workerScript, [], {
-          execArgv: ['--require', 'ts-node/register'],
-        })
-        child.on('exit', status => reject(new Error(`Process exited with status: ${status}`)))
-        child.on('message', () => resolve(child))
-      })
-      const workerProcesses = await Promise.all([workerStarting])
-      this.workers = workerProcesses.map(worker => ({
-        close: async () => {
-          worker.kill()
-        },
-      }))
-    } else {
-      this.workers = [await BackgroundGitRepoWorker.start(DugiteGitRepo, this.createRedisClient)]
-    }
+  async startWorker(): Promise<void> {
+    this.workers = [await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient)]
   }
 
   async close(): Promise<void> {
@@ -95,15 +78,15 @@ export class BackgroundGitRepoProxy implements GitRepo {
   }
 }
 
-export class BackgroundGitRepoWorker implements Closable {
+class GitRepoWorker implements Closable {
   protected worker: Worker<any>
 
   static async start(
     gitRepos: OpensGitRepos,
     createRedisClient: () => Promise<IORedis.Redis>,
-  ): Promise<BackgroundGitRepoWorker> {
+  ): Promise<GitRepoWorker> {
     const connection = await createRedisClient()
-    return new BackgroundGitRepoWorker(gitRepos, connection)
+    return new GitRepoWorker(gitRepos, connection)
   }
 
   protected constructor(gitRepos: OpensGitRepos, readonly redisClient: IORedis.Redis) {

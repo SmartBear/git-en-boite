@@ -14,7 +14,6 @@ inConsole(async () => {
   const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
   const repoIndex = new DiskRepoIndex(config.git.root, gitRepos)
   const app: Application = new LaBoîte(repoIndex, config.version)
-  await gitRepos.startWorker()
 
   const port = 3001
   const host = 'localhost'

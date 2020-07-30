@@ -10,25 +10,19 @@ import { DugiteGitRepo } from './dugite_git_repo'
 const config = createConfig()
 
 describe(BackgroundGitRepos.name, () => {
-  const modes: Array<'In process' | 'Spawn'> = ['In process', 'Spawn']
-  modes.forEach(mode =>
-    describe(mode, () => {
-      let gitRepos: BackgroundGitRepos
-      before(async function () {
-        this.timeout(5000)
-        gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
-        await gitRepos.startWorker(mode)
-      })
-      after(() => gitRepos.close())
+  let gitRepos: BackgroundGitRepos
+  before(async function () {
+    gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+    await gitRepos.startWorker()
+  })
+  after(() => gitRepos.close())
 
-      const openRepo = (path: string) => gitRepos.openGitRepo(path)
+  const openRepo = (path: string) => gitRepos.openGitRepo(path)
 
-      const bareRepoFactory = new BareRepoFactory()
-      const nonBareRepoFactory = new NonBareRepoFactory()
-      verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
-      verifyRepoContract(openRepo, nonBareRepoFactory.open)
-    }),
-  )
+  const bareRepoFactory = new BareRepoFactory()
+  const nonBareRepoFactory = new NonBareRepoFactory()
+  verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
+  verifyRepoContract(openRepo, nonBareRepoFactory.open)
 
   context('connecting', () => {
     it('throws an error if the redis connection cannot be established', async () => {
