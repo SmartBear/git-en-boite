@@ -1,7 +1,7 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import { GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
 import IORedis from 'ioredis'
-import { fork, ChildProcess } from 'child_process'
+
 import { DugiteGitRepo } from './dugite_git_repo'
 
 interface Closable {
