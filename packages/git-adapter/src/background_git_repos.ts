@@ -2,12 +2,17 @@ import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import { GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 import { fork, ChildProcess } from 'child_process'
+import { DugiteGitRepo } from './dugite_git_repo'
+
+interface Closable {
+  close(): Promise<void>
+}
 
 export class BackgroundGitRepos {
   private queue: Queue<any>
   private queueEvents: QueueEvents
   private queueClient: IORedis.Redis
-  private workers: ChildProcess[] = []
+  private workers: Closable[] = []
 
   static async connect(
     gitRepos: { openGitRepo: OpenGitRepo },
@@ -36,21 +41,30 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
-  async startWorker(): Promise<void> {
-    const workerScript = __dirname + '/background_git_worker_start.ts'
-    const workerStarting = new Promise<ChildProcess>((resolve, reject) => {
-      const child = fork(workerScript, [], {
-        execArgv: ['--require', 'ts-node/register'],
+  async startWorker(mode: 'In process' | 'Spawn' = 'Spawn'): Promise<void> {
+    if (mode === 'Spawn') {
+      const workerScript = __dirname + '/background_git_worker_start.ts'
+      const workerStarting = new Promise<ChildProcess>((resolve, reject) => {
+        const child = fork(workerScript, [], {
+          execArgv: ['--require', 'ts-node/register'],
+        })
+        child.on('exit', status => reject(new Error(`Process exited with status: ${status}`)))
+        child.on('message', () => resolve(child))
       })
-      child.on('exit', status => reject(new Error(`Process exited with status: ${status}`)))
-      child.on('message', () => resolve(child))
-    })
-    this.workers = [await workerStarting]
+      const workerProcesses = await Promise.all([workerStarting])
+      this.workers = workerProcesses.map(worker => ({
+        close: async () => {
+          worker.kill()
+        },
+      }))
+    } else {
+      this.workers = [await BackgroundGitRepoWorker.start(DugiteGitRepo, this.createRedisClient)]
+    }
   }
 
   async close(): Promise<void> {
     await Promise.all([
-      Promise.all(this.workers.map(worker => worker.kill())),
+      Promise.all(this.workers.map(worker => worker.close())),
       this.queue.close(),
       this.queueEvents.close(),
       this.queueClient.disconnect(),
@@ -81,7 +95,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
   }
 }
 
-export class BackgroundGitRepoWorker {
+export class BackgroundGitRepoWorker implements Closable {
   protected worker: Worker<any>
 
   static async start(
