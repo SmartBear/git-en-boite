@@ -12,6 +12,7 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 inConsole(async () => {
   const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+  await gitRepos.pingWorkers()
   const repoIndex = new DiskRepoIndex(config.git.root, gitRepos)
   const app: Application = new LaBoîte(repoIndex, config.version)
 

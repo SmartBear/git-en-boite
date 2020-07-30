@@ -1,8 +1,8 @@
 import { createConfig } from 'git-en-boite-config'
-import { promiseThat, rejected } from 'hamjest'
+import { promiseThat, rejected, fulfilled } from 'hamjest'
 
 import { BareRepoFactory, NonBareRepoFactory } from './'
-import { BackgroundGitRepos } from './background_git_repos'
+import { BackgroundGitRepos, BackgroundGitRepoProxy } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -10,19 +10,40 @@ import { DugiteGitRepo } from './dugite_git_repo'
 const config = createConfig()
 
 describe(BackgroundGitRepos.name, () => {
-  let gitRepos: BackgroundGitRepos
-  before(async function () {
-    gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
-    await gitRepos.startWorker()
+  context('when a worker is running', () => {
+    let gitRepos: BackgroundGitRepos
+    before(async function () {
+      gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+      await gitRepos.startWorker()
+    })
+    after(() => gitRepos.close())
+
+    const openRepo = (path: string) => gitRepos.openGitRepo(path)
+
+    const bareRepoFactory = new BareRepoFactory()
+    const nonBareRepoFactory = new NonBareRepoFactory()
+    verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
+    verifyRepoContract(openRepo, nonBareRepoFactory.open)
   })
-  after(() => gitRepos.close())
 
-  const openRepo = (path: string) => gitRepos.openGitRepo(path)
+  context('checking for running workers', () => {
+    let gitRepos: BackgroundGitRepos
+    beforeEach(async function () {
+      gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+    })
+    afterEach(() => gitRepos.close())
 
-  const bareRepoFactory = new BareRepoFactory()
-  const nonBareRepoFactory = new NonBareRepoFactory()
-  verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
-  verifyRepoContract(openRepo, nonBareRepoFactory.open)
+    it('throws an error when no workers are running', async () => {
+      const pinging = gitRepos.pingWorkers(1)
+      await promiseThat(pinging, rejected())
+    })
+
+    it('succeeds when a worker is running', async () => {
+      await gitRepos.startWorker()
+      const pinging = gitRepos.pingWorkers(100)
+      await promiseThat(pinging, fulfilled())
+    })
+  })
 
   context('connecting', () => {
     it('throws an error if the redis connection cannot be established', async () => {

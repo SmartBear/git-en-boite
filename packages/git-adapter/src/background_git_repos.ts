@@ -41,6 +41,19 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
+  async pingWorkers(timeout = 2000): Promise<BackgroundGitRepos> {
+    const job = await this.queue.add('ping', {})
+    await Promise.race([
+      job.waitUntilFinished(this.queueEvents),
+      new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          reject(`No workers responded to a ping within ${timeout}ms`)
+        }, timeout)
+      }),
+    ])
+    return this
+  }
+
   async startWorker(): Promise<void> {
     this.workers = [await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient)]
   }
@@ -94,6 +107,9 @@ class GitRepoWorker implements Closable {
     this.worker = new Worker(
       'main',
       async (job: Job) => {
+        if (job.name === 'ping') {
+          return {}
+        }
         const { path } = job.data
         const git = await gitRepos.openGitRepo(path)
         if (job.name === 'connect') {
