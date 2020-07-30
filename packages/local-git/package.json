@@ -1,5 +1,5 @@
 {
-  "name": "git-en-boite-git-adapter",
+  "name": "git-en-boite-local-git",
   "version": "0.0.0",
   "description": "Concrete implementation of the interface defined by git-en-boite-core-git-port",
   "main": "src/index.ts",

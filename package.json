@@ -12,7 +12,7 @@
     "packages/message-dispatch",
     "packages/config",
     "packages/core",
-    "packages/git-adapter",
+    "packages/local-git",
     "packages/repo-index-adapter"
   ]
 }

@@ -1,6 +1,6 @@
 import { Before } from 'cucumber'
 import { createConfig } from 'git-en-boite-config'
-import { DugiteGitRepo } from 'git-en-boite-git-adapter'
+import { DugiteGitRepo } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 import { dirSync } from 'tmp'
 

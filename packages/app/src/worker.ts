@@ -1,4 +1,4 @@
-import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-git-adapter'
+import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-local-git'
 import { createConfig } from 'git-en-boite-config'
 
 const config = createConfig(process.env)

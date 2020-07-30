@@ -28,4 +28,4 @@ It may be possible to serialize / deserialize these messages, if we need to sche
 
 Mocking the interface to a repo may be more tricky, and it's possible we'll want to push this outside the core, and put a facade around it for the small set of operations the actual domain will want to do.
 
-It's also possible that this pattern will confuse people. Although the client code is easy to read, the code that sets up a `dispatch` function ([example](https://github.com/SmartBear/git-en-boite/blob/451fe3fe2dd0a03498ab72189c26bdfc78ecd527/packages/git-adapter/src/bare_repo_factory.ts#L32)) is maybe not so nice for a newcomer.
+It's also possible that this pattern will confuse people. Although the client code is easy to read, the code that sets up a `dispatch` function ([example](https://github.com/SmartBear/git-en-boite/blob/451fe3fe2dd0a03498ab72189c26bdfc78ecd527/packages/local-git/src/bare_repo_factory.ts#L32)) is maybe not so nice for a newcomer.

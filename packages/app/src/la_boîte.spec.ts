@@ -6,7 +6,7 @@ import {
   GetRevision,
   Init,
   NonBareRepoFactory,
-} from 'git-en-boite-git-adapter'
+} from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index-adapter'
 import { assertThat, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
