@@ -48,17 +48,28 @@ Install yarn, then install dependencies:
 yarn
 ```
 
+Set up default environment variables (assumes you're using [direnv](https://direnv.net/)):
+
+```
+cp .envrc.default .envrc
+direnv allow .
+```
+
 The integration tests need redis and postgres to be running somewhere. If you don't have or want to have them installed on your dev machine, you can spin them up in Docker:
 
 ```bash
 docker-compose run --detach --publish 6379:6379 redis
 docker-compose run --detach --publish 5432:5432 postgres
-export REDIS_URL=redis://localhost:6379
-export DATABASE_URL=postgres://postgres:postgres@localhost:5432/git-en-boite-test
 ```
 
 Run the tests in each of the packages:
 
 ```
 yarn test
+```
+
+Start the app locally:
+
+```
+yarn start
 ```

@@ -15,13 +15,9 @@ interface GitOptions {
 }
 
 const createGitConfig = (env: ProcessEnv): GitOptions => {
-  const root =
-    env.NODE_ENV == 'development' || env.NODE_ENV == 'test'
-      ? path.resolve(appRoot, 'git-repos', env.NODE_ENV)
-      : '/git-repos'
-
+  if (!env.GIT_ROOT) throw new Error('Please set GIT_ROOT')
   return {
-    root,
+    root: env.GIT_ROOT,
   }
 }
 

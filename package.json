@@ -3,7 +3,8 @@
   "scripts": {
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
-    "start": "yarn workspace git-en-boite-app start"
+    "start": "yarn app start",
+    "app": "yarn workspace git-en-boite-app"
   },
   "workspaces": [
     "packages/app",

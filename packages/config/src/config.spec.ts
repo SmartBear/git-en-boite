@@ -1,10 +1,10 @@
 import { assertThat, equalTo, hasProperty, throws, matchesPattern } from 'hamjest'
-import path from 'path'
 
 import { createConfig } from 'git-en-boite-config'
 
 describe('createConfig', () => {
-  const defaultConfig = {
+  const defaultEnv = {
+    GIT_ROOT: 'some/git-root',
     NODE_ENV: 'any',
     REDIS_URL: 'redis://someredis',
   }
@@ -17,23 +17,19 @@ describe('createConfig', () => {
   })
 
   context('git config', () => {
-    context('when running in development or test', () => {
-      it('sets the root to ./git-repos/<environment> in the app directory', () => {
-        for (const NODE_ENV of ['development', 'test']) {
-          const expectedRoot = path.resolve(__dirname, '../../../git-repos', NODE_ENV)
-          const config = createConfig({ ...defaultConfig, NODE_ENV })
-          assertThat(config, hasProperty('git'))
-          assertThat(config.git, hasProperty('root', equalTo(expectedRoot)))
-        }
+    context('when GIT_ROOT is set', () => {
+      it('sets the root to GIT_ROOT', () => {
+        const config = createConfig({ ...defaultEnv, GIT_ROOT: 'my/git-root' })
+        assertThat(config, hasProperty('git'))
+        assertThat(config.git, hasProperty('root', equalTo('my/git-root')))
       })
     })
 
-    context('when running in any other environment', () => {
-      it('sets the root to /git-repos', () => {
-        const expectedRoot = '/git-repos'
-        const config = createConfig({ ...defaultConfig, NODE_ENV: 'staging' })
-        assertThat(config, hasProperty('git'))
-        assertThat(config.git, hasProperty('root', equalTo(expectedRoot)))
+    context('if GIT_ROOT is not set', () => {
+      it('throws an error', () => {
+        const env = { ...defaultEnv }
+        delete env.GIT_ROOT
+        assertThat(() => createConfig(env), throws())
       })
     })
   })
@@ -47,7 +43,7 @@ describe('createConfig', () => {
         },
       }
       assertThat(
-        () => createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs),
+        () => createConfig({ ...defaultEnv, npm_package_version: '1.2.3' }, fakeFs),
         throws(hasProperty('message', matchesPattern('Build number file not found'))),
       )
     })
@@ -63,7 +59,7 @@ describe('createConfig', () => {
           throw new Error(`path ${path} not faked`)
         },
       }
-      const config = createConfig({ ...defaultConfig, npm_package_version: '1.2.3' }, fakeFs)
+      const config = createConfig({ ...defaultEnv, npm_package_version: '1.2.3' }, fakeFs)
       assertThat(config, hasProperty('version', equalTo('1.2.3.456')))
     })
   })
