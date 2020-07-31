@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",
-    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
+    "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {
     "type": "git",

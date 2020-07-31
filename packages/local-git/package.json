@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "mocha",
-    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
+    "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "dependencies": {
     "bullmq": "^1.9.0",
     "dugite": "^1.91.3",
+    "git-en-boite-core": "0.0.0",
     "git-en-boite-config": "0.0.0",
     "git-en-boite-message-dispatch": "0.0.0",
     "ioredis": "^4.17.3"

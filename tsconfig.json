@@ -1,0 +1,16 @@
+{
+  "references": [
+    { "path": "./packages/app" },
+    { "path": "./packages/client-adapter-web" },
+    { "path": "./packages/client-port" },
+    { "path": "./packages/config" },
+    { "path": "./packages/core" },
+    { "path": "./packages/local-git" },
+    { "path": "./packages/message-dispatch" },
+    { "path": "./packages/repo-index" }
+  ],
+  "files": [],
+  "include": [],
+  "exclude": ["**/node_modules"],
+  "compileOnSave": true
+}

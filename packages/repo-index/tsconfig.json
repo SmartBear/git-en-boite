@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    "composite": true,
     "target": "es2017",
     "module": "commonjs",
-    "outDir": "./out",
-    "rootDir": ".",
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "strictNullChecks": false,
     "esModuleInterop": true,
@@ -12,7 +12,9 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src"]
+  "references": [{ "path": "../core" }]
 }

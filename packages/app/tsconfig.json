@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    "composite": true,
     "target": "es2017",
     "module": "commonjs",
-    "outDir": "./out",
+    "outDir": "dist",
     "rootDir": ".",
     "strict": true,
     "strictNullChecks": false,
@@ -12,7 +12,16 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "features"]
+  "references": [
+    { "path": "../client-adapter-web" },
+    { "path": "../client-port" },
+    { "path": "../core" },
+    { "path": "../local-git" },
+    { "path": "../message-dispatch" },
+    { "path": "../repo-index" }
+  ]
 }

@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "test": "yarn workspaces run test",
+    "build": "tsc --build",
     "lint": "yarn workspaces run lint",
     "start": "yarn app start",
     "app": "yarn workspace git-en-boite-app",

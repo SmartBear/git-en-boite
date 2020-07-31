@@ -10,7 +10,7 @@
     "start:server": "ts-node src/server.ts",
     "start:worker": "ts-node src/worker.ts",
     "start": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:worker\" -n server,worker -c green,yellow",
-    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix"
+    "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "author": "",
   "license": "ISC",
