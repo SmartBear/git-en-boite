@@ -14,7 +14,7 @@ export class LaBoîte implements Application {
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
     const repo = await this.repoIndex.find(repoId)
-    await repo.connect(remoteUrl)
+    await repo.setOriginTo(remoteUrl)
   }
 
   async fetchFromRemote({ repoId }: FetchRepoRequest): Promise<void> {

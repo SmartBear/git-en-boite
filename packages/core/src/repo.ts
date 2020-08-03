@@ -7,8 +7,8 @@ export class Repo {
     await this.git.fetch()
   }
 
-  async connect(remoteUrl: string): Promise<void> {
-    await this.git.connect(remoteUrl)
+  async setOriginTo(remoteUrl: string): Promise<void> {
+    await this.git.setOriginTo(remoteUrl)
   }
 
   public async getRefs(): Promise<Ref[]> {

@@ -9,10 +9,10 @@ describe(Repo.name, () => {
     it('queries the git repo and returns (a promise of) the result', async () => {
       const expectedRefs = [new Ref('a-revision', 'a-branch')]
       const gitRepo = stubInterface<GitRepo>()
-      gitRepo.connect.resolves()
+      gitRepo.setOriginTo.resolves()
       gitRepo.getRefs.resolves(expectedRefs)
       const repo = new Repo('a-repo-id', gitRepo)
-      await repo.connect('a-remote-url')
+      await repo.setOriginTo('a-remote-url')
       const refs = await repo.getRefs()
       assertThat(refs, equalTo(expectedRefs))
     })
@@ -22,22 +22,25 @@ describe(Repo.name, () => {
     it('returns as soon as the git command has completed', async () => {
       let finishGitConnect: () => void
       const gitRepo = stubInterface<GitRepo>()
-      gitRepo.connect.returns(
+      gitRepo.setOriginTo.returns(
         new Promise(resolve => {
           finishGitConnect = resolve
         }),
       )
       const repo = new Repo('a-repo-id', gitRepo)
-      const connecting = repo.connect('a-remote-url')
+      const connecting = repo.setOriginTo('a-remote-url')
       finishGitConnect()
       await promiseThat(connecting, fulfilled())
     })
 
     it('rejects if the git command fails', async () => {
       const gitRepo = stubInterface<GitRepo>()
-      gitRepo.connect.rejects(new Error('Unable to connect'))
+      gitRepo.setOriginTo.rejects(new Error('Unable to connect'))
       const repo = new Repo('a-repo-id', gitRepo)
-      await promiseThat(repo.connect('a-bad-url'), isRejectedWith(new Error('Unable to connect')))
+      await promiseThat(
+        repo.setOriginTo('a-bad-url'),
+        isRejectedWith(new Error('Unable to connect')),
+      )
     })
   })
 
@@ -45,9 +48,9 @@ describe(Repo.name, () => {
     it('calls the git repo to fetch', async () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.fetch.resolves()
-      gitRepo.connect.resolves()
+      gitRepo.setOriginTo.resolves()
       const repo = new Repo('a-repo-id', gitRepo)
-      await promiseThat(repo.connect('a-remote-url'), fulfilled())
+      await promiseThat(repo.setOriginTo('a-remote-url'), fulfilled())
     })
   })
 })

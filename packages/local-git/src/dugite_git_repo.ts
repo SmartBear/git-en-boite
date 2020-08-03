@@ -11,7 +11,7 @@ export class DugiteGitRepo implements GitRepo {
 
   protected constructor(private readonly git: Dispatch<BareRepoProtocol>) {}
 
-  connect(remoteUrl: string): Promise<void> {
+  setOriginTo(remoteUrl: string): Promise<void> {
     return this.git(Connect.toUrl(remoteUrl))
   }
 

@@ -35,7 +35,7 @@ export const verifyRepoContract = (
       it('fetches commits from the origin repo', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
         const git = await openGitRepo(repoPath)
-        await git.connect(originUrl)
+        await git.setOriginTo(originUrl)
         await git.fetch()
         const refs = await git.getRefs()
         const ref = refs.find(ref => ref.isRemote)

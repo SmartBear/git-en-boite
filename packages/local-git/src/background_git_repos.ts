@@ -77,8 +77,8 @@ export class BackgroundGitRepoProxy implements GitRepo {
     private readonly queueEvents: QueueEvents,
   ) {}
 
-  async connect(remoteUrl: string): Promise<void> {
-    const job = await this.queue.add('connect', { path: this.path, remoteUrl })
+  async setOriginTo(remoteUrl: string): Promise<void> {
+    const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
     return job.waitUntilFinished(this.queueEvents)
   }
 
@@ -113,9 +113,9 @@ class GitRepoWorker implements Closable {
         }
         const { path } = job.data
         const git = await gitRepos.openGitRepo(path)
-        if (job.name === 'connect') {
+        if (job.name === 'setOriginTo') {
           const { remoteUrl } = job.data
-          return await git.connect(remoteUrl)
+          return await git.setOriginTo(remoteUrl)
         }
         if (job.name === 'fetch') {
           return await git.fetch()
