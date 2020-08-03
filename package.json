@@ -4,7 +4,8 @@
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "start": "yarn app start",
-    "app": "yarn workspace git-en-boite-app"
+    "app": "yarn workspace git-en-boite-app",
+    "web": "yarn workspace git-en-boite-client-adapter-web"
   },
   "workspaces": [
     "packages/app",

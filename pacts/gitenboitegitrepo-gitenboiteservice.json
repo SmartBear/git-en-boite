@@ -1,0 +1,77 @@
+{
+  "consumer": {
+    "name": "GitEnBoiteGitRepo"
+  },
+  "provider": {
+    "name": "GitEnBoiteService"
+  },
+  "interactions": [
+    {
+      "description": "a new file to commit",
+      "providerState": "blank",
+      "request": {
+        "method": "POST",
+        "path": "/repos/repo-id/branches/branch-name/commits",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "path": "features/test.feature",
+          "content": "Feature: Test"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+        }
+      }
+    },
+    {
+      "description": "a request to connect a valid repo for the first time",
+      "request": {
+        "method": "POST",
+        "path": "/repos",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "repoId": "a-repo-id",
+          "remoteUrl": "https://github.com/a-repo.git"
+        }
+      },
+      "response": {
+        "status": 202,
+        "headers": {
+        }
+      }
+    },
+    {
+      "description": "a request to connect the same repo again",
+      "providerState": "a repo has been connected",
+      "request": {
+        "method": "POST",
+        "path": "/repos",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "repoId": "a-repo-id",
+          "remoteUrl": "https://github.com/a-repo.git"
+        }
+      },
+      "response": {
+        "status": 302,
+        "headers": {
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}
