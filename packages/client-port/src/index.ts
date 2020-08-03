@@ -38,13 +38,4 @@ export interface Versioned {
   version: string
 }
 
-export interface ConnectRepoRequest {
-  repoId: string
-  remoteUrl: string
-}
-
-export interface FetchRepoRequest {
-  repoId: string
-}
-
 export type ListensOnPort = { listen: (port: number) => Server }
