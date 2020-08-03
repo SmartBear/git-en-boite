@@ -1,4 +1,4 @@
-import createWebApp from 'git-en-boite-client-adapter-web'
+import { startWebServer } from 'git-en-boite-client-adapter-web'
 import { Application } from 'git-en-boite-client-port'
 import { createConfig } from 'git-en-boite-config'
 import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-local-git'
@@ -17,10 +17,8 @@ inConsole(async () => {
   const app: Application = new LaBoîte(repoIndex, config.version)
 
   const port = 3001
-  const host = 'localhost'
-  const webApp = createWebApp(app)
-  webApp.listen(port)
-  console.log(`Server listening on http://${host}:${port}`)
+  startWebServer(app, port)
+  console.log(`Server listening on http://localhost:${port}`)
 })
 
 function inConsole(start: () => Promise<void>): void {

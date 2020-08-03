@@ -1,5 +1,3 @@
-import { Server } from 'http'
-
 import { QueryResult } from './query_result'
 export { QueryResult } from './query_result'
 
@@ -36,5 +34,3 @@ export interface QueriesApplication {
 export interface Versioned {
   version: string
 }
-
-export type ListensOnPort = { listen: (port: number) => Server }
