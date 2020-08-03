@@ -6,7 +6,6 @@ export { QueryResult } from './query_result'
 export interface Branch {
   name: string
   revision: string
-  refName: string
 }
 
 export interface ConnectRepoRequest {

@@ -31,10 +31,10 @@ export class LaBoîte implements Application {
       .map(ref => {
         return {
           name: ref.branchName,
-          refName: ref.refName,
           revision: ref.revision,
         }
       })
-    return QueryResult.from({ repoId, branches })
+    const result: GitRepoInfo = { repoId, branches }
+    return QueryResult.from(result)
   }
 }
