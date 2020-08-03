@@ -1,8 +1,6 @@
-import { Ref } from 'git-en-boite-core'
 import { Server } from 'http'
 
 import { QueryResult } from './query_result'
-
 export { QueryResult } from './query_result'
 
 export interface Branch {
@@ -22,7 +20,6 @@ export interface FetchRepoRequest {
 
 export interface GitRepoInfo {
   repoId: string
-  refs: Ref[]
   branches: Branch[]
 }
 

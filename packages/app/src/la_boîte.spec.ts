@@ -35,30 +35,6 @@ describe(LaBoîte.name, () => {
       assertThat(result.isSuccess, is(falsy()))
     })
 
-    it('returns an object with the refs in the repo', async () => {
-      const repoId = 'a-new-repo'
-      const remoteUrl = path.resolve(root, 'remote', repoId)
-      const request: ConnectRepoRequest = {
-        repoId,
-        remoteUrl,
-      }
-      const repoPath = remoteUrl
-      const branches = ['master', 'development']
-      const git = await new NonBareRepoFactory().open(repoPath)
-      await git(Commit.withMessage('Initial commit'))
-      for (const branchName of branches) {
-        await git(EnsureBranchExists.named(branchName))
-        await git(Commit.withMessage('A commit'))
-      }
-      await app.connectToRemote(request)
-      await app.fetchFromRemote({ repoId })
-      const result = await app.getInfo(repoId)
-      assertThat(result.isSuccess, is(truthy()))
-      await result.respond({
-        foundOne: repoInfo => assertThat(repoInfo.refs, hasProperty('length', equalTo(2))),
-      })
-    })
-
     it('returns an object with the local branches in the repo', async () => {
       const repoId = 'a-new-repo'
       const remoteUrl = path.resolve(root, 'remote', repoId)

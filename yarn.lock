@@ -2269,7 +2269,7 @@ graphql@^14.0.0:
   dependencies:
     iterall "^1.2.2"
 
-growl@1.10.5, growl@^1.10.5:
+growl@1.10.5:
   version "1.10.5"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
   integrity sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==

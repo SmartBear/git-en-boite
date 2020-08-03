@@ -35,6 +35,6 @@ export class LaBoîte implements Application {
           revision: ref.revision,
         }
       })
-    return QueryResult.from({ repoId, refs, branches })
+    return QueryResult.from({ repoId, branches })
   }
 }

@@ -1,5 +1,4 @@
 import { assertThat, equalTo, fulfilled, isRejectedWith, promiseThat } from 'hamjest'
-import { stub } from 'sinon'
 import { stubInterface } from 'ts-sinon'
 
 import { GitRepo, Ref, Repo } from '.'

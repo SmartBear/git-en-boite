@@ -51,18 +51,6 @@ When('the fetch has finished', async function () {
   // nothing to do for now - the fetch is immeditately consistent
 })
 
-Then("the repo's refs should be:", async function (expectedRefsTable: TableDefinition) {
-  const expectedRefNames = expectedRefsTable.raw().map(row => row[0])
-  const response = await this.request
-    .get(`/repos/${this.repoId}`)
-    .set('Accept', 'application/json')
-    .expect(200)
-  assertThat(
-    (response.body as GitRepoInfo).refs.map(ref => ref.refName),
-    containsInAnyOrder(...expectedRefNames),
-  )
-})
-
 Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
   const response = await this.request

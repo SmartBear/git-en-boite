@@ -16,7 +16,6 @@ describe('backend http protocol', () => {
     app = stubInterface<Application>()
     const repoInfo: GitRepoInfo = {
       repoId: 'a-repo-id',
-      refs: [],
       branches: [],
     }
     app.getInfo.resolves(QueryResult.from(repoInfo))
@@ -30,7 +29,16 @@ describe('backend http protocol', () => {
 
   const opts: VerifierOptions = {
     providerBaseUrl: `http://localhost:${PORT}`,
-    pactUrls: [path.resolve(__dirname, '..', '..', '..', 'pacts', 'gitenboitegitrepo-gitenboiteservice.json')],
+    pactUrls: [
+      path.resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'pacts',
+        'gitenboitegitrepo-gitenboiteservice.json',
+      ),
+    ],
     logLevel: 'info',
   }
 
