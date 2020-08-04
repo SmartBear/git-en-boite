@@ -5,11 +5,12 @@ import { interceptRequestBody } from '../../intercept_request'
 import create from './create'
 import get from './get'
 import update from './update'
+import commits from './commits'
 
 export default (app: Application, parentRouter: Router): Router => {
   const router = new Router()
   router.use(interceptRequestBody)
-  const handlers = [get, create, update]
+  const handlers = [get, create, update, commits]
   for (const buildHandler of handlers) {
     const handler = buildHandler(app, parentRouter)
     router.use(handler.routes(), handler.allowedMethods())

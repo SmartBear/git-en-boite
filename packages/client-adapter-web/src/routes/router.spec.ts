@@ -98,4 +98,10 @@ describe('/repos', () => {
       assertThat(app.fetchFromRemote.called, equalTo(true))
     })
   })
+
+  describe('POST /repos/:repoId/branches/:branchName/commits', () => {
+    it.only('reponds with 200', async () => {
+      await request.post('/repos/:repoId/branches/:branchName/commits').expect(200)
+    })
+  })
 })
