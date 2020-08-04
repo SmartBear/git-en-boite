@@ -11,5 +11,5 @@ Before(function () {
 })
 
 After(function () {
-  webServer.close()
+  if (webServer) webServer.close()
 })
