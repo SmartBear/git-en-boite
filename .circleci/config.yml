@@ -11,6 +11,7 @@ jobs:
         environment:
           DATABASE_URL: postgres://postgres@localhost/git-en-boite-test
           REDIS_URL: redis://localhost:6379
+          GIT_ROOT: /git-repos
       - image: circleci/postgres:12.2
         environment:
           POSTGRES_DB: git-en-boite-test
