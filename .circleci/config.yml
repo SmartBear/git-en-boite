@@ -29,8 +29,11 @@ jobs:
       - run: git --version
       - run: node_modules/dugite/git/bin/git --version
       - run:
+          name: Building Typescript
+          command: yarn build
+      - run:
           name: Linting Typescript
-          command: yarn workspaces run lint
+          command: yarn lint
       - run:
           name: Running tests
           command: yarn test
