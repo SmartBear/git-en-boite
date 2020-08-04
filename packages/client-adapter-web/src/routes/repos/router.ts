@@ -6,14 +6,11 @@ import create from './create'
 import get from './get'
 import update from './update'
 import commits from './commits'
+import { buildHandlers } from '../../build_handlers'
 
 export default (app: Application, parentRouter: Router): Router => {
   const router = new Router()
   router.use(interceptRequestBody)
-  const handlers = [get, create, update, commits]
-  for (const buildHandler of handlers) {
-    const handler = buildHandler(app, parentRouter)
-    router.use(handler.routes(), handler.allowedMethods())
-  }
+  router.use(...buildHandlers([get, create, update, commits], app, parentRouter))
   return router
 }
