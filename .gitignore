@@ -6,3 +6,4 @@ dist
 git-repos
 tmp
 *.tsbuildinfo
+.vscode

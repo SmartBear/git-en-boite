@@ -38,8 +38,8 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "repoId": "a-repo-id",
-          "remoteUrl": "https://github.com/a-repo.git"
+          "repoId": "a-new-repo-id",
+          "remoteUrl": "https://github.com/a-new-repo.git"
         }
       },
       "response": {
@@ -58,8 +58,8 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "repoId": "a-repo-id",
-          "remoteUrl": "https://github.com/a-repo.git"
+          "repoId": "an-existing-repo-id",
+          "remoteUrl": "https://github.com/an-existing-repo.git"
         }
       },
       "response": {
