@@ -7,8 +7,8 @@
     "test:unit": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",
     "test:acceptance": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js",
     "test:acceptance:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js -p wip",
-    "start:server": "ts-node src/server.ts",
-    "start:worker": "ts-node src/worker.ts",
+    "start:server": "ts-node -r tsconfig-paths/register src/server.ts",
+    "start:worker": "ts-node -r tsconfig-paths/register src/worker.ts",
     "start": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:worker\" -n server,worker -c green,yellow",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
@@ -47,6 +47,7 @@
     "tmp": "^0.2.1",
     "ts-node": "8",
     "ts-node-dev": "^1.0.0-pre.56",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.7"
   }
 }

@@ -15,9 +15,9 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "*": ["@types/*"]
+      "*": ["../../@types/*"]
     }
   },
   "references": [
