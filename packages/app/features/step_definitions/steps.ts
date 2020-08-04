@@ -1,6 +1,6 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { GitRepoInfo } from 'git-en-boite-client-port'
+import { File, GitRepoInfo } from 'git-en-boite-client-port'
 import { NonBareRepoFactory } from 'git-en-boite-local-git'
 import { Commit, EnsureBranchExists, GetRevision } from 'git-en-boite-local-git'
 import { assertThat, containsInAnyOrder, equalTo, hasProperty, matchesPattern, not } from 'hamjest'
@@ -51,9 +51,16 @@ When('the fetch has finished', async function () {
   // nothing to do for now - the fetch is immeditately consistent
 })
 
-When('a consumer commits a new file to the {string} branch', function (branchName) {
-  // Write code here that turns the phrase above into concrete actions
-  return 'pending'
+When('a consumer commits a new file to the {string} branch', async function (branchName) {
+  const file: File = {
+    path: 'features/new.feature',
+    content: 'Feature: New!',
+  }
+  await this.request
+    .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
+    .send(file)
+    .set('Accept', 'application/json')
+    .expect(200)
 })
 
 Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
