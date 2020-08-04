@@ -3,7 +3,7 @@ import { Context } from 'koa'
 import Router from '@koa/router'
 
 export default (app: Application): Router =>
-  new Router().post('/:branchName/commits', async (ctx: Context) => {
+  new Router().post('/', async (ctx: Context) => {
     await app.commit({
       repoId: ctx.params.repoId,
       branchName: ctx.params.branchName,

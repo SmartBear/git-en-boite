@@ -8,14 +8,12 @@ import update from './update'
 import { buildHandlers } from '../../build_handlers'
 import branches from './branches/router'
 
-export default (app: Application, parentRouter: Router): Router => {
-  const router = new Router()
-  router.use(interceptRequestBody)
-  router.use(...buildHandlers([get, create, update], app, parentRouter))
-  router.use(
-    '/:repoId/branches',
-    branches(app, parentRouter).routes(),
-    branches(app, parentRouter).allowedMethods(),
-  )
-  return router
-}
+export default (app: Application, parentRouter: Router): Router =>
+  new Router()
+    .use(interceptRequestBody)
+    .use(...buildHandlers([get, create, update], app, parentRouter))
+    .use(
+      '/:repoId/branches',
+      branches(app, parentRouter).routes(),
+      branches(app, parentRouter).allowedMethods(),
+    )
