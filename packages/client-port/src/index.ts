@@ -6,6 +6,17 @@ export interface Branch {
   revision: string
 }
 
+export interface File {
+  path: string
+  content: string
+}
+
+export interface CommitRequest {
+  repoId: string
+  branchName: string
+  file: File
+}
+
 export interface ConnectRepoRequest {
   repoId: string
   remoteUrl: string
@@ -23,6 +34,7 @@ export interface GitRepoInfo {
 export type Application = CommandsApplication & QueriesApplication & Versioned
 
 export interface CommandsApplication {
+  commit: (request: CommitRequest) => Promise<void>
   connectToRemote: (request: ConnectRepoRequest) => Promise<void>
   fetchFromRemote: (request: FetchRepoRequest) => Promise<void>
 }

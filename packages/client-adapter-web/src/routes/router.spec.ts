@@ -100,8 +100,14 @@ describe('/repos', () => {
   })
 
   describe('POST /repos/:repoId/branches/:branchName/commits', () => {
-    it.only('reponds with 200', async () => {
-      await request.post('/repos/:repoId/branches/:branchName/commits').expect(200)
+    it('reponds with 200', async () => {
+      const body = { path: 'a path.feature', content: 'Feature: ' }
+      await request.post('/repos/a-repo-id/branches/a-branch/commits').send(body).expect(200)
+      assertThat(app.commit.called, equalTo(true))
+      assertThat(
+        app.commit.calledWith({ file: body, branchName: 'a-branch', repoId: 'a-repo-id' }),
+        equalTo(true),
+      )
     })
   })
 })

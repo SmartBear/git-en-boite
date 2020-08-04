@@ -37,7 +37,7 @@ describe('HTTP Api', () => {
     ],
     logLevel: 'info',
     stateHandlers: {
-      'a repo exists': () => {
+      'a repo exists': async () => {
         app.getInfo.resolves(
           QueryResult.from({
             repoId: 'an-existing-repo-id',
@@ -45,15 +45,13 @@ describe('HTTP Api', () => {
           }),
         )
       },
-      'a new repo': () => {
-        app.getInfo.resolves(
-          QueryResult.from(),
-        )
+      'a new repo': async () => {
+        app.getInfo.resolves(QueryResult.from())
       },
     },
   }
 
-  it.only('fulfills the needs of the gherkin editor', async function () {
+  it('fulfills the needs of the gherkin editor', async function () {
     this.timeout(5000)
     await new Verifier(opts).verifyProvider()
   })
