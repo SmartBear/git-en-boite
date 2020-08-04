@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@pact-foundation/pact": "^9.11.1",
+    "hamjest-sinon": "^1.0.4",
     "supertest": "^5.0.0-0"
   }
 }

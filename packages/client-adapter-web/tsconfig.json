@@ -14,7 +14,9 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "src",
+    "paths": { "*": ["@types/*"] }
   },
   "references": [{ "path": "../client-port" }]
 }

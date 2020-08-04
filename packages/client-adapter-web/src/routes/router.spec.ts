@@ -1,5 +1,6 @@
 import { Application, FetchRepoRequest, QueryResult, GitRepoInfo } from 'git-en-boite-client-port'
 import { assertThat, equalTo } from 'hamjest'
+import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -52,7 +53,7 @@ describe('/repos', () => {
       app.getInfo.resolves(QueryResult.from())
       app.connectToRemote.withArgs(connectRepoRequest).resolves()
       await request.post('/repos').send(connectRepoRequest).expect(202)
-      assertThat(app.connectToRemote.called, equalTo(true))
+      assertThat(app.connectToRemote, wasCalled())
     })
 
     it('redirects to the repo if it already exists', async () => {
@@ -95,7 +96,7 @@ describe('/repos', () => {
       const fetchRepoRequest: FetchRepoRequest = { repoId: 'a-repo-id' }
       app.fetchFromRemote.withArgs(fetchRepoRequest).resolves()
       await request.post('/repos/a-repo-id').expect(202)
-      assertThat(app.fetchFromRemote.called, equalTo(true))
+      assertThat(app.fetchFromRemote, wasCalled())
     })
   })
 
@@ -103,10 +104,10 @@ describe('/repos', () => {
     it('reponds with 200', async () => {
       const body = { path: 'a path.feature', content: 'Feature: ' }
       await request.post('/repos/a-repo-id/branches/a-branch/commits').send(body).expect(200)
-      assertThat(app.commit.called, equalTo(true))
+      assertThat(app.commit, wasCalled())
       assertThat(
-        app.commit.calledWith({ file: body, branchName: 'a-branch', repoId: 'a-repo-id' }),
-        equalTo(true),
+        app.commit,
+        wasCalledWith({ file: body, branchName: 'a-branch', repoId: 'a-repo-id' }),
       )
     })
   })
