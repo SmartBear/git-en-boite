@@ -51,6 +51,11 @@ When('the fetch has finished', async function () {
   // nothing to do for now - the fetch is immeditately consistent
 })
 
+When('a consumer commits a new file to the {string} branch', function (branchName) {
+  // Write code here that turns the phrase above into concrete actions
+  return 'pending'
+})
+
 Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
   const response = await this.request
@@ -90,4 +95,9 @@ Then('the repo should have a connection status of {string}', async function (
 
 Then('it should respond with an error', function () {
   assertThat(String(this.lastResponseCode), not(matchesPattern(/2\d\d/)))
+})
+
+Then('the file should be in the {string} branch of the remote repo', function (branchName) {
+  // Write code here that turns the phrase above into concrete actions
+  return 'pending'
 })

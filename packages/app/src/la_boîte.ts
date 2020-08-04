@@ -5,11 +5,16 @@ import {
   FetchRepoRequest,
   GitRepoInfo,
   QueryResult,
+  CommitRequest,
 } from 'git-en-boite-client-port'
 import { RepoIndex } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
+
+  async commit(request: CommitRequest): Promise<void> {
+    throw new Error('Not implemented')
+  }
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {
     const { repoId, remoteUrl } = request
