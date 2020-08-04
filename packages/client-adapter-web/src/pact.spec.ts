@@ -15,13 +15,6 @@ describe('HTTP Api', () => {
 
   beforeEach(() => {
     app = stubInterface<Application>()
-    app.getInfo.withArgs('an-existing-repo-id').resolves(
-      QueryResult.from({
-        repoId: 'an-existing-repo-id',
-        branches: [],
-      }),
-    )
-    app.getInfo.withArgs('a-new-repo-id').resolves(QueryResult.from())
     const webApp = createWebApp().use(router(app).routes()).use(router(app).allowedMethods())
     server = webApp.listen(PORT)
   })
@@ -43,6 +36,21 @@ describe('HTTP Api', () => {
       ),
     ],
     logLevel: 'info',
+    stateHandlers: {
+      'a repo exists': () => {
+        app.getInfo.resolves(
+          QueryResult.from({
+            repoId: 'an-existing-repo-id',
+            branches: [],
+          }),
+        )
+      },
+      'a new repo': () => {
+        app.getInfo.resolves(
+          QueryResult.from(),
+        )
+      },
+    },
   }
 
   it.only('fulfills the needs of the gherkin editor', async function () {

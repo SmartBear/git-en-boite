@@ -31,6 +31,7 @@
     },
     {
       "description": "a request to connect a valid repo for the first time",
+      "providerState": "a new repo",
       "request": {
         "method": "POST",
         "path": "/repos",
@@ -38,8 +39,8 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "repoId": "a-new-repo-id",
-          "remoteUrl": "https://github.com/a-new-repo.git"
+          "repoId": "a-repo-id",
+          "remoteUrl": "https://github.com/a-repo.git"
         }
       },
       "response": {
@@ -50,7 +51,7 @@
     },
     {
       "description": "a request to connect the same repo again",
-      "providerState": "a repo has been connected",
+      "providerState": "a repo exists",
       "request": {
         "method": "POST",
         "path": "/repos",
@@ -58,8 +59,8 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "repoId": "an-existing-repo-id",
-          "remoteUrl": "https://github.com/an-existing-repo.git"
+          "repoId": "a-repo-id",
+          "remoteUrl": "https://github.com/a-repo.git"
         }
       },
       "response": {
