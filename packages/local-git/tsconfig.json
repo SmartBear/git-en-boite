@@ -15,11 +15,9 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "stream-split": [
-        "src/@types/stream-split"
-      ]
+      "*": ["@types/*"]
     }
   },
   "references": [
