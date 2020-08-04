@@ -1,6 +1,7 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { File, GitRepoInfo } from 'git-en-boite-client-port'
+import { GitRepoInfo } from 'git-en-boite-client-port'
+import { File } from 'git-en-boite-core'
 import { NonBareRepoFactory } from 'git-en-boite-local-git'
 import { Commit, EnsureBranchExists, GetRevision } from 'git-en-boite-local-git'
 import { assertThat, containsInAnyOrder, equalTo, hasProperty, matchesPattern, not } from 'hamjest'

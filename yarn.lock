@@ -4521,6 +4521,11 @@ static-extend@^0.1.1:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
 
+stream-split@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/stream-split/-/stream-split-1.1.0.tgz#d9b5c5e0fa0991a4da95f96e91f5f151804d3d3c"
+  integrity sha1-2bXF4PoJkaTalflukfXxUYBNPTw=
+
 string-argv@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.3.1.tgz#95e2fbec0427ae19184935f816d74aaa4c5c19da"

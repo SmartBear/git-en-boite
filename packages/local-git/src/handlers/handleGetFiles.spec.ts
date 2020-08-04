@@ -41,7 +41,7 @@ describe('handleGetFiles', () => {
     ])
   }
 
-  it.skip('reads a single file from a repo', async () => {
+  it('reads a single file from a repo', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const file = { path: 'a.file', content: 'File content' }
     const git = await openRepo(repoPath)

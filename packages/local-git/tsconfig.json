@@ -14,7 +14,23 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "stream-split": [
+        "src/@types/stream-split"
+      ]
+    }
   },
-  "references": [{ "path": "../config" }, { "path": "../core" }, { "path": "../message-dispatch" }]
+  "references": [
+    {
+      "path": "../config"
+    },
+    {
+      "path": "../core"
+    },
+    {
+      "path": "../message-dispatch"
+    }
+  ]
 }

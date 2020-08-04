@@ -1,11 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "test": "yarn workspaces run test",
+    "app": "yarn workspace git-en-boite-app",
     "build": "tsc --build",
     "lint": "yarn workspaces run lint",
+    "local-git": "yarn workspace git-en-boite-local-git",
     "start": "yarn app start",
-    "app": "yarn workspace git-en-boite-app",
+    "test": "yarn workspaces run test",
     "web": "yarn workspace git-en-boite-client-adapter-web"
   },
   "workspaces": [
