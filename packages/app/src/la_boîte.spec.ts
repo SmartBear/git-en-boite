@@ -1,19 +1,21 @@
-import { ConnectRepoRequest, File } from 'git-en-boite-client-port'
+import { ConnectRepoRequest } from 'git-en-boite-client-port'
+import { File } from 'git-en-boite-core'
 import {
   Commit,
   DugiteGitRepo,
   EnsureBranchExists,
+  GetFiles,
   GetRevision,
   Init,
   NonBareRepoFactory,
 } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
-import { assertThat, equalTo, falsy, hasProperty, is, truthy, contains } from 'hamjest'
+import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { LaBoîte } from './la_boîte'
 import { CommitRequest } from '../../client-port/src'
+import { LaBoîte } from './la_boîte'
 
 describe(LaBoîte.name, () => {
   let root: string
@@ -119,12 +121,12 @@ describe(LaBoîte.name, () => {
       await app.fetchFromRemote({ repoId })
       const file: File = {
         path: 'feature.feature',
-        content: 'Feature: Feature'
+        content: 'Feature: Feature',
       }
       const commitRequest: CommitRequest = {
         repoId,
         branchName,
-        file
+        file,
       }
 
       await app.commit(commitRequest)
@@ -132,5 +134,4 @@ describe(LaBoîte.name, () => {
       assertThat(await origin(GetFiles.forBranchNamed(branchName)), contains(file))
     })
   })
-
 })

@@ -1,14 +1,12 @@
+import { File } from 'git-en-boite-core'
+
 import { QueryResult } from './query_result'
+
 export { QueryResult } from './query_result'
 
 export interface Branch {
   name: string
   revision: string
-}
-
-export interface File {
-  path: string
-  content: string
 }
 
 export interface CommitRequest {

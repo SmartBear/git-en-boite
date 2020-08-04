@@ -1,4 +1,4 @@
-import { Author, Ref } from 'git-en-boite-core'
+import { Author, File, Ref } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Checkout {
@@ -38,6 +38,14 @@ export class Fetch {
 
   static fromOrigin(): Fetch {
     return new this()
+  }
+}
+
+export class GetFiles {
+  private constructor(public readonly branchName: string) {}
+
+  static forBranchNamed(branchName: string): GetFiles {
+    return new this(branchName)
   }
 }
 
@@ -123,7 +131,8 @@ export type NonBareRepoProtocol = [
   AsyncCommand<Fetch>,
   AsyncCommand<Init>,
   AsyncCommand<SetOrigin>,
+  AsyncQuery<GetConfig, Config>,
+  AsyncQuery<GetFiles, File[]>,
   AsyncQuery<GetRefs, Ref[]>,
   AsyncQuery<GetRevision, string>,
-  AsyncQuery<GetConfig, Config>,
 ]
