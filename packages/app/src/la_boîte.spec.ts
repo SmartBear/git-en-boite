@@ -1,4 +1,3 @@
-import { ConnectRepoRequest } from 'git-en-boite-client-port'
 import { File } from 'git-en-boite-core'
 import {
   Commit,
@@ -14,7 +13,6 @@ import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'h
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { CommitRequest } from '../../client-port/src'
 import { LaBoîte } from './la_boîte'
 
 describe(LaBoîte.name, () => {
@@ -41,10 +39,6 @@ describe(LaBoîte.name, () => {
     it('returns an object with the local branches in the repo', async () => {
       const repoId = 'a-new-repo'
       const remoteUrl = path.resolve(root, 'remote', repoId)
-      const request: ConnectRepoRequest = {
-        repoId,
-        remoteUrl,
-      }
       const repoPath = remoteUrl
       const branches = ['master', 'development']
       const origin = await new NonBareRepoFactory().open(repoPath)
@@ -52,8 +46,8 @@ describe(LaBoîte.name, () => {
         await origin(EnsureBranchExists.named(branchName))
         await origin(Commit.withMessage('A commit'))
       }
-      await app.connectToRemote(request)
-      await app.fetchFromRemote({ repoId })
+      await app.connectToRemote(repoId, remoteUrl)
+      await app.fetchFromRemote(repoId)
       const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
@@ -65,10 +59,6 @@ describe(LaBoîte.name, () => {
   it('can connect a new repo by cloning from a remote URL', async () => {
     const repoId = 'a-new-repo'
     const remoteUrl = path.resolve(root, 'remote', repoId)
-    const request: ConnectRepoRequest = {
-      repoId,
-      remoteUrl,
-    }
     const repoPath = remoteUrl
     const branches = ['master']
     const origin = await new NonBareRepoFactory().open(repoPath)
@@ -78,8 +68,8 @@ describe(LaBoîte.name, () => {
       await origin(EnsureBranchExists.named(branchName))
       await origin(Commit.withMessage('A commit'))
     }
-    await app.connectToRemote(request)
-    await app.fetchFromRemote({ repoId })
+    await app.connectToRemote(repoId, remoteUrl)
+    await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     assertThat(result.isSuccess, is(truthy()))
   })
@@ -89,11 +79,11 @@ describe(LaBoîte.name, () => {
     const repoPath = path.resolve(root, 'remote', repoId)
     const origin = await new NonBareRepoFactory().open(repoPath)
     await origin(Commit.withMessage('Initial commit'))
-    await app.connectToRemote({ repoId, remoteUrl: repoPath })
-    await app.fetchFromRemote({ repoId })
+    await app.connectToRemote(repoId, repoPath)
+    await app.fetchFromRemote(repoId)
     await origin(Commit.withMessage('Another commit'))
     const expectedRevision = await origin(GetRevision.forBranchNamed('master'))
-    await app.fetchFromRemote({ repoId })
+    await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({
       foundOne: repoInfo =>
@@ -104,32 +94,23 @@ describe(LaBoîte.name, () => {
     })
   })
 
-  describe('commiting', () => {
+  describe.skip('@wip commiting', () => {
     it('pushes a new file to the origin', async () => {
       const repoId = 'a-new-repo'
       const remoteUrl = path.resolve(root, 'remote', repoId)
-      const request: ConnectRepoRequest = {
-        repoId,
-        remoteUrl,
-      }
       const repoPath = remoteUrl
       const branchName = 'main'
       const origin = await new NonBareRepoFactory().open(repoPath)
       await origin(EnsureBranchExists.named(branchName))
       await origin(Commit.withMessage('Inital commit'))
-      await app.connectToRemote(request)
-      await app.fetchFromRemote({ repoId })
+      await app.connectToRemote(repoId, remoteUrl)
+      await app.fetchFromRemote(repoId)
       const file: File = {
         path: 'feature.feature',
         content: 'Feature: Feature',
       }
-      const commitRequest: CommitRequest = {
-        repoId,
-        branchName,
-        file,
-      }
 
-      await app.commit(commitRequest)
+      await app.commit(repoId, branchName, file)
 
       assertThat(await origin(GetFiles.forBranchNamed(branchName)), contains(file))
     })

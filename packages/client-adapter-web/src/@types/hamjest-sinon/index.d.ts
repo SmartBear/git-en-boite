@@ -14,8 +14,8 @@ export class Matcher {
   describeMismatch(value: Value, description: Description): void
 }
 
-type ValueOrMatcher = Value | Matcher
+type ValuesOrMatcher = Value[] | Matcher
 
 export function wasCalled()
-export function wasCalledWith(valueOrMatcher: ValueOrMatcher)
-export function wasCalledInOrder(valueOrMatcher: ValueOrMatcher)
+export function wasCalledWith(...valuesOrMatcher: ValuesOrMatcher)
+export function wasCalledInOrder(...valuesOrMatcher: ValuesOrMatcher)

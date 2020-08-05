@@ -45,12 +45,12 @@ export const verifyRepoContract = (
     })
   })
 
-  describe('committing', () => {
+  describe.skip('@wip committing', () => {
     it('commits a new file to a branch', async () => {
       const branchName = 'main'
       const file = {
         path: 'a.feature',
-        content: 'Feature: A'
+        content: 'Feature: A',
       }
       const repoPath = path.resolve(root, 'a-repo-id')
       const git = await openGitRepo(repoPath)

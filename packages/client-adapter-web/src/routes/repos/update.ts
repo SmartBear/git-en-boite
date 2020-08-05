@@ -4,6 +4,6 @@ import Router from '@koa/router'
 
 export default (app: Application): Router =>
   new Router().post('/:repoId', async (ctx: Context) => {
-    await app.fetchFromRemote({ repoId: ctx.params.repoId })
+    await app.fetchFromRemote(ctx.params.repoId)
     ctx.response.status = 202
   })

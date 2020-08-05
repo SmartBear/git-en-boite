@@ -1,9 +1,10 @@
-import { Application, FetchRepoRequest, QueryResult, GitRepoInfo } from 'git-en-boite-client-port'
+import { Application, GitRepoInfo, QueryResult } from 'git-en-boite-client-port'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
+
 import createWebApp from '../create_web_app'
 import router from './router'
 
@@ -47,10 +48,11 @@ describe('/repos', () => {
 
   describe('POST /repos/', () => {
     it('connects to the remote repo', async () => {
-      const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
+      const repoId = 'a-repo-id'
+      const remoteUrl = '../tmp'
       app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(connectRepoRequest).resolves()
-      await request.post('/repos').send(connectRepoRequest).expect(202)
+      app.connectToRemote.withArgs(repoId, remoteUrl).resolves()
+      await request.post('/repos').send({ repoId, remoteUrl }).expect(202)
       assertThat(app.connectToRemote, wasCalled())
     })
 
@@ -67,17 +69,18 @@ describe('/repos', () => {
     })
 
     it('responds with 400 if the connection attempt fails', async () => {
-      const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: 'a-bad-url' }
+      const repoId = 'a-repo-id'
+      const remoteUrl = 'a-bad-url'
       app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(connectRepoRequest).rejects()
-      await request.post('/repos').send(connectRepoRequest).expect(400)
+      app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
+      await request.post('/repos').send({ repoId, remoteUrl }).expect(400)
     })
   })
 
   describe('POST /repos/:repoId', () => {
     it('triggers a fetch for the repo', async () => {
-      const fetchRepoRequest: FetchRepoRequest = { repoId: 'a-repo-id' }
-      app.fetchFromRemote.withArgs(fetchRepoRequest).resolves()
+      const repoId = 'a-repo-id'
+      app.fetchFromRemote.withArgs(repoId).resolves()
       await request.post('/repos/a-repo-id').expect(202)
       assertThat(app.fetchFromRemote, wasCalled())
     })
@@ -85,13 +88,10 @@ describe('/repos', () => {
 
   describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     it('reponds with 200', async () => {
-      const body = { path: 'a path.feature', content: 'Feature: ' }
-      await request.post('/repos/a-repo-id/branches/a-branch/commits').send(body).expect(200)
+      const file = { path: 'a path.feature', content: 'Feature: ' }
+      await request.post('/repos/a-repo-id/branches/a-branch/commits').send(file).expect(200)
       assertThat(app.commit, wasCalled())
-      assertThat(
-        app.commit,
-        wasCalledWith({ file: body, branchName: 'a-branch', repoId: 'a-repo-id' }),
-      )
+      assertThat(app.commit, wasCalledWith('a-repo-id', 'a-branch', file))
     })
   })
 })
