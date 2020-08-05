@@ -61,7 +61,7 @@ describe('handleCommitToBareRepo', () => {
         await git(Fetch.fromOrigin())
       })
 
-      it('creates a commit with the given message', async () => {
+      it('creates an empty commit with the given message', async () => {
         await git(Commit.withMessage('A commit message'))
         await promiseThat(
           exec('git log main --oneline', { cwd: repoPath }),
@@ -69,7 +69,7 @@ describe('handleCommitToBareRepo', () => {
         )
       })
 
-      xit('creates a commit containing the given files', async () => {
+      it.skip('@wip creates a commit containing the given files', async () => {
         const file = { path: 'a.file', content: 'some content' }
         const branchName = 'a-branch'
         await git(Commit.newFile(file).toBranch(branchName))
