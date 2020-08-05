@@ -68,9 +68,10 @@ workflows:
             - run:
                 name: Running tests in container
                 command: docker run --network=git-en-boite -e DATABASE_URL=postgres://postgres@postgres/git-en-boite-test -e REDIS_URL=redis://redis:6379 --workdir /app -i -t smartbear/git-en-boite:latest yarn test
+            - slack/status:
+              fail_only: true
           filters:
             branches:
               only:
-                - master
                 - main
                 - ci
