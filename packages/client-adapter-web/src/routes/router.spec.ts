@@ -4,8 +4,6 @@ import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
-
-import { InvalidRepoIdError } from '../intercept_request'
 import createWebApp from '../create_web_app'
 import router from './router'
 
@@ -73,21 +71,6 @@ describe('/repos', () => {
       app.getInfo.resolves(QueryResult.from())
       app.connectToRemote.withArgs(connectRepoRequest).rejects()
       await request.post('/repos').send(connectRepoRequest).expect(400)
-    })
-
-    it('responds with a message when request body is missing required content', async () => {
-      const connectRepoRequest = {}
-      const response = await request.post('/repos').send(connectRepoRequest).expect(400)
-      assertThat(
-        response.body.error,
-        equalTo('Missing information from the request: repoId, remoteUrl'),
-      )
-    })
-
-    it('responds with a message when repoId is not valid', async () => {
-      const connectRepoRequest = { repoId: 'a/repo/id', remoteUrl: '../tmp' }
-      const response = await request.post('/repos').send(connectRepoRequest).expect(400)
-      assertThat(response.body.error, equalTo(InvalidRepoIdError.message))
     })
   })
 

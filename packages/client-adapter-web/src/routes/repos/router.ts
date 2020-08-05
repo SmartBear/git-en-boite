@@ -1,7 +1,5 @@
 import { Application } from 'git-en-boite-client-port'
 import Router from '@koa/router'
-
-import { interceptRequestBody } from '../../intercept_request'
 import create from './create'
 import get from './get'
 import update from './update'
@@ -10,7 +8,6 @@ import branches from './branches/router'
 
 export default (app: Application, parentRouter: Router): Router =>
   new Router()
-    .use(interceptRequestBody)
     .use(...buildHandlers([get, create, update], app, parentRouter))
     .use(
       '/:repoId/branches',
