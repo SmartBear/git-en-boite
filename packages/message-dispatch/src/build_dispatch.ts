@@ -36,8 +36,6 @@ export function messageDispatch<Protocol extends ValidProtocol<Protocol>>() {
       }
 
       const dispatch: Dispatch<Protocol> = message => {
-        // console.log(message)
-
         const handler = handlers.get(message.constructor)
         if (!handler)
           throw new Error(
