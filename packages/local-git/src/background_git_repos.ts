@@ -1,5 +1,5 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
-import { GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo, OpensGitRepos, Ref, File } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -76,6 +76,10 @@ export class BackgroundGitRepoProxy implements GitRepo {
     private readonly queue: Queue<any>,
     private readonly queueEvents: QueueEvents,
   ) {}
+  
+  commit(branchName: string, file: File): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
 
   async setOriginTo(remoteUrl: string): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })

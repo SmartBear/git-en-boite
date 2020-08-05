@@ -1,4 +1,4 @@
-import { GitRepo, Ref } from 'git-en-boite-core'
+import { GitRepo, Ref, File } from 'git-en-boite-core'
 import { BareRepoFactory } from './bare_repo_factory'
 import { BareRepoProtocol, Connect, Fetch, GetRefs } from './operations'
 import { Dispatch } from 'git-en-boite-message-dispatch'
@@ -10,6 +10,10 @@ export class DugiteGitRepo implements GitRepo {
   }
 
   protected constructor(private readonly git: Dispatch<BareRepoProtocol>) {}
+  
+  commit(branchName: string, file: File): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
 
   setOriginTo(remoteUrl: string): Promise<void> {
     return this.git(Connect.toUrl(remoteUrl))
@@ -25,5 +29,5 @@ export class DugiteGitRepo implements GitRepo {
 
   close(): Promise<void> {
     return Promise.resolve()
-  }
+  } 
 }

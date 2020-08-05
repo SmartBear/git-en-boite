@@ -12,8 +12,9 @@ import { RepoIndex } from 'git-en-boite-core'
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
 
-  async commit(request: CommitRequest): Promise<void> {
-    // throw new Error('Not implemented')
+  async commit({repoId, branchName, file}: CommitRequest): Promise<void> {
+    const repo = await this.repoIndex.find(repoId)
+    await repo.commit(branchName, file)
   }
 
   async connectToRemote(request: ConnectRepoRequest): Promise<void> {

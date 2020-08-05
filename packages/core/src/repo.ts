@@ -1,4 +1,4 @@
-import { Ref, GitRepo } from '.'
+import { Ref, GitRepo, File } from '.'
 
 export class Repo {
   constructor(public readonly repoId: string, private readonly git: GitRepo) {}
@@ -11,7 +11,11 @@ export class Repo {
     await this.git.setOriginTo(remoteUrl)
   }
 
-  public async getRefs(): Promise<Ref[]> {
+  async getRefs(): Promise<Ref[]> {
     return await this.git.getRefs()
+  }
+
+  async commit(branchName:string, file:File): Promise<void> {
+    await this.git.commit(branchName, file)
   }
 }

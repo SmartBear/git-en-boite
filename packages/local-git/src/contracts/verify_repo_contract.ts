@@ -1,10 +1,11 @@
 import { OpenGitRepo } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { Commit, GetRevision, NonBareRepoProtocol } from '..'
+import { GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<NonBareRepoProtocol>>
 
@@ -41,6 +42,22 @@ export const verifyRepoContract = (
         const ref = refs.find(ref => ref.isRemote)
         await assertThat(ref.revision, equalTo(latestCommit))
       })
+    })
+  })
+
+  describe('committing', () => {
+    it('commits a new file to a branch', async () => {
+      const branchName = 'main'
+      const file = {
+        path: 'a.feature',
+        content: 'Feature: A'
+      }
+      const repoPath = path.resolve(root, 'a-repo-id')
+      const git = await openGitRepo(repoPath)
+      await git.commit(branchName, file)
+      const backDoor = new GitDirectory(repoPath)
+      const result = await backDoor.execGit('ls-tree', [branchName, '--name-only'])
+      assertThat(result.stdout, matchesPattern(file.path))
     })
   })
 }
