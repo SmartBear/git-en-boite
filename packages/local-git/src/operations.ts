@@ -10,18 +10,27 @@ export class Checkout {
 }
 
 export class Commit {
-  protected constructor(public readonly message: string, public readonly author: Author) {}
+  protected constructor(public readonly files: File[], public readonly message: string, public readonly author: Author, public readonly branchName: string) {}
 
-  static withMessage(message: string): Commit {
-    return new Commit(message, new Author('A user', 'unknown@unknown.com'))
+
+  static newFile(file: File) {
+    return new Commit([file], 'Add new file', new Author('A user', 'unknown@unknown.com'), 'main')
   }
 
+  static withMessage(message: string): Commit {
+    return new Commit([], message, new Author('A user', 'unknown@unknown.com'), 'main')
+  }
+  // TODO: Remove this, it is only for testing
   static withAnyMessage(): Commit {
     return Commit.withMessage('A commit message')
   }
 
   byAuthor(author: Author): Commit {
-    return new Commit(this.message, author)
+    return new Commit(this.files, this.message, author, this.branchName)
+  }
+
+  toBranch(branchName: string): Commit {
+    return new Commit(this.files, this.message, this.author, branchName)
   }
 }
 
@@ -114,6 +123,7 @@ export interface Config {
 }
 
 export type BareRepoProtocol = [
+  AsyncCommand<Commit>,
   AsyncCommand<Connect>,
   AsyncCommand<Fetch>,
   AsyncCommand<Init>,

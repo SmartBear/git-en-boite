@@ -1,19 +1,10 @@
-import fs from 'fs'
-import {
-  BareRepoProtocol,
-  Connect,
-  Fetch,
-  GetConfig,
-  GetRefs,
-  Init,
-  SetOrigin,
-  ValidateRemote,
-} from './operations'
-import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import path from 'path'
+import fs from 'fs';
+import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch';
+import path from 'path';
 
-import { GitDirectory } from './git_directory'
+import { GitDirectory } from './git_directory';
 import {
+  handleCommit,
   handleConnect,
   handleFetch,
   handleGetConfig,
@@ -21,7 +12,8 @@ import {
   handleInit,
   handleSetOrigin,
   handleValidateRemote,
-} from './handlers'
+} from './handlers';
+import { BareRepoProtocol, Commit, Connect, Fetch, GetConfig, GetRefs, Init, SetOrigin, ValidateRemote } from './operations';
 
 type BareRepo = Dispatch<BareRepoProtocol>
 
@@ -31,6 +23,7 @@ export class BareRepoFactory {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const git = messageDispatch<BareRepoProtocol>().withHandlers(repo, [
+      [Commit, handleCommit],
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],
