@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-// TODO: make this a global rule ^
-
 export interface Responder<ResultType> {
   foundMany?: (results: ResultType[]) => Promise<void> | void
   foundOne?: (result: ResultType) => Promise<void> | void
