@@ -94,7 +94,7 @@ describe(LaBoîte.name, () => {
     })
   })
 
-  describe.skip('@wip commiting', () => {
+  it('@wip commiting', () => {
     it('pushes a new file to the origin', async () => {
       const repoId = 'a-new-repo'
       const remoteUrl = path.resolve(root, 'remote', repoId)

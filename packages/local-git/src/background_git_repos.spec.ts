@@ -39,7 +39,7 @@ describe(BackgroundGitRepos.name, () => {
     })
 
     // Skipping because having both of these seems to leave a hanging promise
-    it.skip('succeeds when a worker is running', async () => {
+    it('succeeds when a worker is running', async () => {
       await gitRepos.startWorker()
       const pinging = gitRepos.pingWorkers()
       await promiseThat(pinging, fulfilled())

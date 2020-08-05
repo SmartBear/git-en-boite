@@ -4,7 +4,9 @@
   "description": "Main entry point for Git-en-Boîte",
   "scripts": {
     "test": "yarn test:unit && yarn test:acceptance",
-    "test:unit": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha",
+    "test:wip": "yarn test:unit:wip && yarn test:acceptance:wip",
+    "test:unit": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i",
+    "test:unit:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip",
     "test:acceptance": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js",
     "test:acceptance:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js -p wip",
     "start:server": "ts-node -r tsconfig-paths/register src/server.ts",
