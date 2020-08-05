@@ -39,8 +39,8 @@ jobs:
           name: Running tests
           command: yarn test
       - slack/status:
-        fail_only: true
-        only_for_branches: main
+          fail_only: true
+          only_for_branches: main
 
 workflows:
   version: 2.1
