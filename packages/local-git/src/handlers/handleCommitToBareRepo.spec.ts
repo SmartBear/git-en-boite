@@ -67,35 +67,4 @@ describe('handleCommitToBareRepo', () => {
       )
     })
   })
-
-  context('in a non-bare repo', () => {
-    let repoPath: string
-    let git: Dispatch<Protocol>
-
-    beforeEach(async () => {
-      repoPath = path.resolve(root, 'a-repo-id')
-      git = await openRepo(repoPath)
-      await git(Init.nonBareRepo())
-      await exec('git checkout -b main', { cwd: repoPath })
-      await exec('git commit --allow-empty -m "initial commit"', { cwd: repoPath })
-    })
-
-    it('creates a commit with the given message', async () => {
-      await git(Commit.withMessage('A commit message'))
-      await promiseThat(
-        exec('git log main --oneline', { cwd: repoPath }),
-        fulfilled(hasProperty('stdout', containsString('A commit message'))),
-      )
-    })
-
-    it('creates a commit with the given author details', async () => {
-      const name = 'Someone'
-      const email = 'test@exmaple.com'
-      await git(Commit.withAnyMessage().byAuthor(new Author(name, email)))
-      await promiseThat(
-        exec('git log main --pretty=format:"%an <%ae>"', { cwd: repoPath }),
-        fulfilled(hasProperty('stdout', containsString(`${name} <${email}>`))),
-      )
-    })
-  })
 })
