@@ -8,7 +8,7 @@ import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommit } from './handleCommit'
+import { handleCommitToNonBareRepo } from './handleCommitToNonBareRepo'
 import { handleEnsureBranchExists } from './handleEnsureBranchExists'
 import { handleGetRevision } from './handleGetRevision'
 import { handleInit } from './handleInit'
@@ -36,7 +36,7 @@ describe('handleGetRevision', () => {
     const repo = new GitDirectory(repoPath)
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
-      [Commit, handleCommit],
+      [Commit, handleCommitToNonBareRepo],
       [GetRevision, handleGetRevision],
       [EnsureBranchExists, handleEnsureBranchExists],
     ])

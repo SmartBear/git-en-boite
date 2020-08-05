@@ -8,7 +8,8 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommit } from './handleCommit'
+import { handleCommitToNonBareRepo } from './handleCommitToNonBareRepo'
+import { handleCommitToBareRepo } from './handleCommitToBareRepo'
 import { handleGetRefs } from './handleGetRefs'
 import { handleInit } from './handleInit'
 
@@ -23,15 +24,6 @@ describe('handleGetRefs', () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  const openRepo = (repoPath: string) => {
-    fs.mkdirSync(repoPath, { recursive: true })
-    const repo = new GitDirectory(repoPath)
-    return messageDispatch<Protocol>().withHandlers(repo, [
-      [Init, handleInit],
-      [Commit, handleCommit],
-      [GetRefs, handleGetRefs],
-    ])
-  }
 
   const revisionForBranch = async (branchName: string, repoPath: string) => {
     const result = await GitProcess.exec(['rev-parse', branchName], repoPath)
@@ -42,6 +34,16 @@ describe('handleGetRefs', () => {
 
   context('in a non-bare repo', () => {
     let repoPath: string
+
+    const openRepo = (repoPath: string) => {
+      fs.mkdirSync(repoPath, { recursive: true })
+      const repo = new GitDirectory(repoPath)
+      return messageDispatch<Protocol>().withHandlers(repo, [
+        [Init, handleInit],
+        [Commit, handleCommitToNonBareRepo],
+        [GetRefs, handleGetRefs],
+      ])
+    }
 
     beforeEach(async () => {
       repoPath = path.resolve(root, 'a-repo-id')
@@ -66,6 +68,17 @@ describe('handleGetRefs', () => {
   })
 
   context('in a bare repo', () => {
+
+    const openRepo = (repoPath: string) => {
+      fs.mkdirSync(repoPath, { recursive: true })
+      const repo = new GitDirectory(repoPath)
+      return messageDispatch<Protocol>().withHandlers(repo, [
+        [Init, handleInit],
+        [Commit, handleCommitToBareRepo],
+        [GetRefs, handleGetRefs],
+      ])
+    }
+
     beforeEach(async () => {
       const repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)

@@ -3,7 +3,7 @@ import { Commit } from '../operations'
 import { GitDirectory } from '../git_directory'
 import { dirSync } from 'tmp'
 
-export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
+export const handleCommitToBareRepo: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { message, author, branchName },
 ) => {

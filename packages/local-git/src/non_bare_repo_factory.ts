@@ -4,7 +4,7 @@ import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { GitDirectory } from './git_directory'
 import {
   handleCheckout,
-  handleCommit,
+  handleCommitToNonBareRepo,
   handleEnsureBranchExists,
   handleFetch,
   handleGetConfig,
@@ -36,7 +36,7 @@ export class NonBareRepoFactory {
     const repo = new GitDirectory(path)
     const git = messageDispatch<NonBareRepoProtocol>().withHandlers(repo, [
       [Checkout, handleCheckout],
-      [Commit, handleCommit],
+      [Commit, handleCommitToNonBareRepo],
       [EnsureBranchExists, handleEnsureBranchExists],
       [Fetch, handleFetch],
       [Init, handleInit],

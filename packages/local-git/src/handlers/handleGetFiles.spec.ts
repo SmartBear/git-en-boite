@@ -4,7 +4,7 @@ import { File } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { dirSync } from 'tmp'
 
-import { handleCommit, handleGetFiles, handleInit } from '.'
+import { handleCommitToNonBareRepo, handleGetFiles, handleInit } from '.'
 import { Commit, GetFiles, Init, EnsureBranchExists } from '../operations'
 
 // import { equalTo, fulfilled, promiseThat, rejected, assertThat } from 'hamjest'
@@ -35,7 +35,7 @@ describe('handleGetFiles', () => {
     const repo = new GitDirectory(repoPath)
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
-      [Commit, handleCommit],
+      [Commit, handleCommitToNonBareRepo],
       [EnsureBranchExists, handleEnsureBranchExists],
       [GetFiles, handleGetFiles],
     ])

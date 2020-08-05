@@ -2,7 +2,7 @@ import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 import { Commit } from '../operations'
 import { GitDirectory } from '../git_directory'
 
-export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
+export const handleCommitToNonBareRepo: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { message, author },
 ) => {

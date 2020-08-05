@@ -4,7 +4,7 @@ import path from 'path'
 
 import { GitDirectory } from './git_directory'
 import {
-  handleCommit,
+  handleCommitToBareRepo,
   handleConnect,
   handleFetch,
   handleGetConfig,
@@ -33,7 +33,7 @@ export class BareRepoFactory {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const git = messageDispatch<BareRepoProtocol>().withHandlers(repo, [
-      [Commit, handleCommit],
+      [Commit, handleCommitToBareRepo],
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],

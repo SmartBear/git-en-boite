@@ -9,14 +9,14 @@ import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommit } from './handleCommit'
+import { handleCommitToBareRepo } from './handleCommitToBareRepo'
 import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>]
 
-describe('handleCommit', () => {
+describe('handleCommitToBareRepo', () => {
   let root: string
 
   beforeEach(() => (root = dirSync().name))
@@ -30,7 +30,7 @@ describe('handleCommit', () => {
     const repo = new GitDirectory(repoPath)
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
-      [Commit, handleCommit],
+      [Commit, handleCommitToBareRepo],
     ])
   }
 

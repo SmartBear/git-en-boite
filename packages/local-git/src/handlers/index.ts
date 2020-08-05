@@ -1,5 +1,6 @@
 export * from './handleCheckout'
-export * from './handleCommit'
+export * from './handleCommitToBareRepo'
+export * from './handleCommitToNonBareRepo'
 export * from './handleConnect'
 export * from './handleEnsureBranchExists'
 export * from './handleFetch'

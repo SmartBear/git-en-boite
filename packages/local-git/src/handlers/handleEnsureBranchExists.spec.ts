@@ -7,7 +7,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommit } from './handleCommit'
+import { handleCommitToNonBareRepo } from './handleCommitToNonBareRepo'
 import { handleEnsureBranchExists } from './handleEnsureBranchExists'
 import { handleInit } from './handleInit'
 
@@ -27,7 +27,7 @@ describe('handleEnsureBranchExists', () => {
     const repo = new GitDirectory(repoPath)
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
-      [Commit, handleCommit],
+      [Commit, handleCommitToNonBareRepo],
       [EnsureBranchExists, handleEnsureBranchExists],
     ])
   }
