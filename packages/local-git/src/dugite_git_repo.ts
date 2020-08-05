@@ -29,5 +29,5 @@ export class DugiteGitRepo implements GitRepo {
 
   close(): Promise<void> {
     return Promise.resolve()
-  } 
+  }
 }

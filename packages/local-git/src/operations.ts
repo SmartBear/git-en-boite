@@ -10,10 +10,14 @@ export class Checkout {
 }
 
 export class Commit {
-  protected constructor(public readonly files: File[], public readonly message: string, public readonly author: Author, public readonly branchName: string) {}
+  protected constructor(
+    public readonly files: File[],
+    public readonly message: string,
+    public readonly author: Author,
+    public readonly branchName: string,
+  ) {}
 
-
-  static newFile(file: File) {
+  static newFile(file: File): Commit {
     return new Commit([file], 'Add new file', new Author('A user', 'unknown@unknown.com'), 'main')
   }
 

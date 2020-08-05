@@ -1,8 +1,8 @@
-import fs from 'fs';
-import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch';
-import path from 'path';
+import fs from 'fs'
+import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
+import path from 'path'
 
-import { GitDirectory } from './git_directory';
+import { GitDirectory } from './git_directory'
 import {
   handleCommit,
   handleConnect,
@@ -12,8 +12,18 @@ import {
   handleInit,
   handleSetOrigin,
   handleValidateRemote,
-} from './handlers';
-import { BareRepoProtocol, Commit, Connect, Fetch, GetConfig, GetRefs, Init, SetOrigin, ValidateRemote } from './operations';
+} from './handlers'
+import {
+  BareRepoProtocol,
+  Commit,
+  Connect,
+  Fetch,
+  GetConfig,
+  GetRefs,
+  Init,
+  SetOrigin,
+  ValidateRemote,
+} from './operations'
 
 type BareRepo = Dispatch<BareRepoProtocol>
 
