@@ -6,22 +6,17 @@ import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
-import { handleCommitToBareRepo, handleFetch, handleInit, handleSetOrigin } from '.'
+import { handleCommitToBareRepo, handleInit } from '.'
 import { GitDirectory } from '../git_directory'
-import { NonBareRepoFactory } from '../non_bare_repo_factory'
-import { Commit, EnsureBranchExists, Fetch, Init, SetOrigin } from '../operations'
+import { Commit, Init } from '../operations'
 
 const exec = promisify(childProcess.exec)
 
-type Protocol = [
-  AsyncCommand<Commit>,
-  AsyncCommand<Fetch>,
-  AsyncCommand<Init>,
-  AsyncCommand<SetOrigin>,
-]
+type Protocol = [AsyncCommand<Commit>, AsyncCommand<Init>]
 
 describe('handleCommitToBareRepo', () => {
   let root: string
+  const branchName = 'a-branch'
 
   beforeEach(() => (root = dirSync().name))
   afterEach(function () {
@@ -34,9 +29,7 @@ describe('handleCommitToBareRepo', () => {
     const repo = new GitDirectory(repoPath)
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Commit, handleCommitToBareRepo],
-      [Fetch, handleFetch],
       [Init, handleInit],
-      [SetOrigin, handleSetOrigin],
     ])
   }
 
@@ -49,20 +42,19 @@ describe('handleCommitToBareRepo', () => {
     await git(Init.bareRepo())
   })
 
-  it.only('creates an empty commit with the given message', async () => {
+  it('creates an empty commit with the given message', async () => {
     await git(Commit.withMessage('A commit message'))
     await promiseThat(
-      exec('git log main --oneline', { cwd: repoPath }),
+      exec(`git log main --oneline`, { cwd: repoPath }),
       fulfilled(hasProperty('stdout', containsString('A commit message'))),
     )
   })
 
-  it('@wip creates a commit containing the given files', async () => {
+  it('creates a commit containing the given files', async () => {
     const file = { path: 'a.file', content: 'some content' }
-    const branchName = 'a-branch'
     await git(Commit.newFile(file).toBranch(branchName))
     await promiseThat(
-      exec(`git ls-tree ${branchName} -r --name-only`),
+      exec(`git ls-tree ${branchName} -r --name-only`, { cwd: repoPath }),
       fulfilled(hasProperty('stdout', containsString(file.path))),
     )
   })
