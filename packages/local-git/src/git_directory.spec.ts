@@ -59,4 +59,7 @@ describe(GitDirectory.name, () => {
 
     it('passes options')
   })
+
+  // TODO:
+  it('clears the index')
 })

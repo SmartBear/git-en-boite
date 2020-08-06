@@ -14,7 +14,7 @@ const exec = promisify(childProcess.exec)
 
 type Protocol = [AsyncCommand<Commit>, AsyncCommand<Init>]
 
-describe('handleCommitToBareRepo', () => {
+describe.only('handleCommitToBareRepo', () => {
   let root: string
   const branchName = 'a-branch'
 

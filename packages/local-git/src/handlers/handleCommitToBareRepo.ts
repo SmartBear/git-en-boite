@@ -1,26 +1,24 @@
 import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
-import { Commit } from '../operations'
-import { GitDirectory } from '../git_directory'
-import fs from 'fs'
-import { promisify } from 'util'
-import path from 'path'
 
-const unlink = promisify(fs.unlink)
+import { GitDirectory } from '../git_directory'
+import { Commit } from '../operations'
+import { Author } from 'git-en-boite-core/dist'
 
 export const handleCommitToBareRepo: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { files, message, author, branchName },
 ) => {
-  try {
-    await unlink(path.resolve(repo.path, 'index'))
-  } catch (err) {}
+  await repo.clearIndex()
+  for (const file of files) await repo.addFileToIndex(file)
+  await commitCurrentIndexToBranch(repo, message, branchName, author)
+}
 
-  for (const file of files) {
-    const objectId = (
-      await repo.execGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
-    ).stdout.trim()
-    await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
-  }
+async function commitCurrentIndexToBranch(
+  repo: GitDirectory,
+  message: string,
+  branchName: string,
+  author: Author,
+) {
   const treeName = (await repo.execGit('write-tree', [])).stdout.trim()
   const commitOptions = [treeName, '-m', message]
 
