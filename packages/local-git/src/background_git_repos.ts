@@ -1,5 +1,5 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
-import { GitRepo, OpenGitRepo, OpensGitRepos, Ref, File } from 'git-en-boite-core'
+import { File, GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -44,14 +44,14 @@ export class BackgroundGitRepos {
 
   async pingWorkers(timeout = 2000): Promise<BackgroundGitRepos> {
     const job = await this.queue.add('ping', {})
-    await Promise.race([
-      job.waitUntilFinished(this.queueEvents),
-      new Promise(function (resolve, reject) {
-        setTimeout(function () {
-          reject(`No workers responded to a ping within ${timeout}ms`)
-        }, timeout)
-      }),
-    ])
+    const finishing = job.waitUntilFinished(this.queueEvents)
+    const timingOut = new Promise(function (_, reject) {
+      setTimeout(function () {
+        reject(new Error(`No workers responded to a ping within ${timeout}ms`))
+      }, timeout)
+    })
+    const result = Promise.race([finishing, timingOut])
+    await Promise.all([finishing, timingOut]).catch(() => result)
     return this
   }
 
@@ -76,9 +76,9 @@ export class BackgroundGitRepoProxy implements GitRepo {
     private readonly queue: Queue<any>,
     private readonly queueEvents: QueueEvents,
   ) {}
-  
+
   commit(branchName: string, file: File): Promise<void> {
-    throw new Error("Method not implemented.")
+    throw new Error('Method not implemented.')
   }
 
   async setOriginTo(remoteUrl: string): Promise<void> {

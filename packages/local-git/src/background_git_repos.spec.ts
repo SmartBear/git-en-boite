@@ -1,8 +1,8 @@
 import { createConfig } from 'git-en-boite-config'
-import { promiseThat, rejected, fulfilled } from 'hamjest'
+import { fulfilled, hasProperty, matchesPattern, promiseThat, rejected } from 'hamjest'
 
 import { BareRepoFactory, NonBareRepoFactory } from './'
-import { BackgroundGitRepos, BackgroundGitRepoProxy } from './background_git_repos'
+import { BackgroundGitRepos } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -35,13 +35,16 @@ describe(BackgroundGitRepos.name, () => {
 
     it('throws an error when no workers are running', async () => {
       const pinging = gitRepos.pingWorkers(1)
-      await promiseThat(pinging, rejected())
+      await promiseThat(
+        pinging,
+        rejected(hasProperty('message', matchesPattern('No workers responded'))),
+      )
     })
 
     // Skipping because having both of these seems to leave a hanging promise, sometimes
-    it.skip('succeeds when a worker is running', async () => {
+    it('succeeds when a worker is running', async () => {
       await gitRepos.startWorker()
-      const pinging = gitRepos.pingWorkers()
+      const pinging = gitRepos.pingWorkers(100)
       await promiseThat(pinging, fulfilled())
     })
   })
