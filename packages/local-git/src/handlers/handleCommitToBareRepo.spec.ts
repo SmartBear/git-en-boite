@@ -15,31 +15,27 @@ const exec = promisify(childProcess.exec)
 type Protocol = [AsyncCommand<Commit>, AsyncCommand<Init>]
 
 describe.only('handleCommitToBareRepo', () => {
-  let root: string
   const branchName = 'a-branch'
+  let root: string
+  let repoPath: string
+  let git: Dispatch<Protocol>
+  let repo: GitDirectory
 
-  beforeEach(() => (root = dirSync().name))
-  afterEach(function () {
-    if (this.currentTest.state === 'failed' && this.currentTest.err)
-      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
-  })
-
-  const openRepo = (repoPath: string) => {
+  beforeEach(async () => {
+    root = dirSync().name
+    repoPath = path.resolve(root, 'a-repo-id')
     fs.mkdirSync(repoPath, { recursive: true })
-    const repo = new GitDirectory(repoPath)
-    return messageDispatch<Protocol>().withHandlers(repo, [
+    repo = new GitDirectory(repoPath)
+    git = messageDispatch<Protocol>().withHandlers(repo, [
       [Commit, handleCommitToBareRepo],
       [Init, handleInit],
     ])
-  }
-
-  let repoPath: string
-  let git: Dispatch<Protocol>
-
-  beforeEach(async () => {
-    repoPath = path.resolve(root, 'a-repo-id')
-    git = await openRepo(repoPath)
     await git(Init.bareRepo())
+  })
+
+  afterEach(function () {
+    if (this.currentTest.state === 'failed' && this.currentTest.err)
+      this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
   it('creates an empty commit with the given message', async () => {
