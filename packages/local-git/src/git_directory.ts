@@ -2,7 +2,7 @@ import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
 import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
-import { File } from 'git-en-boite-core/dist'
+import { File } from 'git-en-boite-core'
 
 const unlink = promisify(fs.unlink)
 
