@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { containsString, containsStrings, fulfilled, hasProperty, promiseThat } from 'hamjest'
+import { containsString, containsStrings, fulfilled, hasProperty, not, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
@@ -65,6 +65,29 @@ describe('handleCommitToBareRepo', () => {
     await promiseThat(
       exec(`git log main --oneline`, { cwd: repoPath }),
       fulfilled(hasProperty('stdout', containsStrings('initial commit', 'A commit message'))),
+    )
+  })
+
+  it('clears the staging area before committing', async () => {
+    const objectId = await new Promise((resolve, reject) => {
+      const result = childProcess.exec(
+        'git hash-object -w --stdin',
+        { cwd: repoPath },
+        (err, stdout) => {
+          if (err) return reject(err)
+          resolve(stdout.trim())
+        },
+      )
+      result.stdin.write('Junk content')
+      result.stdin.end()
+    })
+
+    await exec(`git update-index --add --cacheinfo 100644 ${objectId} junk.file`, { cwd: repoPath })
+    const file = { path: 'a.file', content: 'some content' }
+    await git(Commit.newFile(file).toBranch(branchName))
+    await promiseThat(
+      exec(`git ls-tree ${branchName} -r --name-only`, { cwd: repoPath }),
+      fulfilled(hasProperty('stdout', not(containsString('junk.file')))),
     )
   })
 })
