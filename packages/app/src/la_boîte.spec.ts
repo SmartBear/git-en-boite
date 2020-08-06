@@ -1,13 +1,10 @@
 import { File } from 'git-en-boite-core'
 import {
+  BareRepoFactory,
   Commit,
   DugiteGitRepo,
-  EnsureBranchExists,
   GetFiles,
   GetRevision,
-  Init,
-  NonBareRepoFactory,
-  BareRepoFactory,
 } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
@@ -69,18 +66,18 @@ describe(LaBoîte.name, () => {
   })
 
   it('can fetch for an existing repo', async () => {
-    const origin = await new NonBareRepoFactory().open(remoteUrl)
-    await origin(Commit.withMessage('Initial commit'))
+    const origin = await new BareRepoFactory().open(remoteUrl)
+    await origin(Commit.withMessage('Initial commit').toBranch(branchName))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     await origin(Commit.withMessage('Another commit'))
-    const expectedRevision = await origin(GetRevision.forBranchNamed('master'))
+    const expectedRevision = await origin(GetRevision.forBranchNamed(branchName))
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({
       foundOne: repoInfo =>
         assertThat(
-          repoInfo.branches.find(branch => branch.name === 'master').revision,
+          repoInfo.branches.find(branch => branch.name === branchName).revision,
           equalTo(expectedRevision),
         ),
     })
@@ -88,10 +85,8 @@ describe(LaBoîte.name, () => {
 
   it('@wip commiting', () => {
     it('pushes a new file to the origin', async () => {
-      const branchName = 'main'
-      const origin = await new NonBareRepoFactory().open(remoteUrl)
-      await origin(EnsureBranchExists.named(branchName))
-      await origin(Commit.withMessage('Inital commit'))
+      const origin = await new BareRepoFactory().open(remoteUrl)
+      await origin(Commit.withMessage('Initial commit').toBranch(branchName))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const file: File = {

@@ -134,8 +134,10 @@ export type BareRepoProtocol = [
   AsyncCommand<Init>,
   AsyncCommand<SetOrigin>,
   AsyncCommand<ValidateRemote>,
+  AsyncQuery<GetFiles, File[]>,
   AsyncQuery<GetRefs, Ref[]>,
   AsyncQuery<GetConfig, Config>,
+  AsyncQuery<GetRevision, string>,
 ]
 
 // only used to create origin repos for testing

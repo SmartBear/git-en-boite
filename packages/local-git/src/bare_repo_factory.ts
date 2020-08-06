@@ -1,6 +1,5 @@
 import fs from 'fs'
 import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import path from 'path'
 
 import { GitDirectory } from './git_directory'
 import {
@@ -8,7 +7,9 @@ import {
   handleConnect,
   handleFetch,
   handleGetConfig,
+  handleGetFiles,
   handleGetRefs,
+  handleGetRevision,
   handleInit,
   handleSetOrigin,
   handleValidateRemote,
@@ -19,7 +20,9 @@ import {
   Connect,
   Fetch,
   GetConfig,
+  GetFiles,
   GetRefs,
+  GetRevision,
   Init,
   SetOrigin,
   ValidateRemote,
@@ -38,8 +41,10 @@ export class BareRepoFactory {
       [Init, handleInit],
       [SetOrigin, handleSetOrigin],
       [ValidateRemote, handleValidateRemote],
+      [GetFiles, handleGetFiles],
       [GetRefs, handleGetRefs],
       [GetConfig, handleGetConfig],
+      [GetRevision, handleGetRevision],
     ])
     await git(Init.bareRepo())
     return git
