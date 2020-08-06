@@ -7,6 +7,7 @@ import {
   GetRevision,
   Init,
   NonBareRepoFactory,
+  BareRepoFactory,
 } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
@@ -42,17 +43,16 @@ describe(LaBoîte.name, () => {
 
     it('returns an object with the local branches in the repo', async () => {
       const branches = ['master', 'development']
-      const origin = await new NonBareRepoFactory().open(remoteUrl)
-      for (const branchName of branches) {
-        await origin(EnsureBranchExists.named(branchName))
-        await origin(Commit.withMessage('A commit'))
-      }
+      const origin = await new BareRepoFactory().open(remoteUrl)
+      for (const branchName of branches)
+        await origin(Commit.withMessage('A commit').toBranch(branchName))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
       await result.respond({
-        foundOne: repoInfo => assertThat(repoInfo.branches, hasProperty('length', equalTo(2))),
+        foundOne: repoInfo =>
+          assertThat(repoInfo.branches, hasProperty('length', equalTo(branches.length))),
       })
     })
   })

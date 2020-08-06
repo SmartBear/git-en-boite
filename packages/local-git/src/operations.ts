@@ -38,6 +38,7 @@ export class Commit {
   }
 }
 
+// TODO: remove me?
 export class EnsureBranchExists {
   protected constructor(public readonly name: string) {}
 

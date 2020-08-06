@@ -28,8 +28,7 @@ import {
 type BareRepo = Dispatch<BareRepoProtocol>
 
 export class BareRepoFactory {
-  async open(containingPath: string): Promise<BareRepo> {
-    const repoPath = path.resolve(containingPath, 'git')
+  async open(repoPath: string): Promise<BareRepo> {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const git = messageDispatch<BareRepoProtocol>().withHandlers(repo, [
