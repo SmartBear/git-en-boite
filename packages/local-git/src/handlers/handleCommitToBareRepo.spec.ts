@@ -68,7 +68,7 @@ describe('handleCommitToBareRepo', () => {
     )
   })
 
-  it('clears the staging area before committing', async () => {
+  it('clears the index before committing', async () => {
     const objectId = await new Promise((resolve, reject) => {
       const result = childProcess.exec(
         'git hash-object -w --stdin',
