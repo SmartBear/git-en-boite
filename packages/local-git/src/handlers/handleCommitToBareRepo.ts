@@ -16,7 +16,15 @@ export const handleCommitToBareRepo: Handle<GitDirectory, AsyncCommand<Commit>> 
     await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
   }
   const treeName = (await repo.execGit('write-tree', [])).stdout.trim()
-  const commitName = (await repo.execGit('commit-tree', [treeName, '-m', message])).stdout.trim()
+  const commitOptions = [treeName, '-m', message]
+  try {
+    const parentCommitName = (
+      await repo.execGit('show-ref', ['--hash', `refs/heads/${branchName}`])
+    ).stdout.trim()
+    commitOptions.push('-p', parentCommitName)
+  } catch (err) {}
+
+  const commitName = (await repo.execGit('commit-tree', commitOptions)).stdout.trim()
   await repo.execGit('update-ref', [`refs/heads/${branchName}`, commitName], {
     env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
   })

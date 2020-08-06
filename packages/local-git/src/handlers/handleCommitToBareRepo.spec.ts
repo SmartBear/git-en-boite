@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { containsString, fulfilled, hasProperty, promiseThat } from 'hamjest'
+import { containsString, containsStrings, fulfilled, hasProperty, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
@@ -56,6 +56,15 @@ describe('handleCommitToBareRepo', () => {
     await promiseThat(
       exec(`git ls-tree ${branchName} -r --name-only`, { cwd: repoPath }),
       fulfilled(hasProperty('stdout', containsString(file.path))),
+    )
+  })
+
+  it('creates a commit after an existing one', async () => {
+    await git(Commit.withMessage('initial commit'))
+    await git(Commit.withMessage('A commit message'))
+    await promiseThat(
+      exec(`git log main --oneline`, { cwd: repoPath }),
+      fulfilled(hasProperty('stdout', containsStrings('initial commit', 'A commit message'))),
     )
   })
 })
