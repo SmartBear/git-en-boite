@@ -18,6 +18,7 @@ import { LaBoîte } from './la_boîte'
 
 describe(LaBoîte.name, () => {
   const repoId = 'a-new-repo'
+  const branchName = 'main'
 
   let app: LaBoîte
   let root: string
@@ -58,14 +59,9 @@ describe(LaBoîte.name, () => {
   })
 
   it('can connect a new repo by cloning from a remote URL', async () => {
-    const branches = ['master']
-    const origin = await new NonBareRepoFactory().open(remoteUrl)
-    await origin(Init.nonBareRepo())
-    await origin(Commit.withMessage('Initial commit'))
-    for (const branchName of branches) {
-      await origin(EnsureBranchExists.named(branchName))
-      await origin(Commit.withMessage('A commit'))
-    }
+    const origin = await new BareRepoFactory().open(remoteUrl)
+    await origin(Commit.withMessage('Initial commit').toBranch(branchName))
+    await origin(Commit.withMessage('A commit').toBranch(branchName))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
