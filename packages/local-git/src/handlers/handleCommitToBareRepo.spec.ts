@@ -40,44 +40,30 @@ describe('handleCommitToBareRepo', () => {
     ])
   }
 
-  context('in a bare repo', () => {
-    let repoPath: string
-    let git: Dispatch<Protocol>
+  let repoPath: string
+  let git: Dispatch<Protocol>
 
-    context('connected to a remote with a single branch', () => {
-      beforeEach(async () => {
-        const branchName = 'main'
+  beforeEach(async () => {
+    repoPath = path.resolve(root, 'a-repo-id')
+    git = await openRepo(repoPath)
+    await git(Init.bareRepo())
+  })
 
-        const repoId = 'a-new-repo'
-        const remoteUrl = path.resolve(root, 'remote', repoId)
-        const origin = await new NonBareRepoFactory().open(remoteUrl)
-        await origin(EnsureBranchExists.named(branchName))
-        await origin(Commit.withMessage('Inital commit'))
+  it.only('creates an empty commit with the given message', async () => {
+    await git(Commit.withMessage('A commit message'))
+    await promiseThat(
+      exec('git log main --oneline', { cwd: repoPath }),
+      fulfilled(hasProperty('stdout', containsString('A commit message'))),
+    )
+  })
 
-        repoPath = path.resolve(root, 'a-repo-id')
-        git = await openRepo(repoPath)
-        await git(Init.bareRepo())
-        await git(SetOrigin.toUrl(remoteUrl))
-        await git(Fetch.fromOrigin())
-      })
-
-      it('creates an empty commit with the given message', async () => {
-        await git(Commit.withMessage('A commit message'))
-        await promiseThat(
-          exec('git log main --oneline', { cwd: repoPath }),
-          fulfilled(hasProperty('stdout', containsString('A commit message'))),
-        )
-      })
-
-      it('@wip creates a commit containing the given files', async () => {
-        const file = { path: 'a.file', content: 'some content' }
-        const branchName = 'a-branch'
-        await git(Commit.newFile(file).toBranch(branchName))
-        await promiseThat(
-          exec(`git ls-tree ${branchName} -r --name-only`),
-          fulfilled(hasProperty('stdout', containsString(file.path))),
-        )
-      })
-    })
+  it('@wip creates a commit containing the given files', async () => {
+    const file = { path: 'a.file', content: 'some content' }
+    const branchName = 'a-branch'
+    await git(Commit.newFile(file).toBranch(branchName))
+    await promiseThat(
+      exec(`git ls-tree ${branchName} -r --name-only`),
+      fulfilled(hasProperty('stdout', containsString(file.path))),
+    )
   })
 })
