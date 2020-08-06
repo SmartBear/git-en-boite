@@ -1,16 +1,12 @@
-import childProcess from 'child_process'
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { containsString, containsStrings, fulfilled, hasProperty, not, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
-import { promisify } from 'util'
 
 import { handleCommitToBareRepo, handleInit } from '.'
 import { GitDirectory } from '../git_directory'
 import { Commit, Init } from '../operations'
-
-const exec = promisify(childProcess.exec)
 
 type Protocol = [AsyncCommand<Commit>, AsyncCommand<Init>]
 
@@ -41,7 +37,7 @@ describe.only('handleCommitToBareRepo', () => {
   it('creates an empty commit with the given message', async () => {
     await git(Commit.withMessage('A commit message'))
     await promiseThat(
-      exec(`git log main --oneline`, { cwd: repoPath }),
+      repo.execGit('log', ['main', '--oneline']),
       fulfilled(hasProperty('stdout', containsString('A commit message'))),
     )
   })
@@ -50,7 +46,7 @@ describe.only('handleCommitToBareRepo', () => {
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.newFile(file).toBranch(branchName))
     await promiseThat(
-      exec(`git ls-tree ${branchName} -r --name-only`, { cwd: repoPath }),
+      repo.execGit('ls-tree', [branchName, '-r', '--name-only']),
       fulfilled(hasProperty('stdout', containsString(file.path))),
     )
   })
@@ -59,30 +55,17 @@ describe.only('handleCommitToBareRepo', () => {
     await git(Commit.withMessage('initial commit'))
     await git(Commit.withMessage('A commit message'))
     await promiseThat(
-      exec(`git log main --oneline`, { cwd: repoPath }),
+      repo.execGit('log', ['main', '--oneline']),
       fulfilled(hasProperty('stdout', containsStrings('initial commit', 'A commit message'))),
     )
   })
 
   it('clears the index before committing', async () => {
-    const objectId = await new Promise((resolve, reject) => {
-      const result = childProcess.exec(
-        'git hash-object -w --stdin',
-        { cwd: repoPath },
-        (err, stdout) => {
-          if (err) return reject(err)
-          resolve(stdout.trim())
-        },
-      )
-      result.stdin.write('Junk content')
-      result.stdin.end()
-    })
-
-    await exec(`git update-index --add --cacheinfo 100644 ${objectId} junk.file`, { cwd: repoPath })
+    await repo.addFileToIndex({ path: 'junk.file', content: 'Junk' })
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.newFile(file).toBranch(branchName))
     await promiseThat(
-      exec(`git ls-tree ${branchName} -r --name-only`, { cwd: repoPath }),
+      repo.execGit('ls-tree', [branchName, '-r', '--name-only']),
       fulfilled(hasProperty('stdout', not(containsString('junk.file')))),
     )
   })
