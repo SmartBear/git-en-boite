@@ -41,7 +41,7 @@ describe(GitDirectory.name, () => {
         repo.execGit('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git']),
         rejected(),
       )
-    }).timeout(5000)
+    }).timeout(10000)
 
     it('is not possible to ask for terminal prompt @slow', async () => {
       const repoPath = path.resolve(root, 'a-repo')
@@ -53,7 +53,7 @@ describe(GitDirectory.name, () => {
         }),
         rejected(),
       )
-    }).timeout(5000)
+    }).timeout(10000)
 
     it('passes args')
 
