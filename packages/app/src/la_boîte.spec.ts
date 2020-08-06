@@ -16,18 +16,22 @@ import { dirSync } from 'tmp'
 import { LaBoîte } from './la_boîte'
 
 describe(LaBoîte.name, () => {
-  let root: string
+  const repoId = 'a-new-repo'
 
-  beforeEach(() => (root = dirSync().name))
+  let app: LaBoîte
+  let root: string
+  let remoteUrl: string
+
+  beforeEach(() => {
+    root = dirSync().name
+    remoteUrl = path.resolve(root, 'remote', repoId)
+    const repoIndex = new DiskRepoIndex(root, DugiteGitRepo)
+    app = new LaBoîte(repoIndex, '999.9.9-test')
+  })
+
   afterEach(function () {
     if (this.currentTest.state === 'failed' && this.currentTest.err)
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
-  })
-
-  let app: LaBoîte
-  beforeEach(() => {
-    const repoIndex = new DiskRepoIndex(root, DugiteGitRepo)
-    app = new LaBoîte(repoIndex, '999.9.9-test')
   })
 
   describe('getting repo info', () => {
@@ -37,11 +41,8 @@ describe(LaBoîte.name, () => {
     })
 
     it('returns an object with the local branches in the repo', async () => {
-      const repoId = 'a-new-repo'
-      const remoteUrl = path.resolve(root, 'remote', repoId)
-      const repoPath = remoteUrl
       const branches = ['master', 'development']
-      const origin = await new NonBareRepoFactory().open(repoPath)
+      const origin = await new NonBareRepoFactory().open(remoteUrl)
       for (const branchName of branches) {
         await origin(EnsureBranchExists.named(branchName))
         await origin(Commit.withMessage('A commit'))
@@ -57,11 +58,8 @@ describe(LaBoîte.name, () => {
   })
 
   it('can connect a new repo by cloning from a remote URL', async () => {
-    const repoId = 'a-new-repo'
-    const remoteUrl = path.resolve(root, 'remote', repoId)
-    const repoPath = remoteUrl
     const branches = ['master']
-    const origin = await new NonBareRepoFactory().open(repoPath)
+    const origin = await new NonBareRepoFactory().open(remoteUrl)
     await origin(Init.nonBareRepo())
     await origin(Commit.withMessage('Initial commit'))
     for (const branchName of branches) {
@@ -75,11 +73,9 @@ describe(LaBoîte.name, () => {
   })
 
   it('can fetch for an existing repo', async () => {
-    const repoId = 'a-repo-id'
-    const repoPath = path.resolve(root, 'remote', repoId)
-    const origin = await new NonBareRepoFactory().open(repoPath)
+    const origin = await new NonBareRepoFactory().open(remoteUrl)
     await origin(Commit.withMessage('Initial commit'))
-    await app.connectToRemote(repoId, repoPath)
+    await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     await origin(Commit.withMessage('Another commit'))
     const expectedRevision = await origin(GetRevision.forBranchNamed('master'))
@@ -96,11 +92,8 @@ describe(LaBoîte.name, () => {
 
   it('@wip commiting', () => {
     it('pushes a new file to the origin', async () => {
-      const repoId = 'a-new-repo'
-      const remoteUrl = path.resolve(root, 'remote', repoId)
-      const repoPath = remoteUrl
       const branchName = 'main'
-      const origin = await new NonBareRepoFactory().open(repoPath)
+      const origin = await new NonBareRepoFactory().open(remoteUrl)
       await origin(EnsureBranchExists.named(branchName))
       await origin(Commit.withMessage('Inital commit'))
       await app.connectToRemote(repoId, remoteUrl)
