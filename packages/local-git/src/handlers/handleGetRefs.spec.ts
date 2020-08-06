@@ -3,7 +3,7 @@ import fs from 'fs'
 import { AsyncCommand, AsyncQuery, messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
 import { Ref } from 'git-en-boite-core'
 import { Commit, GetRefs, Init } from '../operations'
-import { equalTo, fulfilled, promiseThat, rejected, assertThat } from 'hamjest'
+import { equalTo, fulfilled, promiseThat, assertThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -23,7 +23,6 @@ describe('handleGetRefs', () => {
     if (this.currentTest.state === 'failed' && this.currentTest.err)
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
-
 
   const revisionForBranch = async (branchName: string, repoPath: string) => {
     const result = await GitProcess.exec(['rev-parse', branchName], repoPath)
@@ -68,7 +67,6 @@ describe('handleGetRefs', () => {
   })
 
   context('in a bare repo', () => {
-
     const openRepo = (repoPath: string) => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
