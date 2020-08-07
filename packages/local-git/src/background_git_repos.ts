@@ -42,19 +42,14 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
-  async pingWorkers(timeout = 2000): Promise<BackgroundGitRepos> {
+  async pingWorkers(timeoutAfter = 2000): Promise<void> {
     const job = await this.queue.add('ping', {})
-    const pinging = job.waitUntilFinished(this.queueEvents).then(() => endTimer())
-    let endTimer: () => void
-    const timingOut = new Promise(function (resolve, reject) {
-      endTimer = resolve
-      setTimeout(function () {
-        reject(new Error(`No workers responded to a ping within ${timeout}ms`))
-      }, timeout)
-    })
-    const result = Promise.race([pinging, timingOut])
-    await Promise.all([pinging, timingOut]).catch(() => result)
-    return this
+    try {
+      await job.waitUntilFinished(this.queueEvents, timeoutAfter)
+    } catch (error) {
+      if (error.message !== 'timedout') throw error
+      throw new Error(`No workers responded after ${timeoutAfter}ms`)
+    }
   }
 
   async startWorker(): Promise<void> {
