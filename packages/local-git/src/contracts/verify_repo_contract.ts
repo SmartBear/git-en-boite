@@ -1,21 +1,29 @@
-import { OpenGitRepo } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { Commit, GetRevision, NonBareRepoProtocol } from '..'
+import { BareRepoProtocol, Commit, GetRevision } from '..'
 import { GitDirectory } from '../git_directory'
 
-type OpenOriginRepo = (path: string) => Promise<Dispatch<NonBareRepoProtocol>>
+type OpenOriginRepo = (path: string) => Promise<Dispatch<BareRepoProtocol>>
 
 export const verifyRepoContract = (
   openGitRepo: OpenGitRepo,
   createOriginRepo: OpenOriginRepo,
 ): void => {
+  const branchName = 'main'
   let root: string
+  let repoPath: string
+  let git: GitRepo
 
-  beforeEach(() => (root = dirSync().name))
+  beforeEach(async () => {
+    root = dirSync().name
+    repoPath = path.resolve(root, 'a-repo-id')
+    git = await openGitRepo(repoPath)
+  })
+
   afterEach(function () {
     if (this.currentTest.state === 'failed' && this.currentTest.err)
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
@@ -29,13 +37,11 @@ export const verifyRepoContract = (
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
-        await origin(Commit.withAnyMessage())
-        latestCommit = await origin(GetRevision.forBranchNamed('master'))
+        await origin(Commit.withAnyMessage().toBranch(branchName))
+        latestCommit = await origin(GetRevision.forBranchNamed(branchName))
       })
 
       it('fetches commits from the origin repo', async () => {
-        const repoPath = path.resolve(root, 'a-repo-id')
-        const git = await openGitRepo(repoPath)
         await git.setOriginTo(originUrl)
         await git.fetch()
         const refs = await git.getRefs()
@@ -45,15 +51,12 @@ export const verifyRepoContract = (
     })
   })
 
-  describe.skip('@wip committing', () => {
+  describe('@wip committing', () => {
     it('commits a new file to a branch', async () => {
-      const branchName = 'main'
       const file = {
         path: 'a.feature',
         content: 'Feature: A',
       }
-      const repoPath = path.resolve(root, 'a-repo-id')
-      const git = await openGitRepo(repoPath)
       await git.commit(branchName, file)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.execGit('ls-tree', [branchName, '--name-only'])
