@@ -3,12 +3,11 @@ import { fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { BareRepoFactory, NonBareRepoFactory } from '.'
-import { Commit, Connect, NonBareRepoProtocol } from './operations'
+import { BareRepoFactory } from '.'
+import { Commit, Connect, BareRepoProtocol } from './operations'
 
 describe(BareRepoFactory.name, () => {
   const factory = new BareRepoFactory()
-  const nonBareRepoFactory = new NonBareRepoFactory()
   // verifyRepoFactoryContract(factory, nonBareRepoFactory)
 
   let root: string
@@ -21,23 +20,24 @@ describe(BareRepoFactory.name, () => {
 
   describe(Connect.name, () => {
     let remoteUrl: string
-    let origin: Dispatch<NonBareRepoProtocol>
+    let origin: Dispatch<BareRepoProtocol>
+    let git: Dispatch<BareRepoProtocol>
+    let repoPath: string
 
     beforeEach(async () => {
       remoteUrl = path.resolve(root, 'remote', 'a-repo-id')
-      origin = await nonBareRepoFactory.open(remoteUrl)
+      origin = await factory.open(remoteUrl)
       await origin(Commit.withAnyMessage())
+
+      repoPath = path.resolve(root, 'a-repo-id')
+      git = await factory.open(repoPath)
     })
 
     it('connects to a valid remote', async () => {
-      const repoPath = path.resolve(root, 'a-repo-id')
-      const git = await factory.open(repoPath)
       await promiseThat(git(Connect.toUrl(remoteUrl)), fulfilled())
     })
 
     it('fails with a bad remote', async () => {
-      const repoPath = path.resolve(root, 'a-repo-id')
-      const git = await factory.open(repoPath)
       await promiseThat(git(Connect.toUrl('a-bad-url')), rejected())
     })
   })
