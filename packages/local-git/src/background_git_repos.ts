@@ -12,14 +12,17 @@ export class BackgroundGitRepos {
   private queue: Queue<any>
   private queueEvents: QueueEvents
   private queueClient: IORedis.Redis
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private worker: Closable = { close: async () => {} }
+  private worker: Closable = {
+    close: async () => {
+      //no-op
+    },
+  }
 
   static async connect(
     gitRepos: { openGitRepo: OpenGitRepo },
     redisUrl: string,
   ): Promise<BackgroundGitRepos> {
-    const createRedisClient = () => connectToRedis(redisUrl)
+    const createRedisClient = async () => connectToRedis(redisUrl)
     return await new BackgroundGitRepos(gitRepos, createRedisClient).connect()
   }
 
@@ -42,14 +45,11 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
-  async pingWorkers(timeoutAfter = 2000): Promise<void> {
+  async pingWorkers(timeout = 2000): Promise<void> {
     const job = await this.queue.add('ping', {})
-    try {
-      await job.waitUntilFinished(this.queueEvents, timeoutAfter)
-    } catch (error) {
-      if (error.message !== 'timedout') throw error
-      throw new Error(`No workers responded after ${timeoutAfter}ms`)
-    }
+    await job.waitUntilFinished(this.queueEvents, timeout).catch(() => {
+      throw new Error(`No workers responded to a ping within ${timeout}ms`)
+    })
   }
 
   async startWorker(): Promise<void> {
@@ -57,12 +57,12 @@ export class BackgroundGitRepos {
   }
 
   async close(): Promise<void> {
-    await Promise.all([
-      this.worker.close(),
-      this.queue.close(),
-      this.queueEvents.close(),
-      this.queueClient.disconnect(),
-    ])
+    await this.worker.close()
+    await this.queueEvents.close()
+    await new Promise(resolve => {
+      this.queueClient.on('end', resolve)
+      this.queueClient.disconnect()
+    })
   }
 }
 
@@ -127,11 +127,9 @@ class GitRepoWorker implements Closable {
   }
 
   async close(): Promise<void> {
-    await Promise.all([
-      this.worker.close(),
-      this.redisClient.disconnect(),
-      this.worker.disconnect(),
-    ])
+    await this.worker.close(true)
+    await this.worker.disconnect()
+    await this.redisClient.disconnect()
   }
 }
 

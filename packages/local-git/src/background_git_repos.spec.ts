@@ -27,10 +27,14 @@ describe(BackgroundGitRepos.name, () => {
 
   context('checking for running workers', () => {
     let gitRepos: BackgroundGitRepos
+
     beforeEach(async function () {
       gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
     })
-    afterEach(async () => await gitRepos.close())
+
+    afterEach(async () => {
+      await gitRepos.close()
+    })
 
     it('throws an error when no workers are running', async () => {
       const pinging = gitRepos.pingWorkers(1)
@@ -41,7 +45,7 @@ describe(BackgroundGitRepos.name, () => {
     })
 
     // Skipping because having both of these seems to leave a hanging promise, sometimes
-    it.skip('succeeds when a worker is running', async () => {
+    it('succeeds when a worker is running', async () => {
       await gitRepos.startWorker()
       const pinging = gitRepos.pingWorkers(100)
       await promiseThat(pinging, fulfilled())
