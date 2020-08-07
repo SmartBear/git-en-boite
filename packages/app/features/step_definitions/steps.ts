@@ -2,8 +2,8 @@
 import { Given, TableDefinition, Then, When } from 'cucumber'
 import { GitRepoInfo } from 'git-en-boite-client-port'
 import { File } from 'git-en-boite-core'
-import { NonBareRepoFactory } from 'git-en-boite-local-git'
-import { Commit, EnsureBranchExists, GetRevision } from 'git-en-boite-local-git'
+import { BareRepoFactory } from 'git-en-boite-local-git'
+import { Commit, GetRevision } from 'git-en-boite-local-git'
 import { assertThat, containsInAnyOrder, equalTo, hasProperty, matchesPattern, not } from 'hamjest'
 import path from 'path'
 
@@ -11,23 +11,21 @@ Given('a remote repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
   const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
-  const git = await new NonBareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.withMessage('Initial commit'))
+  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
   for (const branchName of branches) {
-    await git(EnsureBranchExists.named(branchName))
-    await git(Commit.withAnyMessage())
+    await git(Commit.withAnyMessage().toBranch(branchName))
   }
 })
 
 Given('a remote repo with commits on the master branch', async function () {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
-  const git = await new NonBareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.withAnyMessage())
+  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
+  await git(Commit.withAnyMessage().toBranch('master'))
 })
 
 When('a new commit is made in the remote repo', async function () {
-  const git = await new NonBareRepoFactory().open(this.repoRemoteUrl)
+  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
   await git(Commit.withAnyMessage())
   this.lastCommitRevision = await git(GetRevision.forBranchNamed('master'))
 })
