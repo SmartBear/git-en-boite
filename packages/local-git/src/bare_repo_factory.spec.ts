@@ -8,7 +8,6 @@ import { Commit, Connect, BareRepoProtocol } from './operations'
 
 describe(BareRepoFactory.name, () => {
   const factory = new BareRepoFactory()
-  // verifyRepoFactoryContract(factory, nonBareRepoFactory)
 
   let root: string
 
