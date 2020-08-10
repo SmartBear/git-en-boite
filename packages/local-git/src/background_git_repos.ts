@@ -75,7 +75,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
   ) {}
 
   commit(branchName: string, file: File): Promise<void> {
-    throw new Error('Method not implemented.')
+    return this.gitRepo.commit(branchName, file)
   }
 
   async setOriginTo(remoteUrl: string): Promise<void> {

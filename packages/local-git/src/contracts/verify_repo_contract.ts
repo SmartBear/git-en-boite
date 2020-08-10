@@ -51,7 +51,7 @@ export const verifyRepoContract = (
     })
   })
 
-  describe('@wip committing', () => {
+  describe('committing', () => {
     it('commits a new file to a branch', async () => {
       const file = {
         path: 'a.feature',
