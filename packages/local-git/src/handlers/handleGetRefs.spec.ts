@@ -8,7 +8,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommit } from './handleCommitToBareRepo'
+import { handleCommit } from './handleCommit'
 import { handleGetRefs } from './handleGetRefs'
 import { handleInit } from './handleInit'
 

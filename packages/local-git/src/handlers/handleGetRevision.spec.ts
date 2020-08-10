@@ -8,7 +8,7 @@ import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
 import { Commit, GetRevision, Init } from '../operations'
-import { handleCommit } from './handleCommitToBareRepo'
+import { handleCommit } from './handleCommit'
 import { handleGetRevision } from './handleGetRevision'
 import { handleInit } from './handleInit'
 

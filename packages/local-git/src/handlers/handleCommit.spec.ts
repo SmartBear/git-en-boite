@@ -10,7 +10,7 @@ import { Commit, Init } from '../operations'
 
 type Protocol = [AsyncCommand<Commit>, AsyncCommand<Init>]
 
-describe('handleCommitToBareRepo', () => {
+describe('handleCommit', () => {
   const branchName = 'a-branch'
   let root: string
   let repoPath: string
