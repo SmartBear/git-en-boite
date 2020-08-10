@@ -11,6 +11,7 @@ import { handleInit } from './handleInit'
 
 type Protocol = [AsyncCommand<Init>, AsyncQuery<GetConfig, Config>]
 
+// TODO: Do we still need the config if it's only for checking the bare property?
 describe('handleGetConfig', () => {
   let root: string
 
@@ -31,31 +32,14 @@ describe('handleGetConfig', () => {
 
   let git: Dispatch<Protocol>
 
-  context('in a non-bare repo', () => {
-    let repoPath: string
-
-    beforeEach(async () => {
-      repoPath = path.resolve(root, 'a-repo-id')
-      git = await openRepo(repoPath)
-      await git(Init.nonBareRepo())
-    })
-
-    it('returns a list include core.bare=false', async () => {
-      const config = await git(GetConfig.forRepo())
-      assertThat(config['core.bare'], equalTo('false'))
-    })
+  beforeEach(async () => {
+    const repoPath = path.resolve(root, 'a-repo-id')
+    git = openRepo(repoPath)
+    await git(Init.bareRepo())
   })
 
-  context('in a bare repo', () => {
-    beforeEach(async () => {
-      const repoPath = path.resolve(root, 'a-repo-id')
-      git = openRepo(repoPath)
-      await git(Init.bareRepo())
-    })
-
-    it('returns a list include core.bare=true', async () => {
-      const config = await git(GetConfig.forRepo())
-      assertThat(config['core.bare'], equalTo('true'))
-    })
+  it('returns a list include core.bare=true', async () => {
+    const config = await git(GetConfig.forRepo())
+    assertThat(config['core.bare'], equalTo('true'))
   })
 })
