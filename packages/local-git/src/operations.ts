@@ -76,10 +76,6 @@ export class Init {
   static bareRepo(): Init {
     return new Init(true)
   }
-
-  static nonBareRepo(): Init {
-    return new Init(false)
-  }
 }
 
 export class SetOrigin {
@@ -128,18 +124,5 @@ export type BareRepoProtocol = [
   AsyncQuery<GetFiles, File[]>,
   AsyncQuery<GetRefs, Ref[]>,
   AsyncQuery<GetConfig, Config>,
-  AsyncQuery<GetRevision, string>,
-]
-
-// only used to create origin repos for testing
-export type NonBareRepoProtocol = [
-  AsyncCommand<Checkout>,
-  AsyncCommand<Commit>,
-  AsyncCommand<Fetch>,
-  AsyncCommand<Init>,
-  AsyncCommand<SetOrigin>,
-  AsyncQuery<GetConfig, Config>,
-  AsyncQuery<GetFiles, File[]>,
-  AsyncQuery<GetRefs, Ref[]>,
   AsyncQuery<GetRevision, string>,
 ]
