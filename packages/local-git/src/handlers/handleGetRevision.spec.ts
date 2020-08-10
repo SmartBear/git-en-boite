@@ -7,20 +7,14 @@ import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
-import { Commit, EnsureBranchExists, GetRevision, Init } from '../operations'
+import { Commit, GetRevision, Init } from '../operations'
 import { handleCommitToBareRepo } from './handleCommitToBareRepo'
-import { handleEnsureBranchExists } from './handleEnsureBranchExists'
 import { handleGetRevision } from './handleGetRevision'
 import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 
-type Protocol = [
-  AsyncCommand<Init>,
-  AsyncCommand<Commit>,
-  AsyncQuery<GetRevision, string>,
-  AsyncCommand<EnsureBranchExists>,
-]
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetRevision, string>]
 
 const repo = (repoPath: string) => {
   fs.mkdirSync(repoPath, { recursive: true })
@@ -29,7 +23,6 @@ const repo = (repoPath: string) => {
     [Init, handleInit],
     [Commit, handleCommitToBareRepo],
     [GetRevision, handleGetRevision],
-    [EnsureBranchExists, handleEnsureBranchExists],
   ])
 }
 

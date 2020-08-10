@@ -5,7 +5,6 @@ import { GitDirectory } from './git_directory'
 import {
   handleCheckout,
   handleCommitToNonBareRepo,
-  handleEnsureBranchExists,
   handleFetch,
   handleGetConfig,
   handleGetFiles,
@@ -17,7 +16,6 @@ import {
 import {
   Checkout,
   Commit,
-  EnsureBranchExists,
   Fetch,
   GetConfig,
   GetFiles,
@@ -37,7 +35,6 @@ export class NonBareRepoFactory {
     const git = messageDispatch<NonBareRepoProtocol>().withHandlers(repo, [
       [Checkout, handleCheckout],
       [Commit, handleCommitToNonBareRepo],
-      [EnsureBranchExists, handleEnsureBranchExists],
       [Fetch, handleFetch],
       [Init, handleInit],
       [SetOrigin, handleSetOrigin],

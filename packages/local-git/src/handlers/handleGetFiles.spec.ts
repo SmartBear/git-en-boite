@@ -5,20 +5,14 @@ import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-
 import { dirSync } from 'tmp'
 
 import { handleCommitToNonBareRepo, handleGetFiles, handleInit } from '.'
-import { Commit, GetFiles, Init, EnsureBranchExists } from '../operations'
+import { Commit, GetFiles, Init } from '../operations'
 
 // import { equalTo, fulfilled, promiseThat, rejected, assertThat } from 'hamjest'
 import path from 'path'
 import { GitDirectory } from '../git_directory'
-import { handleEnsureBranchExists } from './handleEnsureBranchExists'
 import { assertThat, contains } from 'hamjest'
 
-type Protocol = [
-  AsyncCommand<Init>,
-  AsyncCommand<Commit>,
-  AsyncCommand<EnsureBranchExists>,
-  AsyncQuery<GetFiles, File[]>,
-]
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetFiles, File[]>]
 
 describe('handleGetFiles', () => {
   let root: string
@@ -36,7 +30,6 @@ describe('handleGetFiles', () => {
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
       [Commit, handleCommitToNonBareRepo],
-      [EnsureBranchExists, handleEnsureBranchExists],
       [GetFiles, handleGetFiles],
     ])
   }

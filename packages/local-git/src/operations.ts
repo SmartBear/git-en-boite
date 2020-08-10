@@ -38,15 +38,6 @@ export class Commit {
   }
 }
 
-// TODO: remove me?
-export class EnsureBranchExists {
-  protected constructor(public readonly name: string) {}
-
-  static named(name: string): EnsureBranchExists {
-    return new EnsureBranchExists(name)
-  }
-}
-
 export class Fetch {
   private unique: void
 
@@ -144,7 +135,6 @@ export type BareRepoProtocol = [
 export type NonBareRepoProtocol = [
   AsyncCommand<Checkout>,
   AsyncCommand<Commit>,
-  AsyncCommand<EnsureBranchExists>,
   AsyncCommand<Fetch>,
   AsyncCommand<Init>,
   AsyncCommand<SetOrigin>,
