@@ -8,7 +8,6 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommitToNonBareRepo } from './handleCommitToNonBareRepo'
 import { handleCommitToBareRepo } from './handleCommitToBareRepo'
 import { handleGetRefs } from './handleGetRefs'
 import { handleInit } from './handleInit'
@@ -31,42 +30,9 @@ describe('handleGetRefs', () => {
 
   let git: Dispatch<Protocol>
 
-  context('in a non-bare repo', () => {
+  context('in a bare repo', () => {
     let repoPath: string
 
-    const openRepo = (repoPath: string) => {
-      fs.mkdirSync(repoPath, { recursive: true })
-      const repo = new GitDirectory(repoPath)
-      return messageDispatch<Protocol>().withHandlers(repo, [
-        [Init, handleInit],
-        [Commit, handleCommitToNonBareRepo],
-        [GetRefs, handleGetRefs],
-      ])
-    }
-
-    beforeEach(async () => {
-      repoPath = path.resolve(root, 'a-repo-id')
-      git = await openRepo(repoPath)
-      await git(Init.nonBareRepo())
-    })
-
-    context('with a commit to the master branch', () => {
-      beforeEach(async () => {
-        await git(Commit.withAnyMessage())
-      })
-
-      it('returns the revision of the latest commit', async () => {
-        await promiseThat(
-          git(GetRefs.all()),
-          fulfilled(
-            equalTo([new Ref(await revisionForBranch('master', repoPath), 'refs/heads/master')]),
-          ),
-        )
-      })
-    })
-  })
-
-  context('in a bare repo', () => {
     const openRepo = (repoPath: string) => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
@@ -78,7 +44,7 @@ describe('handleGetRefs', () => {
     }
 
     beforeEach(async () => {
-      const repoPath = path.resolve(root, 'a-repo-id')
+      repoPath = path.resolve(root, 'a-repo-id')
       git = openRepo(repoPath)
       await git(Init.bareRepo())
     })
@@ -87,8 +53,19 @@ describe('handleGetRefs', () => {
       assertThat(await git(GetRefs.all()), equalTo([]))
     })
 
-    context('with a remote branch', () => {
-      it('returns a ref for the remote branch')
+    context('with a commit to the main branch', () => {
+      beforeEach(async () => {
+        await git(Commit.withAnyMessage().toBranch('main'))
+      })
+
+      it('returns the revision of the latest commit', async () => {
+        await promiseThat(
+          git(GetRefs.all()),
+          fulfilled(
+            equalTo([new Ref(await revisionForBranch('main', repoPath), 'refs/heads/main')]),
+          ),
+        )
+      })
     })
   })
 })
