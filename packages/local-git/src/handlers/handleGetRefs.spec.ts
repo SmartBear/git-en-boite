@@ -8,7 +8,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
-import { handleCommitToBareRepo } from './handleCommitToBareRepo'
+import { handleCommit } from './handleCommitToBareRepo'
 import { handleGetRefs } from './handleGetRefs'
 import { handleInit } from './handleInit'
 
@@ -38,7 +38,7 @@ describe('handleGetRefs', () => {
       const repo = new GitDirectory(repoPath)
       return messageDispatch<Protocol>().withHandlers(repo, [
         [Init, handleInit],
-        [Commit, handleCommitToBareRepo],
+        [Commit, handleCommit],
         [GetRefs, handleGetRefs],
       ])
     }

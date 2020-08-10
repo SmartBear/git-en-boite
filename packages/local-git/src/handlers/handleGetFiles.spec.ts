@@ -3,10 +3,9 @@ import { File } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { dirSync } from 'tmp'
 
-import { handleCommitToBareRepo, handleGetFiles, handleInit } from '.'
+import { handleCommit, handleGetFiles, handleInit } from '.'
 import { Commit, GetFiles, Init } from '../operations'
 
-// import { equalTo, fulfilled, promiseThat, rejected, assertThat } from 'hamjest'
 import path from 'path'
 import { GitDirectory } from '../git_directory'
 import { assertThat, contains } from 'hamjest'
@@ -28,7 +27,7 @@ describe('handleGetFiles', () => {
     const repo = new GitDirectory(repoPath)
     return messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],
-      [Commit, handleCommitToBareRepo],
+      [Commit, handleCommit],
       [GetFiles, handleGetFiles],
     ])
   }

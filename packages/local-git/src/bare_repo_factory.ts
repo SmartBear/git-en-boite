@@ -3,7 +3,7 @@ import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from './git_directory'
 import {
-  handleCommitToBareRepo,
+  handleCommit,
   handleConnect,
   handleFetch,
   handleGetConfig,
@@ -35,7 +35,7 @@ export class BareRepoFactory {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
     const git = messageDispatch<BareRepoProtocol>().withHandlers(repo, [
-      [Commit, handleCommitToBareRepo],
+      [Commit, handleCommit],
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],

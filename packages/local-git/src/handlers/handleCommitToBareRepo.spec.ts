@@ -4,7 +4,7 @@ import { containsString, containsStrings, fulfilled, hasProperty, not, promiseTh
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { handleCommitToBareRepo, handleInit } from '.'
+import { handleCommit, handleInit } from '.'
 import { GitDirectory } from '../git_directory'
 import { Commit, Init } from '../operations'
 
@@ -23,7 +23,7 @@ describe('handleCommitToBareRepo', () => {
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [
-      [Commit, handleCommitToBareRepo],
+      [Commit, handleCommit],
       [Init, handleInit],
     ])
     await git(Init.bareRepo())

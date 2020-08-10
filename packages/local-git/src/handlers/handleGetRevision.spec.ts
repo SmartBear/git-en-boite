@@ -8,7 +8,7 @@ import { promisify } from 'util'
 
 import { GitDirectory } from '../git_directory'
 import { Commit, GetRevision, Init } from '../operations'
-import { handleCommitToBareRepo } from './handleCommitToBareRepo'
+import { handleCommit } from './handleCommitToBareRepo'
 import { handleGetRevision } from './handleGetRevision'
 import { handleInit } from './handleInit'
 
@@ -21,7 +21,7 @@ const repo = (repoPath: string) => {
   const repo = new GitDirectory(repoPath)
   return messageDispatch<Protocol>().withHandlers(repo, [
     [Init, handleInit],
-    [Commit, handleCommitToBareRepo],
+    [Commit, handleCommit],
     [GetRevision, handleGetRevision],
   ])
 }
