@@ -18,7 +18,7 @@ type Protocol = [
   AsyncCommand<SetOrigin>,
 ]
 
-describe('@wip handleCommit', () => {
+describe('handleCommit', () => {
   const branchName = 'a-branch'
   let root: string
   let repoPath: string
@@ -49,7 +49,7 @@ describe('@wip handleCommit', () => {
   it('creates an empty commit with the given message', async () => {
     await git(Commit.withMessage('A commit message').toBranch(branchName))
     await promiseThat(
-      repo.execGit('log', [`refs/drafts/${branchName}`, '--oneline']),
+      repo.execGit('log', [`refs/heads/${branchName}`, '--oneline']),
       fulfilled(hasProperty('stdout', containsString('A commit message'))),
     )
   })
@@ -58,31 +58,30 @@ describe('@wip handleCommit', () => {
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.newFile(file).toBranch(branchName))
     await promiseThat(
-      repo.execGit('ls-tree', [`refs/drafts/${branchName}`, '-r', '--name-only']),
+      repo.execGit('ls-tree', [`refs/heads/${branchName}`, '-r', '--name-only']),
       fulfilled(hasProperty('stdout', containsString(file.path))),
     )
   })
 
   it('creates a commit after an existing one', async () => {
-    await git(Commit.withMessage('initial commit'))
-    await git(Commit.withMessage('A commit message'))
+    await git(Commit.withMessage('initial commit').toBranch(branchName))
+    await git(Commit.withMessage('A commit message').toBranch(branchName))
     await promiseThat(
-      repo.execGit('log', [`refs/drafts/${branchName}`, '--oneline']),
+      repo.execGit('log', [`refs/heads/${branchName}`, '--oneline']),
       fulfilled(hasProperty('stdout', containsStrings('initial commit', 'A commit message'))),
     )
   })
 
-  it('clears the index before committing', async () => {
-    await repo.addFileToIndex({ path: 'junk.file', content: 'Junk' })
+  it('clears the index after committing', async () => {
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.newFile(file).toBranch(branchName))
     await promiseThat(
-      repo.execGit('ls-tree', [`refs/drafts/${branchName}`, '-r', '--name-only']),
+      repo.execGit('ls-tree', [`refs/heads/${branchName}`, '-r', '--name-only']),
       fulfilled(hasProperty('stdout', not(containsString('junk.file')))),
     )
   })
 
-  it.only('pushes to remote', async () => {
+  it('@wip pushes to remote', async () => {
     const origin = await new BareRepoFactory().open(originUrl)
     await origin(Commit.withAnyMessage().toBranch(branchName))
     await git(SetOrigin.toUrl(originUrl))

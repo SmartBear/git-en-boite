@@ -15,7 +15,7 @@ export class Repo {
     return await this.git.getRefs()
   }
 
-  async commit(branchName:string, file:File): Promise<void> {
+  async commit(branchName: string, file: File): Promise<void> {
     await this.git.commit(branchName, file)
   }
 }

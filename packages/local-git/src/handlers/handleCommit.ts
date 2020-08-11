@@ -8,9 +8,9 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { files, message, author, branchName },
 ) => {
-  await repo.clearIndex()
   for (const file of files) await repo.addFileToIndex(file)
   await commitCurrentIndexToBranch(repo, message, branchName, author)
+  await repo.clearIndex()
 }
 
 async function commitCurrentIndexToBranch(
