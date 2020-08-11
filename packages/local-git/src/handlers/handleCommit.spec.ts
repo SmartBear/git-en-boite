@@ -72,7 +72,7 @@ describe('handleCommit', () => {
     )
   })
 
-  it('clears the index after committing', async () => {
+  it('clears the index before committing', async () => {
     const file = { path: 'a.file', content: 'some content' }
     await repo.addFileToIndex({ path: 'junk.file', content: 'Junk' })
     await git(Commit.newFile(file).toBranch(branchName))
