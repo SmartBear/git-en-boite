@@ -74,7 +74,9 @@ describe('handleCommit', () => {
 
   it('clears the index after committing', async () => {
     const file = { path: 'a.file', content: 'some content' }
+    await repo.addFileToIndex({ path: 'junk.file', content: 'Junk' })
     await git(Commit.newFile(file).toBranch(branchName))
+
     await promiseThat(
       repo.execGit('ls-tree', [`refs/heads/${branchName}`, '-r', '--name-only']),
       fulfilled(hasProperty('stdout', not(containsString('junk.file')))),
