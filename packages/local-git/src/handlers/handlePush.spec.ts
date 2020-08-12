@@ -62,9 +62,9 @@ describe('handlePush', () => {
 
     const file = { path: 'a.file', content: 'some content' }
     const commitRef = PendingCommitRef.forBranch(branchName)
-    await git(Commit.newFile(file).toRef(commitRef.value).onBranch(commitRef.branchName))
+    await git(Commit.newFile(file).toRef(commitRef.localRef).onBranch(commitRef.branchName))
     await git(Push.pendingCommitFrom(commitRef))
-    const commitName = (await git(GetRefs.all())).find(ref => ref.refName === commitRef.value)
+    const commitName = (await git(GetRefs.all())).find(ref => ref.refName === commitRef.localRef)
       .revision
 
     promiseThat(origin(GetRevision.forBranchNamed(branchName)), fulfilled(equalTo(commitName)))

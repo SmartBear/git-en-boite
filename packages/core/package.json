@@ -4,7 +4,8 @@
   "description": "Core Domain for git-en-boite",
   "main": "src/index.ts",
   "scripts": {
-    "test": "mocha",
+    "test:wip": "mocha -g @wip",
+    "test": "mocha -g @wip -i",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {

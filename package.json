@@ -7,7 +7,8 @@
     "local-git": "yarn workspace git-en-boite-local-git",
     "start": "yarn app start",
     "test": "yarn workspaces run test",
-    "web": "yarn workspace git-en-boite-client-adapter-web"
+    "web": "yarn workspace git-en-boite-client-adapter-web",
+    "core": "yarn workspace git-en-boite-core"
   },
   "workspaces": [
     "packages/app",

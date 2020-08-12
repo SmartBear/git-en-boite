@@ -128,7 +128,7 @@ class GitRepoWorker implements Closable {
         }
         if (job.name === 'push') {
           const { commitRef } = job.data
-          return await git.push(commitRef)
+          return await git.push(PendingCommitRef.fromJSON(commitRef))
         }
       },
       { connection: this.redisClient },
