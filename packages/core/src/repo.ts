@@ -17,7 +17,7 @@ export class Repo {
   }
 
   async commit(branchName: string, file: File): Promise<void> {
-    const refName = `refs/pending-commits/branchName-${uuid()}`
+    const refName = `refs/pending-commits/${branchName}-${uuid()}`
     await this.git.commit(refName, branchName, file)
     await this.git.push(refName, branchName)
   }
