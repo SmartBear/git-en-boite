@@ -16,7 +16,7 @@ export class DugiteGitRepo implements GitRepo {
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {
-    return this.git(Push.pendingCommitFrom(commitRef.value).toBranch(commitRef.branchName))
+    return this.git(Push.pendingCommitFrom(commitRef))
   }
 
   setOriginTo(remoteUrl: string): Promise<void> {

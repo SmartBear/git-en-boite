@@ -16,7 +16,7 @@ import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, Init, SetOrigin, Push, GetRevision, GetRefs } from '../operations'
 import { promiseThat, equalTo, fulfilled } from 'hamjest'
 import { handleGetRevision } from './handleGetRevision'
-import { Ref } from 'git-en-boite-core'
+import { Ref, PendingCommitRef } from 'git-en-boite-core'
 
 type Protocol = [
   AsyncCommand<Commit>,
@@ -61,10 +61,11 @@ describe('handlePush', () => {
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }
-    const refName = 'refs/test/a-ref'
-    await git(Commit.newFile(file).toRef(refName).onBranch(branchName))
-    await git(Push.pendingCommitFrom(refName).toBranch(branchName))
-    const commitName = (await git(GetRefs.all())).find(ref => ref.refName === refName).revision
+    const commitRef = PendingCommitRef.forBranch(branchName)
+    await git(Commit.newFile(file).toRef(commitRef.value).onBranch(commitRef.branchName))
+    await git(Push.pendingCommitFrom(commitRef))
+    const commitName = (await git(GetRefs.all())).find(ref => ref.refName === commitRef.value)
+      .revision
 
     promiseThat(origin(GetRevision.forBranchNamed(branchName)), fulfilled(equalTo(commitName)))
   })

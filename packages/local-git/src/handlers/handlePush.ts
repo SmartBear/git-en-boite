@@ -4,7 +4,7 @@ import { GitDirectory } from '../git_directory'
 
 export const handlePush: Handle<GitDirectory, AsyncCommand<Push>> = async (
   repo: GitDirectory,
-  { refName, branchName },
+  { commitRef },
 ) => {
-  await repo.execGit('push', ['origin', `${refName}:refs/heads/${branchName}`])
+  await repo.execGit('push', ['origin', `${commitRef.value}:refs/heads/${commitRef.branchName}`])
 }

@@ -1,4 +1,4 @@
-import { Author, File, Ref } from 'git-en-boite-core'
+import { Author, File, Ref, PendingCommitRef } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Checkout {
@@ -60,14 +60,10 @@ export class Fetch {
 }
 
 export class Push {
-  private constructor(public readonly refName: string, public readonly branchName: string) {}
+  private constructor(public readonly commitRef: PendingCommitRef) {}
 
-  static pendingCommitFrom(refName: string): Push {
-    return new this(refName, 'a-branch')
-  }
-
-  toBranch(branchName: string): Push {
-    return new Push(this.refName, branchName)
+  static pendingCommitFrom(commitRef: PendingCommitRef): Push {
+    return new this(commitRef)
   }
 }
 
