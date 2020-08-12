@@ -1,4 +1,4 @@
-import { GitRepo, Ref, File } from 'git-en-boite-core'
+import { GitRepo, Ref, File, PendingCommitRef } from 'git-en-boite-core'
 import { BareRepoFactory } from './bare_repo_factory'
 import { BareRepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
 import { Dispatch } from 'git-en-boite-message-dispatch'
@@ -15,8 +15,8 @@ export class DugiteGitRepo implements GitRepo {
     return this.git(Commit.newFile(file).toRef(refName).onBranch(branchName))
   }
 
-  async push(refName: string, branchName: string): Promise<void> {
-    return this.git(Push.pendingCommitFrom(refName).toBranch(branchName))
+  async push(commitRef: PendingCommitRef): Promise<void> {
+    return this.git(Push.pendingCommitFrom(commitRef.value).toBranch(commitRef.branchName))
   }
 
   setOriginTo(remoteUrl: string): Promise<void> {

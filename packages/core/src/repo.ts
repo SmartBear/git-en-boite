@@ -1,12 +1,5 @@
 import { Ref, GitRepo, File } from '.'
-import { v4 as uuid } from 'uuid'
-import { TinyTypeOf } from 'tiny-types'
-
-class PendingCommitRef extends TinyTypeOf<string>() {
-  static forBranch(branchName: string): PendingCommitRef {
-    return new PendingCommitRef(`refs/pending-commits/${branchName}-${uuid()}`)
-  }
-}
+import { PendingCommitRef } from './pending_commit_ref'
 
 export class Repo {
   constructor(public readonly repoId: string, private readonly git: GitRepo) {}
@@ -24,8 +17,9 @@ export class Repo {
   }
 
   async commit(branchName: string, file: File): Promise<void> {
-    const refName = PendingCommitRef.forBranch(branchName).value
+    const commitRef = PendingCommitRef.forBranch(branchName)
+    const refName = commitRef.value
     await this.git.commit(refName, branchName, file)
-    await this.git.push(refName, branchName)
+    await this.git.push(commitRef)
   }
 }

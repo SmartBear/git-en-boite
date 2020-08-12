@@ -1,4 +1,4 @@
-import { GitRepo, OpenGitRepo } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo, PendingCommitRef } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
@@ -94,10 +94,10 @@ export const verifyRepoContract = (
         path: 'a.feature',
         content: 'Feature: A',
       }
-      const refName = `refs/pending-commits/${branchName}`
-      await git.commit(refName, branchName, file)
-      await git.push(refName, branchName)
-      const commitName = (await git.getRefs()).find(ref => ref.refName === refName).revision
+      const commitRef = PendingCommitRef.forBranch(branchName)
+      await git.commit(commitRef.value, branchName, file)
+      await git.push(commitRef)
+      const commitName = (await git.getRefs()).find(ref => ref.refName === commitRef.value).revision
       const remoteCommitName = (await origin(GetRefs.all())).find(
         ref => ref.refName === `refs/heads/${branchName}`,
       ).revision

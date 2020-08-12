@@ -1,5 +1,5 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
-import { File, GitRepo, OpenGitRepo, OpensGitRepos, Ref } from 'git-en-boite-core'
+import { File, GitRepo, OpenGitRepo, OpensGitRepos, Ref, PendingCommitRef } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -88,8 +88,8 @@ export class BackgroundGitRepoProxy implements GitRepo {
     return job.waitUntilFinished(this.queueEvents)
   }
 
-  async push(refName: string, branchName: string): Promise<void> {
-    const job = await this.queue.add('push', { path: this.path, refName, branchName })
+  async push(commitRef: PendingCommitRef): Promise<void> {
+    const job = await this.queue.add('push', { path: this.path, commitRef })
     return job.waitUntilFinished(this.queueEvents)
   }
 
@@ -127,8 +127,8 @@ class GitRepoWorker implements Closable {
           return await git.fetch()
         }
         if (job.name === 'push') {
-          const { refName, branchName } = job.data
-          return await git.push(refName, branchName)
+          const { commitRef } = job.data
+          return await git.push(commitRef)
         }
       },
       { connection: this.redisClient },
