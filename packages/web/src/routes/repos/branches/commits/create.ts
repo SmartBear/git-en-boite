@@ -1,4 +1,4 @@
-import { Application } from 'git-en-boite-client-port'
+import { Application } from 'git-en-boite-core'
 import { Context } from 'koa'
 import Router from '@koa/router'
 

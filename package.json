@@ -7,17 +7,16 @@
     "local-git": "yarn workspace git-en-boite-local-git",
     "start": "yarn app start",
     "test": "yarn workspaces run test",
-    "web": "yarn workspace git-en-boite-client-adapter-web",
+    "web": "yarn workspace git-en-boite-web",
     "core": "yarn workspace git-en-boite-core"
   },
   "workspaces": [
     "packages/app",
-    "packages/client-adapter-web",
-    "packages/client-port",
-    "packages/message-dispatch",
+    "packages/web",
     "packages/config",
     "packages/core",
     "packages/local-git",
+    "packages/message-dispatch",
     "packages/repo-index"
   ]
 }

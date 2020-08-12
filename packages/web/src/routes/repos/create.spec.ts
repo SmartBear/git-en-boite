@@ -1,4 +1,4 @@
-import { Application} from 'git-en-boite-client-port'
+import { Application } from 'git-en-boite-core'
 import { assertThat, throws, hasProperty, equalTo, not } from 'hamjest'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
@@ -8,7 +8,6 @@ import createWebApp from '../../create_web_app'
 import router from '../router'
 
 describe('POST /repos/ validations', () => {
-
   let request: SuperTest<Test>
   let server: Server
   let app: StubbedInstance<Application>

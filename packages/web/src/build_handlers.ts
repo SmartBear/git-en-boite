@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application } from 'git-en-boite-client-port'
+import { Application } from 'git-en-boite-core'
 import { Middleware } from 'koa'
 
 type BuildHandler = (app: Application, parentRouter: Router) => Router

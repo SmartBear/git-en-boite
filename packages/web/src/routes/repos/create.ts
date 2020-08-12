@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application, GitRepoInfo } from 'git-en-boite-client-port'
+import { Application, GitRepoInfo } from 'git-en-boite-core'
 import { Context } from 'koa'
 
 import { checkForMissingRequestBodyContent, validateRequestBody } from '../../validate_request'

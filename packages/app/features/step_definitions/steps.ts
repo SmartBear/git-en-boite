@@ -1,6 +1,6 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { GitRepoInfo } from 'git-en-boite-client-port'
+import { GitRepoInfo } from 'git-en-boite-core'
 import { File } from 'git-en-boite-core'
 import { BareRepoFactory, GetFiles } from 'git-en-boite-local-git'
 import { Commit, GetRevision } from 'git-en-boite-local-git'

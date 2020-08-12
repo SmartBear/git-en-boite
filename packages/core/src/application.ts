@@ -1,18 +1,6 @@
-import { File } from 'git-en-boite-core'
-
 import { QueryResult } from './query_result'
-
-export { QueryResult } from './query_result'
-
-export interface Branch {
-  name: string
-  revision: string
-}
-
-export interface GitRepoInfo {
-  repoId: string
-  branches: Branch[]
-}
+import { GitRepoInfo } from './git_repo_info'
+import { File } from './file'
 
 export type Application = CommandsApplication & QueriesApplication & Versioned
 

@@ -1,5 +1,5 @@
 {
-  "name": "git-en-boite-client-adapter-web",
+  "name": "git-en-boite-web",
   "version": "0.0.0",
   "description": "HTTP API Gateway for git-en-boite",
   "main": "src/index.ts",
@@ -27,11 +27,11 @@
     "@types/koa-log": "^2.1.1",
     "@types/koa2-cors": "^2.0.1",
     "@types/koa__router": "^8.0.2",
-    "git-en-boite-client-port": "0.0.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-log": "^2.1.0",
-    "koa2-cors": "^2.0.6"
+    "koa2-cors": "^2.0.6",
+    "git-en-boite-core": "0.0.0"
   },
   "devDependencies": {
     "@pact-foundation/pact": "^9.11.1",

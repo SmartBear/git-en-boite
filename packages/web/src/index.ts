@@ -1,4 +1,4 @@
-import { Application } from 'git-en-boite-client-port'
+import { Application } from 'git-en-boite-core'
 import { Server } from 'http'
 
 import createWebApp from './create_web_app'

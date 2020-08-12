@@ -21,11 +21,9 @@
     }
   },
   "references": [
-    { "path": "../client-adapter-web" },
-    { "path": "../client-port" },
+    { "path": "../web" },
     { "path": "../core" },
     { "path": "../local-git" },
-    { "path": "../message-dispatch" },
     { "path": "../repo-index" }
   ]
 }

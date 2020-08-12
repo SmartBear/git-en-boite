@@ -1,5 +1,5 @@
 import { Verifier, VerifierOptions } from '@pact-foundation/pact'
-import { Application, QueryResult } from 'git-en-boite-client-port'
+import { Application, QueryResult } from 'git-en-boite-core'
 import { Server } from 'http'
 import path from 'path'
 import { StubbedInstance, stubInterface } from 'ts-sinon'

@@ -1,4 +1,4 @@
-import { Application, GitRepoInfo, QueryResult } from 'git-en-boite-client-port'
+import { Application, GitRepoInfo, QueryResult } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
