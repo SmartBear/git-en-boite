@@ -89,7 +89,8 @@ export class BackgroundGitRepoProxy implements GitRepo {
   }
 
   async push(refName: string, branchName: string): Promise<void> {
-    /* no-op */
+    const job = await this.queue.add('push', { path: this.path, refName, branchName })
+    return job.waitUntilFinished(this.queueEvents)
   }
 
   getRefs(): Promise<Ref[]> {
@@ -124,6 +125,10 @@ class GitRepoWorker implements Closable {
         }
         if (job.name === 'fetch') {
           return await git.fetch()
+        }
+        if (job.name === 'push') {
+          const { refName, branchName } = job.data
+          return await git.push(refName, branchName)
         }
       },
       { connection: this.redisClient },
