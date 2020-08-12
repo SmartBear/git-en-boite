@@ -4,7 +4,7 @@ import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { BareRepoProtocol, Commit, GetRevision } from '..'
+import { BareRepoProtocol, Commit, GetRefs, GetRevision } from '..'
 import { GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<BareRepoProtocol>>
@@ -80,9 +80,10 @@ export const verifyRepoContract = (
 
   describe('@wip pushing', () => {
     let originUrl: string
+    let origin: Dispatch<BareRepoProtocol>
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
-      const origin = await createOriginRepo(originUrl)
+      origin = await createOriginRepo(originUrl)
       await origin(Commit.withAnyMessage().onBranch(branchName).toRef(`refs/heads/${branchName}`))
     })
 
@@ -93,13 +94,14 @@ export const verifyRepoContract = (
         path: 'a.feature',
         content: 'Feature: A',
       }
-      const refName = `refs/heads/${branchName}`
-      const commitName = await git.commit(refName, branchName, file)
-      await git.push(branchName, commitName)
-      await git.fetch()
-      const refs = await git.getRefs()
-      const ref = refs.find(ref => ref.isRemote)
-      await assertThat(ref.revision, equalTo(commitName))
+      const refName = `refs/pending-commits/${branchName}`
+      await git.commit(refName, branchName, file)
+      await git.push(refName, branchName)
+      const commitName = (await git.getRefs()).find(ref => ref.refName === refName).revision
+      const remoteCommitName = (await origin(GetRefs.all())).find(
+        ref => ref.refName === `refs/heads/${branchName}`,
+      ).revision
+      await assertThat(remoteCommitName, equalTo(commitName))
     })
   })
 

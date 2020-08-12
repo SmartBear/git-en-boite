@@ -74,8 +74,8 @@ export class BackgroundGitRepoProxy implements GitRepo {
     private readonly queueEvents: QueueEvents,
   ) {}
 
-  commit(refName: string, branchName: string, file: File): Promise<string> {
-    return this.gitRepo.commit(refName, branchName, file)
+  async commit(refName: string, branchName: string, file: File): Promise<void> {
+    await this.gitRepo.commit(refName, branchName, file)
   }
 
   async setOriginTo(remoteUrl: string): Promise<void> {

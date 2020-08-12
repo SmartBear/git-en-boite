@@ -6,7 +6,7 @@ export type Dispatch<Protocol extends ValidProtocol<Protocol>> = <
 
 export type ValidProtocol<P> = { [K in keyof P]: [unknown, unknown] } & [unknown, unknown][]
 
-export type AsyncCommand<Message> = AsyncQuery<Message, any>
+export type AsyncCommand<Message> = AsyncQuery<Message, void>
 export type AsyncQuery<Message, Result> = Query<Message, Promise<Result>>
 export type Command<Message> = Query<Message, void>
 export type Query<Message, Result> = [Message, Result]

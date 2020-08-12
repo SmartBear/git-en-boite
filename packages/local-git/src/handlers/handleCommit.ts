@@ -7,12 +7,11 @@ import { Author } from 'git-en-boite-core'
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { files, message, author, refName, branchName },
-): Promise<string> => {
+): Promise<void> => {
   await repo.clearIndex()
   for (const file of files) await repo.addFileToIndex(file)
   const commitName = await commitCurrentIndex(repo, message, branchName, author)
   await updateRef(repo, refName, commitName)
-  return commitName
 }
 
 async function commitCurrentIndex(
@@ -20,7 +19,7 @@ async function commitCurrentIndex(
   message: string,
   branchName: string,
   author: Author,
-) {
+): Promise<string> {
   const treeName = (await repo.execGit('write-tree', [])).stdout.trim()
   const commitOptions = [treeName, '-m', message]
 
