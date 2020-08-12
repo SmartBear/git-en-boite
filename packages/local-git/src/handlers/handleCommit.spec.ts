@@ -26,7 +26,7 @@ type Protocol = [
   AsyncCommand<SetOrigin>,
 ]
 
-describe('@wip handleCommit', () => {
+describe('handleCommit', () => {
   const branchName = 'a-branch'
   let root: string
   let repoPath: string
@@ -92,10 +92,5 @@ describe('@wip handleCommit', () => {
       repo.execGit('ls-tree', [refName, '-r', '--name-only']),
       fulfilled(hasProperty('stdout', not(containsString('junk.file')))),
     )
-  })
-
-  it('@wip returns the commit name', async () => {
-    const commitName = await git(Commit.withAnyMessage().onBranch(branchName))
-    assertThat(commitName, string())
   })
 })

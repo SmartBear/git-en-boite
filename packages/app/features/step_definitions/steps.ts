@@ -52,13 +52,11 @@ When('a consumer tries to connect to a bad remote URL', async function () {
   this.lastResponseCode = response.res.statusCode
 })
 
-When('a consumer triggers a manual fetch of the repo', async function () {
+When('a consumer triggers a manual fetch of the repo', fetch)
+Given('the repo has been fetched', fetch)
+async function fetch(this: any) {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
-})
-
-When('the fetch has finished', async function () {
-  // nothing to do for now - the fetch is immeditately consistent
-})
+}
 
 When('a consumer commits a new file to the {string} branch', async function (branchName) {
   const file: File = {

@@ -28,7 +28,7 @@ type Protocol = [
   AsyncQuery<GetRevision, string>,
 ]
 
-describe('@wip handlePush', () => {
+describe('handlePush', () => {
   const branchName = 'a-branch'
   let root: string
   let repoPath: string

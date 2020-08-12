@@ -8,7 +8,6 @@ Feature: Repo info
       | develop |
     And the remote repo has been connected
     When a consumer triggers a manual fetch of the repo
-    And the fetch has finished
     And the repo's branches should be:
       | master  |
       | develop |

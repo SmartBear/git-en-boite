@@ -78,7 +78,7 @@ export const verifyRepoContract = (
     })
   })
 
-  describe('@wip pushing', () => {
+  describe('pushing', () => {
     let originUrl: string
     let origin: Dispatch<BareRepoProtocol>
     beforeEach(async () => {
