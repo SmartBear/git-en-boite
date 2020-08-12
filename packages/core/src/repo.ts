@@ -1,4 +1,5 @@
 import { Ref, GitRepo, File } from '.'
+import { v4 as uuid } from 'uuid'
 
 export class Repo {
   constructor(public readonly repoId: string, private readonly git: GitRepo) {}
@@ -16,6 +17,8 @@ export class Repo {
   }
 
   async commit(branchName: string, file: File): Promise<void> {
-    await this.git.commit(branchName, file)
+    const refName = `refs/pending-commits/branchName-${uuid()}`
+    await this.git.commit(refName, branchName, file)
+    await this.git.push(refName, branchName)
   }
 }

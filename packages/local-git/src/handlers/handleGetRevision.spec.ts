@@ -31,6 +31,7 @@ const revisionForBranch = async (branchName: string, repoPath: string) => {
   return result.stdout.trim()
 }
 
+// TODO: remove this - just use GetRefs
 describe('handleGetRevision', () => {
   const branchName = 'main'
 
@@ -58,7 +59,7 @@ describe('handleGetRevision', () => {
 
   context('with a commit to the main branch', () => {
     beforeEach(async () => {
-      await git(Commit.withAnyMessage().toBranch(branchName))
+      await git(Commit.withAnyMessage().onBranch(branchName).toRef(`refs/heads/${branchName}`))
     })
 
     it('returns the revision of the latest commit', async () => {

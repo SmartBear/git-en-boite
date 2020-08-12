@@ -8,9 +8,9 @@ Feature: Manual Fetch
   we allow the client to do this manually.
 
   Scenario: Manually fetch changes from upstream
-    Given a remote repo with commits on the master branch
+    Given a remote repo with commits on the "main" branch
     And the remote repo has been connected
-    When a new commit is made in the remote repo
+    When a new commit is made on the "main" branch in the remote repo
     And a consumer triggers a manual fetch of the repo
     And the fetch has finished
-    Then the repo should have the new commit at the head of the master branch
+    Then the repo should have the new commit at the head of the "main" branch

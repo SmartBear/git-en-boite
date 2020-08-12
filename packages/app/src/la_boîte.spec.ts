@@ -1,11 +1,6 @@
+import { GitProcess } from 'dugite'
 import { File } from 'git-en-boite-core'
-import {
-  BareRepoFactory,
-  Commit,
-  DugiteGitRepo,
-  GetFiles,
-  GetRevision,
-} from 'git-en-boite-local-git'
+import { BareRepoFactory, Commit, DugiteGitRepo, GetFiles } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
@@ -43,7 +38,9 @@ describe(LaBoîte.name, () => {
       const branches = ['master', 'development']
       const origin = await new BareRepoFactory().open(remoteUrl)
       for (const branchName of branches)
-        await origin(Commit.withMessage('A commit').toBranch(branchName))
+        await origin(
+          Commit.withMessage('A commit').toRef(`refs/heads/${branchName}`).onBranch(branchName),
+        )
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const result = await app.getInfo(repoId)
@@ -56,9 +53,10 @@ describe(LaBoîte.name, () => {
   })
 
   it('can connect a new repo by cloning from a remote URL', async () => {
+    const refName = `refs/heads/${branchName}`
     const origin = await new BareRepoFactory().open(remoteUrl)
-    await origin(Commit.withMessage('Initial commit').toBranch(branchName))
-    await origin(Commit.withMessage('A commit').toBranch(branchName))
+    await origin(Commit.withMessage('Initial commit').toRef(refName).onBranch(branchName))
+    await origin(Commit.withMessage('A commit').toRef(refName).onBranch(branchName))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
@@ -66,27 +64,35 @@ describe(LaBoîte.name, () => {
   })
 
   it('can fetch for an existing repo', async () => {
+    const revParse = async (refName: string, repoPath: string) => {
+      const result = await GitProcess.exec(['rev-parse', refName], repoPath)
+      return result.stdout.trim()
+    }
+    const refName = `refs/heads/${branchName}`
     const origin = await new BareRepoFactory().open(remoteUrl)
-    await origin(Commit.withMessage('Initial commit').toBranch(branchName))
+    await origin(Commit.withMessage('Initial commit').toRef(refName).onBranch(branchName))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
-    await origin(Commit.withMessage('Another commit'))
-    const expectedRevision = await origin(GetRevision.forBranchNamed(branchName))
+    await origin(Commit.withMessage('Another commit').toRef(refName))
+    const expectedRevision = await revParse(refName, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({
-      foundOne: repoInfo =>
+      foundOne: repoInfo => {
         assertThat(
           repoInfo.branches.find(branch => branch.name === branchName).revision,
           equalTo(expectedRevision),
-        ),
+        )
+      },
     })
   })
 
-  it('@wip commiting', () => {
+  describe('commiting', () => {
     it('pushes a new file to the origin', async () => {
       const origin = await new BareRepoFactory().open(remoteUrl)
-      await origin(Commit.withMessage('Initial commit').toBranch(branchName))
+      await origin(
+        Commit.withMessage('Initial commit').toRef(`refs/heads/${branchName}`).onBranch(branchName),
+      )
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const file: File = {

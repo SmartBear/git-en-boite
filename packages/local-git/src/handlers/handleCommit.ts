@@ -6,14 +6,16 @@ import { Author } from 'git-en-boite-core'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
-  { files, message, author, branchName },
-) => {
+  { files, message, author, refName, branchName },
+): Promise<string> => {
   await repo.clearIndex()
   for (const file of files) await repo.addFileToIndex(file)
-  await commitCurrentIndexToBranch(repo, message, branchName, author)
+  const commitName = await commitCurrentIndex(repo, message, branchName, author)
+  await updateRef(repo, refName, commitName)
+  return commitName
 }
 
-async function commitCurrentIndexToBranch(
+async function commitCurrentIndex(
   repo: GitDirectory,
   message: string,
   branchName: string,
@@ -24,13 +26,19 @@ async function commitCurrentIndexToBranch(
 
   try {
     const parentCommitName = (
-      await repo.execGit('show-ref', ['--hash', `refs/heads/${branchName}`])
+      await repo.execGit('show-ref', ['--hash', `refs/remotes/origin/${branchName}`])
     ).stdout.trim()
     commitOptions.push('-p', parentCommitName)
   } catch (err) {}
+  const commitName = (
+    await repo.execGit('commit-tree', commitOptions, {
+      env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
+    })
+  ).stdout.trim()
 
-  const commitName = (await repo.execGit('commit-tree', commitOptions)).stdout.trim()
-  await repo.execGit('update-ref', [`refs/heads/${branchName}`, commitName], {
-    env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
-  })
+  return commitName
+}
+
+async function updateRef(repo: GitDirectory, refName: string, commitName: string) {
+  await repo.execGit('update-ref', [refName, commitName])
 }

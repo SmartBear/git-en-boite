@@ -74,8 +74,8 @@ export class BackgroundGitRepoProxy implements GitRepo {
     private readonly queueEvents: QueueEvents,
   ) {}
 
-  commit(branchName: string, file: File): Promise<void> {
-    return this.gitRepo.commit(branchName, file)
+  commit(refName: string, branchName: string, file: File): Promise<string> {
+    return this.gitRepo.commit(refName, branchName, file)
   }
 
   async setOriginTo(remoteUrl: string): Promise<void> {
@@ -86,6 +86,10 @@ export class BackgroundGitRepoProxy implements GitRepo {
   async fetch(): Promise<void> {
     const job = await this.queue.add('fetch', { path: this.path })
     return job.waitUntilFinished(this.queueEvents)
+  }
+
+  async push(refName: string, branchName: string): Promise<void> {
+    /* no-op */
   }
 
   getRefs(): Promise<Ref[]> {

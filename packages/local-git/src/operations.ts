@@ -14,27 +14,40 @@ export class Commit {
     public readonly files: File[],
     public readonly message: string,
     public readonly author: Author,
+    public readonly refName: string,
     public readonly branchName: string,
   ) {}
 
+  // TODO: can we default the ref
   static newFile(file: File): Commit {
-    return new Commit([file], 'Add new file', new Author('A user', 'unknown@unknown.com'), 'main')
+    return new Commit(
+      [file],
+      'Add new file',
+      new Author('A user', 'unknown@unknown.com'),
+      'a/ref',
+      'main',
+    )
   }
 
   static withMessage(message: string): Commit {
-    return new Commit([], message, new Author('A user', 'unknown@unknown.com'), 'main')
+    return new Commit([], message, new Author('A user', 'unknown@unknown.com'), 'a/ref', 'main')
   }
+
   // TODO: Remove this, it is only for testing
   static withAnyMessage(): Commit {
     return Commit.withMessage('A commit message')
   }
 
-  byAuthor(author: Author): Commit {
-    return new Commit(this.files, this.message, author, this.branchName)
+  toRef(refName: string): Commit {
+    return new Commit(this.files, this.message, this.author, refName, this.branchName)
   }
 
-  toBranch(branchName: string): Commit {
-    return new Commit(this.files, this.message, this.author, branchName)
+  byAuthor(author: Author): Commit {
+    return new Commit(this.files, this.message, author, this.refName, this.branchName)
+  }
+
+  onBranch(branchName: string): Commit {
+    return new Commit(this.files, this.message, this.author, this.refName, branchName)
   }
 }
 
@@ -43,6 +56,18 @@ export class Fetch {
 
   static fromOrigin(): Fetch {
     return new this()
+  }
+}
+
+export class Push {
+  private constructor(public readonly refName: string, public readonly branchName: string) {}
+
+  static pendingCommitFrom(refName: string): Push {
+    return new this(refName, 'a-branch')
+  }
+
+  toBranch(branchName: string): Push {
+    return new Push(this.refName, branchName)
   }
 }
 
@@ -119,6 +144,7 @@ export type BareRepoProtocol = [
   AsyncCommand<Connect>,
   AsyncCommand<Fetch>,
   AsyncCommand<Init>,
+  AsyncCommand<Push>,
   AsyncCommand<SetOrigin>,
   AsyncCommand<ValidateRemote>,
   AsyncQuery<GetFiles, File[]>,

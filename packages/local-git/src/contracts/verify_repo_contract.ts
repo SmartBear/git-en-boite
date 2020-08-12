@@ -37,7 +37,8 @@ export const verifyRepoContract = (
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
-        await origin(Commit.withAnyMessage().toBranch(branchName))
+        const refName = `refs/heads/${branchName}`
+        await origin(Commit.withAnyMessage().toRef(refName).onBranch(branchName))
         latestCommit = await origin(GetRevision.forBranchNamed(branchName))
       })
 
@@ -69,10 +70,36 @@ export const verifyRepoContract = (
         path: 'a.feature',
         content: 'Feature: A',
       }
-      await git.commit(branchName, file)
+      const refName = `refs/heads/${branchName}`
+      await git.commit(refName, branchName, file)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.execGit('ls-tree', [branchName, '--name-only'])
       assertThat(result.stdout, matchesPattern(file.path))
+    })
+  })
+
+  describe('@wip pushing', () => {
+    let originUrl: string
+    beforeEach(async () => {
+      originUrl = path.resolve(root, 'remote', 'a-repo-id')
+      const origin = await createOriginRepo(originUrl)
+      await origin(Commit.withAnyMessage().onBranch(branchName).toRef(`refs/heads/${branchName}`))
+    })
+
+    it('pushes a commit to a remote branch', async () => {
+      await git.setOriginTo(originUrl)
+      await git.fetch()
+      const file = {
+        path: 'a.feature',
+        content: 'Feature: A',
+      }
+      const refName = `refs/heads/${branchName}`
+      const commitName = await git.commit(refName, branchName, file)
+      await git.push(branchName, commitName)
+      await git.fetch()
+      const refs = await git.getRefs()
+      const ref = refs.find(ref => ref.isRemote)
+      await assertThat(ref.revision, equalTo(commitName))
     })
   })
 

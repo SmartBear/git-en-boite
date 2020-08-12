@@ -1,6 +1,6 @@
 import { GitRepo, Ref, File } from 'git-en-boite-core'
 import { BareRepoFactory } from './bare_repo_factory'
-import { BareRepoProtocol, Commit, Connect, Fetch, GetRefs } from './operations'
+import { BareRepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 export class DugiteGitRepo implements GitRepo {
@@ -11,8 +11,12 @@ export class DugiteGitRepo implements GitRepo {
 
   protected constructor(private readonly git: Dispatch<BareRepoProtocol>) {}
 
-  commit(branchName: string, file: File): Promise<void> {
-    return this.git(Commit.newFile(file).toBranch(branchName))
+  commit(refName: string, branchName: string, file: File): Promise<string> {
+    return this.git(Commit.newFile(file).toRef(refName).onBranch(branchName))
+  }
+
+  async push(refName: string, branchName: string): Promise<void> {
+    return this.git(Push.pendingCommitFrom(refName).toBranch(branchName))
   }
 
   setOriginTo(remoteUrl: string): Promise<void> {

@@ -23,8 +23,8 @@ describe('handleGetRefs', () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  const revisionForBranch = async (branchName: string, repoPath: string) => {
-    const result = await GitProcess.exec(['rev-parse', branchName], repoPath)
+  const revParse = async (refName: string, repoPath: string) => {
+    const result = await GitProcess.exec(['rev-parse', refName], repoPath)
     return result.stdout.trim()
   }
 
@@ -54,17 +54,16 @@ describe('handleGetRefs', () => {
     })
 
     context('with a commit to the main branch', () => {
+      const branchName = 'a-branch'
+      const refName = `refs/tmp/a-ref-for-${branchName}`
+
       beforeEach(async () => {
-        await git(Commit.withAnyMessage().toBranch('main'))
+        await git(Commit.withAnyMessage().toRef(refName).onBranch(branchName))
       })
 
       it('returns the revision of the latest commit', async () => {
-        await promiseThat(
-          git(GetRefs.all()),
-          fulfilled(
-            equalTo([new Ref(await revisionForBranch('main', repoPath), 'refs/heads/main')]),
-          ),
-        )
+        const revision = await revParse(refName, repoPath)
+        await promiseThat(git(GetRefs.all()), fulfilled(equalTo([new Ref(revision, refName)])))
       })
     })
   })

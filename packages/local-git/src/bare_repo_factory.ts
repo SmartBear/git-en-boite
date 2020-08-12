@@ -11,6 +11,7 @@ import {
   handleGetRefs,
   handleGetRevision,
   handleInit,
+  handlePush,
   handleSetOrigin,
   handleValidateRemote,
 } from './handlers'
@@ -24,6 +25,7 @@ import {
   GetRefs,
   GetRevision,
   Init,
+  Push,
   SetOrigin,
   ValidateRemote,
 } from './operations'
@@ -39,6 +41,7 @@ export class BareRepoFactory {
       [Connect, handleConnect],
       [Fetch, handleFetch],
       [Init, handleInit],
+      [Push, handlePush],
       [SetOrigin, handleSetOrigin],
       [ValidateRemote, handleValidateRemote],
       [GetFiles, handleGetFiles],

@@ -36,7 +36,8 @@ describe('handleFetch', () => {
     originUrl = path.resolve(root, 'remote', 'a-repo-id')
 
     const origin = await new BareRepoFactory().open(originUrl)
-    await origin(Commit.withAnyMessage().toBranch(branchName))
+    const refName = `refs/heads/${branchName}`
+    await origin(Commit.withAnyMessage().toRef(refName).onBranch(branchName))
     latestCommit = await origin(GetRevision.forBranchNamed(branchName))
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)

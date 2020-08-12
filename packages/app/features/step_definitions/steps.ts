@@ -2,9 +2,17 @@
 import { Given, TableDefinition, Then, When } from 'cucumber'
 import { GitRepoInfo } from 'git-en-boite-client-port'
 import { File } from 'git-en-boite-core'
-import { BareRepoFactory } from 'git-en-boite-local-git'
+import { BareRepoFactory, GetFiles } from 'git-en-boite-local-git'
 import { Commit, GetRevision } from 'git-en-boite-local-git'
-import { assertThat, containsInAnyOrder, equalTo, hasProperty, matchesPattern, not } from 'hamjest'
+import {
+  assertThat,
+  containsInAnyOrder,
+  equalTo,
+  hasProperty,
+  matchesPattern,
+  not,
+  contains,
+} from 'hamjest'
 import path from 'path'
 
 Given('a remote repo with branches:', async function (branchesTable) {
@@ -13,21 +21,23 @@ Given('a remote repo with branches:', async function (branchesTable) {
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
   for (const branchName of branches) {
-    await git(Commit.withAnyMessage().toBranch(branchName))
+    await git(Commit.withAnyMessage().toRef(`refs/heads/${branchName}`).onBranch(branchName))
   }
 })
 
-Given('a remote repo with commits on the master branch', async function () {
+Given('a remote repo with commits on the {string} branch', async function (branchName) {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.withAnyMessage().toBranch('master'))
+  await git(Commit.withAnyMessage().toRef(`refs/heads/${branchName}`).onBranch(branchName))
 })
 
-When('a new commit is made in the remote repo', async function () {
+When('a new commit is made on the {string} branch in the remote repo', async function (branchName) {
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.withAnyMessage())
-  this.lastCommitRevision = await git(GetRevision.forBranchNamed('master'))
+  await git(
+    Commit.withMessage('a new commit').toRef(`refs/heads/${branchName}`).onBranch(branchName),
+  )
+  this.lastCommitRevision = await git(GetRevision.forBranchNamed(branchName))
 })
 
 Given('the remote repo has been connected', async function () {
@@ -55,6 +65,7 @@ When('a consumer commits a new file to the {string} branch', async function (bra
     path: 'features/new.feature',
     content: 'Feature: New!',
   }
+  this.file = file
   await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
     .send(file)
@@ -75,14 +86,16 @@ Then("the repo's branches should be:", async function (expectedBranchesTable: Ta
   )
 })
 
-Then('the repo should have the new commit at the head of the master branch', async function () {
+Then('the repo should have the new commit at the head of the {string} branch', async function (
+  branchName,
+) {
   const response = await this.request
     .get(`/repos/${this.repoId}`)
     .set('Accept', 'application/json')
     .expect(200)
 
   assertThat(
-    (response.body as GitRepoInfo).branches.find(branch => branch.name === 'master').revision,
+    (response.body as GitRepoInfo).branches.find(branch => branch.name === branchName).revision,
     equalTo(this.lastCommitRevision),
   )
 })
@@ -103,7 +116,8 @@ Then('it should respond with an error', function () {
   assertThat(String(this.lastResponseCode), not(matchesPattern(/2\d\d/)))
 })
 
-Then('the file should be in the {string} branch of the remote repo', function (branchName) {
-  // Write code here that turns the phrase above into concrete actions
-  return 'pending'
+Then('the file should be in the {string} branch of the remote repo', async function (branchName) {
+  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
+  const files = await git(GetFiles.forBranchNamed(branchName))
+  assertThat(files, contains(this.file))
 })
