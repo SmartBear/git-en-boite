@@ -2,40 +2,40 @@ import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from '../git_directory'
 import { Commit } from '../operations'
-import { Author } from 'git-en-boite-core'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { files, message, author, refName, branchName },
 ): Promise<void> => {
-  await repo.clearIndex()
-  for (const file of files) await repo.addFileToIndex(file)
-  const commitName = await commitCurrentIndex(repo, message, branchName, author)
-  await updateRef(repo, refName, commitName)
-}
+  await repo.execGit('read-tree', ['--empty'])
 
-async function commitCurrentIndex(
-  repo: GitDirectory,
-  message: string,
-  branchName: string,
-  author: Author,
-): Promise<string> {
-  const treeName = (await repo.execGit('write-tree', [])).stdout.trim()
-  const commitOptions = [treeName, '-m', message]
+  const commitOptions = ['-m', message]
 
   try {
     const parentCommitName = (
       await repo.execGit('show-ref', ['--hash', `refs/remotes/origin/${branchName}`])
     ).stdout.trim()
     commitOptions.push('-p', parentCommitName)
+
+    await repo.execGit('read-tree', [parentCommitName])
   } catch (err) {}
+
+  for (const file of files) {
+    const objectId = (
+      await repo.execGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
+    ).stdout.trim()
+    await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
+  }
+
+  commitOptions.unshift((await repo.execGit('write-tree', [])).stdout.trim())
+
   const commitName = (
     await repo.execGit('commit-tree', commitOptions, {
       env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
     })
   ).stdout.trim()
 
-  return commitName
+  await updateRef(repo, refName, commitName)
 }
 
 async function updateRef(repo: GitDirectory, refName: string, commitName: string) {

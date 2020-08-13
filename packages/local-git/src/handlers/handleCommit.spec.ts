@@ -71,6 +71,21 @@ describe('handleCommit', () => {
     )
   })
 
+  it('creates a commit using the existing tree on the remote branch', async () => {
+    const remoteRefName = `refs/remotes/origin/${branchName}`
+    const existingFile = { path: 'a.file', content: 'some content' }
+    await git(Commit.newFile(existingFile).onBranch(branchName).toRef(remoteRefName))
+
+    const refName = `refs/pending-commits/${branchName}`
+    const otherFile = { path: 'b.file', content: 'another content' }
+    await git(Commit.newFile(otherFile).onBranch(branchName).toRef(refName))
+
+    await promiseThat(
+      repo.execGit('ls-tree', [refName, '-r', '--name-only']),
+      fulfilled(hasProperty('stdout', containsStrings(existingFile.path, otherFile.path))),
+    )
+  })
+
   it('creates a commit after an existing one on a remote', async () => {
     const refName = `refs/heads/${branchName}`
     const remoteRefName = `refs/remotes/origin/${branchName}`
@@ -85,7 +100,10 @@ describe('handleCommit', () => {
   it('clears the index before committing', async () => {
     const file = { path: 'a.file', content: 'some content' }
     const refName = `refs/heads/${branchName}`
-    await repo.addFileToIndex({ path: 'junk.file', content: 'Junk' })
+    const objectId = (
+      await repo.execGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
+    ).stdout.trim()
+    await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
     await git(Commit.newFile(file).toRef(refName).onBranch(branchName))
 
     await promiseThat(

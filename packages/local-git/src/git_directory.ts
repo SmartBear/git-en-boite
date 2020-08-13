@@ -1,10 +1,4 @@
 import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
-import fs from 'fs'
-import path from 'path'
-import { promisify } from 'util'
-import { File } from 'git-en-boite-core'
-
-const unlink = promisify(fs.unlink)
 
 export class GitDirectory {
   path: string
@@ -28,19 +22,6 @@ export class GitDirectory {
       )
     }
     return result
-  }
-
-  async clearIndex(): Promise<void> {
-    try {
-      await unlink(path.resolve(this.path, 'index'))
-    } catch (err) {}
-  }
-
-  async addFileToIndex(file: File): Promise<void> {
-    const objectId = (
-      await this.execGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
-    ).stdout.trim()
-    await this.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
   }
 
   protected buildGitOptions(options?: IGitExecutionOptions): IGitExecutionOptions {
