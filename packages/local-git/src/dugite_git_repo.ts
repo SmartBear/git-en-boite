@@ -12,7 +12,7 @@ export class DugiteGitRepo implements GitRepo {
   protected constructor(private readonly git: Dispatch<BareRepoProtocol>) {}
 
   commit(refName: string, branchName: string, file: File): Promise<void> {
-    return this.git(Commit.newFile(file).toRef(refName).onBranch(branchName))
+    return this.git(Commit.toRef(refName).withFiles([file]).onBranch(branchName))
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {

@@ -38,7 +38,7 @@ export const verifyRepoContract = (
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
         const refName = `refs/heads/${branchName}`
-        await origin(Commit.withAnyMessage().toRef(refName).onBranch(branchName))
+        await origin(Commit.toRef(refName).onBranch(branchName))
         latestCommit = await origin(GetRevision.forBranchNamed(branchName))
       })
 
@@ -84,7 +84,7 @@ export const verifyRepoContract = (
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await createOriginRepo(originUrl)
-      await origin(Commit.withAnyMessage().onBranch(branchName).toRef(`refs/heads/${branchName}`))
+      await origin(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
     })
 
     it('pushes a commit to a remote branch', async () => {
@@ -113,7 +113,7 @@ export const verifyRepoContract = (
   //     beforeEach(async () => {
   //       originUrl = path.resolve(root, 'remote', 'a-repo-id')
   //       const origin = await nonBareRepoFactory.open(originUrl)
-  //       await origin(Commit.withAnyMessage())
+  //       await origin(Commit)
   //     })
 
   //     context('and the repo has been fetched', () => {

@@ -21,7 +21,7 @@ Given('a remote repo with branches:', async function (branchesTable) {
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
   for (const branchName of branches) {
-    await git(Commit.withAnyMessage().toRef(`refs/heads/${branchName}`).onBranch(branchName))
+    await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
   }
 })
 
@@ -29,14 +29,12 @@ Given('a remote repo with commits on the {string} branch', async function (branc
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.withAnyMessage().toRef(`refs/heads/${branchName}`).onBranch(branchName))
+  await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
 })
 
 When('a new commit is made on the {string} branch in the remote repo', async function (branchName) {
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(
-    Commit.withMessage('a new commit').toRef(`refs/heads/${branchName}`).onBranch(branchName),
-  )
+  await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
   this.lastCommitRevision = await git(GetRevision.forBranchNamed(branchName))
 })
 

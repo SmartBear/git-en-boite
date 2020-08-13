@@ -56,13 +56,13 @@ describe('handlePush', () => {
 
   it('pushes to remote', async () => {
     const origin = await new BareRepoFactory().open(originUrl)
-    await origin(Commit.withAnyMessage().onBranch(branchName).toRef(`refs/heads/${branchName}`))
+    await origin(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }
     const commitRef = PendingCommitRef.forBranch(branchName)
-    await git(Commit.newFile(file).toRef(commitRef.localRef).onBranch(commitRef.branchName))
+    await git(Commit.toRef(commitRef.localRef).withFiles([file]).onBranch(commitRef.branchName))
     await git(Push.pendingCommitFrom(commitRef))
     const commitName = (await git(GetRefs.all())).find(ref => ref.refName === commitRef.localRef)
       .revision

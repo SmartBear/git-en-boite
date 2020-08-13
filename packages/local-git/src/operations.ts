@@ -18,28 +18,14 @@ export class Commit {
     public readonly branchName: string,
   ) {}
 
-  // TODO: can we default the ref
-  static newFile(file: File): Commit {
+  static toRef(refName: string): Commit {
     return new Commit(
-      [file],
-      'Add new file',
+      [],
+      'A commit message',
       new Author('A user', 'unknown@unknown.com'),
-      'a/ref',
+      refName,
       'main',
     )
-  }
-
-  static withMessage(message: string): Commit {
-    return new Commit([], message, new Author('A user', 'unknown@unknown.com'), 'a/ref', 'main')
-  }
-
-  // TODO: Remove this, it is only for testing
-  static withAnyMessage(): Commit {
-    return Commit.withMessage('A commit message')
-  }
-
-  toRef(refName: string): Commit {
-    return new Commit(this.files, this.message, this.author, refName, this.branchName)
   }
 
   byAuthor(author: Author): Commit {
@@ -48,6 +34,14 @@ export class Commit {
 
   onBranch(branchName: string): Commit {
     return new Commit(this.files, this.message, this.author, this.refName, branchName)
+  }
+
+  withFiles(files: File[]): Commit {
+    return new Commit(files, this.message, this.author, this.refName, this.branchName)
+  }
+
+  withMessage(message: string): Commit {
+    return new Commit(this.files, message, this.author, this.refName, this.branchName)
   }
 }
 

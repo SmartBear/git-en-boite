@@ -7,3 +7,4 @@ git-repos
 tmp
 *.tsbuildinfo
 .vscode
+.envrc
