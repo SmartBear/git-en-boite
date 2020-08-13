@@ -1,4 +1,4 @@
-import { RefName } from './pending_commit_ref'
+import { RefName } from './ref_name'
 
 export interface CommitRef {
   branchName: string
