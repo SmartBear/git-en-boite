@@ -2,7 +2,6 @@ import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from '../git_directory'
 import { Commit } from '../operations'
-import { GitProcess } from 'dugite'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
@@ -42,11 +41,9 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
     success: (commitName: string) => Promise<ResultType>,
     failure: () => Promise<ResultType>,
   ): Promise<ResultType> {
-    const result = await GitProcess.exec(
-      ['show-ref', '--hash', `refs/remotes/origin/${branchName}`],
-      repo.path,
-    )
-    if (result.exitCode !== 0) return failure()
-    return success(result.stdout.trim())
+    return repo
+      .read('show-ref', ['--hash', `refs/remotes/origin/${branchName}`])
+      .then(success)
+      .catch(failure)
   }
 }
