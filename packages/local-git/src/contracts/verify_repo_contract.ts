@@ -84,7 +84,8 @@ export const verifyRepoContract = (
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await createOriginRepo(originUrl)
-      await origin(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
+      const commitRef = LocalCommitRef.forBranch(branchName)
+      await origin(Commit.toCommitRef(commitRef))
     })
 
     it('pushes a commit to a remote branch', async () => {
