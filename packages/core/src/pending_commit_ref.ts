@@ -1,17 +1,7 @@
+import { Serialised, TinyType } from 'tiny-types'
 import { v4 as uuid } from 'uuid'
-import { TinyType, TinyTypeOf, Serialised } from 'tiny-types'
-import { PushableCommitRef } from '.'
-import { CommitRef, FetchedCommitRef } from './commit_ref'
 
-export class RefName extends TinyTypeOf<string>() {
-  static ofOriginBranch(branchName: string): RefName {
-    return new RefName(`refs/heads/${branchName}`)
-  }
-
-  toString(): string {
-    return this.value
-  }
-}
+import { CommitRef, FetchedCommitRef, PushableCommitRef, RefName } from '.'
 
 export class PendingCommitRef extends TinyType implements FetchedCommitRef, PushableCommitRef {
   constructor(public readonly branchName: string, public readonly local: string) {
