@@ -18,6 +18,7 @@ import { Commit, Fetch, GetRevision, Init, SetOrigin } from '../operations'
 import { handleFetch } from './handleFetch'
 import { handleInit } from './handleInit'
 import { handleSetOrigin } from './handleSetOrigin'
+import { LocalCommitRef } from 'git-en-boite-core'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
@@ -36,8 +37,7 @@ describe('handleFetch', () => {
     originUrl = path.resolve(root, 'remote', 'a-repo-id')
 
     const origin = await new BareRepoFactory().open(originUrl)
-    const refName = `refs/heads/${branchName}`
-    await origin(Commit.toRefName(refName).onBranch(branchName))
+    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     latestCommit = await origin(GetRevision.forBranchNamed(branchName))
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)

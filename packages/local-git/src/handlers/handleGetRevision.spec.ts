@@ -1,5 +1,6 @@
 import childProcess from 'child_process'
 import fs from 'fs'
+import { LocalCommitRef } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
@@ -59,7 +60,7 @@ describe('handleGetRevision', () => {
 
   context('with a commit to the main branch', () => {
     beforeEach(async () => {
-      await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
+      await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     })
 
     it('returns the revision of the latest commit', async () => {

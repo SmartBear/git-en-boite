@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { File } from 'git-en-boite-core'
+import { File, LocalCommitRef } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { dirSync } from 'tmp'
 
@@ -38,8 +38,7 @@ describe('handleGetFiles', () => {
     const git = await openRepo(repoPath)
     await git(Init.bareRepo())
     const branchName = 'a-branch'
-    const refName = `refs/heads/${branchName}`
-    await git(Commit.toRefName(refName).withFiles([file]).onBranch(branchName))
+    await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)).withFiles([file]))
     const files = await git(GetFiles.forBranchNamed(branchName))
     assertThat(files, contains(file))
   })

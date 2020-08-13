@@ -2,7 +2,7 @@ import { TinyType } from 'tiny-types'
 import { CommitRef } from '.'
 
 export class LocalCommitRef extends TinyType implements CommitRef {
-  constructor(public readonly branchName: string, public readonly localRef: string) {
+  constructor(public readonly branchName: string, public readonly localRefName: string) {
     super()
   }
 

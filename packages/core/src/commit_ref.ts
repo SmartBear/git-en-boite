@@ -1,6 +1,6 @@
 export interface CommitRef {
   branchName: string
-  localRef: string
+  localRefName: string
 }
 
 export interface PushableCommitRef extends CommitRef {

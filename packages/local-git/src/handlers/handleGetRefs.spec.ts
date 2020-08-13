@@ -1,7 +1,7 @@
 import { GitProcess } from 'dugite'
 import fs from 'fs'
 import { AsyncCommand, AsyncQuery, messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
-import { Ref } from 'git-en-boite-core'
+import { Ref, PendingCommitRef } from 'git-en-boite-core'
 import { Commit, GetRefs, Init } from '../operations'
 import { equalTo, fulfilled, promiseThat, assertThat } from 'hamjest'
 import path from 'path'
@@ -55,15 +55,18 @@ describe('handleGetRefs', () => {
 
     context('with a commit to the main branch', () => {
       const branchName = 'a-branch'
-      const refName = `refs/tmp/a-ref-for-${branchName}`
+      const commitRef = PendingCommitRef.forBranch(branchName)
 
       beforeEach(async () => {
-        await git(Commit.toRefName(refName).onBranch(branchName))
+        await git(Commit.toCommitRef(commitRef))
       })
 
       it('returns the revision of the latest commit', async () => {
-        const revision = await revParse(refName, repoPath)
-        await promiseThat(git(GetRefs.all()), fulfilled(equalTo([new Ref(revision, refName)])))
+        const revision = await revParse(commitRef.localRefName, repoPath)
+        await promiseThat(
+          git(GetRefs.all()),
+          fulfilled(equalTo([new Ref(revision, commitRef.localRefName)])),
+        )
       })
     })
   })

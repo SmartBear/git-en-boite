@@ -1,6 +1,6 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { GitRepoInfo } from 'git-en-boite-core'
+import { GitRepoInfo, LocalCommitRef } from 'git-en-boite-core'
 import { File } from 'git-en-boite-core'
 import { BareRepoFactory, GetFiles } from 'git-en-boite-local-git'
 import { Commit, GetRevision } from 'git-en-boite-local-git'
@@ -21,7 +21,7 @@ Given('a remote repo with branches:', async function (branchesTable) {
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
   for (const branchName of branches) {
-    await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
+    await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   }
 })
 
@@ -29,12 +29,12 @@ Given('a remote repo with commits on the {string} branch', async function (branc
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
 When('a new commit is made on the {string} branch in the remote repo', async function (branchName) {
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   this.lastCommitRevision = await git(GetRevision.forBranchNamed(branchName))
 })
 

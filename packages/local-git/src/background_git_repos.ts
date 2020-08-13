@@ -9,6 +9,7 @@ interface Closable {
 }
 
 export class BackgroundGitRepos {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private queue: Queue<any>
   private queueEvents: QueueEvents
   private queueClient: IORedis.Redis
@@ -70,6 +71,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
   constructor(
     private readonly path: string,
     private readonly gitRepo: GitRepo,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly queue: Queue<any>,
     private readonly queueEvents: QueueEvents,
   ) {}
@@ -99,6 +101,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
 }
 
 class GitRepoWorker implements Closable {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected worker: Worker<any>
 
   static async start(

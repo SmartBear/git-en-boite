@@ -1,22 +1,22 @@
-import { AsyncCommand, Dispatch, messageDispatch, AsyncQuery } from 'git-en-boite-message-dispatch'
-import path from 'path'
 import fs from 'fs'
+import { LocalCommitRef, PendingCommitRef, Ref } from 'git-en-boite-core'
+import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
+import { equalTo, fulfilled, promiseThat } from 'hamjest'
+import path from 'path'
 import { dirSync } from 'tmp'
 
 import {
   handleCommit,
   handleFetch,
-  handleInit,
-  handleSetOrigin,
-  handlePush,
   handleGetRefs,
+  handleInit,
+  handlePush,
+  handleSetOrigin,
 } from '.'
 import { BareRepoFactory } from '../bare_repo_factory'
 import { GitDirectory } from '../git_directory'
-import { Commit, Fetch, Init, SetOrigin, Push, GetRevision, GetRefs } from '../operations'
-import { promiseThat, equalTo, fulfilled } from 'hamjest'
+import { Commit, Fetch, GetRefs, GetRevision, Init, Push, SetOrigin } from '../operations'
 import { handleGetRevision } from './handleGetRevision'
-import { Ref, PendingCommitRef } from 'git-en-boite-core'
 
 type Protocol = [
   AsyncCommand<Commit>,
@@ -56,16 +56,17 @@ describe('handlePush', () => {
 
   it('pushes to remote', async () => {
     const origin = await new BareRepoFactory().open(originUrl)
-    await origin(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
+    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }
     const commitRef = PendingCommitRef.forBranch(branchName)
-    await git(Commit.toRefName(commitRef.localRef).withFiles([file]).onBranch(commitRef.branchName))
+    await git(Commit.toCommitRef(commitRef).withFiles([file]))
     await git(Push.pendingCommitFrom(commitRef))
-    const commitName = (await git(GetRefs.all())).find(ref => ref.refName === commitRef.localRef)
-      .revision
+    const commitName = (await git(GetRefs.all())).find(
+      ref => ref.refName === commitRef.localRefName,
+    ).revision
 
     promiseThat(origin(GetRevision.forBranchNamed(branchName)), fulfilled(equalTo(commitName)))
   })

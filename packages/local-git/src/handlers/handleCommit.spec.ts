@@ -9,6 +9,7 @@ import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, Init, SetOrigin } from '../operations'
 import { handleFetch } from './handleFetch'
 import { handleSetOrigin } from './handleSetOrigin'
+import { LocalCommitRef, PendingCommitRef } from 'git-en-boite-core/dist'
 
 type Protocol = [
   AsyncCommand<Commit>,
@@ -17,8 +18,9 @@ type Protocol = [
   AsyncCommand<SetOrigin>,
 ]
 
-describe('handleCommit', () => {
+describe('@wip handleCommit', () => {
   const branchName = 'a-branch'
+  const localCommitRef = LocalCommitRef.forBranch(branchName)
   let root: string
   let repoPath: string
   let git: Dispatch<Protocol>
@@ -44,59 +46,63 @@ describe('handleCommit', () => {
   })
 
   it('creates an empty commit with the given message', async () => {
-    const refName = `refs/heads/${branchName}`
-    await git(Commit.toRefName(refName).onBranch(branchName).withMessage('A commit message'))
+    await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
     await promiseThat(
-      repo.read('log', [refName, '--oneline']),
+      repo.read('log', [localCommitRef.localRefName, '--oneline']),
       fulfilled(containsString('A commit message')),
     )
   })
 
   it('creates a commit containing the given files', async () => {
     const file = { path: 'a.file', content: 'some content' }
-    const refName = `refs/heads/${branchName}`
-    await git(Commit.toRefName(refName).withFiles([file]).onBranch(branchName))
+    await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
     await promiseThat(
-      repo.read('ls-tree', [refName, '-r', '--name-only']),
+      repo.read('ls-tree', [localCommitRef.localRefName, '-r', '--name-only']),
       fulfilled(containsString(file.path)),
     )
   })
 
   it('creates a commit using the existing tree on the remote branch', async () => {
-    const remoteRefName = `refs/remotes/origin/${branchName}`
     const existingFile = { path: 'a.file', content: 'some content' }
-    await git(Commit.toRefName(remoteRefName).withFiles([existingFile]).onBranch(branchName))
+    await git(
+      Commit.toCommitRef({
+        localRefName: `refs/remotes/origin/${branchName}`,
+        branchName,
+      }).withFiles([existingFile]),
+    )
 
-    const refName = `refs/pending-commits/${branchName}`
     const otherFile = { path: 'b.file', content: 'another content' }
-    await git(Commit.toRefName(refName).withFiles([otherFile]).onBranch(branchName))
+    const commitRef = PendingCommitRef.forBranch(branchName)
+    await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
 
     await promiseThat(
-      repo.read('ls-tree', [refName, '-r', '--name-only']),
+      repo.read('ls-tree', [commitRef.localRefName, '-r', '--name-only']),
       fulfilled(containsStrings(existingFile.path, otherFile.path)),
     )
   })
 
   it('creates a commit after an existing one on a remote', async () => {
-    const refName = `refs/heads/${branchName}`
-    const remoteRefName = `refs/remotes/origin/${branchName}`
-    await git(Commit.toRefName(remoteRefName).withMessage('initial commit').onBranch(branchName))
-    await git(Commit.toRefName(refName).withMessage('A commit message').onBranch(branchName))
+    await git(
+      Commit.toCommitRef({
+        localRefName: `refs/remotes/origin/${branchName}`,
+        branchName,
+      }).withMessage('initial commit'),
+    )
+    await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
     await promiseThat(
-      repo.read('log', [refName, '--oneline']),
+      repo.read('log', [localCommitRef.localRefName, '--oneline']),
       fulfilled(containsStrings('initial commit', 'A commit message')),
     )
   })
 
   it('clears the index before committing the index with no parent', async () => {
     const file = { path: 'a.file', content: 'some content' }
-    const refName = `refs/heads/${branchName}`
     const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
     await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
-    await git(Commit.toRefName(refName).withFiles([file]).onBranch(branchName))
+    await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
 
     await promiseThat(
-      repo.read('ls-tree', [refName, '-r', '--name-only']),
+      repo.read('ls-tree', [localCommitRef.localRefName, '-r', '--name-only']),
       fulfilled(not(containsString('junk.file'))),
     )
   })

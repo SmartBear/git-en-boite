@@ -37,8 +37,7 @@ export const verifyRepoContract = (
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
-        const refName = `refs/heads/${branchName}`
-        await origin(Commit.toRefName(refName).onBranch(branchName))
+        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
         latestCommit = await origin(GetRevision.forBranchNamed(branchName))
       })
 
@@ -98,7 +97,7 @@ export const verifyRepoContract = (
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git.commit(commitRef, file)
       await git.push(commitRef)
-      const commitName = (await git.getRefs()).find(ref => ref.refName === commitRef.localRef)
+      const commitName = (await git.getRefs()).find(ref => ref.refName === commitRef.localRefName)
         .revision
       const remoteCommitName = (await origin(GetRefs.all())).find(
         ref => ref.refName === `refs/heads/${branchName}`,

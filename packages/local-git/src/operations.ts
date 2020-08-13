@@ -19,24 +19,13 @@ export class Commit {
     public readonly branchName: string,
   ) {}
 
-  static toRefName(refName: string): Commit {
-    return new Commit(
-      PendingCommitRef.forBranch('main'),
-      [],
-      'A commit message',
-      new Author('A user', 'unknown@unknown.com'),
-      refName,
-      'main',
-    )
-  }
-
   static toCommitRef(commitRef: CommitRef): Commit {
     return new Commit(
       commitRef,
       [],
       'A commit message',
       new Author('A user', 'unknown@unknown.com'),
-      commitRef.localRef,
+      commitRef.localRefName,
       commitRef.branchName,
     )
   }
@@ -49,17 +38,6 @@ export class Commit {
       author,
       this.refName,
       this.branchName,
-    )
-  }
-
-  onBranch(branchName: string): Commit {
-    return new Commit(
-      this.commitRef,
-      this.files,
-      this.message,
-      this.author,
-      this.refName,
-      branchName,
     )
   }
 
