@@ -1,8 +1,13 @@
 import { TinyTypeOf } from 'tiny-types'
+import { v4 as uuid } from 'uuid'
 
 export class RefName extends TinyTypeOf<string>() {
   protected constructor(value: string) {
     super(value)
+  }
+
+  static forPendingCommit(branchName: string): RefName {
+    return new RefName(`refs/pending-commits/${branchName}-${uuid()}`)
   }
 
   static fromRawString(value: string): RefName {

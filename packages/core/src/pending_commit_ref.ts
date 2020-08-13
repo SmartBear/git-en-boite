@@ -1,5 +1,4 @@
 import { Serialised, TinyType } from 'tiny-types'
-import { v4 as uuid } from 'uuid'
 
 import { FetchedCommitRef, PushableCommitRef, RefName } from '.'
 
@@ -9,10 +8,7 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
   }
 
   static forBranch(branchName: string): PendingCommitRef {
-    return new PendingCommitRef(
-      branchName,
-      RefName.fromRawString(`refs/pending-commits/${branchName}-${uuid()}`),
-    )
+    return new PendingCommitRef(branchName, RefName.forPendingCommit(branchName))
   }
 
   static fromJSON(parsedJSON: Serialised<PendingCommitRef>): PendingCommitRef {
