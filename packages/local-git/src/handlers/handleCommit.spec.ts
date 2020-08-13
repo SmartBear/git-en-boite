@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { containsString, containsStrings, fulfilled, hasProperty, not, promiseThat } from 'hamjest'
+import { containsString, containsStrings, fulfilled, not, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -47,8 +47,8 @@ describe('handleCommit', () => {
     const refName = `refs/heads/${branchName}`
     await git(Commit.withMessage('A commit message').toRef(refName).onBranch(branchName))
     await promiseThat(
-      repo.execGit('log', [refName, '--oneline']),
-      fulfilled(hasProperty('stdout', containsString('A commit message'))),
+      repo.readGit('log', [refName, '--oneline']),
+      fulfilled(containsString('A commit message')),
     )
   })
 
@@ -57,8 +57,8 @@ describe('handleCommit', () => {
     const refName = `refs/heads/${branchName}`
     await git(Commit.newFile(file).onBranch(branchName).toRef(refName))
     await promiseThat(
-      repo.execGit('ls-tree', [refName, '-r', '--name-only']),
-      fulfilled(hasProperty('stdout', containsString(file.path))),
+      repo.readGit('ls-tree', [refName, '-r', '--name-only']),
+      fulfilled(containsString(file.path)),
     )
   })
 
@@ -72,8 +72,8 @@ describe('handleCommit', () => {
     await git(Commit.newFile(otherFile).onBranch(branchName).toRef(refName))
 
     await promiseThat(
-      repo.execGit('ls-tree', [refName, '-r', '--name-only']),
-      fulfilled(hasProperty('stdout', containsStrings(existingFile.path, otherFile.path))),
+      repo.readGit('ls-tree', [refName, '-r', '--name-only']),
+      fulfilled(containsStrings(existingFile.path, otherFile.path)),
     )
   })
 
@@ -83,23 +83,21 @@ describe('handleCommit', () => {
     await git(Commit.withMessage('initial commit').toRef(remoteRefName).onBranch(branchName))
     await git(Commit.withMessage('A commit message').toRef(refName).onBranch(branchName))
     await promiseThat(
-      repo.execGit('log', [refName, '--oneline']),
-      fulfilled(hasProperty('stdout', containsStrings('initial commit', 'A commit message'))),
+      repo.readGit('log', [refName, '--oneline']),
+      fulfilled(containsStrings('initial commit', 'A commit message')),
     )
   })
 
   it('clears the index before committing the index with no parent', async () => {
     const file = { path: 'a.file', content: 'some content' }
     const refName = `refs/heads/${branchName}`
-    const objectId = (
-      await repo.execGit('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
-    ).stdout.trim()
+    const objectId = await repo.readGit('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
     await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
     await git(Commit.newFile(file).toRef(refName).onBranch(branchName))
 
     await promiseThat(
-      repo.execGit('ls-tree', [refName, '-r', '--name-only']),
-      fulfilled(hasProperty('stdout', not(containsString('junk.file')))),
+      repo.readGit('ls-tree', [refName, '-r', '--name-only']),
+      fulfilled(not(containsString('junk.file'))),
     )
   })
 })

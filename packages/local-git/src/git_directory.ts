@@ -7,6 +7,10 @@ export class GitDirectory {
     this.path = path
   }
 
+  async readGit(cmd: string, args: string[] = [], options?: IGitExecutionOptions): Promise<string> {
+    return (await this.execGit(cmd, args, options)).stdout.trim()
+  }
+
   async execGit(
     cmd: string,
     args: string[] = [],

@@ -2,7 +2,7 @@ import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from '../git_directory'
 import { Commit } from '../operations'
-import { IGitExecutionOptions, GitProcess } from 'dugite'
+import { GitProcess } from 'dugite'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
@@ -22,24 +22,16 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   await addFiles()
   await commitIndex()
 
-  async function read(
-    cmd: string,
-    args: string[] = [],
-    options?: IGitExecutionOptions,
-  ): Promise<string> {
-    return (await repo.execGit(cmd, args, options)).stdout.trim()
-  }
-
   async function addFiles() {
     for (const file of files) {
-      const objectId = await read('hash-object', ['-w', '--stdin'], { stdin: file.content })
+      const objectId = await repo.readGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
       await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
     }
   }
 
   async function commitIndex() {
-    const treeName = await read('write-tree')
-    const commitName = await read('commit-tree', [treeName, '-m', message, ...commitArgs], {
+    const treeName = await repo.readGit('write-tree')
+    const commitName = await repo.readGit('commit-tree', [treeName, '-m', message, ...commitArgs], {
       env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
     })
     await repo.execGit('update-ref', [refName, commitName])
