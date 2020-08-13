@@ -77,7 +77,7 @@ describe(LaBoîte.name, () => {
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     await origin(Commit.toCommitRef(commitRef))
-    const expectedRevision = await revParse(commitRef.local, remoteUrl)
+    const expectedRevision = await revParse(commitRef.local.value, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({

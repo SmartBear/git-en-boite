@@ -2,7 +2,7 @@ import { RefName } from '.'
 
 export interface CommitRef {
   branchName: string
-  local: string
+  local: RefName
 }
 
 export interface FetchedCommitRef extends CommitRef {

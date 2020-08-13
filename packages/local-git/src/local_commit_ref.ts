@@ -1,13 +1,13 @@
 import { TinyType } from 'tiny-types'
-import { CommitRef } from 'git-en-boite-core'
+import { CommitRef, RefName } from 'git-en-boite-core'
 
 export class LocalCommitRef extends TinyType implements CommitRef {
-  constructor(public readonly branchName: string, public readonly local: string) {
+  constructor(public readonly branchName: string, public readonly local: RefName) {
     super()
   }
 
   static forBranch(branchName: string): LocalCommitRef {
-    const localRef = `refs/heads/${branchName}`
-    return new LocalCommitRef(branchName, localRef)
+    const local = new RefName(`refs/heads/${branchName}`)
+    return new LocalCommitRef(branchName, local)
   }
 }

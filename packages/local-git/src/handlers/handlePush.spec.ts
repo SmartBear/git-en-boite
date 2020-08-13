@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { PendingCommitRef, Ref } from 'git-en-boite-core'
+import { PendingCommitRef, Ref, RefName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
@@ -65,8 +65,9 @@ describe('handlePush', () => {
     const commitRef = PendingCommitRef.forBranch(branchName)
     await git(Commit.toCommitRef(commitRef).withFiles([file]))
     await git(Push.pendingCommitFrom(commitRef))
-    const commitName = (await git(GetRefs.all())).find(ref => ref.refName === commitRef.local)
-      .revision
+    const commitName = (await git(GetRefs.all())).find(ref =>
+      commitRef.local.equals(new RefName(ref.refName)),
+    ).revision
 
     promiseThat(origin(GetRevision.forBranchNamed(branchName)), fulfilled(equalTo(commitName)))
   })

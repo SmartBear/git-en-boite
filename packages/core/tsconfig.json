@@ -15,5 +15,6 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "exclude": ["dist"]
 }
