@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { LocalCommitRef, PendingCommitRef, Ref } from 'git-en-boite-core'
+import { PendingCommitRef, Ref } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
@@ -9,14 +9,15 @@ import {
   handleCommit,
   handleFetch,
   handleGetRefs,
+  handleGetRevision,
   handleInit,
   handlePush,
   handleSetOrigin,
 } from '.'
+import { LocalCommitRef } from '..'
 import { BareRepoFactory } from '../bare_repo_factory'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, GetRevision, Init, Push, SetOrigin } from '../operations'
-import { handleGetRevision } from './handleGetRevision'
 
 type Protocol = [
   AsyncCommand<Commit>,

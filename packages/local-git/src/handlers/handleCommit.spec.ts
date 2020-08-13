@@ -1,15 +1,14 @@
 import fs from 'fs'
+import { PendingCommitRef } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { containsString, containsStrings, fulfilled, not, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { handleCommit, handleInit } from '.'
+import { handleCommit, handleFetch, handleInit, handleSetOrigin } from '.'
+import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, Init, SetOrigin } from '../operations'
-import { handleFetch } from './handleFetch'
-import { handleSetOrigin } from './handleSetOrigin'
-import { LocalCommitRef, PendingCommitRef } from 'git-en-boite-core'
 
 type Protocol = [
   AsyncCommand<Commit>,

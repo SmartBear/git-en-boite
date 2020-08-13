@@ -1,14 +1,14 @@
 import fs from 'fs'
-import { File, LocalCommitRef } from 'git-en-boite-core'
+import { File } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
+import { assertThat, contains } from 'hamjest'
+import path from 'path'
 import { dirSync } from 'tmp'
 
 import { handleCommit, handleGetFiles, handleInit } from '.'
-import { Commit, GetFiles, Init } from '../operations'
-
-import path from 'path'
+import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
-import { assertThat, contains } from 'hamjest'
+import { Commit, GetFiles, Init } from '../operations'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetFiles, File[]>]
 

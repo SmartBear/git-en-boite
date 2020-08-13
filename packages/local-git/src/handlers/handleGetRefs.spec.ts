@@ -1,16 +1,15 @@
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { LocalCommitRef, Ref } from 'git-en-boite-core'
+import { Ref } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
+import { handleCommit, handleGetRefs, handleInit } from '.'
+import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, GetRefs, Init } from '../operations'
-import { handleCommit } from './handleCommit'
-import { handleGetRefs } from './handleGetRefs'
-import { handleInit } from './handleInit'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetRefs, Ref[]>]
 

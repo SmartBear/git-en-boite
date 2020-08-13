@@ -1,10 +1,10 @@
-import { GitRepo, OpenGitRepo, PendingCommitRef, LocalCommitRef } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo, PendingCommitRef } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { BareRepoProtocol, Commit, GetRefs, GetRevision } from '..'
+import { BareRepoProtocol, Commit, GetRefs, GetRevision, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<BareRepoProtocol>>

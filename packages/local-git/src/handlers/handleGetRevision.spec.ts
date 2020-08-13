@@ -1,17 +1,15 @@
 import childProcess from 'child_process'
 import fs from 'fs'
-import { LocalCommitRef } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { equalTo, fulfilled, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
+import { handleCommit, handleGetRevision, handleInit } from '.'
+import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, GetRevision, Init } from '../operations'
-import { handleCommit } from './handleCommit'
-import { handleGetRevision } from './handleGetRevision'
-import { handleInit } from './handleInit'
 
 const exec = promisify(childProcess.exec)
 

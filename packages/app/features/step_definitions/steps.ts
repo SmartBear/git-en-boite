@@ -1,8 +1,8 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { GitRepoInfo, LocalCommitRef } from 'git-en-boite-core'
+import { GitRepoInfo } from 'git-en-boite-core'
 import { File } from 'git-en-boite-core'
-import { BareRepoFactory, GetFiles } from 'git-en-boite-local-git'
+import { BareRepoFactory, GetFiles, LocalCommitRef } from 'git-en-boite-local-git'
 import { Commit, GetRevision } from 'git-en-boite-local-git'
 import {
   assertThat,

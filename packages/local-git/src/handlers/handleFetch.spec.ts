@@ -12,13 +12,11 @@ import {
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { BareRepoFactory } from '..'
+import { handleFetch, handleInit } from '.'
+import { BareRepoFactory, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRevision, Init, SetOrigin } from '../operations'
-import { handleFetch } from './handleFetch'
-import { handleInit } from './handleInit'
 import { handleSetOrigin } from './handleSetOrigin'
-import { LocalCommitRef } from 'git-en-boite-core'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 

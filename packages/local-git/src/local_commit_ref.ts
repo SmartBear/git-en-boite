@@ -1,5 +1,5 @@
 import { TinyType } from 'tiny-types'
-import { CommitRef } from '.'
+import { CommitRef } from 'git-en-boite-core'
 
 export class LocalCommitRef extends TinyType implements CommitRef {
   constructor(public readonly branchName: string, public readonly local: string) {

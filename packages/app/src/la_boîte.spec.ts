@@ -1,6 +1,12 @@
 import { GitProcess } from 'dugite'
-import { File, LocalCommitRef } from 'git-en-boite-core'
-import { BareRepoFactory, Commit, DugiteGitRepo, GetFiles } from 'git-en-boite-local-git'
+import { File } from 'git-en-boite-core'
+import {
+  BareRepoFactory,
+  Commit,
+  DugiteGitRepo,
+  GetFiles,
+  LocalCommitRef,
+} from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
