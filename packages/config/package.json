@@ -4,7 +4,8 @@
   "description": "Environment & configuration settings for git-en-boite",
   "main": "src/index.ts",
   "scripts": {
-    "test": "mocha",
+    "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i",
+    "test:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {

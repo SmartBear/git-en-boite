@@ -4,7 +4,8 @@
   "description": "Adapter that holds the index of info about all repos",
   "main": "src/index.ts",
   "scripts": {
-    "test": "# noop",
+    "test": "#noop",
+    "test:wip": "#noop",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {

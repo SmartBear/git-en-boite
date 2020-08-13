@@ -7,6 +7,7 @@
     "local-git": "yarn workspace git-en-boite-local-git",
     "start": "yarn app start",
     "test": "yarn workspaces run test",
+    "test:wip": "yarn workspaces run test:wip",
     "web": "yarn workspace git-en-boite-web",
     "core": "yarn workspace git-en-boite-core"
   },
