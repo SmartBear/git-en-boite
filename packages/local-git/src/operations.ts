@@ -15,8 +15,6 @@ export class Commit {
     public readonly files: File[],
     public readonly message: string,
     public readonly author: Author,
-    public readonly refName: string,
-    public readonly branchName: string,
   ) {}
 
   static toCommitRef(commitRef: CommitRef): Commit {
@@ -25,42 +23,19 @@ export class Commit {
       [],
       'A commit message',
       new Author('A user', 'unknown@unknown.com'),
-      commitRef.localRefName,
-      commitRef.branchName,
     )
   }
 
   byAuthor(author: Author): Commit {
-    return new Commit(
-      this.commitRef,
-      this.files,
-      this.message,
-      author,
-      this.refName,
-      this.branchName,
-    )
+    return new Commit(this.commitRef, this.files, this.message, author)
   }
 
   withFiles(files: File[]): Commit {
-    return new Commit(
-      this.commitRef,
-      files,
-      this.message,
-      this.author,
-      this.refName,
-      this.branchName,
-    )
+    return new Commit(this.commitRef, files, this.message, this.author)
   }
 
   withMessage(message: string): Commit {
-    return new Commit(
-      this.commitRef,
-      this.files,
-      message,
-      this.author,
-      this.refName,
-      this.branchName,
-    )
+    return new Commit(this.commitRef, this.files, message, this.author)
   }
 }
 

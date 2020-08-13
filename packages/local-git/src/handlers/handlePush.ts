@@ -6,5 +6,5 @@ export const handlePush: Handle<GitDirectory, AsyncCommand<Push>> = async (
   repo: GitDirectory,
   { commitRef },
 ) => {
-  await repo.exec('push', ['origin', `${commitRef.localRefName}:${commitRef.remoteRef}`])
+  await repo.exec('push', ['origin', `${commitRef.local}:${commitRef.remote}`])
 }

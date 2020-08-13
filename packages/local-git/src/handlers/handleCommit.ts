@@ -5,10 +5,10 @@ import { Commit } from '../operations'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
-  { files, message, author, refName, branchName },
+  { commitRef, files, message, author },
 ): Promise<void> => {
   const commitArgs = await getParentCommit(
-    branchName,
+    commitRef.branchName,
     async parentCommitName => {
       await repo.exec('read-tree', [parentCommitName])
       return ['-p', parentCommitName]
@@ -33,7 +33,7 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
     const commitName = await repo.read('commit-tree', [treeName, '-m', message, ...commitArgs], {
       env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
     })
-    await repo.exec('update-ref', [refName, commitName])
+    await repo.exec('update-ref', [commitRef.local, commitName])
   }
 
   async function getParentCommit<ResultType = Promise<void>>(

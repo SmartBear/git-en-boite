@@ -48,7 +48,7 @@ describe('@wip handleCommit', () => {
   it('creates an empty commit with the given message', async () => {
     await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
     await promiseThat(
-      repo.read('log', [localCommitRef.localRefName, '--oneline']),
+      repo.read('log', [localCommitRef.local, '--oneline']),
       fulfilled(containsString('A commit message')),
     )
   })
@@ -57,7 +57,7 @@ describe('@wip handleCommit', () => {
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
     await promiseThat(
-      repo.read('ls-tree', [localCommitRef.localRefName, '-r', '--name-only']),
+      repo.read('ls-tree', [localCommitRef.local, '-r', '--name-only']),
       fulfilled(containsString(file.path)),
     )
   })
@@ -66,7 +66,7 @@ describe('@wip handleCommit', () => {
     const existingFile = { path: 'a.file', content: 'some content' }
     await git(
       Commit.toCommitRef({
-        localRefName: `refs/remotes/origin/${branchName}`,
+        local: `refs/remotes/origin/${branchName}`,
         branchName,
       }).withFiles([existingFile]),
     )
@@ -76,7 +76,7 @@ describe('@wip handleCommit', () => {
     await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
 
     await promiseThat(
-      repo.read('ls-tree', [commitRef.localRefName, '-r', '--name-only']),
+      repo.read('ls-tree', [commitRef.local, '-r', '--name-only']),
       fulfilled(containsStrings(existingFile.path, otherFile.path)),
     )
   })
@@ -84,13 +84,13 @@ describe('@wip handleCommit', () => {
   it('creates a commit after an existing one on a remote', async () => {
     await git(
       Commit.toCommitRef({
-        localRefName: `refs/remotes/origin/${branchName}`,
+        local: `refs/remotes/origin/${branchName}`,
         branchName,
       }).withMessage('initial commit'),
     )
     await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
     await promiseThat(
-      repo.read('log', [localCommitRef.localRefName, '--oneline']),
+      repo.read('log', [localCommitRef.local, '--oneline']),
       fulfilled(containsStrings('initial commit', 'A commit message')),
     )
   })
@@ -102,7 +102,7 @@ describe('@wip handleCommit', () => {
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
 
     await promiseThat(
-      repo.read('ls-tree', [localCommitRef.localRefName, '-r', '--name-only']),
+      repo.read('ls-tree', [localCommitRef.local, '-r', '--name-only']),
       fulfilled(not(containsString('junk.file'))),
     )
   })

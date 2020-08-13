@@ -1,9 +1,10 @@
 import { v4 as uuid } from 'uuid'
 import { TinyType, Serialised } from 'tiny-types'
 import { PushableCommitRef } from '.'
+import { CommitRef } from './commit_ref'
 
 export class PendingCommitRef extends TinyType implements PushableCommitRef {
-  constructor(public readonly branchName: string, public readonly localRefName: string) {
+  constructor(public readonly branchName: string, public readonly local: string) {
     super()
   }
 
@@ -13,11 +14,14 @@ export class PendingCommitRef extends TinyType implements PushableCommitRef {
   }
 
   static fromJSON(parsedJSON: Serialised<PendingCommitRef>): PendingCommitRef {
-    const { branchName, localRefName } = parsedJSON as { branchName: string; localRefName: string }
-    return new PendingCommitRef(branchName, localRefName)
+    const { branchName, local }: CommitRef = parsedJSON as {
+      branchName: string
+      local: string
+    }
+    return new PendingCommitRef(branchName, local)
   }
 
-  get remoteRef(): string {
+  get remote(): string {
     return `refs/heads/${this.branchName}`
   }
 }
