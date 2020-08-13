@@ -12,11 +12,11 @@ describe(PendingCommitRef.name, () => {
 
   it('has a remoteRef', () => {
     const ref = PendingCommitRef.forBranch('a-branch')
-    assertThat(ref.remote, equalTo(new RefName('refs/heads/a-branch')))
+    assertThat(ref.remote, equalTo(RefName.fromRawString('refs/heads/a-branch')))
   })
 
   it('has a fetched ref name', () => {
     const ref = PendingCommitRef.forBranch('a-branch')
-    assertThat(ref.fetched, equalTo(new RefName('refs/remotes/origin/a-branch')))
+    assertThat(ref.fetched, equalTo(RefName.fromRawString('refs/remotes/origin/a-branch')))
   })
 })

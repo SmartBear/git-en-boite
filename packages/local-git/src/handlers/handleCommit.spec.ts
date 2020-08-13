@@ -65,7 +65,7 @@ describe('@wip handleCommit', () => {
     const existingFile = { path: 'a.file', content: 'some content' }
     await git(
       Commit.toCommitRef({
-        local: new RefName(`refs/remotes/origin/${branchName}`),
+        local: RefName.fetchedFromOrigin(branchName),
         branchName,
       }).withFiles([existingFile]),
     )
@@ -83,7 +83,7 @@ describe('@wip handleCommit', () => {
   it('creates a commit after an existing one on a remote', async () => {
     await git(
       Commit.toCommitRef({
-        local: new RefName(`refs/remotes/origin/${branchName}`),
+        local: RefName.fetchedFromOrigin(branchName),
         branchName,
       }).withMessage('initial commit'),
     )

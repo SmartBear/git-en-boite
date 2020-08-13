@@ -8,7 +8,7 @@ describe(Ref.name, () => {
       let ref: Ref
 
       beforeEach(() => {
-        ref = new Ref('abcde1', new RefName('refs/remotes/origin/master'))
+        ref = new Ref('abcde1', RefName.fetchedFromOrigin('master'))
       })
 
       it('is true', () => {
@@ -22,7 +22,7 @@ describe(Ref.name, () => {
       let ref: Ref
 
       beforeEach(() => {
-        ref = new Ref('abcde1', new RefName('refs/remotes/origin/master'))
+        ref = new Ref('abcde1', RefName.fetchedFromOrigin('master'))
       })
 
       it('returns the name of the branch', () => {

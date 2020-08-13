@@ -10,7 +10,7 @@ export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Ref[]>> = a
       .trim()
       .split('\n')
       .map(line => line.trim().split(' '))
-      .map(([revision, name]) => new Ref(revision, new RefName(name)))
+      .map(([revision, name]) => new Ref(revision, RefName.fromRawString(name)))
   } catch (error) {
     return []
   }

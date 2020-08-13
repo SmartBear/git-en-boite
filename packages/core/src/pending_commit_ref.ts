@@ -11,7 +11,7 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
   static forBranch(branchName: string): PendingCommitRef {
     return new PendingCommitRef(
       branchName,
-      new RefName(`refs/pending-commits/${branchName}-${uuid()}`),
+      RefName.fromRawString(`refs/pending-commits/${branchName}-${uuid()}`),
     )
   }
 
@@ -20,7 +20,7 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
       branchName: string
       local: string
     }
-    return new PendingCommitRef(branchName, new RefName(local))
+    return new PendingCommitRef(branchName, RefName.fromRawString(local))
   }
 
   get remote(): RefName {
