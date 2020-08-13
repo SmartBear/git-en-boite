@@ -64,7 +64,7 @@ describe('handleGetRefs', () => {
         const revision = await revParse(commitRef.local.value, repoPath)
         await promiseThat(
           git(GetRefs.all()),
-          fulfilled(equalTo([new Ref(revision, commitRef.local.value)])),
+          fulfilled(equalTo([new Ref(revision, commitRef.local)])),
         )
       })
     })

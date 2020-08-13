@@ -97,11 +97,10 @@ export const verifyRepoContract = (
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git.commit(commitRef, file)
       await git.push(commitRef)
-      const commitName = (await git.getRefs()).find(ref =>
-        commitRef.local.equals(new RefName(ref.refName)),
-      ).revision
-      const remoteCommitName = (await origin(GetRefs.all())).find(
-        ref => ref.refName === `refs/heads/${branchName}`,
+      const commitName = (await git.getRefs()).find(ref => commitRef.local.equals(ref.refName))
+        .revision
+      const remoteCommitName = (await origin(GetRefs.all())).find(ref =>
+        ref.refName.equals(RefName.localBranch(branchName)),
       ).revision
       await assertThat(remoteCommitName, equalTo(commitName))
     })

@@ -2,11 +2,12 @@ import { assertThat, equalTo, fulfilled, isRejectedWith, promiseThat } from 'ham
 import { stubInterface } from 'ts-sinon'
 
 import { GitRepo, Ref, Repo } from '.'
+import { RefName } from './ref_name'
 
 describe(Repo.name, () => {
   context('handling a query for the latest Refs', () => {
     it('queries the git repo and returns (a promise of) the result', async () => {
-      const expectedRefs = [new Ref('a-revision', 'a-branch')]
+      const expectedRefs = [new Ref('a-revision', RefName.localBranch('a-branch'))]
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.setOriginTo.resolves()
       gitRepo.getRefs.resolves(expectedRefs)
