@@ -58,7 +58,7 @@ describe('handleGetRefs', () => {
       const refName = `refs/tmp/a-ref-for-${branchName}`
 
       beforeEach(async () => {
-        await git(Commit.toRef(refName).onBranch(branchName))
+        await git(Commit.toRefName(refName).onBranch(branchName))
       })
 
       it('returns the revision of the latest commit', async () => {

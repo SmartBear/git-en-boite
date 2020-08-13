@@ -21,7 +21,7 @@ Given('a remote repo with branches:', async function (branchesTable) {
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
   for (const branchName of branches) {
-    await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+    await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
   }
 })
 
@@ -29,12 +29,12 @@ Given('a remote repo with commits on the {string} branch', async function (branc
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+  await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
 })
 
 When('a new commit is made on the {string} branch in the remote repo', async function (branchName) {
   const git = await new BareRepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+  await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
   this.lastCommitRevision = await git(GetRevision.forBranchNamed(branchName))
 })
 
@@ -52,6 +52,7 @@ When('a consumer tries to connect to a bad remote URL', async function () {
 
 When('a consumer triggers a manual fetch of the repo', fetch)
 Given('the repo has been fetched', fetch)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetch(this: any) {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
 }

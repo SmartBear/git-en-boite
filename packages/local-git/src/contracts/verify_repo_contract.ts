@@ -1,4 +1,4 @@
-import { GitRepo, OpenGitRepo, PendingCommitRef } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo, PendingCommitRef, LocalCommitRef } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
@@ -38,7 +38,7 @@ export const verifyRepoContract = (
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
         const refName = `refs/heads/${branchName}`
-        await origin(Commit.toRef(refName).onBranch(branchName))
+        await origin(Commit.toRefName(refName).onBranch(branchName))
         latestCommit = await origin(GetRevision.forBranchNamed(branchName))
       })
 
@@ -70,8 +70,8 @@ export const verifyRepoContract = (
         path: 'a.feature',
         content: 'Feature: A',
       }
-      const refName = `refs/heads/${branchName}`
-      await git.commit(refName, branchName, file)
+      const commitRef = LocalCommitRef.forBranch(branchName)
+      await git.commit(commitRef, file)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.exec('ls-tree', [branchName, '--name-only'])
       assertThat(result.stdout, matchesPattern(file.path))
@@ -84,7 +84,7 @@ export const verifyRepoContract = (
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await createOriginRepo(originUrl)
-      await origin(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+      await origin(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
     })
 
     it('pushes a commit to a remote branch', async () => {
@@ -95,7 +95,7 @@ export const verifyRepoContract = (
         content: 'Feature: A',
       }
       const commitRef = PendingCommitRef.forBranch(branchName)
-      await git.commit(commitRef.localRef, branchName, file)
+      await git.commit(commitRef, file)
       await git.push(commitRef)
       const commitName = (await git.getRefs()).find(ref => ref.refName === commitRef.localRef)
         .revision

@@ -39,7 +39,7 @@ describe('handleGetFiles', () => {
     await git(Init.bareRepo())
     const branchName = 'a-branch'
     const refName = `refs/heads/${branchName}`
-    await git(Commit.toRef(refName).withFiles([file]).onBranch(branchName))
+    await git(Commit.toRefName(refName).withFiles([file]).onBranch(branchName))
     const files = await git(GetFiles.forBranchNamed(branchName))
     assertThat(files, contains(file))
   })

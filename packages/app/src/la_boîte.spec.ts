@@ -38,7 +38,7 @@ describe(LaBoîte.name, () => {
       const branches = ['master', 'development']
       const origin = await new BareRepoFactory().open(remoteUrl)
       for (const branchName of branches)
-        await origin(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+        await origin(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const result = await app.getInfo(repoId)
@@ -53,8 +53,8 @@ describe(LaBoîte.name, () => {
   it('can connect a new repo by cloning from a remote URL', async () => {
     const refName = `refs/heads/${branchName}`
     const origin = await new BareRepoFactory().open(remoteUrl)
-    await origin(Commit.toRef(refName).onBranch(branchName))
-    await origin(Commit.toRef(refName).onBranch(branchName))
+    await origin(Commit.toRefName(refName).onBranch(branchName))
+    await origin(Commit.toRefName(refName).onBranch(branchName))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
@@ -68,10 +68,10 @@ describe(LaBoîte.name, () => {
     }
     const refName = `refs/heads/${branchName}`
     const origin = await new BareRepoFactory().open(remoteUrl)
-    await origin(Commit.toRef(refName).onBranch(branchName))
+    await origin(Commit.toRefName(refName).onBranch(branchName))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
-    await origin(Commit.toRef(refName))
+    await origin(Commit.toRefName(refName))
     const expectedRevision = await revParse(refName, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
@@ -88,7 +88,7 @@ describe(LaBoîte.name, () => {
   describe('commiting', () => {
     it('pushes a new file to the origin', async () => {
       const origin = await new BareRepoFactory().open(remoteUrl)
-      await origin(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+      await origin(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const file: File = {

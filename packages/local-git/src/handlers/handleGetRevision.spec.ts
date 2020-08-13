@@ -59,7 +59,7 @@ describe('handleGetRevision', () => {
 
   context('with a commit to the main branch', () => {
     beforeEach(async () => {
-      await git(Commit.toRef(`refs/heads/${branchName}`).onBranch(branchName))
+      await git(Commit.toRefName(`refs/heads/${branchName}`).onBranch(branchName))
     })
 
     it('returns the revision of the latest commit', async () => {

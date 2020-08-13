@@ -18,8 +18,7 @@ export class Repo {
 
   async commit(branchName: string, file: File): Promise<void> {
     const commitRef = PendingCommitRef.forBranch(branchName)
-    const refName = commitRef.localRef
-    await this.git.commit(refName, branchName, file)
+    await this.git.commit(commitRef, file)
     await this.git.push(commitRef)
   }
 }

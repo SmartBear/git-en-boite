@@ -45,7 +45,7 @@ describe('handleCommit', () => {
 
   it('creates an empty commit with the given message', async () => {
     const refName = `refs/heads/${branchName}`
-    await git(Commit.toRef(refName).onBranch(branchName).withMessage('A commit message'))
+    await git(Commit.toRefName(refName).onBranch(branchName).withMessage('A commit message'))
     await promiseThat(
       repo.read('log', [refName, '--oneline']),
       fulfilled(containsString('A commit message')),
@@ -55,7 +55,7 @@ describe('handleCommit', () => {
   it('creates a commit containing the given files', async () => {
     const file = { path: 'a.file', content: 'some content' }
     const refName = `refs/heads/${branchName}`
-    await git(Commit.toRef(refName).withFiles([file]).onBranch(branchName))
+    await git(Commit.toRefName(refName).withFiles([file]).onBranch(branchName))
     await promiseThat(
       repo.read('ls-tree', [refName, '-r', '--name-only']),
       fulfilled(containsString(file.path)),
@@ -65,11 +65,11 @@ describe('handleCommit', () => {
   it('creates a commit using the existing tree on the remote branch', async () => {
     const remoteRefName = `refs/remotes/origin/${branchName}`
     const existingFile = { path: 'a.file', content: 'some content' }
-    await git(Commit.toRef(remoteRefName).withFiles([existingFile]).onBranch(branchName))
+    await git(Commit.toRefName(remoteRefName).withFiles([existingFile]).onBranch(branchName))
 
     const refName = `refs/pending-commits/${branchName}`
     const otherFile = { path: 'b.file', content: 'another content' }
-    await git(Commit.toRef(refName).withFiles([otherFile]).onBranch(branchName))
+    await git(Commit.toRefName(refName).withFiles([otherFile]).onBranch(branchName))
 
     await promiseThat(
       repo.read('ls-tree', [refName, '-r', '--name-only']),
@@ -80,8 +80,8 @@ describe('handleCommit', () => {
   it('creates a commit after an existing one on a remote', async () => {
     const refName = `refs/heads/${branchName}`
     const remoteRefName = `refs/remotes/origin/${branchName}`
-    await git(Commit.toRef(remoteRefName).withMessage('initial commit').onBranch(branchName))
-    await git(Commit.toRef(refName).withMessage('A commit message').onBranch(branchName))
+    await git(Commit.toRefName(remoteRefName).withMessage('initial commit').onBranch(branchName))
+    await git(Commit.toRefName(refName).withMessage('A commit message').onBranch(branchName))
     await promiseThat(
       repo.read('log', [refName, '--oneline']),
       fulfilled(containsStrings('initial commit', 'A commit message')),
@@ -93,7 +93,7 @@ describe('handleCommit', () => {
     const refName = `refs/heads/${branchName}`
     const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
     await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
-    await git(Commit.toRef(refName).withFiles([file]).onBranch(branchName))
+    await git(Commit.toRefName(refName).withFiles([file]).onBranch(branchName))
 
     await promiseThat(
       repo.read('ls-tree', [refName, '-r', '--name-only']),

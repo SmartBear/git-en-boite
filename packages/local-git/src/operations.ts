@@ -11,6 +11,7 @@ export class Checkout {
 
 export class Commit {
   protected constructor(
+    public readonly commitRef: PendingCommitRef,
     public readonly files: File[],
     public readonly message: string,
     public readonly author: Author,
@@ -18,8 +19,9 @@ export class Commit {
     public readonly branchName: string,
   ) {}
 
-  static toRef(refName: string): Commit {
+  static toRefName(refName: string): Commit {
     return new Commit(
+      PendingCommitRef.forBranch('main'),
       [],
       'A commit message',
       new Author('A user', 'unknown@unknown.com'),
@@ -28,20 +30,59 @@ export class Commit {
     )
   }
 
+  static toCommitRef(commitRef: PendingCommitRef): Commit {
+    return new Commit(
+      commitRef,
+      [],
+      'A commit message',
+      new Author('A user', 'unknown@unknown.com'),
+      commitRef.localRef,
+      commitRef.branchName,
+    )
+  }
+
   byAuthor(author: Author): Commit {
-    return new Commit(this.files, this.message, author, this.refName, this.branchName)
+    return new Commit(
+      this.commitRef,
+      this.files,
+      this.message,
+      author,
+      this.refName,
+      this.branchName,
+    )
   }
 
   onBranch(branchName: string): Commit {
-    return new Commit(this.files, this.message, this.author, this.refName, branchName)
+    return new Commit(
+      this.commitRef,
+      this.files,
+      this.message,
+      this.author,
+      this.refName,
+      branchName,
+    )
   }
 
   withFiles(files: File[]): Commit {
-    return new Commit(files, this.message, this.author, this.refName, this.branchName)
+    return new Commit(
+      this.commitRef,
+      files,
+      this.message,
+      this.author,
+      this.refName,
+      this.branchName,
+    )
   }
 
   withMessage(message: string): Commit {
-    return new Commit(this.files, message, this.author, this.refName, this.branchName)
+    return new Commit(
+      this.commitRef,
+      this.files,
+      message,
+      this.author,
+      this.refName,
+      this.branchName,
+    )
   }
 }
 
