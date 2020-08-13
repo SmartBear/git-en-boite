@@ -47,7 +47,7 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
     failure: () => Promise<ResultType>,
   ): Promise<ResultType> {
     if (hasParent(commitRef)) {
-      return repo.read('show-ref', ['--hash', commitRef.fetched]).then(success)
+      return repo.read('show-ref', ['--hash', commitRef.fetched.value]).then(success)
     }
     return failure()
   }

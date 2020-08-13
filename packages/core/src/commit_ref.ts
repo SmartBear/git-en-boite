@@ -1,4 +1,4 @@
-import { RefName } from './ref_name'
+import { RefName } from '.'
 
 export interface CommitRef {
   branchName: string
@@ -6,7 +6,7 @@ export interface CommitRef {
 }
 
 export interface FetchedCommitRef extends CommitRef {
-  fetched: string
+  fetched: RefName
 }
 
 export interface PushableCommitRef extends CommitRef {

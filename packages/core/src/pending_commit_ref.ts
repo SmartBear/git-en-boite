@@ -21,10 +21,10 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
   }
 
   get remote(): RefName {
-    return RefName.ofOriginBranch(this.branchName)
+    return RefName.localBranch(this.branchName)
   }
 
-  get fetched(): string {
-    return `refs/remotes/origin/${this.branchName}`
+  get fetched(): RefName {
+    return RefName.fetchedFromOrigin(this.branchName)
   }
 }
