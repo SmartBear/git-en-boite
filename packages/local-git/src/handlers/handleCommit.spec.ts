@@ -1,23 +1,14 @@
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import {
-  containsString,
-  containsStrings,
-  fulfilled,
-  hasProperty,
-  not,
-  promiseThat,
-  assertThat,
-  string,
-} from 'hamjest'
+import { containsString, containsStrings, fulfilled, hasProperty, not, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { handleCommit, handleInit } from '.'
 import { GitDirectory } from '../git_directory'
-import { Commit, Init, SetOrigin, Fetch } from '../operations'
-import { handleSetOrigin } from './handleSetOrigin'
+import { Commit, Fetch, Init, SetOrigin } from '../operations'
 import { handleFetch } from './handleFetch'
+import { handleSetOrigin } from './handleSetOrigin'
 
 type Protocol = [
   AsyncCommand<Commit>,
@@ -26,7 +17,7 @@ type Protocol = [
   AsyncCommand<SetOrigin>,
 ]
 
-describe('@wip handleCommit', () => {
+describe('handleCommit', () => {
   const branchName = 'a-branch'
   let root: string
   let repoPath: string
@@ -97,13 +88,13 @@ describe('@wip handleCommit', () => {
     )
   })
 
-  it('clears the index before committing', async () => {
+  it('clears the index before committing the index with no parent', async () => {
     const file = { path: 'a.file', content: 'some content' }
     const refName = `refs/heads/${branchName}`
     const objectId = (
-      await repo.execGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
+      await repo.execGit('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
     ).stdout.trim()
-    await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
+    await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
     await git(Commit.newFile(file).toRef(refName).onBranch(branchName))
 
     await promiseThat(
