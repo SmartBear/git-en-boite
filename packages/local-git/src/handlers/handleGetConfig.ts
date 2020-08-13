@@ -6,7 +6,7 @@ export const handleGetConfig: Handle<GitDirectory, AsyncQuery<GetConfig, Config>
   repo,
   { scope },
 ) => {
-  const { stdout } = await repo.execGit('config', [`--${scope}`, '--list'])
+  const { stdout } = await repo.exec('config', [`--${scope}`, '--list'])
   return stdout
     .trim()
     .split('\n')

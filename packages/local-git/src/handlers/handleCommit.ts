@@ -11,11 +11,11 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   const commitArgs = await getParentCommit(
     branchName,
     async parentCommitName => {
-      await repo.execGit('read-tree', [parentCommitName])
+      await repo.exec('read-tree', [parentCommitName])
       return ['-p', parentCommitName]
     },
     async () => {
-      await repo.execGit('read-tree', ['--empty'])
+      await repo.exec('read-tree', ['--empty'])
       return []
     },
   )
@@ -24,17 +24,17 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
 
   async function addFiles() {
     for (const file of files) {
-      const objectId = await repo.readGit('hash-object', ['-w', '--stdin'], { stdin: file.content })
-      await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
+      const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: file.content })
+      await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
     }
   }
 
   async function commitIndex() {
-    const treeName = await repo.readGit('write-tree')
-    const commitName = await repo.readGit('commit-tree', [treeName, '-m', message, ...commitArgs], {
+    const treeName = await repo.read('write-tree')
+    const commitName = await repo.read('commit-tree', [treeName, '-m', message, ...commitArgs], {
       env: { GIT_AUTHOR_NAME: author.name, GIT_AUTHOR_EMAIL: author.email },
     })
-    await repo.execGit('update-ref', [refName, commitName])
+    await repo.exec('update-ref', [refName, commitName])
   }
 
   async function getParentCommit<ResultType = Promise<void>>(

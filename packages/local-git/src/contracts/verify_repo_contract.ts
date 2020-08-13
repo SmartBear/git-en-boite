@@ -73,7 +73,7 @@ export const verifyRepoContract = (
       const refName = `refs/heads/${branchName}`
       await git.commit(refName, branchName, file)
       const backDoor = new GitDirectory(repoPath)
-      const result = await backDoor.execGit('ls-tree', [branchName, '--name-only'])
+      const result = await backDoor.exec('ls-tree', [branchName, '--name-only'])
       assertThat(result.stdout, matchesPattern(file.path))
     })
   })

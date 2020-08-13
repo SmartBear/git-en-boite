@@ -47,7 +47,7 @@ describe('handleCommit', () => {
     const refName = `refs/heads/${branchName}`
     await git(Commit.withMessage('A commit message').toRef(refName).onBranch(branchName))
     await promiseThat(
-      repo.readGit('log', [refName, '--oneline']),
+      repo.read('log', [refName, '--oneline']),
       fulfilled(containsString('A commit message')),
     )
   })
@@ -57,7 +57,7 @@ describe('handleCommit', () => {
     const refName = `refs/heads/${branchName}`
     await git(Commit.newFile(file).onBranch(branchName).toRef(refName))
     await promiseThat(
-      repo.readGit('ls-tree', [refName, '-r', '--name-only']),
+      repo.read('ls-tree', [refName, '-r', '--name-only']),
       fulfilled(containsString(file.path)),
     )
   })
@@ -72,7 +72,7 @@ describe('handleCommit', () => {
     await git(Commit.newFile(otherFile).onBranch(branchName).toRef(refName))
 
     await promiseThat(
-      repo.readGit('ls-tree', [refName, '-r', '--name-only']),
+      repo.read('ls-tree', [refName, '-r', '--name-only']),
       fulfilled(containsStrings(existingFile.path, otherFile.path)),
     )
   })
@@ -83,7 +83,7 @@ describe('handleCommit', () => {
     await git(Commit.withMessage('initial commit').toRef(remoteRefName).onBranch(branchName))
     await git(Commit.withMessage('A commit message').toRef(refName).onBranch(branchName))
     await promiseThat(
-      repo.readGit('log', [refName, '--oneline']),
+      repo.read('log', [refName, '--oneline']),
       fulfilled(containsStrings('initial commit', 'A commit message')),
     )
   })
@@ -91,12 +91,12 @@ describe('handleCommit', () => {
   it('clears the index before committing the index with no parent', async () => {
     const file = { path: 'a.file', content: 'some content' }
     const refName = `refs/heads/${branchName}`
-    const objectId = await repo.readGit('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
-    await repo.execGit('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
+    const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
+    await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
     await git(Commit.newFile(file).toRef(refName).onBranch(branchName))
 
     await promiseThat(
-      repo.readGit('ls-tree', [refName, '-r', '--name-only']),
+      repo.read('ls-tree', [refName, '-r', '--name-only']),
       fulfilled(not(containsString('junk.file'))),
     )
   })

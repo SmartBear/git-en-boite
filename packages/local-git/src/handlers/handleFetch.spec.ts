@@ -57,17 +57,14 @@ describe('handleFetch', () => {
   it('fetches the lastest commit from the origin remote', async () => {
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
-    const { stdout } = await repo.execGit('rev-parse', [`refs/remotes/origin/${branchName}`])
+    const { stdout } = await repo.exec('rev-parse', [`refs/remotes/origin/${branchName}`])
     assertThat(stdout, startsWith(latestCommit))
   })
 
   it('fetches only 1 commit from the origin remote', async () => {
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
-    const { stdout } = await repo.execGit('rev-list', [
-      '--count',
-      `refs/remotes/origin/${branchName}`,
-    ])
+    const { stdout } = await repo.exec('rev-list', ['--count', `refs/remotes/origin/${branchName}`])
     assertThat(stdout.trim(), equalTo('1'))
   })
 

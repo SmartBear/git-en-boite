@@ -5,4 +5,4 @@ import { GitDirectory } from '../git_directory'
 export const handleGetRevision: Handle<GitDirectory, AsyncQuery<GetRevision, string>> = async (
   repo,
   { reference },
-) => (await repo.execGit('rev-parse', [reference])).stdout.trim()
+) => (await repo.exec('rev-parse', [reference])).stdout.trim()

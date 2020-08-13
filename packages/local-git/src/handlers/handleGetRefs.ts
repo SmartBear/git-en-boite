@@ -5,7 +5,7 @@ import { GitDirectory } from '../git_directory'
 
 export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Ref[]>> = async repo => {
   try {
-    const { stdout } = await repo.execGit('show-ref')
+    const { stdout } = await repo.exec('show-ref')
     return stdout
       .trim()
       .split('\n')

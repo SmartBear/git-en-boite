@@ -6,5 +6,5 @@ export const handleCheckout: Handle<GitDirectory, AsyncCommand<Checkout>> = asyn
   repo,
   { branchName },
 ) => {
-  await repo.execGit('checkout', [branchName])
+  await repo.exec('checkout', [branchName])
 }

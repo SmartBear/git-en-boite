@@ -19,7 +19,7 @@ describe(GitDirectory.name, () => {
       const repoPath = path.resolve(root, 'a-repo')
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
-      const result = await repo.execGit('init')
+      const result = await repo.exec('init')
       assertThat(result.stdout, startsWith('Initialized empty Git repository'))
     })
 
@@ -28,7 +28,7 @@ describe(GitDirectory.name, () => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
       await promiseThat(
-        repo.execGit('not-a-command'),
+        repo.exec('not-a-command'),
         rejected(hasProperty('message', matchesPattern('is not a git command'))),
       )
     })
@@ -38,7 +38,7 @@ describe(GitDirectory.name, () => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
       await promiseThat(
-        repo.execGit('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git']),
+        repo.exec('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git']),
         rejected(),
       )
     }).timeout(10000)
@@ -48,7 +48,7 @@ describe(GitDirectory.name, () => {
       fs.mkdirSync(repoPath, { recursive: true })
       const repo = new GitDirectory(repoPath)
       await promiseThat(
-        repo.execGit('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git'], {
+        repo.exec('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git'], {
           env: { GIT_TERMINAL_PROMPT: 1 },
         }),
         rejected(),

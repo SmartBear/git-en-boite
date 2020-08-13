@@ -57,7 +57,7 @@ export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, File[]>> 
     const [, , entryType, gitBlobSha, path] = line.match(/^(\d+) ([a-z]+) ([a-f0-9]+)\t(.+)$/)
     if (entryType !== 'blob') return
     result.write(
-      repo.execGit('show', [gitBlobSha]).then(content => ({
+      repo.exec('show', [gitBlobSha]).then(content => ({
         path: path,
         content: content.stdout,
       })),
