@@ -9,7 +9,7 @@ import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, Init, SetOrigin } from '../operations'
 import { handleFetch } from './handleFetch'
 import { handleSetOrigin } from './handleSetOrigin'
-import { LocalCommitRef, PendingCommitRef } from 'git-en-boite-core/dist'
+import { LocalCommitRef, PendingCommitRef } from 'git-en-boite-core'
 
 type Protocol = [
   AsyncCommand<Commit>,
