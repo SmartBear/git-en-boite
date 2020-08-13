@@ -13,4 +13,9 @@ describe(PendingCommitRef.name, () => {
     const ref = PendingCommitRef.forBranch('a-branch')
     assertThat(ref.remote, equalTo('refs/heads/a-branch'))
   })
+
+  it('has a fetched ref name', () => {
+    const ref = PendingCommitRef.forBranch('a-branch')
+    assertThat(ref.fetched, equalTo('refs/remotes/origin/a-branch'))
+  })
 })

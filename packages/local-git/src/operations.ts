@@ -1,4 +1,4 @@
-import { Author, File, Ref, CommitRef, PendingCommitRef } from 'git-en-boite-core'
+import { Author, FetchedCommitRef, File, PendingCommitRef, Ref, CommitRef } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Checkout {
@@ -11,13 +11,13 @@ export class Checkout {
 
 export class Commit {
   protected constructor(
-    public readonly commitRef: CommitRef,
+    public readonly commitRef: FetchedCommitRef | CommitRef,
     public readonly files: File[],
     public readonly message: string,
     public readonly author: Author,
   ) {}
 
-  static toCommitRef(commitRef: CommitRef): Commit {
+  static toCommitRef(commitRef: FetchedCommitRef | CommitRef): Commit {
     return new Commit(
       commitRef,
       [],

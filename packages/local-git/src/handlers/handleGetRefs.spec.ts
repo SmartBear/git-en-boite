@@ -1,13 +1,13 @@
 import { GitProcess } from 'dugite'
 import fs from 'fs'
-import { AsyncCommand, AsyncQuery, messageDispatch, Dispatch } from 'git-en-boite-message-dispatch'
-import { Ref, PendingCommitRef } from 'git-en-boite-core'
-import { Commit, GetRefs, Init } from '../operations'
-import { equalTo, fulfilled, promiseThat, assertThat } from 'hamjest'
+import { LocalCommitRef, Ref } from 'git-en-boite-core'
+import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
+import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from '../git_directory'
+import { Commit, GetRefs, Init } from '../operations'
 import { handleCommit } from './handleCommit'
 import { handleGetRefs } from './handleGetRefs'
 import { handleInit } from './handleInit'
@@ -55,7 +55,7 @@ describe('handleGetRefs', () => {
 
     context('with a commit to the main branch', () => {
       const branchName = 'a-branch'
-      const commitRef = PendingCommitRef.forBranch(branchName)
+      const commitRef = LocalCommitRef.forBranch(branchName)
 
       beforeEach(async () => {
         await git(Commit.toCommitRef(commitRef))
