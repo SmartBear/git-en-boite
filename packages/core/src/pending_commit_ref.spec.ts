@@ -1,6 +1,7 @@
 import { assertThat, equalTo } from 'hamjest'
 
 import { PendingCommitRef } from './pending_commit_ref'
+import { RefName } from '.'
 
 describe(PendingCommitRef.name, () => {
   it('can be deserialized', () => {
@@ -11,7 +12,7 @@ describe(PendingCommitRef.name, () => {
 
   it('has a remoteRef', () => {
     const ref = PendingCommitRef.forBranch('a-branch')
-    assertThat(ref.remote, equalTo('refs/heads/a-branch'))
+    assertThat(ref.remote, equalTo(RefName.ofOriginBranch('a-branch')))
   })
 
   it('has a fetched ref name', () => {

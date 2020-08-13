@@ -1,7 +1,17 @@
 import { v4 as uuid } from 'uuid'
-import { TinyType, Serialised } from 'tiny-types'
+import { TinyType, TinyTypeOf, Serialised } from 'tiny-types'
 import { PushableCommitRef } from '.'
 import { CommitRef, FetchedCommitRef } from './commit_ref'
+
+export class RefName extends TinyTypeOf<string>() {
+  static ofOriginBranch(branchName: string): RefName {
+    return new RefName(`refs/heads/${branchName}`)
+  }
+
+  toString(): string {
+    return this.value
+  }
+}
 
 export class PendingCommitRef extends TinyType implements FetchedCommitRef, PushableCommitRef {
   constructor(public readonly branchName: string, public readonly local: string) {
@@ -9,8 +19,7 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
   }
 
   static forBranch(branchName: string): PendingCommitRef {
-    const localRef = `refs/pending-commits/${branchName}-${uuid()}`
-    return new PendingCommitRef(branchName, localRef)
+    return new PendingCommitRef(branchName, `refs/pending-commits/${branchName}-${uuid()}`)
   }
 
   static fromJSON(parsedJSON: Serialised<PendingCommitRef>): PendingCommitRef {
@@ -21,8 +30,8 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
     return new PendingCommitRef(branchName, local)
   }
 
-  get remote(): string {
-    return `refs/heads/${this.branchName}`
+  get remote(): RefName {
+    return RefName.ofOriginBranch(this.branchName)
   }
 
   get fetched(): string {
