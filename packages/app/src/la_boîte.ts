@@ -21,15 +21,7 @@ export class LaBoîte implements Application {
   async getInfo(repoId: string): Promise<QueryResult<GitRepoInfo>> {
     if (!(await this.repoIndex.exists(repoId))) return QueryResult.from()
     const repo = await this.repoIndex.find(repoId)
-    const refs = await repo.getRefs()
-    const branches: Branch[] = refs
-      .filter(ref => ref.isRemote)
-      .map(ref => {
-        return {
-          name: ref.branchName,
-          revision: ref.revision,
-        }
-      })
+    const branches = await repo.branches()
     const result: GitRepoInfo = { repoId, branches }
     return QueryResult.from(result)
   }

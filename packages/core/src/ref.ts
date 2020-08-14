@@ -1,4 +1,4 @@
-import { RefName } from '.'
+import { RefName, Branch } from '.'
 
 export class Ref {
   constructor(public readonly revision: string, public readonly refName: RefName) {}
@@ -9,5 +9,9 @@ export class Ref {
 
   get branchName(): string {
     return this.refName.branchName
+  }
+
+  toBranch(): Branch {
+    return { name: this.branchName, revision: this.revision }
   }
 }

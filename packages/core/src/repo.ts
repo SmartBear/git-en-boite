@@ -1,6 +1,4 @@
-import { File, GitRepo } from '.'
-import { PendingCommitRef } from './pending_commit_ref'
-import { Refs } from './refs'
+import { File, GitRepo, Branch, PendingCommitRef } from '.'
 
 export class Repo {
   constructor(public readonly repoId: string, private readonly git: GitRepo) {}
@@ -13,8 +11,9 @@ export class Repo {
     await this.git.setOriginTo(remoteUrl)
   }
 
-  async getRefs(): Promise<Refs> {
-    return await this.git.getRefs()
+  async branches(): Promise<Branch[]> {
+    const refs = await this.git.getRefs()
+    return refs.filter(ref => ref.isRemote).map(ref => ref.toBranch())
   }
 
   async commit(branchName: string, file: File): Promise<void> {

@@ -1,23 +1,17 @@
-import { assertThat, equalTo, fulfilled, isRejectedWith, promiseThat } from 'hamjest'
+import {
+  assertThat,
+  equalTo,
+  fulfilled,
+  isRejectedWith,
+  promiseThat,
+  containsInAnyOrder,
+} from 'hamjest'
 import { stubInterface } from 'ts-sinon'
 
-import { GitRepo, Ref, Repo, Refs } from '.'
+import { GitRepo, Ref, Repo, Refs, Branch } from '.'
 import { RefName } from './ref_name'
 
 describe(Repo.name, () => {
-  context('handling a query for the latest Refs', () => {
-    it('queries the git repo and returns (a promise of) the result', async () => {
-      const expectedRefs = new Refs(new Ref('a-revision', RefName.localBranch('a-branch')))
-      const gitRepo = stubInterface<GitRepo>()
-      gitRepo.setOriginTo.resolves()
-      gitRepo.getRefs.resolves(expectedRefs)
-      const repo = new Repo('a-repo-id', gitRepo)
-      await repo.setOriginTo('a-remote-url')
-      const refs = await repo.getRefs()
-      assertThat(refs, equalTo(expectedRefs))
-    })
-  })
-
   context('connecting', () => {
     it('returns as soon as the git command has completed', async () => {
       let finishGitConnect: () => void
@@ -51,6 +45,26 @@ describe(Repo.name, () => {
       gitRepo.setOriginTo.resolves()
       const repo = new Repo('a-repo-id', gitRepo)
       await promiseThat(repo.setOriginTo('a-remote-url'), fulfilled())
+    })
+  })
+
+  context('listing branches', () => {
+    it('returns a branch for each remote ref from origin', async () => {
+      const gitRepo = stubInterface<GitRepo>()
+      gitRepo.getRefs.resolves(
+        new Refs(
+          new Ref('1', RefName.fetchedFromOrigin('main')),
+          new Ref('2', RefName.fetchedFromOrigin('develop')),
+          new Ref('3', RefName.forPendingCommit('develop')),
+          new Ref('unlikely-this-would-happen', RefName.localBranch('test')),
+        ),
+      )
+      const expectedBranches: Branch[] = [
+        { name: 'main', revision: '1' },
+        { name: 'develop', revision: '2' },
+      ]
+      const repo = new Repo('a-repo-id', gitRepo)
+      assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))
     })
   })
 })
