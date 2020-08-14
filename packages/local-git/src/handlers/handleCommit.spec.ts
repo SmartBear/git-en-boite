@@ -17,7 +17,7 @@ type Protocol = [
   AsyncCommand<SetOrigin>,
 ]
 
-describe('@wip handleCommit', () => {
+describe('handleCommit', () => {
   const branchName = 'a-branch'
   let root: string
   let repoPath: string
