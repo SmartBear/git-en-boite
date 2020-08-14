@@ -13,7 +13,10 @@ export class Repo {
 
   async branches(): Promise<Branch[]> {
     const refs = await this.git.getRefs()
-    return refs.filter(ref => ref.isRemote).map(ref => ref.toBranch())
+    return refs.reduce((branches, ref) => {
+      if (ref.isRemote) return branches.concat(ref.toBranch())
+      return branches
+    }, [])
   }
 
   async commit(branchName: string, file: File): Promise<void> {
