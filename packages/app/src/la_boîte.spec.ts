@@ -1,5 +1,5 @@
 import { GitProcess } from 'dugite'
-import { File } from 'git-en-boite-core'
+import { File, RefName } from 'git-en-boite-core'
 import {
   BareRepoFactory,
   Commit,
@@ -13,6 +13,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { LaBoîte } from './la_boîte'
+import { GitDirectory } from 'git-en-boite-local-git/dist/git_directory'
 
 describe(LaBoîte.name, () => {
   const repoId = 'a-new-repo'
@@ -67,17 +68,15 @@ describe(LaBoîte.name, () => {
   })
 
   it('can fetch for an existing repo', async () => {
-    const revParse = async (refName: string, repoPath: string) => {
-      const result = await GitProcess.exec(['rev-parse', refName], repoPath)
-      return result.stdout.trim()
-    }
+    const revParse = async (refName: RefName, repoPath: string) =>
+      new GitDirectory(repoPath).read('rev-parse', [refName.value])
 
     const origin = await new BareRepoFactory().open(remoteUrl)
     await origin(Commit.toCommitRef(commitRef))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
     await origin(Commit.toCommitRef(commitRef))
-    const expectedRevision = await revParse(commitRef.local.value, remoteUrl)
+    const expectedRevision = await revParse(commitRef.local, remoteUrl)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({

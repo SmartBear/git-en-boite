@@ -1,4 +1,3 @@
-import { GitProcess } from 'dugite'
 import fs from 'fs'
 import { Ref } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
@@ -22,19 +21,15 @@ describe('handleGetRefs', () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  const revParse = async (refName: string, repoPath: string) => {
-    const result = await GitProcess.exec(['rev-parse', refName], repoPath)
-    return result.stdout.trim()
-  }
-
   let git: Dispatch<Protocol>
 
   context('in a bare repo', () => {
     let repoPath: string
+    let repo: GitDirectory
 
     const openRepo = (repoPath: string) => {
       fs.mkdirSync(repoPath, { recursive: true })
-      const repo = new GitDirectory(repoPath)
+      repo = new GitDirectory(repoPath)
       return messageDispatch<Protocol>().withHandlers(repo, [
         [Init, handleInit],
         [Commit, handleCommit],
@@ -61,7 +56,7 @@ describe('handleGetRefs', () => {
       })
 
       it('returns the revision of the latest commit', async () => {
-        const revision = await revParse(commitRef.local.value, repoPath)
+        const revision = await repo.read('rev-parse', [commitRef.local.value])
         await promiseThat(
           git(GetRefs.all()),
           fulfilled(equalTo([new Ref(revision, commitRef.local)])),

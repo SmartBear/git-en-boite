@@ -8,6 +8,7 @@ import {
   matchesPattern,
   promiseThat,
   startsWith,
+  fulfilled,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -55,15 +56,19 @@ describe('handleFetch', () => {
   it('fetches the lastest commit from the origin remote', async () => {
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
-    const { stdout } = await repo.exec('rev-parse', [`refs/remotes/origin/${branchName}`])
-    assertThat(stdout, startsWith(latestCommit))
+    await promiseThat(
+      repo.read('rev-parse', [`refs/remotes/origin/${branchName}`]),
+      fulfilled(startsWith(latestCommit)),
+    )
   })
 
   it('fetches only 1 commit from the origin remote', async () => {
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
-    const { stdout } = await repo.exec('rev-list', ['--count', `refs/remotes/origin/${branchName}`])
-    assertThat(stdout.trim(), equalTo('1'))
+    await promiseThat(
+      repo.read('rev-list', ['--count', `refs/remotes/origin/${branchName}`]),
+      fulfilled(equalTo('1')),
+    )
   })
 
   it('fails when the remote does not exist', async () => {
