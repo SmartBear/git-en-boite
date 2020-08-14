@@ -1,11 +1,4 @@
-import {
-  assertThat,
-  equalTo,
-  fulfilled,
-  isRejectedWith,
-  promiseThat,
-  containsInAnyOrder,
-} from 'hamjest'
+import { assertThat, fulfilled, isRejectedWith, promiseThat, containsInAnyOrder } from 'hamjest'
 import { stubInterface } from 'ts-sinon'
 
 import { GitRepo, Ref, Repo, Refs, Branch } from '.'
