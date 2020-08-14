@@ -1,14 +1,13 @@
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
-  assertThat,
   equalTo,
+  fulfilled,
   hasProperty,
   isRejectedWith,
   matchesPattern,
   promiseThat,
   startsWith,
-  fulfilled,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
