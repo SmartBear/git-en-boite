@@ -10,16 +10,16 @@ export class RefName extends TinyTypeOf<string>() {
     return new RefName(`refs/pending-commits/${branchName}-${uuid()}`)
   }
 
-  static fromRawString(value: string): RefName {
-    return new RefName(value)
-  }
-
   static fetchedFromOrigin(branchName: string): RefName {
     return new RefName(`refs/remotes/origin/${branchName}`)
   }
 
   static localBranch(branchName: string): RefName {
     return new RefName(`refs/heads/${branchName}`)
+  }
+
+  static fromRawString(value: string): RefName {
+    return new RefName(value)
   }
 
   toString(): string {

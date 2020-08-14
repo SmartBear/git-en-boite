@@ -10,4 +10,8 @@ export class LocalCommitRef extends TinyType implements CommitRef {
     const local = RefName.localBranch(branchName)
     return new LocalCommitRef(branchName, local)
   }
+
+  get parent(): RefName {
+    return RefName.localBranch(this.branchName)
+  }
 }

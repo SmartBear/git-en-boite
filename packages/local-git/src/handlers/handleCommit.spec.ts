@@ -19,7 +19,6 @@ type Protocol = [
 
 describe('@wip handleCommit', () => {
   const branchName = 'a-branch'
-  const localCommitRef = LocalCommitRef.forBranch(branchName)
   let root: string
   let repoPath: string
   let git: Dispatch<Protocol>
@@ -45,6 +44,8 @@ describe('@wip handleCommit', () => {
   })
 
   it('creates an empty commit with the given message', async () => {
+    const localCommitRef = LocalCommitRef.forBranch(branchName)
+
     await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
     await promiseThat(
       repo.read('log', [localCommitRef.local.value, '--oneline']),
@@ -53,6 +54,8 @@ describe('@wip handleCommit', () => {
   })
 
   it('creates a commit containing the given files', async () => {
+    const localCommitRef = LocalCommitRef.forBranch(branchName)
+
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
     await promiseThat(
@@ -61,40 +64,9 @@ describe('@wip handleCommit', () => {
     )
   })
 
-  it('creates a commit using the existing tree on the remote branch', async () => {
-    const existingFile = { path: 'a.file', content: 'some content' }
-    await git(
-      Commit.toCommitRef({
-        local: RefName.fetchedFromOrigin(branchName),
-        branchName,
-      }).withFiles([existingFile]),
-    )
-
-    const otherFile = { path: 'b.file', content: 'another content' }
-    const commitRef = PendingCommitRef.forBranch(branchName)
-    await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
-
-    await promiseThat(
-      repo.read('ls-tree', [commitRef.local.value, '-r', '--name-only']),
-      fulfilled(containsStrings(existingFile.path, otherFile.path)),
-    )
-  })
-
-  it('creates a commit after an existing one on a remote', async () => {
-    await git(
-      Commit.toCommitRef({
-        local: RefName.fetchedFromOrigin(branchName),
-        branchName,
-      }).withMessage('initial commit'),
-    )
-    await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
-    await promiseThat(
-      repo.read('log', [localCommitRef.local.value, '--oneline']),
-      fulfilled(containsStrings('initial commit', 'A commit message')),
-    )
-  })
-
   it('clears the index before committing the index with no parent', async () => {
+    const localCommitRef = LocalCommitRef.forBranch(branchName)
+
     const file = { path: 'a.file', content: 'some content' }
     const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
     await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
@@ -104,5 +76,56 @@ describe('@wip handleCommit', () => {
       repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
       fulfilled(not(containsString('junk.file'))),
     )
+  })
+
+  describe('to a local branch', () => {
+    const commitRef = LocalCommitRef.forBranch(branchName)
+
+    it('creates a commit with a parent', async () => {
+      await git(Commit.toCommitRef(commitRef).withMessage('initial commit'))
+      await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
+      await promiseThat(
+        repo.read('log', [commitRef.local.value, '--oneline']),
+        fulfilled(containsStrings('initial commit', 'A commit message')),
+      )
+    })
+  })
+
+  describe('to a remote branch', () => {
+    it('creates a commit using the existing tree', async () => {
+      const existingFile = { path: 'a.file', content: 'some content' }
+      await git(
+        Commit.toCommitRef({
+          local: RefName.fetchedFromOrigin(branchName),
+          branchName,
+          parent: RefName.fetchedFromOrigin(branchName),
+        }).withFiles([existingFile]),
+      )
+
+      const otherFile = { path: 'b.file', content: 'another content' }
+      const commitRef = PendingCommitRef.forBranch(branchName)
+      await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
+
+      await promiseThat(
+        repo.read('ls-tree', [commitRef.local.value, '-r', '--name-only']),
+        fulfilled(containsStrings(existingFile.path, otherFile.path)),
+      )
+    })
+
+    it('creates a commit with a parent', async () => {
+      await git(
+        Commit.toCommitRef({
+          local: RefName.fetchedFromOrigin(branchName),
+          branchName,
+          parent: RefName.fetchedFromOrigin(branchName),
+        }).withMessage('initial commit'),
+      )
+      const commitRef = PendingCommitRef.forBranch(branchName)
+      await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
+      await promiseThat(
+        repo.read('log', [commitRef.local.value, '--oneline']),
+        fulfilled(containsStrings('initial commit', 'A commit message')),
+      )
+    })
   })
 })

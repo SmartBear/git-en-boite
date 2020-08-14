@@ -2,14 +2,12 @@ import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from '../git_directory'
 import { Commit } from '../operations'
-import { CommitRef, FetchedCommitRef } from 'git-en-boite-core'
 
 export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repo,
   { commitRef, files, message, author },
 ): Promise<void> => {
   const commitArgs = await getParentCommit(
-    commitRef.branchName,
     async parentCommitName => {
       await repo.exec('read-tree', [parentCommitName])
       return ['-p', parentCommitName]
@@ -37,18 +35,10 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
     await repo.exec('update-ref', [commitRef.local.value, commitName])
   }
 
-  function hasParent(commitRef: CommitRef | FetchedCommitRef): commitRef is FetchedCommitRef {
-    return (commitRef as FetchedCommitRef).fetched !== undefined
-  }
-
   async function getParentCommit<ResultType = Promise<void>>(
-    branchName: string,
     success: (commitName: string) => Promise<ResultType>,
     failure: () => Promise<ResultType>,
   ): Promise<ResultType> {
-    if (hasParent(commitRef)) {
-      return repo.read('show-ref', ['--hash', commitRef.fetched.value]).then(success)
-    }
-    return failure()
+    return repo.read('show-ref', ['--hash', commitRef.parent.value]).then(success).catch(failure)
   }
 }

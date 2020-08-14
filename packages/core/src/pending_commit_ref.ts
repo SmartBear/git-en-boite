@@ -1,8 +1,8 @@
 import { Serialised, TinyType } from 'tiny-types'
 
-import { FetchedCommitRef, PushableCommitRef, RefName } from '.'
+import { PushableCommitRef, RefName } from '.'
 
-export class PendingCommitRef extends TinyType implements FetchedCommitRef, PushableCommitRef {
+export class PendingCommitRef extends TinyType implements PushableCommitRef {
   constructor(public readonly branchName: string, public readonly local: RefName) {
     super()
   }
@@ -23,7 +23,7 @@ export class PendingCommitRef extends TinyType implements FetchedCommitRef, Push
     return RefName.localBranch(this.branchName)
   }
 
-  get fetched(): RefName {
+  get parent(): RefName {
     return RefName.fetchedFromOrigin(this.branchName)
   }
 }
