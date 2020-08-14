@@ -4,7 +4,7 @@ import { RefName } from './ref_name'
 import { equalTo, assertThat } from 'hamjest'
 
 describe(Refs.name, () => {
-  it('@wip filters by branchName', () => {
+  it('filters by branchName', () => {
     const mainRef = new Ref('1', RefName.localBranch('main'))
     const otherRef = new Ref('2', RefName.localBranch('develop'))
     const refs = new Refs(mainRef, otherRef)

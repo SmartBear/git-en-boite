@@ -1,8 +1,10 @@
-import { TinyType } from 'tiny-types'
+import { TinyType, JSONObject } from 'tiny-types'
 import { v4 as uuid } from 'uuid'
 
+const uuidPattern = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+
 export class RefName extends TinyType {
-  protected constructor(value: string, public readonly branchName: string) {
+  protected constructor(public readonly value: string, public readonly branchName: string) {
     super()
   }
 
@@ -18,15 +20,21 @@ export class RefName extends TinyType {
     return new RefName(`refs/heads/${branchName}`, branchName)
   }
 
-  static fromRawString(value: string): RefName {
+  static parse(value: string): RefName {
     const attempts: Array<[string, (branchName: string) => RefName]> = [
-      ['^refs/heads/(.*)', RefName.localBranch],
+      ['^refs/heads/(.+)', RefName.localBranch],
+      [`^refs/pending-commits/(.+)-${uuidPattern}`, RefName.forPendingCommit],
+      [`^refs/remotes/origin/(.+)`, RefName.fetchedFromOrigin],
     ]
     for (const [pattern, factory] of attempts) {
       const matches = value.match(pattern)
       if (matches) return factory(matches[1])
     }
     throw new Error(`Unable to parse ref from "${value}"`)
+  }
+
+  static fromJSON(o: JSONObject): RefName {
+    return new RefName(o.value as string, o.branchName as string)
   }
 
   toString(): string {

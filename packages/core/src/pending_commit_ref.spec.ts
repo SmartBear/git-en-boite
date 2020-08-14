@@ -1,22 +1,23 @@
 import { assertThat, equalTo } from 'hamjest'
+import { JSONObject } from 'tiny-types'
 
 import { PendingCommitRef } from './pending_commit_ref'
 import { RefName } from '.'
 
 describe(PendingCommitRef.name, () => {
-  it('can be deserialized', () => {
+  it('can be serialised/deserialized', () => {
     const original = PendingCommitRef.forBranch('a-branch')
-    const copy = PendingCommitRef.fromJSON(original.toJSON())
+    const copy = PendingCommitRef.fromJSON(original.toJSON() as JSONObject)
     assertThat(copy, equalTo(original))
   })
 
   it('has a remoteRef', () => {
     const ref = PendingCommitRef.forBranch('a-branch')
-    assertThat(ref.remote, equalTo(RefName.fromRawString('refs/heads/a-branch')))
+    assertThat(ref.remote, equalTo(RefName.parse('refs/heads/a-branch')))
   })
 
   it('has a fetched ref name', () => {
     const ref = PendingCommitRef.forBranch('a-branch')
-    assertThat(ref.parent, equalTo(RefName.fromRawString('refs/remotes/origin/a-branch')))
+    assertThat(ref.parent, equalTo(RefName.parse('refs/remotes/origin/a-branch')))
   })
 })

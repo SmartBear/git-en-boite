@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { PendingCommitRef, Refs } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, equalTo, not } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -52,20 +52,21 @@ describe('handlePush', () => {
     await git(Init.bareRepo())
   })
 
-  it('pushes to remote', async () => {
+  it('pushes a commit to origin', async () => {
     const origin = await new BareRepoFactory().open(originUrl)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+    const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(branchName)
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }
     const commitRef = PendingCommitRef.forBranch(branchName)
     await git(Commit.toCommitRef(commitRef).withFiles([file]))
-    await git(Push.pendingCommitFrom(commitRef))
-    const commitName = (await git(GetRefs.all())).find(ref => ref.refName.equals(commitRef.local))
-      .revision
+    const { revision: newCommit } = (await git(GetRefs.all())).forBranch(branchName)
+    assertThat(firstCommit, not(equalTo(newCommit)))
 
-    const revision = (await origin(GetRefs.all())).forBranch(branchName)
-    assertThat(revision, equalTo(commitName))
+    await git(Push.pendingCommitFrom(commitRef))
+    const { revision: originCommit } = (await origin(GetRefs.all())).forBranch(branchName)
+    assertThat(originCommit, equalTo(newCommit))
   })
 })

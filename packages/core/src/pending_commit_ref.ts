@@ -1,4 +1,4 @@
-import { Serialised, TinyType } from 'tiny-types'
+import { JSONObject, TinyType } from 'tiny-types'
 
 import { PushableCommitRef, RefName } from '.'
 
@@ -11,12 +11,8 @@ export class PendingCommitRef extends TinyType implements PushableCommitRef {
     return new PendingCommitRef(branchName, RefName.forPendingCommit(branchName))
   }
 
-  static fromJSON(parsedJSON: Serialised<PendingCommitRef>): PendingCommitRef {
-    const { branchName, local } = parsedJSON as {
-      branchName: string
-      local: string
-    }
-    return new PendingCommitRef(branchName, RefName.fromRawString(local))
+  static fromJSON(o: JSONObject): PendingCommitRef {
+    return new PendingCommitRef(o.branchName as string, RefName.fromJSON(o.local as JSONObject))
   }
 
   get remote(): RefName {
