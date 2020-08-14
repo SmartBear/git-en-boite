@@ -1,7 +1,7 @@
 import fs from 'fs'
-import { PendingCommitRef, Ref } from 'git-en-boite-core'
+import { PendingCommitRef, Refs } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { equalTo, fulfilled, promiseThat } from 'hamjest'
+import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -9,7 +9,6 @@ import {
   handleCommit,
   handleFetch,
   handleGetRefs,
-  handleGetRevision,
   handleInit,
   handlePush,
   handleSetOrigin,
@@ -17,7 +16,7 @@ import {
 import { LocalCommitRef } from '..'
 import { BareRepoFactory } from '../bare_repo_factory'
 import { GitDirectory } from '../git_directory'
-import { Commit, Fetch, GetRefs, GetRevision, Init, Push, SetOrigin } from '../operations'
+import { Commit, Fetch, GetRefs, Init, Push, SetOrigin } from '../operations'
 
 type Protocol = [
   AsyncCommand<Commit>,
@@ -25,8 +24,7 @@ type Protocol = [
   AsyncCommand<Fetch>,
   AsyncCommand<Push>,
   AsyncCommand<SetOrigin>,
-  AsyncQuery<GetRefs, Ref[]>,
-  AsyncQuery<GetRevision, string>,
+  AsyncQuery<GetRefs, Refs>,
 ]
 
 describe('handlePush', () => {
@@ -50,7 +48,6 @@ describe('handlePush', () => {
       [Push, handlePush],
       [SetOrigin, handleSetOrigin],
       [GetRefs, handleGetRefs],
-      [GetRevision, handleGetRevision],
     ])
     await git(Init.bareRepo())
   })
@@ -68,6 +65,7 @@ describe('handlePush', () => {
     const commitName = (await git(GetRefs.all())).find(ref => ref.refName.equals(commitRef.local))
       .revision
 
-    promiseThat(origin(GetRevision.forBranchNamed(branchName)), fulfilled(equalTo(commitName)))
+    const revision = (await origin(GetRefs.all())).forBranch(branchName)
+    assertThat(revision, equalTo(commitName))
   })
 })

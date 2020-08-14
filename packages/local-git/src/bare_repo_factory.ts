@@ -9,7 +9,6 @@ import {
   handleGetConfig,
   handleGetFiles,
   handleGetRefs,
-  handleGetRevision,
   handleInit,
   handlePush,
   handleSetOrigin,
@@ -23,7 +22,6 @@ import {
   GetConfig,
   GetFiles,
   GetRefs,
-  GetRevision,
   Init,
   Push,
   SetOrigin,
@@ -47,7 +45,6 @@ export class BareRepoFactory {
       [GetFiles, handleGetFiles],
       [GetRefs, handleGetRefs],
       [GetConfig, handleGetConfig],
-      [GetRevision, handleGetRevision],
     ])
     await git(Init.bareRepo())
     return git

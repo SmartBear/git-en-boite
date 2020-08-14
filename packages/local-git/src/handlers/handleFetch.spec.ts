@@ -1,14 +1,13 @@
 import fs from 'fs'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
-  assertThat,
   equalTo,
+  fulfilled,
   hasProperty,
   isRejectedWith,
   matchesPattern,
   promiseThat,
   startsWith,
-  fulfilled,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -16,7 +15,7 @@ import { dirSync } from 'tmp'
 import { handleFetch, handleInit } from '.'
 import { BareRepoFactory, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
-import { Commit, Fetch, GetRevision, Init, SetOrigin } from '../operations'
+import { Commit, Fetch, GetRefs, Init, SetOrigin } from '../operations'
 import { handleSetOrigin } from './handleSetOrigin'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
@@ -37,7 +36,7 @@ describe('handleFetch', () => {
 
     const origin = await new BareRepoFactory().open(originUrl)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-    latestCommit = await origin(GetRevision.forBranchNamed(branchName))
+    latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [

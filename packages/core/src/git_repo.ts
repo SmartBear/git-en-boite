@@ -1,11 +1,12 @@
-import { File, Ref, CommitRef, PushableCommitRef } from '.'
+import { CommitRef, File, PushableCommitRef } from '.'
+import { Refs } from './refs'
 
 export interface GitRepo {
   commit(commitRef: CommitRef, file: File): Promise<void>
   push(commitRef: PushableCommitRef): Promise<void>
   setOriginTo(remoteUrl: string): Promise<void>
   fetch(): Promise<void>
-  getRefs(): Promise<Ref[]>
+  getRefs(): Promise<Refs>
 }
 
 export type OpenGitRepo = (path: string) => Promise<GitRepo>

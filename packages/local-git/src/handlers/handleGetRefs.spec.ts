@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Ref } from 'git-en-boite-core'
+import { Ref, Refs } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
@@ -10,7 +10,7 @@ import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, GetRefs, Init } from '../operations'
 
-type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetRefs, Ref[]>]
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetRefs, Refs>]
 
 describe('handleGetRefs', () => {
   let root: string

@@ -1,17 +1,18 @@
 import { AsyncQuery, Handle } from 'git-en-boite-message-dispatch'
-import { Ref, RefName } from 'git-en-boite-core'
+import { Ref, RefName, Refs } from 'git-en-boite-core'
 import { GetRefs } from '../operations'
 import { GitDirectory } from '../git_directory'
 
-export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Ref[]>> = async repo => {
+export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Refs>> = async repo => {
   try {
-    const { stdout } = await repo.exec('show-ref')
-    return stdout
-      .trim()
-      .split('\n')
-      .map(line => line.trim().split(' '))
-      .map(([revision, name]) => new Ref(revision, RefName.fromRawString(name)))
+    const output = await repo.read('show-ref')
+    return new Refs(
+      ...output
+        .split('\n')
+        .map(line => line.trim().split(' '))
+        .map(([revision, name]) => new Ref(revision, RefName.fromRawString(name))),
+    )
   } catch (error) {
-    return []
+    return new Refs()
   }
 }

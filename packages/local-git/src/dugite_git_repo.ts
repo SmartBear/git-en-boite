@@ -1,7 +1,8 @@
-import { GitRepo, Ref, File, PendingCommitRef } from 'git-en-boite-core'
+import { File, GitRepo, PendingCommitRef, Refs } from 'git-en-boite-core'
+import { Dispatch } from 'git-en-boite-message-dispatch'
+
 import { BareRepoFactory } from './bare_repo_factory'
 import { BareRepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
-import { Dispatch } from 'git-en-boite-message-dispatch'
 
 export class DugiteGitRepo implements GitRepo {
   static async openGitRepo(path: string): Promise<GitRepo> {
@@ -27,7 +28,7 @@ export class DugiteGitRepo implements GitRepo {
     return this.git(Fetch.fromOrigin())
   }
 
-  getRefs(): Promise<Ref[]> {
+  getRefs(): Promise<Refs> {
     return this.git(GetRefs.all())
   }
 

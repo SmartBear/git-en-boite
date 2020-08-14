@@ -1,4 +1,4 @@
-import { Author, File, PendingCommitRef, Ref, CommitRef } from 'git-en-boite-core'
+import { Author, CommitRef, File, PendingCommitRef, Refs } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Checkout {
@@ -71,14 +71,6 @@ export class GetRefs {
   }
 }
 
-export class GetRevision {
-  protected constructor(public readonly reference: string) {}
-
-  static forBranchNamed(reference: string): GetRevision {
-    return new GetRevision(reference)
-  }
-}
-
 export class Init {
   protected constructor(public readonly isBare: boolean) {}
 
@@ -132,7 +124,6 @@ export type BareRepoProtocol = [
   AsyncCommand<SetOrigin>,
   AsyncCommand<ValidateRemote>,
   AsyncQuery<GetFiles, File[]>,
-  AsyncQuery<GetRefs, Ref[]>,
+  AsyncQuery<GetRefs, Refs>,
   AsyncQuery<GetConfig, Config>,
-  AsyncQuery<GetRevision, string>,
 ]

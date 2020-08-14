@@ -1,5 +1,12 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
-import { File, GitRepo, OpenGitRepo, OpensGitRepos, Ref, PendingCommitRef } from 'git-en-boite-core'
+import {
+  File,
+  GitRepo,
+  OpenGitRepo,
+  OpensGitRepos,
+  PendingCommitRef,
+  Refs,
+} from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DugiteGitRepo } from './dugite_git_repo'
@@ -95,7 +102,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
     return job.waitUntilFinished(this.queueEvents)
   }
 
-  getRefs(): Promise<Ref[]> {
+  getRefs(): Promise<Refs> {
     return this.gitRepo.getRefs()
   }
 }

@@ -4,7 +4,7 @@ import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { BareRepoProtocol, Commit, GetRefs, GetRevision, LocalCommitRef } from '..'
+import { BareRepoProtocol, Commit, GetRefs, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<BareRepoProtocol>>
@@ -38,7 +38,7 @@ export const verifyRepoContract = (
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
         await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-        latestCommit = await origin(GetRevision.forBranchNamed(branchName))
+        latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
       })
 
       it('fetches commits from the origin repo', async () => {

@@ -8,6 +8,6 @@ export class Ref {
   }
 
   get branchName(): string {
-    return this.refName.value.replace('refs/remotes/origin/', '')
+    return this.refName.branchName
   }
 }
