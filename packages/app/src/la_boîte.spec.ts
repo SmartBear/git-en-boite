@@ -1,10 +1,10 @@
-import { GitProcess } from 'dugite'
 import { File, RefName } from 'git-en-boite-core'
 import {
   BareRepoFactory,
   Commit,
   DugiteGitRepo,
   GetFiles,
+  GitDirectory,
   LocalCommitRef,
 } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
@@ -13,7 +13,6 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { LaBoîte } from './la_boîte'
-import { GitDirectory } from 'git-en-boite-local-git/dist/git_directory'
 
 describe(LaBoîte.name, () => {
   const repoId = 'a-new-repo'
