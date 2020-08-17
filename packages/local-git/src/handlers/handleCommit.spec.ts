@@ -1,14 +1,14 @@
 import fs from 'fs'
-import { PendingCommitRef, RefName, File } from 'git-en-boite-core'
+import { BranchName, File, PendingCommitRef, RefName } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
+  assertThat,
   containsString,
   containsStrings,
+  equalTo,
   fulfilled,
   not,
   promiseThat,
-  assertThat,
-  equalTo,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -105,7 +105,7 @@ describe('handleCommit', () => {
       await git(
         Commit.toCommitRef({
           local: RefName.fetchedFromOrigin(branchName),
-          branchName,
+          branchName: BranchName.of(branchName),
           parent: RefName.fetchedFromOrigin(branchName),
         }).withFiles([existingFile]),
       )
@@ -124,7 +124,7 @@ describe('handleCommit', () => {
       await git(
         Commit.toCommitRef({
           local: RefName.fetchedFromOrigin(branchName),
-          branchName,
+          branchName: BranchName.of(branchName),
           parent: RefName.fetchedFromOrigin(branchName),
         }).withMessage('initial commit'),
       )

@@ -1,7 +1,8 @@
 import { RefName } from '.'
+import { BranchName } from './branch_name'
 
 export interface CommitRef {
-  branchName: string
+  branchName: BranchName
   local: RefName
   parent: RefName
 }
