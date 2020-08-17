@@ -1,5 +1,14 @@
 import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
 import { merge } from 'lodash'
+import path from 'path'
+import { v4 as uuid } from 'uuid'
+import fs from 'fs'
+import { promisify } from 'util'
+
+const unlink = promisify(fs.unlink)
+const exists = promisify(fs.exists)
+
+type OperateOnIndex<Result = void> = (index: GitDirectory) => Promise<Result>
 
 export class GitDirectory {
   constructor(public readonly path: string, public readonly options: IGitExecutionOptions = {}) {}
@@ -26,5 +35,16 @@ export class GitDirectory {
 
   private buildOptions(options: IGitExecutionOptions = {}): IGitExecutionOptions {
     return merge(this.options, options, { env: { GIT_TERMINAL_PROMPT: 0, GIT_ASKPASS: null } })
+  }
+
+  async temporaryIndex<Result = void>(operateOnIndex: OperateOnIndex<Result>): Promise<Result> {
+    const indexFile = path.resolve(this.path, `index-${uuid()}`)
+    const result = operateOnIndex(
+      new GitDirectory(this.path, {
+        env: { GIT_INDEX_FILE: indexFile },
+      }),
+    )
+    if (await exists(indexFile)) await unlink(indexFile)
+    return result
   }
 }

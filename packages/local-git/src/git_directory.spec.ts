@@ -7,6 +7,7 @@ import {
   rejected,
   startsWith,
   containsString,
+  equalTo,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -22,13 +23,13 @@ describe(GitDirectory.name, () => {
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  describe('executing git commands', () => {
-    let repoPath: string
-    beforeEach(() => {
-      repoPath = path.resolve(root, 'a-repo')
-      fs.mkdirSync(repoPath, { recursive: true })
-    })
+  let repoPath: string
+  beforeEach(() => {
+    repoPath = path.resolve(root, 'a-repo')
+    fs.mkdirSync(repoPath, { recursive: true })
+  })
 
+  describe('executing git commands', () => {
     it('returns a promise of the result', async () => {
       const repo = new GitDirectory(repoPath)
       const result = await repo.exec('init')
@@ -90,6 +91,33 @@ describe(GitDirectory.name, () => {
         })
         assertThat(await repo.read('reflog', ['-1']), containsString('amazing: A commit'))
       })
+    })
+  })
+
+  describe('using a temporary index', () => {
+    it('operates on that index only', async () => {
+      const repo = new GitDirectory(repoPath)
+      await repo.exec('init')
+      const objectId = await repo.read('hash-object', ['-w', '--stdin'], {
+        stdin: 'My file content',
+      })
+      await repo.temporaryIndex(async index => {
+        const file = 'a-file'
+        await index.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
+        assertThat((await index.read('ls-files')).split('\n'), equalTo([file]))
+      })
+      await repo.temporaryIndex(async index => {
+        const file = 'another-file'
+        await index.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
+        assertThat((await index.read('ls-files')).split('\n'), equalTo([file]))
+      })
+      assertThat((await repo.read('ls-files')).split('\n'), equalTo(['']))
+    })
+
+    it('returns the result of the block', async () => {
+      const repo = new GitDirectory(repoPath)
+      const result = await repo.temporaryIndex(async () => new Promise(resolve => resolve(5)))
+      assertThat(result, equalTo(5))
     })
   })
 })
