@@ -16,8 +16,7 @@ export class GitDirectory {
     args: string[] = [],
     options?: IGitExecutionOptions,
   ): Promise<IGitResult> {
-    const gitOptions = this.buildGitOptions(options)
-    const result = await GitProcess.exec([cmd, ...args], this.path, gitOptions)
+    const result = await GitProcess.exec([cmd, ...args], this.path, this.buildOptions(options))
     if (result.exitCode !== 0) {
       throw new Error(
         `Git command \`${cmd} ${args.join(' ')}\` returned exit code ${result.exitCode}:\n${
@@ -28,12 +27,10 @@ export class GitDirectory {
     return result
   }
 
-  protected buildGitOptions(options?: IGitExecutionOptions): IGitExecutionOptions {
-    const optionsEnv = options ? options.env : {}
-
+  private buildOptions(options: IGitExecutionOptions = {}): IGitExecutionOptions {
     return {
       ...options,
-      ...{ env: { ...optionsEnv, ...{ GIT_TERMINAL_PROMPT: 0, GIT_ASKPASS: null } } },
+      env: { GIT_TERMINAL_PROMPT: 0, GIT_ASKPASS: null },
     }
   }
 }
