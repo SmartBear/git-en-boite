@@ -5,7 +5,6 @@ import { Commit } from '../operations'
 import fs from 'fs'
 import { promisify } from 'util'
 import { v4 as uuid } from 'uuid'
-import { utils } from 'mocha'
 import path from 'path'
 
 const unlink = promisify(fs.unlink)
@@ -17,7 +16,7 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   const indexFile = path.resolve(repo.path, `index-${commitRef.branchName.value}-${uuid()}`)
   const commitArgs = await getParentCommit(
     async parentCommitName => {
-      await repo.exec('read-tree', [parentCommitName])
+      await repo.exec('read-tree', [parentCommitName], { env: { GIT_INDEX_FILE: indexFile } })
       return ['-p', parentCommitName]
     },
     async () => {

@@ -9,6 +9,7 @@ import {
   fulfilled,
   not,
   promiseThat,
+  containsInAnyOrder,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -137,7 +138,7 @@ describe('handleCommit', () => {
     })
   })
 
-  describe('@wip handling concurrent commits to the same repo', () => {
+  describe('handling concurrent commits to the same repo', () => {
     const mainFile: File = { path: 'main.file', content: '' }
     const experimentalFile: File = { path: 'experimental.file', content: '' }
     const mainRef = PendingCommitRef.forBranch('branch-main')
@@ -160,6 +161,55 @@ describe('handleCommit', () => {
 
       assertThat(mainCommit, equalTo([mainFile.path]))
       assertThat(experimentalCommit, equalTo([experimentalFile.path]))
+    })
+  })
+
+  describe('@wip handling concurrent commits to the same repo', () => {
+    const mainFile: File = { path: 'main.file', content: '' }
+    const experimentalFile: File = { path: 'experimental.file', content: '' }
+    const branchMain = 'branch-main'
+    const branchExperimental = 'branch-experimental'
+    const mainRef = PendingCommitRef.forBranch(branchMain)
+    const experimentalRef = PendingCommitRef.forBranch(branchExperimental)
+    const existingFile = { path: 'a.file', content: 'some content' }
+
+    beforeEach(async () => {
+      await git(
+        Commit.toCommitRef({
+          local: RefName.fetchedFromOrigin(branchMain),
+          branchName: BranchName.of(branchMain),
+          parent: RefName.fetchedFromOrigin(branchMain),
+        })
+          .withMessage('initial commit to main')
+          .withFiles([existingFile]),
+      )
+
+      await git(
+        Commit.toCommitRef({
+          local: RefName.fetchedFromOrigin(branchExperimental),
+          branchName: BranchName.of(branchExperimental),
+          parent: RefName.fetchedFromOrigin(branchExperimental),
+        })
+          .withMessage('initial commit to experiment')
+          .withFiles([existingFile]),
+      )
+
+      const committing = git(Commit.toCommitRef(mainRef).withFiles([mainFile]))
+      await git(Commit.toCommitRef(experimentalRef).withFiles([experimentalFile]))
+      await committing
+    })
+
+    it('does not commit unexpected files', async () => {
+      const mainCommit = (
+        await repo.read('ls-tree', [mainRef.local.value, '-r', '--name-only'])
+      ).split('\n')
+
+      const experimentalCommit = (
+        await repo.read('ls-tree', [experimentalRef.local.value, '-r', '--name-only'])
+      ).split('\n')
+
+      assertThat(mainCommit, containsInAnyOrder(existingFile.path, mainFile.path))
+      assertThat(experimentalCommit, containsInAnyOrder(existingFile.path, experimentalFile.path))
     })
   })
 })
