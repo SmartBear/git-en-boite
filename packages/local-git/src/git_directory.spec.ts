@@ -66,6 +66,8 @@ describe(GitDirectory.name, () => {
       it('passes options', async () => {
         const repo = new GitDirectory(repoPath)
         await repo.exec('init')
+        await repo.exec('config', ['--local', 'user.email', 'you@example.com'])
+        await repo.exec('config', ['--local', 'user.name', 'Your name'])
         await repo.exec('commit', ['--allow-empty', '-m', 'A commit'], {
           env: { GIT_REFLOG_ACTION: 'testing' },
         })
@@ -77,6 +79,8 @@ describe(GitDirectory.name, () => {
           env: { GIT_REFLOG_ACTION: 'testing' },
         })
         await repo.exec('init')
+        await repo.exec('config', ['--local', 'user.email', 'you@example.com'])
+        await repo.exec('config', ['--local', 'user.name', 'Your name'])
         await repo.exec('commit', ['--allow-empty', '-m', 'A commit'])
         assertThat(await repo.read('reflog', ['-1']), containsString('testing: A commit'))
       })
@@ -86,6 +90,8 @@ describe(GitDirectory.name, () => {
           env: { GIT_REFLOG_ACTION: 'testing' },
         })
         await repo.exec('init')
+        await repo.exec('config', ['--local', 'user.email', 'you@example.com'])
+        await repo.exec('config', ['--local', 'user.name', 'Your name'])
         await repo.exec('commit', ['--allow-empty', '-m', 'A commit'], {
           env: { GIT_REFLOG_ACTION: 'amazing' },
         })
