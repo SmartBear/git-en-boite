@@ -1,7 +1,15 @@
 import fs from 'fs'
-import { PendingCommitRef, RefName } from 'git-en-boite-core'
+import { PendingCommitRef, RefName, File } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { containsString, containsStrings, fulfilled, not, promiseThat } from 'hamjest'
+import {
+  containsString,
+  containsStrings,
+  fulfilled,
+  not,
+  promiseThat,
+  assertThat,
+  equalTo,
+} from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -126,6 +134,32 @@ describe('handleCommit', () => {
         repo.read('log', [commitRef.local.value, '--oneline']),
         fulfilled(containsStrings('initial commit', 'A commit message')),
       )
+    })
+  })
+
+  describe('@wip handling concurrent commits to the same repo', () => {
+    const mainFile: File = { path: 'main.file', content: '' }
+    const experimentalFile: File = { path: 'experimental.file', content: '' }
+    const mainRef = PendingCommitRef.forBranch('branch-main')
+    const experimentalRef = PendingCommitRef.forBranch('branch-experimental')
+
+    beforeEach(async () => {
+      const committing = git(Commit.toCommitRef(mainRef).withFiles([mainFile]))
+      await git(Commit.toCommitRef(experimentalRef).withFiles([experimentalFile]))
+      await committing
+    })
+
+    it('does not commit unexpected files', async () => {
+      const mainCommit = (
+        await repo.read('ls-tree', [mainRef.local.value, '-r', '--name-only'])
+      ).split('\n')
+
+      const experimentalCommit = (
+        await repo.read('ls-tree', [experimentalRef.local.value, '-r', '--name-only'])
+      ).split('\n')
+
+      assertThat(mainCommit, equalTo([mainFile.path]))
+      assertThat(experimentalCommit, equalTo([experimentalFile.path]))
     })
   })
 })
