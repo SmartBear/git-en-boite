@@ -1,11 +1,8 @@
 import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
+import { merge } from 'lodash'
 
 export class GitDirectory {
-  path: string
-
-  constructor(path: string) {
-    this.path = path
-  }
+  constructor(public readonly path: string, public readonly options: IGitExecutionOptions = {}) {}
 
   async read(cmd: string, args: string[] = [], options?: IGitExecutionOptions): Promise<string> {
     return (await this.exec(cmd, args, options)).stdout.trim()
@@ -28,9 +25,6 @@ export class GitDirectory {
   }
 
   private buildOptions(options: IGitExecutionOptions = {}): IGitExecutionOptions {
-    return {
-      ...options,
-      env: { GIT_TERMINAL_PROMPT: 0, GIT_ASKPASS: null },
-    }
+    return merge(this.options, options, { env: { GIT_TERMINAL_PROMPT: 0, GIT_ASKPASS: null } })
   }
 }

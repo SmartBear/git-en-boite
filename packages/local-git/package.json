@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
+    "@types/lodash": "^4.14.159",
     "@types/uuid": "^8.3.0",
     "bullmq": "^1.9.0",
     "dugite": "^1.91.3",
@@ -29,6 +30,7 @@
     "git-en-boite-core": "0.0.0",
     "git-en-boite-message-dispatch": "0.0.0",
     "ioredis": "^4.17.3",
+    "lodash": "^4.17.20",
     "stream-split": "^1.1.0",
     "uuid": "^8.3.0"
   },
