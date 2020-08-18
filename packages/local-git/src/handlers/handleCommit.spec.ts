@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BranchName, File, PendingCommitRef, RefName } from 'git-en-boite-core'
+import { BranchName, File, PendingCommitRef, RefName, Author } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   assertThat,
@@ -56,9 +56,20 @@ describe('handleCommit', () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
 
     await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
-    await promiseThat(
-      repo.read('log', [localCommitRef.local.value, '--oneline']),
-      fulfilled(containsString('A commit message')),
+    assertThat(
+      await repo.read('log', [localCommitRef.local.value, '--oneline']),
+      containsString('A commit message'),
+    )
+  })
+
+  it('creates a commit with the given author', async () => {
+    const localCommitRef = LocalCommitRef.forBranch(branchName)
+
+    await git(Commit.toCommitRef(localCommitRef).byAuthor(new Author('Bob', 'bob@smartbear.com')))
+
+    assertThat(
+      await repo.read('log', [localCommitRef.local.value]),
+      containsString('Bob <bob@smartbear.com>'),
     )
   })
 
@@ -164,7 +175,7 @@ describe('handleCommit', () => {
     })
   })
 
-  describe('@wip handling concurrent commits to the same repo', () => {
+  describe('handling concurrent commits to the same repo', () => {
     const mainFile: File = { path: 'main.file', content: '' }
     const experimentalFile: File = { path: 'experimental.file', content: '' }
     const branchMain = 'branch-main'
