@@ -2,6 +2,7 @@ import { assertThat, equalTo, truthy } from 'hamjest'
 
 import { Ref } from './ref'
 import { RefName } from './ref_name'
+import { BranchName } from './branch_name'
 
 describe(Ref.name, () => {
   describe('#isRemote', () => {
@@ -27,7 +28,7 @@ describe(Ref.name, () => {
       })
 
       it('returns the name of the branch', () => {
-        assertThat(ref.branchName, equalTo('master'))
+        assertThat(ref.branchName, equalTo(BranchName.of('master')))
       })
     })
   })
