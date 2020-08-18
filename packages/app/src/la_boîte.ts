@@ -1,4 +1,4 @@
-import { Application, Branch, File, GitRepoInfo, QueryResult, RepoIndex } from 'git-en-boite-core'
+import { Application, File, GitRepoInfo, QueryResult, RepoIndex } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
