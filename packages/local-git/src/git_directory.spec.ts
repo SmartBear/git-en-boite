@@ -107,15 +107,15 @@ describe(GitDirectory.name, () => {
       const objectId = await repo.read('hash-object', ['-w', '--stdin'], {
         stdin: 'My file content',
       })
-      await repo.temporaryIndex(async index => {
+      await repo.temporaryIndex(async repoWithIndex => {
         const file = 'a-file'
-        await index.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
-        assertThat((await index.read('ls-files')).split('\n'), equalTo([file]))
+        await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
+        assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
       })
-      await repo.temporaryIndex(async index => {
+      await repo.temporaryIndex(async repoWithIndex => {
         const file = 'another-file'
-        await index.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
-        assertThat((await index.read('ls-files')).split('\n'), equalTo([file]))
+        await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
+        assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
       })
       assertThat((await repo.read('ls-files')).split('\n'), equalTo(['']))
     })
