@@ -30,7 +30,7 @@ import {
 
 type BareRepo = Dispatch<BareRepoProtocol>
 
-export class BareRepoFactory {
+export class RepoFactory {
   async open(repoPath: string): Promise<BareRepo> {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)

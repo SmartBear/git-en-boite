@@ -1,12 +1,12 @@
 import { File, GitRepo, PendingCommitRef, Refs } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
-import { BareRepoFactory } from './bare_repo_factory'
+import { RepoFactory } from './repo_factory'
 import { BareRepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
 
 export class DugiteGitRepo implements GitRepo {
   static async openGitRepo(path: string): Promise<GitRepo> {
-    const dispatch = await new BareRepoFactory().open(path)
+    const dispatch = await new RepoFactory().open(path)
     return new DugiteGitRepo(dispatch)
   }
 

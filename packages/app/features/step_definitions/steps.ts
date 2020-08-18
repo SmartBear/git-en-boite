@@ -1,7 +1,7 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
 import { File, GitRepoInfo } from 'git-en-boite-core'
-import { BareRepoFactory, Commit, GetFiles, GetRefs, LocalCommitRef } from 'git-en-boite-local-git'
+import { RepoFactory, Commit, GetFiles, GetRefs, LocalCommitRef } from 'git-en-boite-local-git'
 import {
   assertThat,
   contains,
@@ -17,7 +17,7 @@ Given('a remote repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => row[0])
   const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
-  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
+  const git = await new RepoFactory().open(this.repoRemoteUrl)
   for (const branchName of branches) {
     await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   }
@@ -26,12 +26,12 @@ Given('a remote repo with branches:', async function (branchesTable) {
 Given('a remote repo with commits on the {string} branch', async function (branchName) {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
-  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
+  const git = await new RepoFactory().open(this.repoRemoteUrl)
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
 When('a new commit is made on the {string} branch in the remote repo', async function (branchName) {
-  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
+  const git = await new RepoFactory().open(this.repoRemoteUrl)
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 })
@@ -112,7 +112,7 @@ Then('it should respond with an error', function () {
 })
 
 Then('the file should be in the {string} branch of the remote repo', async function (branchName) {
-  const git = await new BareRepoFactory().open(this.repoRemoteUrl)
+  const git = await new RepoFactory().open(this.repoRemoteUrl)
   const files = await git(GetFiles.forBranchNamed(branchName))
   assertThat(files, contains(this.file))
 })

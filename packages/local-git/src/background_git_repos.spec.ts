@@ -1,7 +1,7 @@
 import { createConfig } from 'git-en-boite-config'
 import { fulfilled, hasProperty, matchesPattern, promiseThat, rejected } from 'hamjest'
 
-import { BareRepoFactory } from './'
+import { RepoFactory } from './'
 import { BackgroundGitRepos } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
@@ -20,9 +20,9 @@ describe(BackgroundGitRepos.name, () => {
 
     const openRepo = (path: string) => gitRepos.openGitRepo(path)
 
-    const bareRepoFactory = new BareRepoFactory()
-    verifyRepoFactoryContract(openRepo, bareRepoFactory.open)
-    verifyRepoContract(openRepo, bareRepoFactory.open)
+    const repoFactory = new RepoFactory()
+    verifyRepoFactoryContract(openRepo, repoFactory.open)
+    verifyRepoContract(openRepo, repoFactory.open)
   })
 
   context('checking for running workers', () => {

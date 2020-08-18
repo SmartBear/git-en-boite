@@ -13,8 +13,7 @@ import {
   handlePush,
   handleSetOrigin,
 } from '.'
-import { LocalCommitRef } from '..'
-import { BareRepoFactory } from '../bare_repo_factory'
+import { LocalCommitRef, RepoFactory } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, Push, SetOrigin } from '../operations'
 
@@ -53,7 +52,7 @@ describe('handlePush', () => {
   })
 
   it('pushes a commit to origin', async () => {
-    const origin = await new BareRepoFactory().open(originUrl)
+    const origin = await new RepoFactory().open(originUrl)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(branchName)
     await git(SetOrigin.toUrl(originUrl))

@@ -1,6 +1,6 @@
 import { File, RefName } from 'git-en-boite-core'
 import {
-  BareRepoFactory,
+  RepoFactory,
   Commit,
   DugiteGitRepo,
   GetFiles,
@@ -43,7 +43,7 @@ describe(LaBoîte.name, () => {
 
     it('returns an object with the local branches in the repo', async () => {
       const branches = ['master', 'development']
-      const origin = await new BareRepoFactory().open(remoteUrl)
+      const origin = await new RepoFactory().open(remoteUrl)
       for (const branchName of branches)
         await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
       await app.connectToRemote(repoId, remoteUrl)
@@ -58,7 +58,7 @@ describe(LaBoîte.name, () => {
   })
 
   it('can connect a new repo by cloning from a remote URL', async () => {
-    const origin = await new BareRepoFactory().open(remoteUrl)
+    const origin = await new RepoFactory().open(remoteUrl)
     await origin(Commit.toCommitRef(commitRef))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
@@ -70,7 +70,7 @@ describe(LaBoîte.name, () => {
     const revParse = async (refName: RefName, repoPath: string) =>
       new GitDirectory(repoPath).read('rev-parse', [refName.value])
 
-    const origin = await new BareRepoFactory().open(remoteUrl)
+    const origin = await new RepoFactory().open(remoteUrl)
     await origin(Commit.toCommitRef(commitRef))
     await app.connectToRemote(repoId, remoteUrl)
     await app.fetchFromRemote(repoId)
@@ -90,7 +90,7 @@ describe(LaBoîte.name, () => {
 
   describe('commiting', () => {
     it('pushes a new file to the origin', async () => {
-      const origin = await new BareRepoFactory().open(remoteUrl)
+      const origin = await new RepoFactory().open(remoteUrl)
       await origin(Commit.toCommitRef(commitRef))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
