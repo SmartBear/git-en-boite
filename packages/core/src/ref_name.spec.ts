@@ -1,20 +1,29 @@
 import { assertThat, equalTo, hasProperty, matchesPattern, throws } from 'hamjest'
 import { JSONObject } from 'tiny-types'
 
-import { RefName } from '.'
+import { RefName, BranchName } from '.'
 
 describe(RefName.name, () => {
   context('parsing a raw string', () => {
     it('parses a local branch', () => {
-      assertThat(RefName.parse(RefName.localBranch('main').value).branchName, equalTo('main'))
+      assertThat(
+        RefName.parse(RefName.localBranch('main').value).branchName,
+        equalTo(BranchName.of('main')),
+      )
     })
 
     it('parses a pending commit ref', () => {
-      assertThat(RefName.parse(RefName.forPendingCommit('main').value).branchName, equalTo('main'))
+      assertThat(
+        RefName.parse(RefName.forPendingCommit('main').value).branchName,
+        equalTo(BranchName.of('main')),
+      )
     })
 
     it('parses a fetched remote branch', () => {
-      assertThat(RefName.parse(RefName.fetchedFromOrigin('main').value).branchName, equalTo('main'))
+      assertThat(
+        RefName.parse(RefName.fetchedFromOrigin('main').value).branchName,
+        equalTo(BranchName.of('main')),
+      )
     })
 
     it('throws for an unrecognised string', () => {
@@ -26,7 +35,7 @@ describe(RefName.name, () => {
   })
 
   it('returns the branchName', () => {
-    assertThat(RefName.fetchedFromOrigin('main').branchName, equalTo('main'))
+    assertThat(RefName.fetchedFromOrigin('main').branchName, equalTo(BranchName.of('main')))
   })
 
   it('can be serialized/deserialized', () => {

@@ -1,5 +1,6 @@
+import { assertThat, equalTo, truthy } from 'hamjest'
+
 import { Ref } from './ref'
-import { assertThat, truthy, equalTo } from 'hamjest'
 import { RefName } from './ref_name'
 
 describe(Ref.name, () => {

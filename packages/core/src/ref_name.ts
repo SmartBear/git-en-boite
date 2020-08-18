@@ -1,23 +1,24 @@
 import { TinyType, JSONObject } from 'tiny-types'
 import { v4 as uuid } from 'uuid'
+import { BranchName } from '.'
 
 const uuidPattern = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 
 export class RefName extends TinyType {
-  protected constructor(public readonly value: string, public readonly branchName: string) {
+  protected constructor(public readonly value: string, public readonly branchName: BranchName) {
     super()
   }
 
   static forPendingCommit(branchName: string): RefName {
-    return new RefName(`refs/pending-commits/${branchName}-${uuid()}`, branchName)
+    return new RefName(`refs/pending-commits/${branchName}-${uuid()}`, BranchName.of(branchName))
   }
 
   static fetchedFromOrigin(branchName: string): RefName {
-    return new RefName(`refs/remotes/origin/${branchName}`, branchName)
+    return new RefName(`refs/remotes/origin/${branchName}`, BranchName.of(branchName))
   }
 
   static localBranch(branchName: string): RefName {
-    return new RefName(`refs/heads/${branchName}`, branchName)
+    return new RefName(`refs/heads/${branchName}`, BranchName.of(branchName))
   }
 
   static parse(value: string): RefName {
@@ -34,7 +35,7 @@ export class RefName extends TinyType {
   }
 
   static fromJSON(o: JSONObject): RefName {
-    return new RefName(o.value as string, o.branchName as string)
+    return new RefName(o.value as string, BranchName.of(o.branchName as string))
   }
 
   toString(): string {

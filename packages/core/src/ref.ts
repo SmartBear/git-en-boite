@@ -8,7 +8,7 @@ export class Ref {
   }
 
   get branchName(): string {
-    return this.refName.branchName
+    return this.refName.branchName.value
   }
 
   toBranch(): Branch {
