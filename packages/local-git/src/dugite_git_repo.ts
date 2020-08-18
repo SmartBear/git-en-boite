@@ -2,7 +2,7 @@ import { File, GitRepo, PendingCommitRef, Refs } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { RepoFactory } from './repo_factory'
-import { BareRepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
+import { RepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
 
 export class DugiteGitRepo implements GitRepo {
   static async openGitRepo(path: string): Promise<GitRepo> {
@@ -10,7 +10,7 @@ export class DugiteGitRepo implements GitRepo {
     return new DugiteGitRepo(dispatch)
   }
 
-  protected constructor(private readonly git: Dispatch<BareRepoProtocol>) {}
+  protected constructor(private readonly git: Dispatch<RepoProtocol>) {}
 
   commit(commitRef: PendingCommitRef, file: File): Promise<void> {
     return this.git(Commit.toCommitRef(commitRef).withFiles([file]))

@@ -4,10 +4,10 @@ import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { BareRepoProtocol, Commit, GetRefs, LocalCommitRef } from '..'
+import { RepoProtocol, Commit, GetRefs, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 
-type OpenOriginRepo = (path: string) => Promise<Dispatch<BareRepoProtocol>>
+type OpenOriginRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
 
 export const verifyRepoContract = (
   openGitRepo: OpenGitRepo,
@@ -79,7 +79,7 @@ export const verifyRepoContract = (
 
   describe('pushing', () => {
     let originUrl: string
-    let origin: Dispatch<BareRepoProtocol>
+    let origin: Dispatch<RepoProtocol>
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await createOriginRepo(originUrl)

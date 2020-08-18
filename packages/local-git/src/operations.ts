@@ -115,7 +115,7 @@ export interface Config {
   [key: string]: string
 }
 
-export type BareRepoProtocol = [
+export type RepoProtocol = [
   AsyncCommand<Commit>,
   AsyncCommand<Connect>,
   AsyncCommand<Fetch>,

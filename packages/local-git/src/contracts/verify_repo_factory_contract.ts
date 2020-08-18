@@ -3,10 +3,10 @@ import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { GetConfig, BareRepoProtocol } from '..'
+import { GetConfig, RepoProtocol } from '..'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
-type OpenBareRepo = (path: string) => Promise<Dispatch<BareRepoProtocol>>
+type OpenBareRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
 
 export const verifyRepoFactoryContract = (
   openGitRepo: OpenGitRepo,

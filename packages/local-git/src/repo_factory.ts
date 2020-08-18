@@ -15,7 +15,7 @@ import {
   handleValidateRemote,
 } from './handlers'
 import {
-  BareRepoProtocol,
+  RepoProtocol,
   Commit,
   Connect,
   Fetch,
@@ -28,13 +28,13 @@ import {
   ValidateRemote,
 } from './operations'
 
-type BareRepo = Dispatch<BareRepoProtocol>
+type BareRepo = Dispatch<RepoProtocol>
 
 export class RepoFactory {
   async open(repoPath: string): Promise<BareRepo> {
     fs.mkdirSync(repoPath, { recursive: true })
     const repo = new GitDirectory(repoPath)
-    const git = messageDispatch<BareRepoProtocol>().withHandlers(repo, [
+    const git = messageDispatch<RepoProtocol>().withHandlers(repo, [
       [Commit, handleCommit],
       [Connect, handleConnect],
       [Fetch, handleFetch],
