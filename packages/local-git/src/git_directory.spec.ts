@@ -107,12 +107,12 @@ describe(GitDirectory.name, () => {
       const objectId = await repo.read('hash-object', ['-w', '--stdin'], {
         stdin: 'My file content',
       })
-      await repo.temporaryIndex(async repoWithIndex => {
+      await repo.withUniqueIndex(async repoWithIndex => {
         const file = 'a-file'
         await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
         assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
       })
-      await repo.temporaryIndex(async repoWithIndex => {
+      await repo.withUniqueIndex(async repoWithIndex => {
         const file = 'another-file'
         await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
         assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
@@ -122,7 +122,7 @@ describe(GitDirectory.name, () => {
 
     it('returns the result of the block', async () => {
       const repo = new GitDirectory(repoPath)
-      const result = await repo.temporaryIndex(async () => new Promise(resolve => resolve(5)))
+      const result = await repo.withUniqueIndex(async () => new Promise(resolve => resolve(5)))
       assertThat(result, equalTo(5))
     })
   })

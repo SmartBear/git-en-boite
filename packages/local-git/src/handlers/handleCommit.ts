@@ -7,7 +7,7 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
   repoWithDefaultIndex,
   { commitRef, files, message, author },
 ): Promise<void> => {
-  await repoWithDefaultIndex.temporaryIndex(async repo => {
+  await repoWithDefaultIndex.withUniqueIndex(async repo => {
     const commitArgs = await getParentCommit(
       async parentCommitName => {
         await repo.exec('read-tree', [parentCommitName])

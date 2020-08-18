@@ -37,7 +37,7 @@ export class GitDirectory {
     return merge(this.options, options, { env: { GIT_TERMINAL_PROMPT: 0, GIT_ASKPASS: null } })
   }
 
-  async temporaryIndex<Result = void>(operateOnIndex: OperateOnIndex<Result>): Promise<Result> {
+  async withUniqueIndex<Result = void>(operateOnIndex: OperateOnIndex<Result>): Promise<Result> {
     const indexFile = path.resolve(this.path, `index-${uuid()}`)
     const result = operateOnIndex(
       new GitDirectory(this.path, {
