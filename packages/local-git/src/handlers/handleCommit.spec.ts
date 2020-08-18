@@ -1,15 +1,13 @@
 import fs from 'fs'
-import { BranchName, File, PendingCommitRef, RefName, Author } from 'git-en-boite-core'
+import { Author, BranchName, File, PendingCommitRef, RefName } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   assertThat,
+  containsInAnyOrder,
   containsString,
   containsStrings,
   equalTo,
-  fulfilled,
   not,
-  promiseThat,
-  containsInAnyOrder,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -78,9 +76,9 @@ describe('handleCommit', () => {
 
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
-    await promiseThat(
-      repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
-      fulfilled(containsString(file.path)),
+    assertThat(
+      await repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
+      containsString(file.path),
     )
   })
 
@@ -92,9 +90,9 @@ describe('handleCommit', () => {
     await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
 
-    await promiseThat(
-      repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
-      fulfilled(not(containsString('junk.file'))),
+    assertThat(
+      await repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
+      not(containsString('junk.file')),
     )
   })
 
@@ -104,9 +102,9 @@ describe('handleCommit', () => {
     it('creates a commit with a parent', async () => {
       await git(Commit.toCommitRef(commitRef).withMessage('initial commit'))
       await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
-      await promiseThat(
-        repo.read('log', [commitRef.local.value, '--oneline']),
-        fulfilled(containsStrings('initial commit', 'A commit message')),
+      assertThat(
+        await repo.read('log', [commitRef.local.value, '--oneline']),
+        containsStrings('initial commit', 'A commit message'),
       )
     })
   })
@@ -126,9 +124,9 @@ describe('handleCommit', () => {
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
 
-      await promiseThat(
-        repo.read('ls-tree', [commitRef.local.value, '-r', '--name-only']),
-        fulfilled(containsStrings(existingFile.path, otherFile.path)),
+      assertThat(
+        await repo.read('ls-tree', [commitRef.local.value, '-r', '--name-only']),
+        containsStrings(existingFile.path, otherFile.path),
       )
     })
 
@@ -142,9 +140,9 @@ describe('handleCommit', () => {
       )
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
-      await promiseThat(
-        repo.read('log', [commitRef.local.value, '--oneline']),
-        fulfilled(containsStrings('initial commit', 'A commit message')),
+      assertThat(
+        await repo.read('log', [commitRef.local.value, '--oneline']),
+        containsStrings('initial commit', 'A commit message'),
       )
     })
   })
