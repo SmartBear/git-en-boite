@@ -1,4 +1,4 @@
-import { File, GitRepo, Branch, PendingCommitRef, BranchName } from '.'
+import { File, GitRepo, Branch, PendingCommitRef, BranchName, Author } from '.'
 
 export class Repo {
   constructor(public readonly repoId: string, private readonly git: GitRepo) {}
@@ -19,9 +19,9 @@ export class Repo {
     )
   }
 
-  async commit(branchName: BranchName, file: File): Promise<void> {
+  async commit(branchName: BranchName, files: File[], author: Author): Promise<void> {
     const commitRef = PendingCommitRef.forBranch(branchName)
-    await this.git.commit(commitRef, file)
+    await this.git.commit(commitRef, files, author)
     await this.git.push(commitRef)
   }
 }

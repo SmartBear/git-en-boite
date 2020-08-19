@@ -1,4 +1,4 @@
-import { Application, Author, File } from 'git-en-boite-core'
+import { Application, Author, File, BranchName } from 'git-en-boite-core'
 import { assertThat } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -29,7 +29,7 @@ describe('@wip POST /repos/:repoId/branches/:branchName/commits', () => {
 
   it('accepts a valid payload with files and author', async () => {
     const repoId = 'repo-id'
-    const branchName = 'a-branch'
+    const branchName = BranchName.of('a-branch')
     const file: File = { path: 'a.file', content: 'content' }
     const files = [file]
     const author = new Author('Bob', 'bob@example.com')

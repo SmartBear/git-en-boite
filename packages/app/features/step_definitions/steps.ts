@@ -65,7 +65,7 @@ When('a consumer commits a new file to the {string} branch', async function (bra
   this.file = file
   await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
-    .send(file)
+    .send({ files: [file], author: new Author('Bob', 'bob@example.com') })
     .set('Accept', 'application/json')
     .expect(200)
 })

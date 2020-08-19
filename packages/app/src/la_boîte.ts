@@ -1,5 +1,6 @@
 import {
   Application,
+  Author,
   File,
   GitRepoInfo,
   QueryResult,
@@ -10,9 +11,14 @@ import {
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
 
-  async commit(repoId: string, branchName: BranchName, file: File): Promise<void> {
+  async commit(
+    repoId: string,
+    branchName: BranchName,
+    files: File[],
+    author: Author,
+  ): Promise<void> {
     const repo = await this.repoIndex.find(repoId)
-    await repo.commit(branchName, file)
+    await repo.commit(branchName, files, author)
   }
 
   async connectToRemote(repoId: string, remoteUrl: string): Promise<void> {

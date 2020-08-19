@@ -1,14 +1,14 @@
-import { File, RefName, BranchName } from 'git-en-boite-core'
+import { Author, BranchName, File, RefName } from 'git-en-boite-core'
 import {
-  RepoFactory,
   Commit,
   DugiteGitRepo,
   GetFiles,
   GitDirectory,
   LocalCommitRef,
+  RepoFactory,
 } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
-import { assertThat, contains, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
+import { assertThat, equalTo, falsy, hasProperty, is, truthy } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -94,14 +94,17 @@ describe(LaBoîte.name, () => {
       await origin(Commit.toCommitRef(commitRef))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
-      const file: File = {
-        path: 'feature.feature',
-        content: 'Feature: Feature',
-      }
+      const files: File[] = [
+        {
+          path: 'feature.feature',
+          content: 'Feature: Feature',
+        },
+      ]
+      const author = new Author('Bob', 'bob@example.com')
 
-      await app.commit(repoId, BranchName.of(branchName), file)
+      await app.commit(repoId, BranchName.of(branchName), files, author)
 
-      assertThat(await origin(GetFiles.for(BranchName.of(branchName))), contains(file))
+      assertThat(await origin(GetFiles.for(BranchName.of(branchName))), equalTo(files))
     })
   })
 })

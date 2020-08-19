@@ -52,7 +52,7 @@ describe(BackgroundGitRepos.name, () => {
     })
   })
 
-  context('connecting', () => {
+  context('@wip connecting', () => {
     it('throws an error if the redis connection cannot be established', async () => {
       const badRedisOptions = 'redis://localhost:1234'
       const connecting = BackgroundGitRepos.connect(DugiteGitRepo, badRedisOptions)

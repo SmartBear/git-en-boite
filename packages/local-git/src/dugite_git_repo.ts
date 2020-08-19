@@ -12,8 +12,8 @@ export class DugiteGitRepo implements GitRepo {
 
   protected constructor(private readonly git: Dispatch<RepoProtocol>) {}
 
-  commit(commitRef: PendingCommitRef, file: File): Promise<void> {
-    return this.git(Commit.toCommitRef(commitRef).withFiles([file]))
+  commit(commitRef: PendingCommitRef, files: File[]): Promise<void> {
+    return this.git(Commit.toCommitRef(commitRef).withFiles(files))
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {

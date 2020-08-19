@@ -6,6 +6,7 @@ import {
   OpensGitRepos,
   PendingCommitRef,
   Refs,
+  Author,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -83,8 +84,8 @@ export class BackgroundGitRepoProxy implements GitRepo {
     private readonly queueEvents: QueueEvents,
   ) {}
 
-  async commit(commitRef: PendingCommitRef, file: File): Promise<void> {
-    await this.gitRepo.commit(commitRef, file)
+  async commit(commitRef: PendingCommitRef, files: File[], author: Author): Promise<void> {
+    await this.gitRepo.commit(commitRef, files, author)
   }
 
   async setOriginTo(remoteUrl: string): Promise<void> {
