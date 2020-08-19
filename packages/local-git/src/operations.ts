@@ -1,11 +1,11 @@
-import { Author, CommitRef, File, PendingCommitRef, Refs } from 'git-en-boite-core'
+import { Author, CommitRef, File, PendingCommitRef, Refs, BranchName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Checkout {
-  protected constructor(public readonly branchName: string) {}
+  protected constructor(public readonly branchName: BranchName) {}
 
   static branch(branchName: string): Checkout {
-    return new this(branchName)
+    return new this(BranchName.of(branchName))
   }
 }
 
@@ -56,10 +56,10 @@ export class Push {
 }
 
 export class GetFiles {
-  private constructor(public readonly branchName: string) {}
+  private constructor(public readonly branchName: BranchName) {}
 
   static forBranchNamed(branchName: string): GetFiles {
-    return new this(branchName)
+    return new this(BranchName.of(branchName))
   }
 }
 

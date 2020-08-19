@@ -24,7 +24,7 @@ export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, File[]>> 
 
   // -r makes ls-tree recurse
   // -z prevents octal-escaped quoted paths and separates entries with NUL byte (\u0000)
-  const ls = GitProcess.spawn(['ls-tree', '--full-tree', '-r', '-z', branchName], repo.path)
+  const ls = GitProcess.spawn(['ls-tree', '--full-tree', '-r', '-z', branchName.value], repo.path)
   const stream = ls.stdout.pipe(splitter)
 
   let rsclosed = false
