@@ -16,10 +16,12 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "file": {
-            "path": "features/test.feature",
-            "content": "Feature: Test"
-          },
+          "files": [
+            {
+              "path": "features/test.feature",
+              "content": "Feature: Test"
+            }
+          ],
           "author": {
             "name": "Bob",
             "email": "bob@smartbear.com"
@@ -31,8 +33,7 @@
         "headers": {
           "Content-Type": "application/json; charset=utf-8"
         },
-        "body": {
-        }
+        "body": {}
       }
     },
     {
@@ -51,8 +52,7 @@
       },
       "response": {
         "status": 202,
-        "headers": {
-        }
+        "headers": {}
       }
     },
     {
@@ -71,8 +71,7 @@
       },
       "response": {
         "status": 302,
-        "headers": {
-        }
+        "headers": {}
       }
     },
     {
@@ -84,8 +83,7 @@
       },
       "response": {
         "status": 202,
-        "headers": {
-        }
+        "headers": {}
       }
     }
   ],
