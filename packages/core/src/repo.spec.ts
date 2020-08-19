@@ -3,6 +3,7 @@ import { stubInterface } from 'ts-sinon'
 
 import { GitRepo, Ref, Repo, Refs, Branch } from '.'
 import { RefName } from './ref_name'
+import { BranchName } from './branch_name'
 
 describe(Repo.name, () => {
   context('connecting', () => {
@@ -46,10 +47,10 @@ describe(Repo.name, () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.getRefs.resolves(
         new Refs(
-          new Ref('1', RefName.fetchedFromOrigin('main')),
-          new Ref('2', RefName.fetchedFromOrigin('develop')),
-          new Ref('3', RefName.forPendingCommit('develop')),
-          new Ref('unlikely-this-would-happen', RefName.localBranch('test')),
+          new Ref('1', RefName.fetchedFromOrigin(BranchName.of('main'))),
+          new Ref('2', RefName.fetchedFromOrigin(BranchName.of('develop'))),
+          new Ref('3', RefName.forPendingCommit(BranchName.of('develop'))),
+          new Ref('unlikely-this-would-happen', RefName.localBranch(BranchName.of('test'))),
         ),
       )
       const expectedBranches: Branch[] = [

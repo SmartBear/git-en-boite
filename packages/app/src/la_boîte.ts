@@ -1,9 +1,16 @@
-import { Application, File, GitRepoInfo, QueryResult, RepoIndex } from 'git-en-boite-core'
+import {
+  Application,
+  File,
+  GitRepoInfo,
+  QueryResult,
+  RepoIndex,
+  BranchName,
+} from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
 
-  async commit(repoId: string, branchName: string, file: File): Promise<void> {
+  async commit(repoId: string, branchName: BranchName, file: File): Promise<void> {
     const repo = await this.repoIndex.find(repoId)
     await repo.commit(branchName, file)
   }

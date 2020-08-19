@@ -8,8 +8,8 @@ export class PendingCommitRef extends TinyType implements PushableCommitRef {
     super()
   }
 
-  static forBranch(branchName: string): PendingCommitRef {
-    return new PendingCommitRef(BranchName.of(branchName), RefName.forPendingCommit(branchName))
+  static forBranch(branchName: BranchName): PendingCommitRef {
+    return new PendingCommitRef(branchName, RefName.forPendingCommit(branchName))
   }
 
   static fromJSON(o: JSONObject): PendingCommitRef {
@@ -20,10 +20,10 @@ export class PendingCommitRef extends TinyType implements PushableCommitRef {
   }
 
   get remote(): RefName {
-    return RefName.localBranch(this.branchName.value)
+    return RefName.localBranch(this.branchName)
   }
 
   get parent(): RefName {
-    return RefName.fetchedFromOrigin(this.branchName.value)
+    return RefName.fetchedFromOrigin(this.branchName)
   }
 }

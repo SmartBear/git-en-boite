@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Ref, Refs } from 'git-en-boite-core'
+import { Ref, Refs, BranchName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
@@ -49,7 +49,7 @@ describe('handleGetRefs', () => {
 
     context('with a commit to the main branch', () => {
       const branchName = 'a-branch'
-      const commitRef = LocalCommitRef.forBranch(branchName)
+      const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
       beforeEach(async () => {
         await git(Commit.toCommitRef(commitRef))

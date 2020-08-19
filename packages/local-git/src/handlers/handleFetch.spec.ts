@@ -17,6 +17,7 @@ import { RepoFactory, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, SetOrigin } from '../operations'
 import { handleSetOrigin } from './handleSetOrigin'
+import { BranchName } from 'git-en-boite-core'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
@@ -35,8 +36,8 @@ describe('handleFetch', () => {
     originUrl = path.resolve(root, 'remote', 'a-repo-id')
 
     const origin = await new RepoFactory().open(originUrl)
-    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-    latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
+    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
+    latestCommit = (await origin(GetRefs.all())).forBranch(BranchName.of(branchName)).revision
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [

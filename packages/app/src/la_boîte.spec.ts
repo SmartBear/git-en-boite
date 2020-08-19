@@ -1,4 +1,4 @@
-import { File, RefName } from 'git-en-boite-core'
+import { File, RefName, BranchName } from 'git-en-boite-core'
 import {
   RepoFactory,
   Commit,
@@ -17,7 +17,7 @@ import { LaBoîte } from './la_boîte'
 describe(LaBoîte.name, () => {
   const repoId = 'a-new-repo'
   const branchName = 'main'
-  const commitRef = LocalCommitRef.forBranch(branchName)
+  const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
   let app: LaBoîte
   let root: string
@@ -45,7 +45,7 @@ describe(LaBoîte.name, () => {
       const branches = ['master', 'development']
       const origin = await new RepoFactory().open(remoteUrl)
       for (const branchName of branches)
-        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
       await app.connectToRemote(repoId, remoteUrl)
       await app.fetchFromRemote(repoId)
       const result = await app.getInfo(repoId)
@@ -99,9 +99,9 @@ describe(LaBoîte.name, () => {
         content: 'Feature: Feature',
       }
 
-      await app.commit(repoId, branchName, file)
+      await app.commit(repoId, BranchName.of(branchName), file)
 
-      assertThat(await origin(GetFiles.forBranchNamed(branchName)), contains(file))
+      assertThat(await origin(GetFiles.for(BranchName.of(branchName))), contains(file))
     })
   })
 })

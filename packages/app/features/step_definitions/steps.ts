@@ -1,6 +1,6 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { File, GitRepoInfo, Author } from 'git-en-boite-core'
+import { File, GitRepoInfo, Author, BranchName } from 'git-en-boite-core'
 import { RepoFactory, Commit, GetFiles, GetRefs, LocalCommitRef } from 'git-en-boite-local-git'
 import {
   assertThat,
@@ -14,7 +14,7 @@ import {
 import path from 'path'
 
 Given('a remote repo with branches:', async function (branchesTable) {
-  const branches = branchesTable.raw().map((row: string[]) => row[0])
+  const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
   const repoId = (this.repoId = this.getNextRepoId())
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
   const git = await new RepoFactory().open(this.repoRemoteUrl)
@@ -23,17 +23,19 @@ Given('a remote repo with branches:', async function (branchesTable) {
   }
 })
 
-Given('a remote repo with commits on the {string} branch', async function (branchName) {
+Given('a remote repo with commits on the {string} branch', async function (branchName: string) {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new RepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
 })
 
-When('a new commit is made on the {string} branch in the remote repo', async function (branchName) {
+When('a new commit is made on the {string} branch in the remote repo', async function (
+  branchName: string,
+) {
   const git = await new RepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-  this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
+  this.lastCommitRevision = (await git(GetRefs.all())).forBranch(BranchName.of(branchName)).revision
 })
 
 Given('the remote repo has been connected', async function () {
@@ -124,8 +126,10 @@ Then('it should respond with an error', function () {
   assertThat(String(this.lastResponseCode), not(matchesPattern(/2\d\d/)))
 })
 
-Then('the file should be in the {string} branch of the remote repo', async function (branchName) {
+Then('the file should be in the {string} branch of the remote repo', async function (
+  branchName: string,
+) {
   const git = await new RepoFactory().open(this.repoRemoteUrl)
-  const files = await git(GetFiles.forBranchNamed(branchName))
+  const files = await git(GetFiles.for(BranchName.of(branchName)))
   assertThat(files, contains(this.file))
 })

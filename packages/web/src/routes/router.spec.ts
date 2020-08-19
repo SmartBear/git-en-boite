@@ -1,6 +1,6 @@
 import { Application, GitRepoInfo, QueryResult } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
-import { wasCalled, wasCalledWith } from 'hamjest-sinon'
+import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -83,15 +83,6 @@ describe('/repos', () => {
       app.fetchFromRemote.withArgs(repoId).resolves()
       await request.post('/repos/a-repo-id').expect(202)
       assertThat(app.fetchFromRemote, wasCalled())
-    })
-  })
-
-  describe('POST /repos/:repoId/branches/:branchName/commits', () => {
-    it('reponds with 200', async () => {
-      const file = { path: 'a path.feature', content: 'Feature: ' }
-      await request.post('/repos/a-repo-id/branches/a-branch/commits').send(file).expect(200)
-      assertThat(app.commit, wasCalled())
-      assertThat(app.commit, wasCalledWith('a-repo-id', 'a-branch', file))
     })
   })
 })

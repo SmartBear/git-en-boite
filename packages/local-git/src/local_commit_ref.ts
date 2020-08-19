@@ -6,12 +6,12 @@ export class LocalCommitRef extends TinyType implements CommitRef {
     super()
   }
 
-  static forBranch(branchName: string): LocalCommitRef {
+  static forBranch(branchName: BranchName): LocalCommitRef {
     const local = RefName.localBranch(branchName)
-    return new LocalCommitRef(BranchName.of(branchName), local)
+    return new LocalCommitRef(branchName, local)
   }
 
   get parent(): RefName {
-    return RefName.localBranch(this.branchName.value)
+    return RefName.localBranch(BranchName.of(this.branchName.value))
   }
 }

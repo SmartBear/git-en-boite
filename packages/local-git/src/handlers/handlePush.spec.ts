@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { PendingCommitRef, Refs } from 'git-en-boite-core'
+import { PendingCommitRef, Refs, BranchName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, not } from 'hamjest'
 import path from 'path'
@@ -53,19 +53,23 @@ describe('handlePush', () => {
 
   it('pushes a commit to origin', async () => {
     const origin = await new RepoFactory().open(originUrl)
-    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-    const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(branchName)
+    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
+    const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(
+      BranchName.of(branchName),
+    )
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }
-    const commitRef = PendingCommitRef.forBranch(branchName)
+    const commitRef = PendingCommitRef.forBranch(BranchName.of(branchName))
     await git(Commit.toCommitRef(commitRef).withFiles([file]))
-    const { revision: newCommit } = (await git(GetRefs.all())).forBranch(branchName)
+    const { revision: newCommit } = (await git(GetRefs.all())).forBranch(BranchName.of(branchName))
     assertThat(firstCommit, not(equalTo(newCommit)))
 
     await git(Push.pendingCommitFrom(commitRef))
-    const { revision: originCommit } = (await origin(GetRefs.all())).forBranch(branchName)
+    const { revision: originCommit } = (await origin(GetRefs.all())).forBranch(
+      BranchName.of(branchName),
+    )
     assertThat(originCommit, equalTo(newCommit))
   })
 })

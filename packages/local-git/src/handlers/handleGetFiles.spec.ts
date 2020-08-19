@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { File } from 'git-en-boite-core'
+import { File, BranchName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, contains } from 'hamjest'
 import path from 'path'
@@ -38,8 +38,10 @@ describe('handleGetFiles', () => {
     const git = await openRepo(repoPath)
     await git(Init.bareRepo())
     const branchName = 'a-branch'
-    await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)).withFiles([file]))
-    const files = await git(GetFiles.forBranchNamed(branchName))
+    await git(
+      Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))).withFiles([file]),
+    )
+    const files = await git(GetFiles.for(BranchName.of(branchName)))
     assertThat(files, contains(file))
   })
 })

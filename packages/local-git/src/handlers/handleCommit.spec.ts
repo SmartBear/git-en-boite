@@ -51,7 +51,7 @@ describe('handleCommit', () => {
   })
 
   it('creates an empty commit with the given message', async () => {
-    const localCommitRef = LocalCommitRef.forBranch(branchName)
+    const localCommitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
     await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
     assertThat(
@@ -61,7 +61,7 @@ describe('handleCommit', () => {
   })
 
   it('creates a commit with the given author', async () => {
-    const localCommitRef = LocalCommitRef.forBranch(branchName)
+    const localCommitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
     await git(Commit.toCommitRef(localCommitRef).byAuthor(new Author('Bob', 'bob@smartbear.com')))
 
@@ -72,7 +72,7 @@ describe('handleCommit', () => {
   })
 
   it('creates a commit containing the given files', async () => {
-    const localCommitRef = LocalCommitRef.forBranch(branchName)
+    const localCommitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
     const file = { path: 'a.file', content: 'some content' }
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
@@ -83,7 +83,7 @@ describe('handleCommit', () => {
   })
 
   it('clears the index before committing the index with no parent', async () => {
-    const localCommitRef = LocalCommitRef.forBranch(branchName)
+    const localCommitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
     const file = { path: 'a.file', content: 'some content' }
     const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
@@ -97,7 +97,7 @@ describe('handleCommit', () => {
   })
 
   describe('to a local branch', () => {
-    const commitRef = LocalCommitRef.forBranch(branchName)
+    const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
 
     it('creates a commit with a parent', async () => {
       await git(Commit.toCommitRef(commitRef).withMessage('initial commit'))
@@ -114,14 +114,14 @@ describe('handleCommit', () => {
       const existingFile = { path: 'a.file', content: 'some content' }
       await git(
         Commit.toCommitRef({
-          local: RefName.fetchedFromOrigin(branchName),
+          local: RefName.fetchedFromOrigin(BranchName.of(branchName)),
           branchName: BranchName.of(branchName),
-          parent: RefName.fetchedFromOrigin(branchName),
+          parent: RefName.fetchedFromOrigin(BranchName.of(branchName)),
         }).withFiles([existingFile]),
       )
 
       const otherFile = { path: 'b.file', content: 'another content' }
-      const commitRef = PendingCommitRef.forBranch(branchName)
+      const commitRef = PendingCommitRef.forBranch(BranchName.of(branchName))
       await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
 
       assertThat(
@@ -133,12 +133,12 @@ describe('handleCommit', () => {
     it('creates a commit with a parent', async () => {
       await git(
         Commit.toCommitRef({
-          local: RefName.fetchedFromOrigin(branchName),
+          local: RefName.fetchedFromOrigin(BranchName.of(branchName)),
           branchName: BranchName.of(branchName),
-          parent: RefName.fetchedFromOrigin(branchName),
+          parent: RefName.fetchedFromOrigin(BranchName.of(branchName)),
         }).withMessage('initial commit'),
       )
-      const commitRef = PendingCommitRef.forBranch(branchName)
+      const commitRef = PendingCommitRef.forBranch(BranchName.of(branchName))
       await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
       assertThat(
         await repo.read('log', [commitRef.local.value, '--oneline']),
@@ -150,8 +150,8 @@ describe('handleCommit', () => {
   describe('handling concurrent commits to the same repo', () => {
     const mainFile: File = { path: 'main.file', content: '' }
     const experimentalFile: File = { path: 'experimental.file', content: '' }
-    const mainRef = PendingCommitRef.forBranch('branch-main')
-    const experimentalRef = PendingCommitRef.forBranch('branch-experimental')
+    const mainRef = PendingCommitRef.forBranch(BranchName.of('branch-main'))
+    const experimentalRef = PendingCommitRef.forBranch(BranchName.of('branch-experimental'))
 
     beforeEach(async () => {
       const committing = git(Commit.toCommitRef(mainRef).withFiles([mainFile]))
@@ -178,16 +178,16 @@ describe('handleCommit', () => {
     const experimentalFile: File = { path: 'experimental.file', content: '' }
     const branchMain = 'branch-main'
     const branchExperimental = 'branch-experimental'
-    const mainRef = PendingCommitRef.forBranch(branchMain)
-    const experimentalRef = PendingCommitRef.forBranch(branchExperimental)
+    const mainRef = PendingCommitRef.forBranch(BranchName.of(branchMain))
+    const experimentalRef = PendingCommitRef.forBranch(BranchName.of(branchExperimental))
     const existingFile = { path: 'a.file', content: 'some content' }
 
     beforeEach(async () => {
       await git(
         Commit.toCommitRef({
-          local: RefName.fetchedFromOrigin(branchMain),
+          local: RefName.fetchedFromOrigin(BranchName.of(branchMain)),
           branchName: BranchName.of(branchMain),
-          parent: RefName.fetchedFromOrigin(branchMain),
+          parent: RefName.fetchedFromOrigin(BranchName.of(branchMain)),
         })
           .withMessage('initial commit to main')
           .withFiles([existingFile]),
@@ -195,9 +195,9 @@ describe('handleCommit', () => {
 
       await git(
         Commit.toCommitRef({
-          local: RefName.fetchedFromOrigin(branchExperimental),
+          local: RefName.fetchedFromOrigin(BranchName.of(branchExperimental)),
           branchName: BranchName.of(branchExperimental),
-          parent: RefName.fetchedFromOrigin(branchExperimental),
+          parent: RefName.fetchedFromOrigin(BranchName.of(branchExperimental)),
         })
           .withMessage('initial commit to experiment')
           .withFiles([existingFile]),

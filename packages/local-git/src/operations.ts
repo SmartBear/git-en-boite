@@ -1,14 +1,6 @@
 import { Author, CommitRef, File, PendingCommitRef, Refs, BranchName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
-export class Checkout {
-  protected constructor(public readonly branchName: BranchName) {}
-
-  static branch(branchName: string): Checkout {
-    return new this(BranchName.of(branchName))
-  }
-}
-
 export class Commit {
   protected constructor(
     public readonly commitRef: CommitRef,
@@ -58,8 +50,8 @@ export class Push {
 export class GetFiles {
   private constructor(public readonly branchName: BranchName) {}
 
-  static forBranchNamed(branchName: string): GetFiles {
-    return new this(BranchName.of(branchName))
+  static for(branchName: BranchName): GetFiles {
+    return new this(branchName)
   }
 }
 

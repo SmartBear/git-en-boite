@@ -1,4 +1,4 @@
-import { GitRepo, OpenGitRepo, PendingCommitRef } from 'git-en-boite-core'
+import { GitRepo, OpenGitRepo, PendingCommitRef, BranchName } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
@@ -37,8 +37,8 @@ export const verifyRepoContract = (
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
-        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-        latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
+        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
+        latestCommit = (await origin(GetRefs.all())).forBranch(BranchName.of(branchName)).revision
       })
 
       it('fetches commits from the origin repo', async () => {
@@ -69,7 +69,7 @@ export const verifyRepoContract = (
         path: 'a.feature',
         content: 'Feature: A',
       }
-      const commitRef = LocalCommitRef.forBranch(branchName)
+      const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
       await git.commit(commitRef, file)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.exec('ls-tree', [branchName, '--name-only'])
@@ -83,7 +83,7 @@ export const verifyRepoContract = (
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await createOriginRepo(originUrl)
-      const commitRef = LocalCommitRef.forBranch(branchName)
+      const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
       await origin(Commit.toCommitRef(commitRef))
     })
 
@@ -94,11 +94,13 @@ export const verifyRepoContract = (
         path: 'a.feature',
         content: 'Feature: A',
       }
-      const commitRef = PendingCommitRef.forBranch(branchName)
+      const commitRef = PendingCommitRef.forBranch(BranchName.of(branchName))
       await git.commit(commitRef, file)
       await git.push(commitRef)
-      const { revision: commitName } = (await git.getRefs()).forBranch(branchName)
-      const { revision: originCommitName } = (await origin(GetRefs.all())).forBranch(branchName)
+      const { revision: commitName } = (await git.getRefs()).forBranch(BranchName.of(branchName))
+      const { revision: originCommitName } = (await origin(GetRefs.all())).forBranch(
+        BranchName.of(branchName),
+      )
       await assertThat(originCommitName, equalTo(commitName))
     })
   })

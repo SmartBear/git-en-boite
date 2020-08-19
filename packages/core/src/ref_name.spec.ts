@@ -7,21 +7,21 @@ describe(RefName.name, () => {
   context('parsing a raw string', () => {
     it('parses a local branch', () => {
       assertThat(
-        RefName.parse(RefName.localBranch('main').value).branchName,
+        RefName.parse(RefName.localBranch(BranchName.of('main')).value).branchName,
         equalTo(BranchName.of('main')),
       )
     })
 
     it('parses a pending commit ref', () => {
       assertThat(
-        RefName.parse(RefName.forPendingCommit('main').value).branchName,
+        RefName.parse(RefName.forPendingCommit(BranchName.of('main')).value).branchName,
         equalTo(BranchName.of('main')),
       )
     })
 
     it('parses a fetched remote branch', () => {
       assertThat(
-        RefName.parse(RefName.fetchedFromOrigin('main').value).branchName,
+        RefName.parse(RefName.fetchedFromOrigin(BranchName.of('main')).value).branchName,
         equalTo(BranchName.of('main')),
       )
     })
@@ -35,11 +35,14 @@ describe(RefName.name, () => {
   })
 
   it('returns the branchName', () => {
-    assertThat(RefName.fetchedFromOrigin('main').branchName, equalTo(BranchName.of('main')))
+    assertThat(
+      RefName.fetchedFromOrigin(BranchName.of('main')).branchName,
+      equalTo(BranchName.of('main')),
+    )
   })
 
   it('can be serialized/deserialized', () => {
-    const refName = RefName.forPendingCommit('main')
+    const refName = RefName.forPendingCommit(BranchName.of('main'))
     assertThat(RefName.fromJSON(refName.toJSON() as JSONObject), equalTo(refName))
   })
 })
