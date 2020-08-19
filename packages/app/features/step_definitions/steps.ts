@@ -1,7 +1,14 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { File, GitRepoInfo, Author, BranchName } from 'git-en-boite-core'
-import { RepoFactory, Commit, GetFiles, GetRefs, LocalCommitRef } from 'git-en-boite-local-git'
+import { File, GitRepoInfo, Author, BranchName, RefName } from 'git-en-boite-core'
+import {
+  RepoFactory,
+  Commit,
+  GetFiles,
+  GetRefs,
+  LocalCommitRef,
+  GitDirectory,
+} from 'git-en-boite-local-git'
 import {
   assertThat,
   contains,
@@ -10,8 +17,10 @@ import {
   hasProperty,
   matchesPattern,
   not,
+  containsString,
 } from 'hamjest'
 import path from 'path'
+import { DiskRepoIndex } from 'git-en-boite-repo-index/dist'
 
 Given('a remote repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
@@ -121,3 +130,15 @@ Then('the file should be in the {string} branch of the remote repo', async funct
   const files = await git(GetFiles.for(BranchName.of(branchName)))
   assertThat(files, contains(this.file))
 })
+
+Then(
+  'the remote repo should have a new commit at the head of the {string} branch:',
+  async function (branchName, commitDetails) {
+    const branchRef = RefName.localBranch(BranchName.of(branchName))
+    const repo = new GitDirectory(this.repoRemoteUrl)
+    const lastCommit = await repo.read('cat-file', ['-p', branchRef.value])
+    const row = commitDetails.hashes()[0]
+    const author = new Author(row['Author name'], row['Author email'])
+    assertThat(lastCommit, containsString(author.toString()))
+  },
+)
