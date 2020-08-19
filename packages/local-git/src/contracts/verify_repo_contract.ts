@@ -13,7 +13,7 @@ export const verifyRepoContract = (
   openGitRepo: OpenGitRepo,
   createOriginRepo: OpenOriginRepo,
 ): void => {
-  const branchName = 'main'
+  const branchName = BranchName.of('main')
   let root: string
   let repoPath: string
   let git: GitRepo
@@ -37,8 +37,8 @@ export const verifyRepoContract = (
       beforeEach(async () => {
         originUrl = path.resolve(root, 'remote', 'a-repo-id')
         const origin = await createOriginRepo(originUrl)
-        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
-        latestCommit = (await origin(GetRefs.all())).forBranch(BranchName.of(branchName)).revision
+        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+        latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
       })
 
       it('fetches commits from the origin repo', async () => {
@@ -70,10 +70,10 @@ export const verifyRepoContract = (
         content: 'Feature: A',
       }
       const author = new Author('Bob', 'bob@example.com')
-      const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
+      const commitRef = LocalCommitRef.forBranch(branchName)
       await git.commit(commitRef, [file], author)
       const backDoor = new GitDirectory(repoPath)
-      const result = await backDoor.exec('ls-tree', [branchName, '--name-only'])
+      const result = await backDoor.exec('ls-tree', [branchName.value, '--name-only'])
       assertThat(result.stdout, matchesPattern(file.path))
     })
   })
@@ -84,7 +84,7 @@ export const verifyRepoContract = (
     beforeEach(async () => {
       originUrl = path.resolve(root, 'remote', 'a-repo-id')
       origin = await createOriginRepo(originUrl)
-      const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
+      const commitRef = LocalCommitRef.forBranch(branchName)
       await origin(Commit.toCommitRef(commitRef))
     })
 
@@ -96,13 +96,11 @@ export const verifyRepoContract = (
         content: 'Feature: A',
       }
       const author = new Author('Bob', 'bob@example.com')
-      const commitRef = PendingCommitRef.forBranch(BranchName.of(branchName))
+      const commitRef = PendingCommitRef.forBranch(branchName)
       await git.commit(commitRef, [file], author)
       await git.push(commitRef)
-      const { revision: commitName } = (await git.getRefs()).forBranch(BranchName.of(branchName))
-      const { revision: originCommitName } = (await origin(GetRefs.all())).forBranch(
-        BranchName.of(branchName),
-      )
+      const { revision: commitName } = (await git.getRefs()).forBranch(branchName)
+      const { revision: originCommitName } = (await origin(GetRefs.all())).forBranch(branchName)
       await assertThat(originCommitName, equalTo(commitName))
     })
   })

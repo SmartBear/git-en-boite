@@ -22,7 +22,7 @@ import { BranchName } from 'git-en-boite-core'
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
 describe('handleFetch', () => {
-  const branchName = 'main'
+  const branchName = BranchName.of('main')
   let root: string
   let latestCommit: string
   let originUrl: string
@@ -36,8 +36,8 @@ describe('handleFetch', () => {
     originUrl = path.resolve(root, 'remote', 'a-repo-id')
 
     const origin = await new RepoFactory().open(originUrl)
-    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
-    latestCommit = (await origin(GetRefs.all())).forBranch(BranchName.of(branchName)).revision
+    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+    latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [
@@ -57,7 +57,7 @@ describe('handleFetch', () => {
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
     await promiseThat(
-      repo.read('rev-parse', [`refs/remotes/origin/${branchName}`]),
+      repo.read('rev-parse', [`refs/remotes/origin/${branchName.value}`]),
       fulfilled(startsWith(latestCommit)),
     )
   })
@@ -66,7 +66,7 @@ describe('handleFetch', () => {
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
     await promiseThat(
-      repo.read('rev-list', ['--count', `refs/remotes/origin/${branchName}`]),
+      repo.read('rev-list', ['--count', `refs/remotes/origin/${branchName.value}`]),
       fulfilled(equalTo('1')),
     )
   })

@@ -27,7 +27,7 @@ type Protocol = [
 ]
 
 describe('handlePush', () => {
-  const branchName = 'a-branch'
+  const branchName = BranchName.of('a-branch')
   let root: string
   let repoPath: string
   let originUrl: string
@@ -53,23 +53,19 @@ describe('handlePush', () => {
 
   it('pushes a commit to origin', async () => {
     const origin = await new RepoFactory().open(originUrl)
-    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
-    const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(
-      BranchName.of(branchName),
-    )
+    await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+    const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(branchName)
     await git(SetOrigin.toUrl(originUrl))
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }
-    const commitRef = PendingCommitRef.forBranch(BranchName.of(branchName))
+    const commitRef = PendingCommitRef.forBranch(branchName)
     await git(Commit.toCommitRef(commitRef).withFiles([file]))
-    const { revision: newCommit } = (await git(GetRefs.all())).forBranch(BranchName.of(branchName))
+    const { revision: newCommit } = (await git(GetRefs.all())).forBranch(branchName)
     assertThat(firstCommit, not(equalTo(newCommit)))
 
     await git(Push.pendingCommitFrom(commitRef))
-    const { revision: originCommit } = (await origin(GetRefs.all())).forBranch(
-      BranchName.of(branchName),
-    )
+    const { revision: originCommit } = (await origin(GetRefs.all())).forBranch(branchName)
     assertThat(originCommit, equalTo(newCommit))
   })
 })

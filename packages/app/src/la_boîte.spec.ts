@@ -16,8 +16,8 @@ import { LaBoîte } from './la_boîte'
 
 describe(LaBoîte.name, () => {
   const repoId = 'a-new-repo'
-  const branchName = 'main'
-  const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
+  const branchName = BranchName.of('main')
+  const commitRef = LocalCommitRef.forBranch(branchName)
 
   let app: LaBoîte
   let root: string
@@ -81,7 +81,7 @@ describe(LaBoîte.name, () => {
     await result.respond({
       foundOne: repoInfo => {
         assertThat(
-          repoInfo.branches.find(branch => branch.name === branchName).revision,
+          repoInfo.branches.find(branch => branch.name === branchName.value).revision,
           equalTo(expectedRevision),
         )
       },
@@ -102,9 +102,9 @@ describe(LaBoîte.name, () => {
       ]
       const author = new Author('Bob', 'bob@example.com')
 
-      await app.commit(repoId, BranchName.of(branchName), files, author)
+      await app.commit(repoId, branchName, files, author)
 
-      assertThat(await origin(GetFiles.for(BranchName.of(branchName))), equalTo(files))
+      assertThat(await origin(GetFiles.for(branchName)), equalTo(files))
     })
   })
 })

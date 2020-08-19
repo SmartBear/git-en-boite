@@ -37,11 +37,9 @@ describe('handleGetFiles', () => {
     const file = { path: 'a.file', content: 'File content' }
     const git = await openRepo(repoPath)
     await git(Init.bareRepo())
-    const branchName = 'a-branch'
-    await git(
-      Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))).withFiles([file]),
-    )
-    const files = await git(GetFiles.for(BranchName.of(branchName)))
+    const branchName = BranchName.of('a-branch')
+    await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)).withFiles([file]))
+    const files = await git(GetFiles.for(branchName))
     assertThat(files, contains(file))
   })
 })

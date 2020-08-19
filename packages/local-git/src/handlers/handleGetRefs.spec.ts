@@ -48,8 +48,8 @@ describe('handleGetRefs', () => {
     })
 
     context('with a commit to the main branch', () => {
-      const branchName = 'a-branch'
-      const commitRef = LocalCommitRef.forBranch(BranchName.of(branchName))
+      const branchName = BranchName.of('a-branch')
+      const commitRef = LocalCommitRef.forBranch(branchName)
 
       beforeEach(async () => {
         await git(Commit.toCommitRef(commitRef))
