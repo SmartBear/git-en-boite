@@ -23,7 +23,7 @@ Given('a remote repo with branches:', async function (branchesTable) {
   }
 })
 
-Given('a remote repo with commits on the {branchName}', async function (branchName: BranchName) {
+Given('a remote repo with commits on {BranchName}', async function (branchName: BranchName) {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new RepoFactory().open(this.repoRemoteUrl)
@@ -57,7 +57,7 @@ async function fetch(this: any) {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
 }
 
-When('a consumer commits a new file to the {string} branch', async function (branchName) {
+When('a consumer commits a new file to the {string} branch', async function (branchName: string) {
   const file: File = {
     path: 'features/new.feature',
     content: 'Feature: New!',
@@ -97,7 +97,7 @@ Then("the repo's branches should be:", async function (expectedBranchesTable: Ta
 })
 
 Then('the repo should have the new commit at the head of the {string} branch', async function (
-  branchName,
+  branchName: string,
 ) {
   const response = await this.request
     .get(`/repos/${this.repoId}`)
@@ -108,18 +108,6 @@ Then('the repo should have the new commit at the head of the {string} branch', a
     (response.body as GitRepoInfo).branches.find(branch => branch.name === branchName).revision,
     equalTo(this.lastCommitRevision),
   )
-})
-
-Then('the repo should have a connection status of {string}', async function (
-  expectedConnectionStatus: string,
-) {
-  const response = await this.request
-    .get(`/repos/${this.repoId}`)
-    .set('Accept', 'application/json')
-    .expect(200)
-
-  const repoInfo: GitRepoInfo = response.body
-  assertThat(repoInfo, hasProperty('connectionStatus', equalTo(expectedConnectionStatus)))
 })
 
 Then('it should respond with an error', function () {
