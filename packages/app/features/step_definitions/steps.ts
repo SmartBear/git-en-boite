@@ -1,6 +1,6 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { File, GitRepoInfo } from 'git-en-boite-core'
+import { File, GitRepoInfo, Author } from 'git-en-boite-core'
 import { RepoFactory, Commit, GetFiles, GetRefs, LocalCommitRef } from 'git-en-boite-local-git'
 import {
   assertThat,
@@ -64,6 +64,19 @@ When('a consumer commits a new file to the {string} branch', async function (bra
   await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
     .send(file)
+    .set('Accept', 'application/json')
+    .expect(200)
+})
+
+When('a consumer commits to the {string} branch with:', async function (
+  branchName,
+  commitDetails: TableDefinition,
+) {
+  const row = commitDetails.hashes()[0]
+  const author = new Author(row['Author name'], row['Author email'])
+  await this.request
+    .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
+    .send({ files: [], author })
     .set('Accept', 'application/json')
     .expect(200)
 })
