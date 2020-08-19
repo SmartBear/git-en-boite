@@ -1,9 +1,7 @@
-import { assertThat, fulfilled, isRejectedWith, promiseThat, containsInAnyOrder } from 'hamjest'
+import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat } from 'hamjest'
 import { stubInterface } from 'ts-sinon'
 
-import { GitRepo, Ref, Repo, Refs, Branch } from '.'
-import { RefName } from './ref_name'
-import { BranchName } from './branch_name'
+import { Branch, BranchName, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
 
 describe(Repo.name, () => {
   context('connecting', () => {
@@ -15,7 +13,7 @@ describe(Repo.name, () => {
           finishGitConnect = resolve
         }),
       )
-      const repo = new Repo('a-repo-id', gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       const connecting = repo.setOriginTo('a-remote-url')
       finishGitConnect()
       await promiseThat(connecting, fulfilled())
@@ -24,7 +22,7 @@ describe(Repo.name, () => {
     it('rejects if the git command fails', async () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.setOriginTo.rejects(new Error('Unable to connect'))
-      const repo = new Repo('a-repo-id', gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       await promiseThat(
         repo.setOriginTo('a-bad-url'),
         isRejectedWith(new Error('Unable to connect')),
@@ -37,7 +35,7 @@ describe(Repo.name, () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.fetch.resolves()
       gitRepo.setOriginTo.resolves()
-      const repo = new Repo('a-repo-id', gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       await promiseThat(repo.setOriginTo('a-remote-url'), fulfilled())
     })
   })
@@ -57,7 +55,7 @@ describe(Repo.name, () => {
         { name: 'main', revision: '1' },
         { name: 'develop', revision: '2' },
       ]
-      const repo = new Repo('a-repo-id', gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))
     })
   })

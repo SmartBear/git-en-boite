@@ -1,4 +1,4 @@
-import { Application, Author, File, BranchName } from 'git-en-boite-core'
+import { Application, Author, File, BranchName, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -28,7 +28,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   })
 
   it('accepts a valid payload with files and author', async () => {
-    const repoId = 'repo-id'
+    const repoId = RepoId.of('repo-id')
     const branchName = BranchName.of('a-branch')
     const file: File = { path: 'a.file', content: 'content' }
     const files = [file]
@@ -41,7 +41,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   })
 
   it('responds with 400 if the payload has missing params', async () => {
-    const repoId = 'repo-id'
+    const repoId = RepoId.of('repo-id')
     const branchName = BranchName.of('a-branch')
     const response = await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)

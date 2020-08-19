@@ -1,7 +1,7 @@
-import { File, GitRepo, Branch, PendingCommitRef, BranchName, Author } from '.'
+import { File, GitRepo, Branch, PendingCommitRef, BranchName, Author, RepoId } from '.'
 
 export class Repo {
-  constructor(public readonly repoId: string, private readonly git: GitRepo) {}
+  constructor(public readonly repoId: RepoId, private readonly git: GitRepo) {}
 
   async fetch(): Promise<void> {
     await this.git.fetch()

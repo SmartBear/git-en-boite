@@ -1,6 +1,6 @@
-import { Repo } from '.'
+import { Repo, RepoId } from '.'
 
 export interface RepoIndex {
-  exists(repoId: string): Promise<boolean>
-  find(repoId: string): Promise<Repo>
+  exists(repoId: RepoId): Promise<boolean>
+  find(repoId: RepoId): Promise<Repo>
 }

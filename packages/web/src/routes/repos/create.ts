@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application, GitRepoInfo } from 'git-en-boite-core'
+import { Application, GitRepoInfo, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 
 import { checkForMissingRequestBodyContent, validateRequestBody } from '../../validate_request'
@@ -9,7 +9,8 @@ export default (app: Application, router: Router): Router =>
     '/',
     (ctx, next) => validateRequestBody(ctx, next, validate),
     async (ctx: Context) => {
-      const { repoId, remoteUrl } = ctx.request.body
+      const repoId = RepoId.of(ctx.request.body.repoId)
+      const { remoteUrl } = ctx.request.body
       const result = await app.getInfo(repoId)
       await result.respond({
         foundOne: redirectToExisting,
@@ -26,7 +27,7 @@ export default (app: Application, router: Router): Router =>
       }
 
       async function redirectToExisting(repoInfo: GitRepoInfo) {
-        ctx.response.redirect(router.url('get-repo', repoInfo))
+        ctx.response.redirect(router.url('get-repo', { repoId: repoInfo.repoId.value }))
       }
     },
   )

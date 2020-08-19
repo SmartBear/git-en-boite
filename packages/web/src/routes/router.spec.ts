@@ -1,4 +1,4 @@
-import { Application, GitRepoInfo, QueryResult } from 'git-en-boite-core'
+import { Application, GitRepoInfo, QueryResult, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -32,7 +32,7 @@ describe('/repos', () => {
   describe('GET /repos/:repoId', () => {
     it('returns an object with info about the repo', async () => {
       const repoInfo: GitRepoInfo = {
-        repoId: 'a-repo-id',
+        repoId: RepoId.of('a-repo-id'),
         branches: [],
       }
       app.getInfo.resolves(QueryResult.from(repoInfo))
@@ -51,14 +51,14 @@ describe('/repos', () => {
       const repoId = 'a-repo-id'
       const remoteUrl = '../tmp'
       app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(repoId, remoteUrl).resolves()
+      app.connectToRemote.withArgs(RepoId.of(repoId), remoteUrl).resolves()
       await request.post('/repos').send({ repoId, remoteUrl }).expect(202)
       assertThat(app.connectToRemote, wasCalled())
     })
 
     it('redirects to the repo if it already exists', async () => {
       const repoInfo: GitRepoInfo = {
-        repoId: 'a-repo-id',
+        repoId: RepoId.of('a-repo-id'),
         branches: [],
       }
       app.getInfo.resolves(QueryResult.from(repoInfo))
@@ -72,7 +72,7 @@ describe('/repos', () => {
       const repoId = 'a-repo-id'
       const remoteUrl = 'a-bad-url'
       app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
+      app.connectToRemote.withArgs(RepoId.of(repoId), remoteUrl).rejects()
       await request.post('/repos').send({ repoId, remoteUrl }).expect(400)
     })
   })
@@ -80,7 +80,7 @@ describe('/repos', () => {
   describe('POST /repos/:repoId', () => {
     it('triggers a fetch for the repo', async () => {
       const repoId = 'a-repo-id'
-      app.fetchFromRemote.withArgs(repoId).resolves()
+      app.fetchFromRemote.withArgs(RepoId.of(repoId)).resolves()
       await request.post('/repos/a-repo-id').expect(202)
       assertThat(app.fetchFromRemote, wasCalled())
     })

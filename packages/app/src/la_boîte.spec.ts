@@ -1,4 +1,4 @@
-import { Author, BranchName, File, RefName } from 'git-en-boite-core'
+import { Author, BranchName, File, RefName, RepoId } from 'git-en-boite-core'
 import {
   Commit,
   DugiteGitRepo,
@@ -15,7 +15,7 @@ import { dirSync } from 'tmp'
 import { LaBoîte } from './la_boîte'
 
 describe(LaBoîte.name, () => {
-  const repoId = 'a-new-repo'
+  const repoId = RepoId.of('a-new-repo')
   const branchName = BranchName.of('main')
   const commitRef = LocalCommitRef.forBranch(branchName)
 
@@ -25,7 +25,7 @@ describe(LaBoîte.name, () => {
 
   beforeEach(() => {
     root = dirSync().name
-    remoteUrl = path.resolve(root, 'remote', repoId)
+    remoteUrl = path.resolve(root, 'remote', repoId.value)
     const repoIndex = new DiskRepoIndex(root, DugiteGitRepo)
     app = new LaBoîte(repoIndex, '999.9.9-test')
   })
@@ -37,7 +37,7 @@ describe(LaBoîte.name, () => {
 
   describe('getting repo info', () => {
     it('returns an empty QueryResult if the repo does not exist', async () => {
-      const result = await app.getInfo('a-repo-id')
+      const result = await app.getInfo(RepoId.of('a-repo-id'))
       assertThat(result.isSuccess, is(falsy()))
     })
 

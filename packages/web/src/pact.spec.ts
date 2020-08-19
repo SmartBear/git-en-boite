@@ -1,5 +1,5 @@
 import { Verifier, VerifierOptions } from '@pact-foundation/pact'
-import { Application, QueryResult } from 'git-en-boite-core'
+import { Application, QueryResult, RepoId } from 'git-en-boite-core'
 import { Server } from 'http'
 import path from 'path'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -40,7 +40,7 @@ describe('HTTP Api', () => {
       'a repo exists': async () => {
         app.getInfo.resolves(
           QueryResult.from({
-            repoId: 'an-existing-repo-id',
+            repoId: RepoId.of('an-existing-repo-id'),
             branches: [],
           }),
         )

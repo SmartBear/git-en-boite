@@ -1,12 +1,12 @@
 import { TinyTypeOf } from 'tiny-types'
 
-export class BranchName extends TinyTypeOf<string>() {
+export class RepoId extends TinyTypeOf<string>() {
   protected constructor(value: string) {
     super(value)
   }
 
-  static of(name: string): BranchName {
-    return new BranchName(name)
+  static of(value: string): RepoId {
+    return new RepoId(value)
   }
 
   toString(): string {

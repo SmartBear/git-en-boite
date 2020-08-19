@@ -1,6 +1,6 @@
-import { Branch } from './branch'
+import { Branch, RepoId } from '.'
 
 export interface GitRepoInfo {
-  repoId: string
+  repoId: RepoId
   branches: Branch[]
 }

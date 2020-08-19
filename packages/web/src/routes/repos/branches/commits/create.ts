@@ -1,4 +1,4 @@
-import { Application, BranchName, File, Author } from 'git-en-boite-core'
+import { Application, BranchName, File, Author, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 import Router from '@koa/router'
 import {
@@ -12,7 +12,7 @@ export default (app: Application): Router =>
     async (ctx, next) => validateRequestBody(ctx, next, validate),
     async (ctx: Context) => {
       await app.commit(
-        ctx.params.repoId,
+        RepoId.of(ctx.params.repoId),
         BranchName.of(ctx.params.branchName),
         ctx.request.body.files as File[],
         new Author(ctx.request.body.author.name, ctx.request.body.author.email),
