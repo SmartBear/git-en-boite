@@ -11,13 +11,19 @@
       "providerState": "blank",
       "request": {
         "method": "POST",
-        "path": "/repos/repo-id/branches/branch-name/commits",
+        "path": "/repos/a-repo-id/branches/a-branch-name/commits",
         "headers": {
           "Content-Type": "application/json"
         },
         "body": {
-          "path": "features/test.feature",
-          "content": "Feature: Test"
+          "file": {
+            "path": "features/test.feature",
+            "content": "Feature: Test"
+          },
+          "author": {
+            "name": "Bob",
+            "email": "bob@smartbear.com"
+          }
         }
       },
       "response": {
@@ -65,6 +71,19 @@
       },
       "response": {
         "status": 302,
+        "headers": {
+        }
+      }
+    },
+    {
+      "description": "a request to fetch the repo",
+      "providerState": "a repo has been connected",
+      "request": {
+        "method": "POST",
+        "path": "/repos/a-repo-id"
+      },
+      "response": {
+        "status": 202,
         "headers": {
         }
       }
