@@ -1,26 +1,24 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { File, GitRepoInfo, Author, BranchName, RefName } from 'git-en-boite-core'
+import { Author, BranchName, File, GitRepoInfo, RefName } from 'git-en-boite-core'
 import {
-  RepoFactory,
   Commit,
   GetFiles,
   GetRefs,
-  LocalCommitRef,
   GitDirectory,
+  LocalCommitRef,
+  RepoFactory,
 } from 'git-en-boite-local-git'
 import {
   assertThat,
   contains,
   containsInAnyOrder,
+  containsString,
   equalTo,
-  hasProperty,
   matchesPattern,
   not,
-  containsString,
 } from 'hamjest'
 import path from 'path'
-import { DiskRepoIndex } from 'git-en-boite-repo-index/dist'
 
 Given('a remote repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
@@ -39,12 +37,12 @@ Given('a remote repo with commits on {BranchName}', async function (branchName: 
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
-When('a new commit is made on the {string} branch in the remote repo', async function (
-  branchName: string,
+When('a new commit is made on {BranchName} in the remote repo', async function (
+  branchName: BranchName,
 ) {
   const git = await new RepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
-  this.lastCommitRevision = (await git(GetRefs.all())).forBranch(BranchName.of(branchName)).revision
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+  this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 })
 
 Given('the remote repo has been connected', async function () {
@@ -66,7 +64,7 @@ async function fetch(this: any) {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
 }
 
-When('a consumer commits a new file to the {string} branch', async function (branchName: string) {
+When('a consumer commits a new file to {BranchName}', async function (branchName: BranchName) {
   const file: File = {
     path: 'features/new.feature',
     content: 'Feature: New!',
@@ -79,8 +77,8 @@ When('a consumer commits a new file to the {string} branch', async function (bra
     .expect(200)
 })
 
-When('a consumer commits to the {string} branch with:', async function (
-  branchName,
+When('a consumer commits to {BranchName} with:', async function (
+  branchName: BranchName,
   commitDetails: TableDefinition,
 ) {
   const row = commitDetails.hashes()[0]
@@ -105,8 +103,8 @@ Then("the repo's branches should be:", async function (expectedBranchesTable: Ta
   )
 })
 
-Then('the repo should have the new commit at the head of the {string} branch', async function (
-  branchName: string,
+Then('the repo should have the new commit at the head of {BranchName}', async function (
+  branchName: BranchName,
 ) {
   const response = await this.request
     .get(`/repos/${this.repoId}`)
@@ -114,7 +112,8 @@ Then('the repo should have the new commit at the head of the {string} branch', a
     .expect(200)
 
   assertThat(
-    (response.body as GitRepoInfo).branches.find(branch => branch.name === branchName).revision,
+    (response.body as GitRepoInfo).branches.find(branch => branch.name === branchName.value)
+      .revision,
     equalTo(this.lastCommitRevision),
   )
 })
@@ -123,22 +122,22 @@ Then('it should respond with an error', function () {
   assertThat(String(this.lastResponseCode), not(matchesPattern(/2\d\d/)))
 })
 
-Then('the file should be in the {string} branch of the remote repo', async function (
-  branchName: string,
+Then('the file should be in {BranchName} of the remote repo', async function (
+  branchName: BranchName,
 ) {
   const git = await new RepoFactory().open(this.repoRemoteUrl)
-  const files = await git(GetFiles.for(BranchName.of(branchName)))
+  const files = await git(GetFiles.for(branchName))
   assertThat(files, contains(this.file))
 })
 
-Then(
-  'the remote repo should have a new commit at the head of the {string} branch:',
-  async function (branchName, commitDetails) {
-    const branchRef = RefName.localBranch(BranchName.of(branchName))
-    const repo = new GitDirectory(this.repoRemoteUrl)
-    const lastCommit = await repo.read('cat-file', ['-p', branchRef.value])
-    const row = commitDetails.hashes()[0]
-    const author = new Author(row['Author name'], row['Author email'])
-    assertThat(lastCommit, containsString(author.toString()))
-  },
-)
+Then('the remote repo should have a new commit at the head of {BranchName}:', async function (
+  branchName: BranchName,
+  commitDetails: TableDefinition,
+) {
+  const branchRef = RefName.localBranch(branchName)
+  const repo = new GitDirectory(this.repoRemoteUrl)
+  const lastCommit = await repo.read('cat-file', ['-p', branchRef.value])
+  const row = commitDetails.hashes()[0]
+  const author = new Author(row['Author name'], row['Author email'])
+  assertThat(lastCommit, containsString(author.toString()))
+})
