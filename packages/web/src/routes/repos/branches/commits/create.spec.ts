@@ -1,5 +1,5 @@
 import { Application, Author, File, BranchName } from 'git-en-boite-core'
-import { assertThat } from 'hamjest'
+import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
@@ -8,7 +8,7 @@ import { StubbedInstance, stubInterface } from 'ts-sinon'
 import createWebApp from '../../../../create_web_app'
 import router from '../../../router'
 
-describe('@wip POST /repos/:repoId/branches/:branchName/commits', () => {
+describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   let request: SuperTest<Test>
   let server: Server
   let app: StubbedInstance<Application>
@@ -40,5 +40,13 @@ describe('@wip POST /repos/:repoId/branches/:branchName/commits', () => {
     assertThat(app.commit, wasCalledWith(repoId, branchName, files, author))
   })
 
-  it('responds with 400 if the payload has missing params')
+  it('responds with 400 if the payload has missing params', async () => {
+    const repoId = 'repo-id'
+    const branchName = BranchName.of('a-branch')
+    const response = await request
+      .post(`/repos/${repoId}/branches/${branchName}/commits`)
+      .send({})
+      .expect(400)
+    assertThat(response.body.error, equalTo('Missing information from the request: files, author'))
+  })
 })
