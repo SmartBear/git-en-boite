@@ -1,5 +1,5 @@
 import { defineParameterType } from 'cucumber'
-import { BranchName } from 'git-en-boite-core/dist'
+import { BranchName } from 'git-en-boite-core'
 
 defineParameterType({
   name: 'branchName',
