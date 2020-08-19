@@ -23,11 +23,11 @@ Given('a remote repo with branches:', async function (branchesTable) {
   }
 })
 
-Given('a remote repo with commits on the {string} branch', async function (branchName: string) {
+Given('a remote repo with commits on the {branchName}', async function (branchName: BranchName) {
   this.repoId = this.getNextRepoId()
   this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
   const git = await new RepoFactory().open(this.repoRemoteUrl)
-  await git(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
 When('a new commit is made on the {string} branch in the remote repo', async function (
