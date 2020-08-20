@@ -1,4 +1,6 @@
+import { BranchName } from '.'
+
 export interface Branch {
-  name: string
+  name: BranchName
   revision: string
 }

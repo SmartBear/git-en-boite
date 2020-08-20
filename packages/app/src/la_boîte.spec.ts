@@ -89,7 +89,7 @@ describe(LaBoîte.name, () => {
     await result.respond({
       foundOne: repoInfo => {
         assertThat(
-          repoInfo.branches.find(branch => branch.name === branchName.value).revision,
+          repoInfo.branches.find(branch => branch.name.equals(branchName)).revision,
           equalTo(expectedRevision),
         )
       },

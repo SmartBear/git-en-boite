@@ -53,8 +53,8 @@ describe(Repo.name, () => {
         ),
       )
       const expectedBranches: Branch[] = [
-        { name: 'main', revision: '1' },
-        { name: 'develop', revision: '2' },
+        { name: BranchName.of('main'), revision: '1' },
+        { name: BranchName.of('develop'), revision: '2' },
       ]
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))

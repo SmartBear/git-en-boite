@@ -13,6 +13,6 @@ export class Ref {
   }
 
   toBranch(): Branch {
-    return { name: this.branchName.value, revision: this.revision }
+    return { name: this.branchName, revision: this.revision }
   }
 }

@@ -124,8 +124,9 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
     .set('Accept', 'application/json')
     .expect(200)
 
+  // TODO: GitRepoInfo.parseJSON(response.body)
   assertThat(
-    (response.body as GitRepoInfo).branches.find(branch => branch.name === branchName.value)
+    response.body.branches.find((branch: any) => BranchName.of(branch.name).equals(branchName))
       .revision,
     equalTo(this.lastCommitRevision),
   )
