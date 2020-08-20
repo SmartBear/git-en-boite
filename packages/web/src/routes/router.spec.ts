@@ -48,11 +48,11 @@ describe('/repos', () => {
 
   describe('POST /repos/', () => {
     it('connects to the remote repo', async () => {
-      const repoId = 'a-repo-id'
+      const repoId = RepoId.of('a-repo-id')
       const remoteUrl = '../tmp'
       app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(RepoId.of(repoId), remoteUrl).resolves()
-      await request.post('/repos').send({ repoId, remoteUrl }).expect(202)
+      app.connectToRemote.withArgs(repoId, remoteUrl).resolves()
+      await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(202)
       assertThat(app.connectToRemote, wasCalled())
     })
 
@@ -69,19 +69,19 @@ describe('/repos', () => {
     })
 
     it('responds with 400 if the connection attempt fails', async () => {
-      const repoId = 'a-repo-id'
+      const repoId = RepoId.of('a-repo-id')
       const remoteUrl = 'a-bad-url'
       app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(RepoId.of(repoId), remoteUrl).rejects()
-      await request.post('/repos').send({ repoId, remoteUrl }).expect(400)
+      app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
+      await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(400)
     })
   })
 
   describe('POST /repos/:repoId', () => {
     it('triggers a fetch for the repo', async () => {
-      const repoId = 'a-repo-id'
-      app.fetchFromRemote.withArgs(RepoId.of(repoId)).resolves()
-      await request.post('/repos/a-repo-id').expect(202)
+      const repoId = RepoId.of('a-repo-id')
+      app.fetchFromRemote.withArgs(repoId).resolves()
+      await request.post('/repos/${repoId}').expect(202)
       assertThat(app.fetchFromRemote, wasCalled())
     })
   })
