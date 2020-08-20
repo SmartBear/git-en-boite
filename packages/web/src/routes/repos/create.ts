@@ -1,22 +1,30 @@
-import Router from '@koa/router'
+import Router, { RouterContext } from '@koa/router'
 import { Application, GitRepoInfo, RepoId } from 'git-en-boite-core'
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
+import { body, IValidationState, validationResults } from 'koa-req-validation'
 
 import { checkForMissingRequestBodyContent, validateRequestBody } from '../../validate_request'
 
-type CreateRepoRequestBody = {
-  repoId: string
-  remoteUrl: string
+const returnValidationErrors = async (ctx: RouterContext<IValidationState>, next: Next) => {
+  const result = validationResults(ctx)
+  if (!result.hasErrors()) return next()
+  ctx.response.body = { error: result.mapped() }
+  ctx.response.status = 400
 }
 
 export default (app: Application, router: Router): Router =>
   new Router().post(
     '/',
-    (ctx, next) => validateRequestBody(ctx, next, validate),
     (ctx, next) =>
-      validateRequestBody(ctx, next, (body: CreateRepoRequestBody) => {
-        RepoId.fromJSON(body.repoId)
+      validateRequestBody(ctx, next, (received: any) => {
+        checkForMissingRequestBodyContent({ received, expected: ['repoId', 'remoteUrl'] })
       }),
+    body('repoId')
+      .custom(async (json: string) => {
+        RepoId.fromJSON(json)
+      })
+      .build(),
+    returnValidationErrors,
     async (ctx: Context) => {
       const repoId = RepoId.fromJSON(ctx.request.body.repoId)
       const { remoteUrl } = ctx.request.body
@@ -40,8 +48,3 @@ export default (app: Application, router: Router): Router =>
       }
     },
   )
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const validate = (received: any) => {
-  checkForMissingRequestBodyContent({ received, expected: ['repoId', 'remoteUrl'] })
-}
