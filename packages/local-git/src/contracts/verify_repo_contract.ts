@@ -5,6 +5,7 @@ import {
   GitRepo,
   OpenGitRepo,
   PendingCommitRef,
+  RemoteUrl,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
@@ -39,11 +40,11 @@ export const verifyRepoContract = (
   describe('fetching commits', () => {
     context('from an origin repo with commits on the main branch', () => {
       let latestCommit: string
-      let originUrl: string
+      let originUrl: RemoteUrl
 
       beforeEach(async () => {
-        originUrl = path.resolve(root, 'remote', 'a-repo-id')
-        const origin = await createOriginRepo(originUrl)
+        originUrl = RemoteUrl.of(path.resolve(root, 'remote', 'a-repo-id'))
+        const origin = await createOriginRepo(originUrl.value)
         await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
         latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
       })
@@ -87,11 +88,11 @@ export const verifyRepoContract = (
   })
 
   describe('pushing', () => {
-    let originUrl: string
+    let originUrl: RemoteUrl
     let origin: Dispatch<RepoProtocol>
     beforeEach(async () => {
-      originUrl = path.resolve(root, 'remote', 'a-repo-id')
-      origin = await createOriginRepo(originUrl)
+      originUrl = RemoteUrl.of(path.resolve(root, 'remote', 'a-repo-id'))
+      origin = await createOriginRepo(originUrl.value)
       const commitRef = LocalCommitRef.forBranch(branchName)
       await origin(Commit.toCommitRef(commitRef))
     })

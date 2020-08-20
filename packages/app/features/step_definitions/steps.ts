@@ -1,6 +1,6 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { Author, BranchName, File, GitRepoInfo, RefName, CommitMessage } from 'git-en-boite-core'
+import { Author, BranchName, CommitMessage, File, GitRepoInfo, RefName } from 'git-en-boite-core'
 import {
   Commit,
   GetFiles,
@@ -23,8 +23,8 @@ import path from 'path'
 Given('a remote repo with branches:', async function (branchesTable) {
   const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
   const repoId = (this.repoId = this.getNextRepoId())
-  this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', repoId)
-  const git = await new RepoFactory().open(this.repoRemoteUrl)
+  this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', repoId)
+  const git = await new RepoFactory().open(this.remoteRepoPath)
   for (const branchName of branches) {
     await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   }
@@ -32,21 +32,21 @@ Given('a remote repo with branches:', async function (branchesTable) {
 
 Given('a remote repo with commits on {BranchName}', async function (branchName: BranchName) {
   this.repoId = this.getNextRepoId()
-  this.repoRemoteUrl = path.resolve(this.tmpDir, 'remote', this.repoId)
-  const git = await new RepoFactory().open(this.repoRemoteUrl)
+  this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', this.repoId)
+  const git = await new RepoFactory().open(this.remoteRepoPath)
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
 When('a new commit is made on {BranchName} in the remote repo', async function (
   branchName: BranchName,
 ) {
-  const git = await new RepoFactory().open(this.repoRemoteUrl)
+  const git = await new RepoFactory().open(this.remoteRepoPath)
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 })
 
 Given('the remote repo has been connected', async function () {
-  const repoInfo = { repoId: this.repoId, remoteUrl: this.repoRemoteUrl }
+  const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteRepoPath }
   await this.request.post('/repos').send(repoInfo).expect(202)
 })
 
@@ -130,7 +130,7 @@ Then('it should respond with an error', function () {
 Then('the file should be in {BranchName} of the remote repo', async function (
   branchName: BranchName,
 ) {
-  const git = await new RepoFactory().open(this.repoRemoteUrl)
+  const git = await new RepoFactory().open(this.remoteRepoPath)
   const files = await git(GetFiles.for(branchName))
   assertThat(files, contains(this.file))
 })
@@ -140,7 +140,7 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   commitDetails: TableDefinition,
 ) {
   const branchRef = RefName.localBranch(branchName)
-  const repo = new GitDirectory(this.repoRemoteUrl)
+  const repo = new GitDirectory(this.remoteRepoPath)
   const lastCommit = await repo.read('cat-file', ['-p', branchRef.value])
   const row = commitDetails.hashes()[0]
   const author = new Author(row['Author name'], row['Author email'])

@@ -8,6 +8,7 @@ import {
   PendingCommitRef,
   RepoId,
 } from '.'
+import { RemoteUrl } from './remote_url'
 
 export class Repo {
   constructor(public readonly repoId: RepoId, private readonly git: GitRepo) {}
@@ -16,7 +17,7 @@ export class Repo {
     await this.git.fetch()
   }
 
-  async setOriginTo(remoteUrl: string): Promise<void> {
+  async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     await this.git.setOriginTo(remoteUrl)
   }
 

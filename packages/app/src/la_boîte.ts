@@ -9,6 +9,7 @@ import {
   QueryResult,
   RepoIndex,
 } from 'git-en-boite-core'
+import { RemoteUrl } from 'git-en-boite-core/dist/remote_url'
 
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
@@ -24,7 +25,7 @@ export class LaBoîte implements Application {
     await repo.commit(branchName, files, author, message)
   }
 
-  async connectToRemote(repoId: RepoId, remoteUrl: string): Promise<void> {
+  async connectToRemote(repoId: RepoId, remoteUrl: RemoteUrl): Promise<void> {
     const repo = await this.repoIndex.find(repoId)
     await repo.setOriginTo(remoteUrl)
   }

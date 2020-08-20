@@ -8,6 +8,7 @@ import {
   Refs,
   Author,
   CommitMessage,
+  RemoteUrl,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -94,7 +95,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
     await this.gitRepo.commit(commitRef, files, author, message)
   }
 
-  async setOriginTo(remoteUrl: string): Promise<void> {
+  async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
     return job.waitUntilFinished(this.queueEvents)
   }

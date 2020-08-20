@@ -1,4 +1,4 @@
-import { Application, GitRepoInfo, QueryResult, RepoId } from 'git-en-boite-core'
+import { Application, GitRepoInfo, QueryResult, RepoId, RemoteUrl } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -49,7 +49,7 @@ describe('/repos', () => {
   describe('POST /repos/', () => {
     it('connects to the remote repo', async () => {
       const repoId = RepoId.of('a-repo-id')
-      const remoteUrl = '../tmp'
+      const remoteUrl = RemoteUrl.of('../tmp')
       app.getInfo.resolves(QueryResult.from())
       app.connectToRemote.withArgs(repoId, remoteUrl).resolves()
       await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(202)
@@ -70,7 +70,7 @@ describe('/repos', () => {
 
     it('responds with 400 if the connection attempt fails', async () => {
       const repoId = RepoId.of('a-repo-id')
-      const remoteUrl = 'a-bad-url'
+      const remoteUrl = RemoteUrl.of('a-bad-url')
       app.getInfo.resolves(QueryResult.from())
       app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
       await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(400)

@@ -1,4 +1,5 @@
 import { Author, BranchName, CommitMessage, File, GitRepoInfo, QueryResult, RepoId } from '.'
+import { RemoteUrl } from './remote_url'
 
 export type Application = CommandsApplication & QueriesApplication & Versioned
 
@@ -10,7 +11,7 @@ export interface CommandsApplication {
     author: Author,
     message: CommitMessage,
   ) => Promise<void>
-  connectToRemote: (repoId: RepoId, remoteUrl: string) => Promise<void>
+  connectToRemote: (repoId: RepoId, remoteUrl: RemoteUrl) => Promise<void>
   fetchFromRemote: (repoId: RepoId) => Promise<void>
 }
 

@@ -2,6 +2,7 @@ import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat 
 import { stubInterface } from 'ts-sinon'
 
 import { Branch, BranchName, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
+import { RemoteUrl } from './remote_url'
 
 describe(Repo.name, () => {
   context('connecting', () => {
@@ -14,7 +15,7 @@ describe(Repo.name, () => {
         }),
       )
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
-      const connecting = repo.setOriginTo('a-remote-url')
+      const connecting = repo.setOriginTo(RemoteUrl.of('a-remote-url'))
       finishGitConnect()
       await promiseThat(connecting, fulfilled())
     })
@@ -24,7 +25,7 @@ describe(Repo.name, () => {
       gitRepo.setOriginTo.rejects(new Error('Unable to connect'))
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       await promiseThat(
-        repo.setOriginTo('a-bad-url'),
+        repo.setOriginTo(RemoteUrl.of('a-bad-url')),
         isRejectedWith(new Error('Unable to connect')),
       )
     })
@@ -36,7 +37,7 @@ describe(Repo.name, () => {
       gitRepo.fetch.resolves()
       gitRepo.setOriginTo.resolves()
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
-      await promiseThat(repo.setOriginTo('a-remote-url'), fulfilled())
+      await promiseThat(repo.setOriginTo(RemoteUrl.of('a-remote-url')), fulfilled())
     })
   })
 

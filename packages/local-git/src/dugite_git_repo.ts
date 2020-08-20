@@ -1,4 +1,12 @@
-import { File, GitRepo, PendingCommitRef, Refs, Author, CommitMessage } from 'git-en-boite-core'
+import {
+  File,
+  GitRepo,
+  PendingCommitRef,
+  Refs,
+  Author,
+  CommitMessage,
+  RemoteUrl,
+} from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { RepoFactory } from './repo_factory'
@@ -27,7 +35,7 @@ export class DugiteGitRepo implements GitRepo {
     return this.git(Push.pendingCommitFrom(commitRef))
   }
 
-  setOriginTo(remoteUrl: string): Promise<void> {
+  setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     return this.git(Connect.toUrl(remoteUrl))
   }
 

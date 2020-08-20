@@ -1,4 +1,12 @@
-import { Author, RepoId, BranchName, CommitMessage, File, RefName } from 'git-en-boite-core'
+import {
+  Author,
+  RepoId,
+  BranchName,
+  CommitMessage,
+  File,
+  RefName,
+  RemoteUrl,
+} from 'git-en-boite-core'
 import {
   Commit,
   DugiteGitRepo,
@@ -21,11 +29,11 @@ describe(LaBoîte.name, () => {
 
   let app: LaBoîte
   let root: string
-  let remoteUrl: string
+  let repoPath: string
 
   beforeEach(() => {
     root = dirSync().name
-    remoteUrl = path.resolve(root, 'remote', repoId.value)
+    repoPath = path.resolve(root, 'remote', repoId.value)
     const repoIndex = new DiskRepoIndex(root, DugiteGitRepo)
     app = new LaBoîte(repoIndex, '999.9.9-test')
   })
@@ -43,10 +51,10 @@ describe(LaBoîte.name, () => {
 
     it('returns an object with the local branches in the repo', async () => {
       const branches = ['master', 'development']
-      const origin = await new RepoFactory().open(remoteUrl)
+      const origin = await new RepoFactory().open(repoPath)
       for (const branchName of branches)
         await origin(Commit.toCommitRef(LocalCommitRef.forBranch(BranchName.of(branchName))))
-      await app.connectToRemote(repoId, remoteUrl)
+      await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
       await app.fetchFromRemote(repoId)
       const result = await app.getInfo(repoId)
       assertThat(result.isSuccess, is(truthy()))
@@ -58,9 +66,9 @@ describe(LaBoîte.name, () => {
   })
 
   it('can connect a new repo by cloning from a remote URL', async () => {
-    const origin = await new RepoFactory().open(remoteUrl)
+    const origin = await new RepoFactory().open(repoPath)
     await origin(Commit.toCommitRef(commitRef))
-    await app.connectToRemote(repoId, remoteUrl)
+    await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     assertThat(result.isSuccess, is(truthy()))
@@ -70,12 +78,12 @@ describe(LaBoîte.name, () => {
     const revParse = async (refName: RefName, repoPath: string) =>
       new GitDirectory(repoPath).read('rev-parse', [refName.value])
 
-    const origin = await new RepoFactory().open(remoteUrl)
+    const origin = await new RepoFactory().open(repoPath)
     await origin(Commit.toCommitRef(commitRef))
-    await app.connectToRemote(repoId, remoteUrl)
+    await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
     await app.fetchFromRemote(repoId)
     await origin(Commit.toCommitRef(commitRef))
-    const expectedRevision = await revParse(commitRef.local, remoteUrl)
+    const expectedRevision = await revParse(commitRef.local, repoPath)
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({
@@ -90,9 +98,9 @@ describe(LaBoîte.name, () => {
 
   describe('commiting', () => {
     it('pushes a new file to the origin', async () => {
-      const origin = await new RepoFactory().open(remoteUrl)
+      const origin = await new RepoFactory().open(repoPath)
       await origin(Commit.toCommitRef(commitRef))
-      await app.connectToRemote(repoId, remoteUrl)
+      await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
       await app.fetchFromRemote(repoId)
       const files: File[] = [
         {

@@ -88,9 +88,9 @@ export class SetOrigin {
 }
 
 export class Connect {
-  protected constructor(public readonly remoteUrl: string) {}
+  protected constructor(public readonly remoteUrl: RemoteUrl) {}
 
-  static toUrl(remoteUrl: string): Connect {
+  static toUrl(remoteUrl: RemoteUrl): Connect {
     return new this(remoteUrl)
   }
 }
