@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Ref, Refs, BranchName } from 'git-en-boite-core'
+import { Ref, Refs, BranchName, CommitName } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import path from 'path'
@@ -56,7 +56,7 @@ describe('handleGetRefs', () => {
       })
 
       it('returns the revision of the latest commit', async () => {
-        const revision = await repo.read('rev-parse', [commitRef.local.value])
+        const revision = CommitName.of(await repo.read('rev-parse', [commitRef.local.value]))
         await promiseThat(
           git(GetRefs.all()),
           fulfilled(equalTo([new Ref(revision, commitRef.local)])),

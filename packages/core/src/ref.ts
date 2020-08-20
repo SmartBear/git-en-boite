@@ -1,8 +1,9 @@
 import { RefName, Branch } from '.'
 import { BranchName } from './branch_name'
+import { CommitName } from './commit_name'
 
 export class Ref {
-  constructor(public readonly revision: string, public readonly refName: RefName) {}
+  constructor(public readonly revision: CommitName, public readonly refName: RefName) {}
 
   get isRemote(): boolean {
     return !!this.refName.value.match('^refs/remotes/')

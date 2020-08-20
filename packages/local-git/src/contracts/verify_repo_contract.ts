@@ -6,6 +6,7 @@ import {
   OpenGitRepo,
   PendingCommitRef,
   RemoteUrl,
+  CommitName,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
@@ -39,7 +40,7 @@ export const verifyRepoContract = (
 
   describe('fetching commits', () => {
     context('from an origin repo with commits on the main branch', () => {
-      let latestCommit: string
+      let latestCommit: CommitName
       let originUrl: RemoteUrl
 
       beforeEach(async () => {

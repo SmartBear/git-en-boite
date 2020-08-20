@@ -1,6 +1,6 @@
-import { BranchName } from '.'
+import { BranchName, CommitName } from '.'
 
 export interface Branch {
   name: BranchName
-  revision: string
+  revision: CommitName
 }

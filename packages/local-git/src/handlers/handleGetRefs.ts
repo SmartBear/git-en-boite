@@ -1,5 +1,5 @@
 import { AsyncQuery, Handle } from 'git-en-boite-message-dispatch'
-import { Ref, RefName, Refs } from 'git-en-boite-core'
+import { Ref, RefName, Refs, CommitName } from 'git-en-boite-core'
 import { GetRefs } from '../operations'
 import { GitDirectory } from '../git_directory'
 
@@ -10,7 +10,7 @@ export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Refs>> = as
       ...output
         .split('\n')
         .map(line => line.trim().split(' '))
-        .map(([revision, name]) => new Ref(revision, RefName.parse(name))),
+        .map(([revision, name]) => new Ref(CommitName.of(revision), RefName.parse(name))),
     )
   } catch (error) {
     return new Refs()

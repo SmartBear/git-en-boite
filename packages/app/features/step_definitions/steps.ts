@@ -8,6 +8,7 @@ import {
   GitRepoInfo,
   RefName,
   RepoId,
+  CommitName,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -126,8 +127,11 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
 
   // TODO: GitRepoInfo.parseJSON(response.body)
   assertThat(
-    response.body.branches.find((branch: any) => BranchName.of(branch.name).equals(branchName))
-      .revision,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    CommitName.of(
+      response.body.branches.find((branch: any) => BranchName.of(branch.name).equals(branchName))
+        .revision,
+    ),
     equalTo(this.lastCommitRevision),
   )
 })

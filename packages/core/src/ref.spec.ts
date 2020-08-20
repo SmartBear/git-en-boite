@@ -3,6 +3,7 @@ import { assertThat, equalTo, truthy } from 'hamjest'
 import { Ref } from './ref'
 import { RefName } from './ref_name'
 import { BranchName } from './branch_name'
+import { CommitName } from '.'
 
 describe(Ref.name, () => {
   describe('#isRemote', () => {
@@ -10,7 +11,7 @@ describe(Ref.name, () => {
       let ref: Ref
 
       beforeEach(() => {
-        ref = new Ref('abcde1', RefName.fetchedFromOrigin(BranchName.of('master')))
+        ref = new Ref(CommitName.of('abcde1'), RefName.fetchedFromOrigin(BranchName.of('master')))
       })
 
       it('is true', () => {
@@ -24,7 +25,7 @@ describe(Ref.name, () => {
       let ref: Ref
 
       beforeEach(() => {
-        ref = new Ref('abcde1', RefName.fetchedFromOrigin(BranchName.of('master')))
+        ref = new Ref(CommitName.of('abcde1'), RefName.fetchedFromOrigin(BranchName.of('master')))
       })
 
       it('returns the name of the branch', () => {

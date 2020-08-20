@@ -6,6 +6,7 @@ import {
   File,
   RefName,
   RemoteUrl,
+  CommitName,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -83,7 +84,7 @@ describe(LaBoîte.name, () => {
     await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
     await app.fetchFromRemote(repoId)
     await origin(Commit.toCommitRef(commitRef))
-    const expectedRevision = await revParse(commitRef.local, repoPath)
+    const expectedRevision = CommitName.of(await revParse(commitRef.local, repoPath))
     await app.fetchFromRemote(repoId)
     const result = await app.getInfo(repoId)
     await result.respond({

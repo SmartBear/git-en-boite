@@ -17,14 +17,14 @@ import { RepoFactory, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, SetOrigin } from '../operations'
 import { handleSetOrigin } from './handleSetOrigin'
-import { BranchName, RemoteUrl } from 'git-en-boite-core'
+import { BranchName, RemoteUrl, CommitName } from 'git-en-boite-core'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
 describe('handleFetch', () => {
   const branchName = BranchName.of('main')
   let root: string
-  let latestCommit: string
+  let latestCommit: CommitName
   let originPath: string
   let git: Dispatch<Protocol>
   let repo: GitDirectory
@@ -58,7 +58,7 @@ describe('handleFetch', () => {
     await git(Fetch.fromOrigin())
     await promiseThat(
       repo.read('rev-parse', [`refs/remotes/origin/${branchName.value}`]),
-      fulfilled(startsWith(latestCommit)),
+      fulfilled(startsWith(latestCommit.value)),
     )
   })
 

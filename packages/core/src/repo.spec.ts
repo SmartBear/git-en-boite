@@ -3,6 +3,7 @@ import { stubInterface } from 'ts-sinon'
 
 import { Branch, BranchName, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
 import { RemoteUrl } from './remote_url'
+import { CommitName } from './commit_name'
 
 describe(Repo.name, () => {
   context('connecting', () => {
@@ -46,15 +47,18 @@ describe(Repo.name, () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.getRefs.resolves(
         new Refs(
-          new Ref('1', RefName.fetchedFromOrigin(BranchName.of('main'))),
-          new Ref('2', RefName.fetchedFromOrigin(BranchName.of('develop'))),
-          new Ref('3', RefName.forPendingCommit(BranchName.of('develop'))),
-          new Ref('unlikely-this-would-happen', RefName.localBranch(BranchName.of('test'))),
+          new Ref(CommitName.of('1'), RefName.fetchedFromOrigin(BranchName.of('main'))),
+          new Ref(CommitName.of('2'), RefName.fetchedFromOrigin(BranchName.of('develop'))),
+          new Ref(CommitName.of('3'), RefName.forPendingCommit(BranchName.of('develop'))),
+          new Ref(
+            CommitName.of('unlikely-this-would-happen'),
+            RefName.localBranch(BranchName.of('test')),
+          ),
         ),
       )
       const expectedBranches: Branch[] = [
-        { name: BranchName.of('main'), revision: '1' },
-        { name: BranchName.of('develop'), revision: '2' },
+        { name: BranchName.of('main'), revision: CommitName.of('1') },
+        { name: BranchName.of('develop'), revision: CommitName.of('2') },
       ]
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))
