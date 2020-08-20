@@ -5,7 +5,7 @@ interface CheckForMissingRequestBodyContent {
 }
 
 interface ValidateRequestBody {
-  (ctx: Context, next: ()=> Promise<void>, validate: (received: any) => void): void
+  (ctx: Context, next: () => Promise<void>, validate: (received: any) => void): void
 }
 
 const checkForMissingRequestBodyContent: CheckForMissingRequestBodyContent = ({
@@ -32,7 +32,4 @@ const validateRequestBody: ValidateRequestBody = async (ctx, next, validate) => 
   await next()
 }
 
-export {
-  validateRequestBody,
-  checkForMissingRequestBodyContent,
-}
+export { validateRequestBody, checkForMissingRequestBodyContent }

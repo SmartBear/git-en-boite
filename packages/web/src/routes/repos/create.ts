@@ -4,12 +4,21 @@ import { Context } from 'koa'
 
 import { checkForMissingRequestBodyContent, validateRequestBody } from '../../validate_request'
 
+type CreateRepoRequestBody = {
+  repoId: string
+  remoteUrl: string
+}
+
 export default (app: Application, router: Router): Router =>
   new Router().post(
     '/',
     (ctx, next) => validateRequestBody(ctx, next, validate),
+    (ctx, next) =>
+      validateRequestBody(ctx, next, (body: CreateRepoRequestBody) => {
+        RepoId.fromJSON(body.repoId)
+      }),
     async (ctx: Context) => {
-      const repoId = RepoId.of(ctx.request.body.repoId)
+      const repoId = RepoId.fromJSON(ctx.request.body.repoId)
       const { remoteUrl } = ctx.request.body
       const result = await app.getInfo(repoId)
       await result.respond({
@@ -32,24 +41,7 @@ export default (app: Application, router: Router): Router =>
     },
   )
 
-interface ValidateRepoId {
-  (repoId: string): void
-}
-
-const InvalidRepoIdError = Error(
-  'Invalid repoId: We do not expect characters in repoId which must be url encoded.',
-)
-
-const validateRepoId: ValidateRepoId = repoId => {
-  if (encodeURIComponent(repoId) !== repoId) {
-    throw InvalidRepoIdError
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validate = (received: any) => {
   checkForMissingRequestBodyContent({ received, expected: ['repoId', 'remoteUrl'] })
-  validateRepoId(received.repoId)
 }
-
-export { InvalidRepoIdError, validateRepoId }
