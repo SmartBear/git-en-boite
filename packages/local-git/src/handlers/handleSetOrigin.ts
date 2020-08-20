@@ -6,5 +6,5 @@ export const handleSetOrigin: Handle<GitDirectory, AsyncCommand<SetOrigin>> = as
   repo,
   { url },
 ) => {
-  await repo.exec('remote', ['add', 'origin', url])
+  await repo.exec('remote', ['add', 'origin', url.value])
 }

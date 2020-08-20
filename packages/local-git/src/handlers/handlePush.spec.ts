@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { PendingCommitRef, Refs, BranchName } from 'git-en-boite-core'
+import { PendingCommitRef, Refs, BranchName, RemoteUrl } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, not } from 'hamjest'
 import path from 'path'
@@ -30,14 +30,14 @@ describe('handlePush', () => {
   const branchName = BranchName.of('a-branch')
   let root: string
   let repoPath: string
-  let originUrl: string
+  let originPath: string
   let git: Dispatch<Protocol>
   let repo: GitDirectory
 
   beforeEach(async () => {
     root = dirSync().name
     repoPath = path.resolve(root, 'a-repo-id')
-    originUrl = path.resolve(root, 'remote', 'a-repo-id')
+    originPath = path.resolve(root, 'remote', 'a-repo-id')
     fs.mkdirSync(repoPath, { recursive: true })
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [
@@ -52,10 +52,10 @@ describe('handlePush', () => {
   })
 
   it('pushes a commit to origin', async () => {
-    const origin = await new RepoFactory().open(originUrl)
+    const origin = await new RepoFactory().open(originPath)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(branchName)
-    await git(SetOrigin.toUrl(originUrl))
+    await git(SetOrigin.toUrl(RemoteUrl.of(originPath)))
     await git(Fetch.fromOrigin())
 
     const file = { path: 'a.file', content: 'some content' }

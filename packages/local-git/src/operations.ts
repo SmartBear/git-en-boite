@@ -81,9 +81,9 @@ export class Init {
 }
 
 export class SetOrigin {
-  protected constructor(public readonly url: string) {}
+  protected constructor(public readonly url: RemoteUrl) {}
 
-  static toUrl(url: string): SetOrigin {
+  static toUrl(url: RemoteUrl): SetOrigin {
     return new this(url)
   }
 }
@@ -105,9 +105,9 @@ export class GetConfig {
 }
 
 export class ValidateRemote {
-  protected constructor(public readonly url: string) {}
+  protected constructor(public readonly url: RemoteUrl) {}
 
-  static url(url: string): ValidateRemote {
+  static url(url: RemoteUrl): ValidateRemote {
     return new this(url)
   }
 }

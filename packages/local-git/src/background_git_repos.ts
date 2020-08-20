@@ -138,7 +138,7 @@ class GitRepoWorker implements Closable {
         const { path } = job.data
         const git = await gitRepos.openGitRepo(path)
         if (job.name === 'setOriginTo') {
-          const { remoteUrl } = job.data
+          const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
           return await git.setOriginTo(remoteUrl)
         }
         if (job.name === 'fetch') {

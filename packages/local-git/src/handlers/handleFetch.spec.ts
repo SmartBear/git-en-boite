@@ -17,7 +17,7 @@ import { RepoFactory, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, SetOrigin } from '../operations'
 import { handleSetOrigin } from './handleSetOrigin'
-import { BranchName } from 'git-en-boite-core'
+import { BranchName, RemoteUrl } from 'git-en-boite-core'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
@@ -25,7 +25,7 @@ describe('handleFetch', () => {
   const branchName = BranchName.of('main')
   let root: string
   let latestCommit: string
-  let originUrl: string
+  let originPath: string
   let git: Dispatch<Protocol>
   let repo: GitDirectory
   let repoPath: string
@@ -33,9 +33,9 @@ describe('handleFetch', () => {
   beforeEach(async () => {
     root = dirSync().name
     repoPath = path.resolve(root, 'a-repo-id')
-    originUrl = path.resolve(root, 'remote', 'a-repo-id')
+    originPath = path.resolve(root, 'remote', 'a-repo-id')
 
-    const origin = await new RepoFactory().open(originUrl)
+    const origin = await new RepoFactory().open(originPath)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
     fs.mkdirSync(repoPath, { recursive: true })
@@ -54,7 +54,7 @@ describe('handleFetch', () => {
   })
 
   it('fetches the lastest commit from the origin remote', async () => {
-    await git(SetOrigin.toUrl(originUrl))
+    await git(SetOrigin.toUrl(RemoteUrl.of(originPath)))
     await git(Fetch.fromOrigin())
     await promiseThat(
       repo.read('rev-parse', [`refs/remotes/origin/${branchName.value}`]),
@@ -63,7 +63,7 @@ describe('handleFetch', () => {
   })
 
   it('fetches only 1 commit from the origin remote', async () => {
-    await git(SetOrigin.toUrl(originUrl))
+    await git(SetOrigin.toUrl(RemoteUrl.of(originPath)))
     await git(Fetch.fromOrigin())
     await promiseThat(
       repo.read('rev-list', ['--count', `refs/remotes/origin/${branchName.value}`]),
@@ -72,7 +72,7 @@ describe('handleFetch', () => {
   })
 
   it('fails when the remote does not exist', async () => {
-    await git(SetOrigin.toUrl('invalid-remote-url'))
+    await git(SetOrigin.toUrl(RemoteUrl.of('invalid-remote-url')))
     await promiseThat(
       git(Fetch.fromOrigin()),
       isRejectedWith(

@@ -1,15 +1,15 @@
 import childProcess from 'child_process'
 import fs from 'fs'
+import { RemoteUrl } from 'git-en-boite-core'
 import { AsyncCommand, messageDispatch } from 'git-en-boite-message-dispatch'
-import { Init, SetOrigin } from '../operations'
 import { fulfilled, hasProperty, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 import { promisify } from 'util'
 
+import { handleInit, handleSetOrigin } from '.'
 import { GitDirectory } from '../git_directory'
-import { handleInit } from './handleInit'
-import { handleSetOrigin } from './handleSetOrigin'
+import { Init, SetOrigin } from '../operations'
 
 const exec = promisify(childProcess.exec)
 
@@ -37,11 +37,11 @@ describe('handleSetOrigin', () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
-    const repoUrl = 'https://token@host.com/repo'
+    const repoUrl = RemoteUrl.of('https://token@host.com/repo')
     await git(SetOrigin.toUrl(repoUrl))
     await promiseThat(
       exec('git remote get-url origin', { cwd: repoPath }),
-      fulfilled(hasProperty('stdout', startsWith(repoUrl))),
+      fulfilled(hasProperty('stdout', startsWith(repoUrl.value))),
     )
   })
 })
