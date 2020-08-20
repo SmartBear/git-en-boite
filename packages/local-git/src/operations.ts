@@ -6,6 +6,7 @@ import {
   Refs,
   BranchName,
   CommitMessage,
+  RemoteUrl,
 } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
