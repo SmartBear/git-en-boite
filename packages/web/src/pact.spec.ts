@@ -15,7 +15,7 @@ describe('HTTP Api', () => {
 
   beforeEach(() => {
     app = stubInterface<Application>()
-    const webApp = createWebApp().use(router(app).routes()).use(router(app).allowedMethods())
+    const webApp = createWebApp(router(app))
     server = webApp.listen(PORT)
   })
 

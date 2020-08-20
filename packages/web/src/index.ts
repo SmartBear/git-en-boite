@@ -5,8 +5,5 @@ import createWebApp from './create_web_app'
 import createRouter from './routes/router'
 
 export const startWebServer = (app: Application, port: number): Server => {
-  const webApp = createWebApp()
-    .use(createRouter(app).routes())
-    .use(createRouter(app).allowedMethods())
-  return webApp.listen(port)
+  return createWebApp(createRouter(app)).listen(port)
 }

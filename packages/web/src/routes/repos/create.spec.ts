@@ -17,7 +17,7 @@ describe('POST /repos', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp().use(router(app).routes()).use(router(app).allowedMethods())
+    const webApp = createWebApp(router(app))
     server = webApp.listen(8888)
     request = supertest(server)
   })
