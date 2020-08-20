@@ -32,12 +32,16 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
 
     async function commitIndex() {
       const treeName = await repo.read('write-tree', [])
-      const commitName = await repo.read('commit-tree', [treeName, '-m', message, ...commitArgs], {
-        env: {
-          GIT_AUTHOR_NAME: author.name,
-          GIT_AUTHOR_EMAIL: author.email,
+      const commitName = await repo.read(
+        'commit-tree',
+        [treeName, '-m', message.value, ...commitArgs],
+        {
+          env: {
+            GIT_AUTHOR_NAME: author.name,
+            GIT_AUTHOR_EMAIL: author.email,
+          },
         },
-      })
+      )
       await repo.exec('update-ref', [commitRef.local.value, commitName])
     }
   })

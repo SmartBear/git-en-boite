@@ -1,4 +1,4 @@
-import { File, GitRepo, PendingCommitRef, Refs, Author } from 'git-en-boite-core'
+import { File, GitRepo, PendingCommitRef, Refs, Author, CommitMessage } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { RepoFactory } from './repo_factory'
@@ -12,8 +12,15 @@ export class DugiteGitRepo implements GitRepo {
 
   protected constructor(private readonly git: Dispatch<RepoProtocol>) {}
 
-  commit(commitRef: PendingCommitRef, files: File[], author: Author): Promise<void> {
-    return this.git(Commit.toCommitRef(commitRef).withFiles(files).byAuthor(author))
+  commit(
+    commitRef: PendingCommitRef,
+    files: File[],
+    author: Author,
+    message: CommitMessage,
+  ): Promise<void> {
+    return this.git(
+      Commit.toCommitRef(commitRef).withFiles(files).byAuthor(author).withMessage(message),
+    )
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {

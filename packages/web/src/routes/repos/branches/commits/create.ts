@@ -1,4 +1,4 @@
-import { Application, BranchName, File, Author, RepoId } from 'git-en-boite-core'
+import { Application, BranchName, File, Author, CommitMessage, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 import Router from '@koa/router'
 import {
@@ -16,6 +16,7 @@ export default (app: Application): Router =>
         BranchName.of(ctx.params.branchName),
         ctx.request.body.files as File[],
         new Author(ctx.request.body.author.name, ctx.request.body.author.email),
+        new CommitMessage(ctx.request.body.message),
       )
       ctx.body = {}
       ctx.status = 200

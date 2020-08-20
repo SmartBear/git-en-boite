@@ -1,10 +1,17 @@
-import { GitRepo, OpenGitRepo, PendingCommitRef, BranchName, Author } from 'git-en-boite-core'
+import {
+  Author,
+  BranchName,
+  CommitMessage,
+  GitRepo,
+  OpenGitRepo,
+  PendingCommitRef,
+} from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
-import { RepoProtocol, Commit, GetRefs, LocalCommitRef } from '..'
+import { Commit, GetRefs, LocalCommitRef, RepoProtocol } from '..'
 import { GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
@@ -71,7 +78,8 @@ export const verifyRepoContract = (
       }
       const author = new Author('Bob', 'bob@example.com')
       const commitRef = LocalCommitRef.forBranch(branchName)
-      await git.commit(commitRef, [file], author)
+      const message = new CommitMessage('a message')
+      await git.commit(commitRef, [file], author, message)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.exec('ls-tree', [branchName.value, '--name-only'])
       assertThat(result.stdout, matchesPattern(file.path))
@@ -97,7 +105,8 @@ export const verifyRepoContract = (
       }
       const author = new Author('Bob', 'bob@example.com')
       const commitRef = PendingCommitRef.forBranch(branchName)
-      await git.commit(commitRef, [file], author)
+      const message = new CommitMessage('a message')
+      await git.commit(commitRef, [file], author, message)
       await git.push(commitRef)
       const { revision: commitName } = (await git.getRefs()).forBranch(branchName)
       const { revision: originCommitName } = (await origin(GetRefs.all())).forBranch(branchName)

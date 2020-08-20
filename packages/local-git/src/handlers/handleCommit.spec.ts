@@ -1,5 +1,12 @@
 import fs from 'fs'
-import { Author, BranchName, File, PendingCommitRef, RefName } from 'git-en-boite-core'
+import {
+  Author,
+  BranchName,
+  CommitMessage,
+  File,
+  PendingCommitRef,
+  RefName,
+} from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   assertThat,
@@ -26,6 +33,9 @@ type Protocol = [
 
 describe('handleCommit', () => {
   const branchName = BranchName.of('a-branch')
+  const initialCommitMessage = new CommitMessage('initial commit')
+  const commitMessage = new CommitMessage('A commit message')
+
   let root: string
   let repoPath: string
   let git: Dispatch<Protocol>
@@ -53,10 +63,10 @@ describe('handleCommit', () => {
   it('creates an empty commit with the given message', async () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
 
-    await git(Commit.toCommitRef(localCommitRef).withMessage('A commit message'))
+    await git(Commit.toCommitRef(localCommitRef).withMessage(commitMessage))
     assertThat(
       await repo.read('log', [localCommitRef.local.value, '--oneline']),
-      containsString('A commit message'),
+      containsString(commitMessage.value),
     )
   })
 
@@ -100,11 +110,11 @@ describe('handleCommit', () => {
     const commitRef = LocalCommitRef.forBranch(branchName)
 
     it('creates a commit with a parent', async () => {
-      await git(Commit.toCommitRef(commitRef).withMessage('initial commit'))
-      await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
+      await git(Commit.toCommitRef(commitRef).withMessage(initialCommitMessage))
+      await git(Commit.toCommitRef(commitRef).withMessage(commitMessage))
       assertThat(
         await repo.read('log', [commitRef.local.value, '--oneline']),
-        containsStrings('initial commit', 'A commit message'),
+        containsStrings(initialCommitMessage.value, commitMessage.value),
       )
     })
   })
@@ -136,13 +146,13 @@ describe('handleCommit', () => {
           local: RefName.fetchedFromOrigin(branchName),
           branchName,
           parent: RefName.fetchedFromOrigin(branchName),
-        }).withMessage('initial commit'),
+        }).withMessage(initialCommitMessage),
       )
       const commitRef = PendingCommitRef.forBranch(branchName)
-      await git(Commit.toCommitRef(commitRef).withMessage('A commit message'))
+      await git(Commit.toCommitRef(commitRef).withMessage(commitMessage))
       assertThat(
         await repo.read('log', [commitRef.local.value, '--oneline']),
-        containsStrings('initial commit', 'A commit message'),
+        containsStrings(initialCommitMessage.value, commitMessage.value),
       )
     })
   })
@@ -189,7 +199,7 @@ describe('handleCommit', () => {
           branchName,
           parent: RefName.fetchedFromOrigin(branchMain),
         })
-          .withMessage('initial commit to main')
+          .withMessage(commitMessage)
           .withFiles([existingFile]),
       )
 
@@ -199,7 +209,7 @@ describe('handleCommit', () => {
           branchName,
           parent: RefName.fetchedFromOrigin(branchExperimental),
         })
-          .withMessage('initial commit to experiment')
+          .withMessage(commitMessage)
           .withFiles([existingFile]),
       )
 

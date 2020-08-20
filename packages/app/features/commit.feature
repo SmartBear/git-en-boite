@@ -14,8 +14,8 @@ Feature: Commit
     And the remote repo has been connected
     And the repo has been fetched
     When a consumer commits to the "main" branch with:
-      | Author name | Author email      |
-      | Emily       | emily@example.com |
+      | Author name | Author email      | Commit message          |
+      | Emily       | emily@example.com | emily's crafted message |
     Then the remote repo should have a new commit at the head of the "main" branch:
-      | Author name | Author email      |
-      | Emily       | emily@example.com |
+      | Author name | Author email      | Commit message          |
+      | Emily       | emily@example.com | emily's crafted message |

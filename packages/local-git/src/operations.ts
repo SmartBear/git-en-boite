@@ -1,11 +1,19 @@
-import { Author, CommitRef, File, PendingCommitRef, Refs, BranchName } from 'git-en-boite-core'
+import {
+  Author,
+  CommitRef,
+  File,
+  PendingCommitRef,
+  Refs,
+  BranchName,
+  CommitMessage,
+} from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
 export class Commit {
   protected constructor(
     public readonly commitRef: CommitRef,
     public readonly files: File[],
-    public readonly message: string,
+    public readonly message: CommitMessage,
     public readonly author: Author,
   ) {}
 
@@ -13,7 +21,7 @@ export class Commit {
     return new Commit(
       commitRef,
       [],
-      'A commit message',
+      new CommitMessage('A commit message'),
       new Author('A user', 'unknown@unknown.com'),
     )
   }
@@ -26,7 +34,7 @@ export class Commit {
     return new Commit(this.commitRef, files, this.message, this.author)
   }
 
-  withMessage(message: string): Commit {
+  withMessage(message: CommitMessage): Commit {
     return new Commit(this.commitRef, this.files, message, this.author)
   }
 }

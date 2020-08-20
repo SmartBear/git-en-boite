@@ -1,4 +1,4 @@
-import { Author, BranchName, File, RefName, RepoId } from 'git-en-boite-core'
+import { Author, RepoId, BranchName, CommitMessage, File, RefName } from 'git-en-boite-core'
 import {
   Commit,
   DugiteGitRepo,
@@ -100,9 +100,10 @@ describe(LaBoîte.name, () => {
           content: 'Feature: Feature',
         },
       ]
+      const message = new CommitMessage('a message')
       const author = new Author('Bob', 'bob@example.com')
 
-      await app.commit(repoId, branchName, files, author)
+      await app.commit(repoId, branchName, files, author, message)
 
       assertThat(await origin(GetFiles.for(branchName)), equalTo(files))
     })

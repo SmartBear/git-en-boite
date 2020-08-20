@@ -1,4 +1,4 @@
-import { Application, Author, File, BranchName, RepoId } from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitMessage, File, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -33,11 +33,12 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     const file: File = { path: 'a.file', content: 'content' }
     const files = [file]
     const author = new Author('Bob', 'bob@example.com')
+    const message = new CommitMessage('a message')
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
-      .send({ files, author })
+      .send({ files, author, message })
       .expect(200)
-    assertThat(app.commit, wasCalledWith(repoId, branchName, files, author))
+    assertThat(app.commit, wasCalledWith(repoId, branchName, files, author, message))
   })
 
   it('responds with 400 if the payload has missing params', async () => {

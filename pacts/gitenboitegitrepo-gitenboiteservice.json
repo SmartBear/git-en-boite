@@ -25,7 +25,8 @@
           "author": {
             "name": "Bob",
             "email": "bob@smartbear.com"
-          }
+          },
+          "message": "a message"
         }
       },
       "response": {
