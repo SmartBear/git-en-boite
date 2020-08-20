@@ -1,5 +1,5 @@
 import { RepoId } from '.'
-import { assertThat, equalTo, throws, matchesPattern, hasProperty } from 'hamjest'
+import { assertThat, equalTo, throws, matchesPattern, hasProperty, not } from 'hamjest'
 
 describe(RepoId.name, () => {
   describe('creating from JSON', () => {
@@ -21,6 +21,12 @@ describe(RepoId.name, () => {
         () => RepoId.fromJSON('a/b'),
         throws(hasProperty('message', matchesPattern('should match pattern'))),
       )
+    })
+  })
+
+  describe('generating values', () => {
+    it('generates unique values', () => {
+      assertThat(RepoId.generate(), not(equalTo(RepoId.generate())))
     })
   })
 })

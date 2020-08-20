@@ -1,6 +1,14 @@
 /* tslint:disable: only-arrow-functions */
 import { Given, TableDefinition, Then, When } from 'cucumber'
-import { Author, BranchName, CommitMessage, File, GitRepoInfo, RefName } from 'git-en-boite-core'
+import {
+  Author,
+  BranchName,
+  CommitMessage,
+  File,
+  GitRepoInfo,
+  RefName,
+  RepoId,
+} from 'git-en-boite-core'
 import {
   Commit,
   GetFiles,
@@ -21,18 +29,18 @@ import {
 import path from 'path'
 
 Given('a remote repo with branches:', async function (branchesTable) {
-  const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
-  const repoId = (this.repoId = this.getNextRepoId())
-  this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', repoId)
+  const repoId = (this.repoId = RepoId.generate())
+  this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', repoId.value)
   const git = await new RepoFactory().open(this.remoteRepoPath)
+  const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
   for (const branchName of branches) {
     await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   }
 })
 
 Given('a remote repo with commits on {BranchName}', async function (branchName: BranchName) {
-  this.repoId = this.getNextRepoId()
-  this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', this.repoId)
+  const repoId = (this.repoId = RepoId.generate())
+  this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', repoId.value)
   const git = await new RepoFactory().open(this.remoteRepoPath)
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
@@ -51,7 +59,7 @@ Given('the remote repo has been connected', async function () {
 })
 
 When('a consumer tries to connect to a bad remote URL', async function () {
-  this.repoId = this.getNextRepoId()
+  this.repoId = RepoId.generate()
   const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
   const response = await this.request.post('/repos').send(repoInfo)
   this.lastResponseCode = response.res.statusCode
