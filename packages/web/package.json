@@ -28,13 +28,11 @@
     "@types/koa-log": "^2.1.1",
     "@types/koa2-cors": "^2.0.1",
     "@types/koa__router": "^8.0.2",
-    "git-en-boite-core": "0.0.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-log": "^2.1.0",
-    "koa-req-validation": "^0.13.0",
     "koa2-cors": "^2.0.6",
-    "validator": "^13.1.1"
+    "git-en-boite-core": "0.0.0"
   },
   "devDependencies": {
     "@pact-foundation/pact": "^9.11.1",
