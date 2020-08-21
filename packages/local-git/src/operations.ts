@@ -7,6 +7,8 @@ import {
   PendingCommitRef,
   Refs,
   RemoteUrl,
+  NameOfPerson,
+  Email,
 } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 
@@ -23,7 +25,7 @@ export class Commit {
       commitRef,
       [],
       CommitMessage.of('A commit message'),
-      new Author('A user', 'unknown@unknown.com'),
+      new Author(new NameOfPerson('A user'), new Email('unknown@unknown.com')),
     )
   }
 

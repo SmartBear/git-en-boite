@@ -8,6 +8,8 @@ import {
   OpenGitRepo,
   PendingCommitRef,
   RemoteUrl,
+  NameOfPerson,
+  Email,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
@@ -76,7 +78,7 @@ export const verifyRepoContract = (
   describe('committing', () => {
     it('commits a new file to a branch', async () => {
       const file = new GitFile('a.feature', 'Feature: A')
-      const author = new Author('Bob', 'bob@example.com')
+      const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
       const commitRef = LocalCommitRef.forBranch(branchName)
       const message = CommitMessage.of('a message')
       await git.commit(commitRef, [file], author, message)
@@ -100,7 +102,7 @@ export const verifyRepoContract = (
       await git.setOriginTo(originUrl)
       await git.fetch()
       const file = new GitFile('a.feature', 'Feature: A')
-      const author = new Author('Bob', 'bob@example.com')
+      const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
       const commitRef = PendingCommitRef.forBranch(branchName)
       const message = CommitMessage.of('a message')
       await git.commit(commitRef, [file], author, message)

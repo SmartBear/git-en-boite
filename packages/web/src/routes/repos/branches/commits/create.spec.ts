@@ -1,4 +1,13 @@
-import { Application, Author, BranchName, CommitMessage, GitFile, RepoId } from 'git-en-boite-core'
+import {
+  Application,
+  Author,
+  BranchName,
+  CommitMessage,
+  GitFile,
+  RepoId,
+  Email,
+  NameOfPerson,
+} from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -32,7 +41,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     const branchName = BranchName.of('a-branch')
     const file = new GitFile('a.file', 'some content')
     const files = [file]
-    const author = new Author('Bob', 'bob@example.com')
+    const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
     const message = CommitMessage.of('a message')
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
@@ -55,7 +64,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     const repoId = RepoId.of('repo-id')
     const branchName = BranchName.of('a-branch')
     const files = ['file']
-    const author = new Author('Bob', 'bob@example.com')
+    const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
     const message = CommitMessage.of('a message')
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)

@@ -8,6 +8,8 @@ import {
   RefName,
   RemoteUrl,
   RepoId,
+  NameOfPerson,
+  Email,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -106,7 +108,7 @@ describe(LaBoîte.name, () => {
       await app.fetchFromRemote(repoId)
       const files: Files = [new GitFile('feature.feature', 'Feature: Feature')]
       const message = CommitMessage.of('a message')
-      const author = new Author('Bob', 'bob@example.com')
+      const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
 
       await app.commit(repoId, branchName, files, author, message)
 

@@ -9,6 +9,8 @@ import {
   GitRepoInfo,
   RefName,
   RepoId,
+  NameOfPerson,
+  Email,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -81,7 +83,7 @@ When('a consumer commits a new file to {BranchName}', async function (branchName
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
     .send({
       files: [file],
-      author: new Author('Bob', 'bob@example.com'),
+      author: new Author(new NameOfPerson('Bob'), new Email('bob@example.com')),
       message: CommitMessage.of('adding a file'),
     })
     .set('Accept', 'application/json')
@@ -93,7 +95,10 @@ When('a consumer commits to {BranchName} with:', async function (
   commitDetails: TableDefinition,
 ) {
   const row = commitDetails.hashes()[0]
-  const author = new Author(row['Author name'], row['Author email'])
+  const author = new Author(
+    new NameOfPerson(row['Author name']),
+    new NameOfPerson(row['Author email']),
+  )
   const message = CommitMessage.of(row['Commit message'])
   const response = await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
@@ -121,8 +126,8 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
 
   // TODO: GitRepoInfo.parseJSON(response.body)
   assertThat(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     CommitName.of(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       response.body.branches.find((branch: any) => BranchName.of(branch.name).equals(branchName))
         .revision,
     ),
@@ -150,7 +155,7 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   const repo = new GitDirectory(this.remoteRepoPath)
   const lastCommit = await repo.read('cat-file', ['-p', branchRef.value])
   const row = commitDetails.hashes()[0]
-  const author = new Author(row['Author name'], row['Author email'])
+  const author = new Author(new NameOfPerson(row['Author name']), new Email(row['Author email']))
   const message = CommitMessage.of(row['Commit message'])
   assertThat(lastCommit, containsString(author.toString()))
   assertThat(lastCommit, containsString(message.toString()))

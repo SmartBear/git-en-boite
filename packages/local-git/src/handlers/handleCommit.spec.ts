@@ -6,6 +6,8 @@ import {
   GitFile,
   PendingCommitRef,
   RefName,
+  NameOfPerson,
+  Email,
 } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
@@ -73,7 +75,11 @@ describe('handleCommit', () => {
   it('creates a commit with the given author', async () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
 
-    await git(Commit.toCommitRef(localCommitRef).byAuthor(new Author('Bob', 'bob@smartbear.com')))
+    await git(
+      Commit.toCommitRef(localCommitRef).byAuthor(
+        new Author(new NameOfPerson('Bob'), new Email('bob@smartbear.com')),
+      ),
+    )
 
     assertThat(
       await repo.read('log', [localCommitRef.local.value]),
