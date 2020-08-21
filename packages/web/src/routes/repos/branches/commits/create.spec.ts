@@ -33,7 +33,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     const file: File = { path: 'a.file', content: 'content' }
     const files = [file]
     const author = new Author('Bob', 'bob@example.com')
-    const message = new CommitMessage('a message')
+    const message = CommitMessage.of('a message')
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
       .send({ files, author, message })

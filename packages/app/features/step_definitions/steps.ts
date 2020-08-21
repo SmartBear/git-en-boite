@@ -84,7 +84,7 @@ When('a consumer commits a new file to {BranchName}', async function (branchName
     .send({
       files: [file],
       author: new Author('Bob', 'bob@example.com'),
-      message: new CommitMessage('adding a file'),
+      message: CommitMessage.of('adding a file'),
     })
     .set('Accept', 'application/json')
     .expect(200)
@@ -96,7 +96,7 @@ When('a consumer commits to {BranchName} with:', async function (
 ) {
   const row = commitDetails.hashes()[0]
   const author = new Author(row['Author name'], row['Author email'])
-  const message = new CommitMessage(row['Commit message'])
+  const message = CommitMessage.of(row['Commit message'])
   await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
     .send({ files: [], author, message })
@@ -157,7 +157,7 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   const lastCommit = await repo.read('cat-file', ['-p', branchRef.value])
   const row = commitDetails.hashes()[0]
   const author = new Author(row['Author name'], row['Author email'])
-  const message = new CommitMessage(row['Commit message'])
+  const message = CommitMessage.of(row['Commit message'])
   assertThat(lastCommit, containsString(author.toString()))
   assertThat(lastCommit, containsString(message.toString()))
 })

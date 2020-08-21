@@ -109,7 +109,7 @@ describe(LaBoîte.name, () => {
           content: 'Feature: Feature',
         },
       ]
-      const message = new CommitMessage('a message')
+      const message = CommitMessage.of('a message')
       const author = new Author('Bob', 'bob@example.com')
 
       await app.commit(repoId, branchName, files, author, message)

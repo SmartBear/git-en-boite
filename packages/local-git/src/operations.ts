@@ -22,7 +22,7 @@ export class Commit {
     return new Commit(
       commitRef,
       [],
-      new CommitMessage('A commit message'),
+      CommitMessage.of('A commit message'),
       new Author('A user', 'unknown@unknown.com'),
     )
   }

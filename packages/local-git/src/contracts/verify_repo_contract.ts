@@ -80,7 +80,7 @@ export const verifyRepoContract = (
       }
       const author = new Author('Bob', 'bob@example.com')
       const commitRef = LocalCommitRef.forBranch(branchName)
-      const message = new CommitMessage('a message')
+      const message = CommitMessage.of('a message')
       await git.commit(commitRef, [file], author, message)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.exec('ls-tree', [branchName.value, '--name-only'])
@@ -107,7 +107,7 @@ export const verifyRepoContract = (
       }
       const author = new Author('Bob', 'bob@example.com')
       const commitRef = PendingCommitRef.forBranch(branchName)
-      const message = new CommitMessage('a message')
+      const message = CommitMessage.of('a message')
       await git.commit(commitRef, [file], author, message)
       await git.push(commitRef)
       const { revision: commitName } = (await git.getRefs()).forBranch(branchName)

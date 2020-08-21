@@ -33,8 +33,8 @@ type Protocol = [
 
 describe('handleCommit', () => {
   const branchName = BranchName.of('a-branch')
-  const initialCommitMessage = new CommitMessage('initial commit')
-  const commitMessage = new CommitMessage('A commit message')
+  const initialCommitMessage = CommitMessage.of('initial commit')
+  const commitMessage = CommitMessage.of('A commit message')
 
   let root: string
   let repoPath: string
