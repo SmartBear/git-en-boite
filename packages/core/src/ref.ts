@@ -1,4 +1,4 @@
-import { RefName, Branch } from '.'
+import { RefName, BranchSnapshot } from '.'
 import { BranchName } from './branch_name'
 import { CommitName } from './commit_name'
 
@@ -13,7 +13,7 @@ export class Ref {
     return this.refName.branchName
   }
 
-  toBranch(): Branch {
-    return { name: this.branchName, revision: this.revision }
+  toBranch(): BranchSnapshot {
+    return new BranchSnapshot(this.branchName, this.revision)
   }
 }

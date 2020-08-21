@@ -1,6 +1,6 @@
 import {
   Author,
-  Branch,
+  BranchSnapshot,
   BranchName,
   CommitMessage,
   Files,
@@ -21,7 +21,7 @@ export class Repo {
     await this.git.setOriginTo(remoteUrl)
   }
 
-  async branches(): Promise<Branch[]> {
+  async branches(): Promise<BranchSnapshot[]> {
     const refs = await this.git.getRefs()
     return refs.reduce(
       (branches, ref) => (ref.isRemote ? branches.concat(ref.toBranch()) : branches),

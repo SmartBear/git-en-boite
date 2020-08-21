@@ -1,7 +1,7 @@
 import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat } from 'hamjest'
 import { stubInterface } from 'ts-sinon'
 
-import { Branch, BranchName, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
+import { BranchSnapshot, BranchName, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
 import { RemoteUrl } from './remote_url'
 import { CommitName } from './commit_name'
 
@@ -56,9 +56,9 @@ describe(Repo.name, () => {
           ),
         ),
       )
-      const expectedBranches: Branch[] = [
-        { name: BranchName.of('main'), revision: CommitName.of('1') },
-        { name: BranchName.of('develop'), revision: CommitName.of('2') },
+      const expectedBranches: BranchSnapshot[] = [
+        new BranchSnapshot(BranchName.of('main'), CommitName.of('1')),
+        new BranchSnapshot(BranchName.of('develop'), CommitName.of('2')),
       ]
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
       assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))

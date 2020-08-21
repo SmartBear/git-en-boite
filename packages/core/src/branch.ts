@@ -1,6 +1,8 @@
 import { BranchName, CommitName } from '.'
+import { TinyType } from 'tiny-types'
 
-export interface Branch {
-  name: BranchName
-  revision: CommitName
+export class BranchSnapshot extends TinyType {
+  constructor(public readonly name: BranchName, public readonly revision: CommitName) {
+    super()
+  }
 }
