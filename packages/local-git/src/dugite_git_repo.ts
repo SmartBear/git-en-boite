@@ -1,16 +1,16 @@
 import {
-  File,
+  Author,
+  CommitMessage,
+  GitFile,
   GitRepo,
   PendingCommitRef,
   Refs,
-  Author,
-  CommitMessage,
   RemoteUrl,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
+import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
 import { RepoFactory } from './repo_factory'
-import { RepoProtocol, Commit, Connect, Fetch, GetRefs, Push } from './operations'
 
 export class DugiteGitRepo implements GitRepo {
   static async openGitRepo(path: string): Promise<GitRepo> {
@@ -22,7 +22,7 @@ export class DugiteGitRepo implements GitRepo {
 
   commit(
     commitRef: PendingCommitRef,
-    files: File[],
+    files: GitFile[],
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

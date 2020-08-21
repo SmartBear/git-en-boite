@@ -1,4 +1,4 @@
-import { Application, Author, BranchName, CommitMessage, File, RepoId } from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitMessage, GitFile, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -30,7 +30,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   it('accepts a valid payload with files and author', async () => {
     const repoId = RepoId.of('repo-id')
     const branchName = BranchName.of('a-branch')
-    const file: File = { path: 'a.file', content: 'content' }
+    const file = new GitFile('a.file', 'some content')
     const files = [file]
     const author = new Author('Bob', 'bob@example.com')
     const message = CommitMessage.of('a message')

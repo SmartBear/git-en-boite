@@ -1,6 +1,7 @@
-import { Application, BranchName, File, Author, CommitMessage, RepoId } from 'git-en-boite-core'
-import { Context } from 'koa'
 import Router from '@koa/router'
+import { Application, Author, BranchName, CommitMessage, GitFiles, RepoId } from 'git-en-boite-core'
+import { Context } from 'koa'
+
 import {
   checkForMissingRequestBodyContent,
   validateRequestBody,
@@ -14,7 +15,7 @@ export default (app: Application): Router =>
       await app.commit(
         RepoId.of(ctx.params.repoId),
         BranchName.of(ctx.params.branchName),
-        ctx.request.body.files as File[],
+        GitFiles.fromRequest(ctx.request.body.files),
         new Author(ctx.request.body.author.name, ctx.request.body.author.email),
         CommitMessage.of(ctx.request.body.message),
       )

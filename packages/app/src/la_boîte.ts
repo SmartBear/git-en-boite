@@ -2,14 +2,14 @@ import {
   Application,
   Author,
   BranchName,
-  RepoId,
   CommitMessage,
-  File,
+  GitFile,
   GitRepoInfo,
   QueryResult,
+  RepoId,
+  RemoteUrl,
   RepoIndex,
 } from 'git-en-boite-core'
-import { RemoteUrl } from 'git-en-boite-core/dist/remote_url'
 
 export class LaBoîte implements Application {
   constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
@@ -17,7 +17,7 @@ export class LaBoîte implements Application {
   async commit(
     repoId: RepoId,
     branchName: BranchName,
-    files: File[],
+    files: GitFile[],
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

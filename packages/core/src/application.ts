@@ -1,5 +1,13 @@
-import { Author, BranchName, CommitMessage, File, GitRepoInfo, QueryResult, RepoId } from '.'
-import { RemoteUrl } from './remote_url'
+import {
+  Author,
+  BranchName,
+  CommitMessage,
+  GitFile,
+  GitRepoInfo,
+  QueryResult,
+  RemoteUrl,
+  RepoId,
+} from '.'
 
 export type Application = CommandsApplication & QueriesApplication & Versioned
 
@@ -7,7 +15,7 @@ export interface CommandsApplication {
   commit: (
     repoId: RepoId,
     branchName: BranchName,
-    files: File[],
+    files: GitFile[],
     author: Author,
     message: CommitMessage,
   ) => Promise<void>

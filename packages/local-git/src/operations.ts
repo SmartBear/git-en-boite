@@ -1,11 +1,11 @@
 import {
   Author,
-  CommitRef,
-  File,
-  PendingCommitRef,
-  Refs,
   BranchName,
   CommitMessage,
+  CommitRef,
+  GitFile,
+  PendingCommitRef,
+  Refs,
   RemoteUrl,
 } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
@@ -13,7 +13,7 @@ import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 export class Commit {
   protected constructor(
     public readonly commitRef: CommitRef,
-    public readonly files: File[],
+    public readonly files: GitFile[],
     public readonly message: CommitMessage,
     public readonly author: Author,
   ) {}
@@ -31,7 +31,7 @@ export class Commit {
     return new Commit(this.commitRef, this.files, this.message, author)
   }
 
-  withFiles(files: File[]): Commit {
+  withFiles(files: GitFile[]): Commit {
     return new Commit(this.commitRef, files, this.message, this.author)
   }
 
@@ -124,7 +124,7 @@ export type RepoProtocol = [
   AsyncCommand<Push>,
   AsyncCommand<SetOrigin>,
   AsyncCommand<ValidateRemote>,
-  AsyncQuery<GetFiles, File[]>,
+  AsyncQuery<GetFiles, GitFile[]>,
   AsyncQuery<GetRefs, Refs>,
   AsyncQuery<GetConfig, Config>,
 ]

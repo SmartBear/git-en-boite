@@ -2,11 +2,12 @@ import {
   Author,
   BranchName,
   CommitMessage,
+  CommitName,
+  GitFile,
   GitRepo,
   OpenGitRepo,
   PendingCommitRef,
   RemoteUrl,
-  CommitName,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, matchesPattern } from 'hamjest'
@@ -74,10 +75,7 @@ export const verifyRepoContract = (
 
   describe('committing', () => {
     it('commits a new file to a branch', async () => {
-      const file = {
-        path: 'a.feature',
-        content: 'Feature: A',
-      }
+      const file = new GitFile('a.feature', 'Feature: A')
       const author = new Author('Bob', 'bob@example.com')
       const commitRef = LocalCommitRef.forBranch(branchName)
       const message = CommitMessage.of('a message')
@@ -101,10 +99,7 @@ export const verifyRepoContract = (
     it('pushes a commit to a remote branch', async () => {
       await git.setOriginTo(originUrl)
       await git.fetch()
-      const file = {
-        path: 'a.feature',
-        content: 'Feature: A',
-      }
+      const file = new GitFile('a.feature', 'Feature: A')
       const author = new Author('Bob', 'bob@example.com')
       const commitRef = PendingCommitRef.forBranch(branchName)
       const message = CommitMessage.of('a message')

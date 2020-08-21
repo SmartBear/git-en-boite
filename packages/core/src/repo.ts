@@ -3,12 +3,12 @@ import {
   Branch,
   BranchName,
   CommitMessage,
-  File,
+  GitFile,
   GitRepo,
   PendingCommitRef,
+  RemoteUrl,
   RepoId,
 } from '.'
-import { RemoteUrl } from './remote_url'
 
 export class Repo {
   constructor(public readonly repoId: RepoId, private readonly git: GitRepo) {}
@@ -31,7 +31,7 @@ export class Repo {
 
   async commit(
     branchName: BranchName,
-    files: File[],
+    files: GitFile[],
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

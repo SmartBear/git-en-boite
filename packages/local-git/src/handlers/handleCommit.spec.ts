@@ -3,7 +3,7 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  File,
+  GitFile,
   PendingCommitRef,
   RefName,
 } from 'git-en-boite-core'
@@ -83,8 +83,7 @@ describe('handleCommit', () => {
 
   it('creates a commit containing the given files', async () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
-
-    const file = { path: 'a.file', content: 'some content' }
+    const file = new GitFile('a.file', 'some content')
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
     assertThat(
       await repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
@@ -94,8 +93,7 @@ describe('handleCommit', () => {
 
   it('clears the index before committing the index with no parent', async () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
-
-    const file = { path: 'a.file', content: 'some content' }
+    const file = new GitFile('a.file', 'some content')
     const objectId = await repo.read('hash-object', ['-w', '--stdin'], { stdin: 'Junk file' })
     await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
@@ -121,7 +119,7 @@ describe('handleCommit', () => {
 
   describe('to a remote branch', () => {
     it('creates a commit using the existing tree', async () => {
-      const existingFile = { path: 'a.file', content: 'some content' }
+      const existingFile = new GitFile('a.file', 'some content')
       await git(
         Commit.toCommitRef({
           local: RefName.fetchedFromOrigin(branchName),
@@ -130,7 +128,7 @@ describe('handleCommit', () => {
         }).withFiles([existingFile]),
       )
 
-      const otherFile = { path: 'b.file', content: 'another content' }
+      const otherFile = new GitFile('b.file', 'another content')
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
 
@@ -158,8 +156,8 @@ describe('handleCommit', () => {
   })
 
   describe('handling concurrent commits to the same repo', () => {
-    const mainFile: File = { path: 'main.file', content: '' }
-    const experimentalFile: File = { path: 'experimental.file', content: '' }
+    const mainFile = new GitFile('main.file', '')
+    const experimentalFile = new GitFile('experimental.file', '')
     const mainRef = PendingCommitRef.forBranch(BranchName.of('branch-main'))
     const experimentalRef = PendingCommitRef.forBranch(BranchName.of('branch-experimental'))
 
@@ -184,13 +182,13 @@ describe('handleCommit', () => {
   })
 
   describe('handling concurrent commits to the same repo', () => {
-    const mainFile: File = { path: 'main.file', content: '' }
-    const experimentalFile: File = { path: 'experimental.file', content: '' }
+    const mainFile = new GitFile('main.file', '')
+    const experimentalFile = new GitFile('experimental.file', '')
     const branchMain = BranchName.of('branch-main')
     const branchExperimental = BranchName.of('branch-experimental')
     const mainRef = PendingCommitRef.forBranch(branchMain)
     const experimentalRef = PendingCommitRef.forBranch(branchExperimental)
-    const existingFile = { path: 'a.file', content: 'some content' }
+    const existingFile = new GitFile('a.file', 'some content')
 
     beforeEach(async () => {
       await git(

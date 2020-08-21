@@ -1,13 +1,13 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
-  File,
+  Author,
+  CommitMessage,
+  GitFile,
   GitRepo,
   OpenGitRepo,
   OpensGitRepos,
   PendingCommitRef,
   Refs,
-  Author,
-  CommitMessage,
   RemoteUrl,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
@@ -88,7 +88,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
 
   async commit(
     commitRef: PendingCommitRef,
-    files: File[],
+    files: GitFile[],
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

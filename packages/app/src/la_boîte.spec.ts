@@ -1,12 +1,12 @@
 import {
   Author,
-  RepoId,
   BranchName,
   CommitMessage,
-  File,
+  CommitName,
+  GitFile,
   RefName,
   RemoteUrl,
-  CommitName,
+  RepoId,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -103,12 +103,7 @@ describe(LaBoîte.name, () => {
       await origin(Commit.toCommitRef(commitRef))
       await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
       await app.fetchFromRemote(repoId)
-      const files: File[] = [
-        {
-          path: 'feature.feature',
-          content: 'Feature: Feature',
-        },
-      ]
+      const files: GitFile[] = [new GitFile('feature.feature', 'Feature: Feature')]
       const message = CommitMessage.of('a message')
       const author = new Author('Bob', 'bob@example.com')
 

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { File, BranchName } from 'git-en-boite-core'
+import { BranchName, GitFile } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, contains } from 'hamjest'
 import path from 'path'
@@ -10,7 +10,7 @@ import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, GetFiles, Init } from '../operations'
 
-type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetFiles, File[]>]
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetFiles, GitFile[]>]
 
 describe('handleGetFiles', () => {
   let root: string
@@ -34,7 +34,7 @@ describe('handleGetFiles', () => {
 
   it('reads a single file from a repo', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
-    const file = { path: 'a.file', content: 'File content' }
+    const file = new GitFile('a.file', 'some content')
     const git = await openRepo(repoPath)
     await git(Init.bareRepo())
     const branchName = BranchName.of('a-branch')
