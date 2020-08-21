@@ -1,6 +1,6 @@
 export * from './application'
 export * from './author'
-export * from './branch'
+export * from './branch_snapshot'
 export * from './branch_name'
 export * from './commit_message'
 export * from './commit_name'
