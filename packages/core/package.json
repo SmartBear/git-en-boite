@@ -25,5 +25,7 @@
     "hamjest": "^3.5.0",
     "ts-sinon": "^1.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "tiny-types": "^1.14.1"
+  }
 }

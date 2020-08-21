@@ -19,7 +19,7 @@ type ParsedBody = { files: Files; author: Author; commitMessage: CommitName }
 
 const parseBody: (body: any) => ParsedBody = (body: any) => ({
   files: Files.fromJSON(body.files as unknown),
-  author: new Author(body.author.name, body.author.email),
+  author: Author.fromJSON(body.author),
   commitMessage: CommitMessage.of(body.message),
 })
 
