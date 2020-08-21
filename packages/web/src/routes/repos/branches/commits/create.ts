@@ -1,37 +1,48 @@
 import Router, { RouterContext } from '@koa/router'
-import { Application, Author, BranchName, CommitMessage, RepoId, Files } from 'git-en-boite-core'
-import { Context } from 'koa'
+import {
+  Application,
+  Author,
+  BranchName,
+  CommitMessage,
+  RepoId,
+  Files,
+  CommitName,
+} from 'git-en-boite-core'
+import { Context, Next } from 'koa'
 
 import {
   checkForMissingRequestBodyContent,
   validateRequestBody,
 } from '../../../../validate_request'
-import { body, IValidationState, validationResults } from 'koa-req-validation'
 
-const returnValidationErrors = async (ctx: RouterContext<IValidationState>, next: Next) => {
-  const result = validationResults(ctx)
-  if (!result.hasErrors()) return next()
-  ctx.response.body = { error: result.mapped() }
-  ctx.response.status = 400
-}
+type ParsedBody = { files: Files; author: Author; commitMessage: CommitName }
+
+const parseBody: (body: any) => ParsedBody = (body: any) => ({
+  files: Files.fromJSON(body.files as unknown),
+  author: new Author(body.author.name, body.author.email),
+  commitMessage: CommitMessage.of(body.message),
+})
 
 export default (app: Application): Router =>
   new Router().post(
     '/',
     async (ctx, next) => validateRequestBody(ctx, next, validate),
-    body('files')
-      .custom(async (json: unknown) => {
-        Files.fromJSON(json)
-      })
-      .build(),
-    returnValidationErrors,
-    async (ctx: Context) => {
+    async (ctx: Context, next: Next) => {
+      let parsedBody: ParsedBody
+      try {
+        parsedBody = parseBody(ctx.request.body)
+      } catch (error) {
+        ctx.response.body = { error }
+        ctx.response.status = 400
+        return next()
+      }
+
       await app.commit(
         RepoId.of(ctx.params.repoId),
         BranchName.of(ctx.params.branchName),
-        Files.fromJSON(ctx.request.body.files as unknown),
-        new Author(ctx.request.body.author.name, ctx.request.body.author.email),
-        CommitMessage.of(ctx.request.body.message),
+        parsedBody.files,
+        parsedBody.author,
+        parsedBody.commitMessage,
       )
       ctx.body = {}
       ctx.status = 200
