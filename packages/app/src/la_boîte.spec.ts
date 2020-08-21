@@ -3,6 +3,7 @@ import {
   BranchName,
   CommitMessage,
   CommitName,
+  Files,
   GitFile,
   RefName,
   RemoteUrl,
@@ -103,7 +104,7 @@ describe(LaBoîte.name, () => {
       await origin(Commit.toCommitRef(commitRef))
       await app.connectToRemote(repoId, RemoteUrl.of(repoPath))
       await app.fetchFromRemote(repoId)
-      const files: GitFile[] = [new GitFile('feature.feature', 'Feature: Feature')]
+      const files: Files = [new GitFile('feature.feature', 'Feature: Feature')]
       const message = CommitMessage.of('a message')
       const author = new Author('Bob', 'bob@example.com')
 

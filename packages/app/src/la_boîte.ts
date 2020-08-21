@@ -3,11 +3,11 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  GitFile,
+  Files,
   GitRepoInfo,
   QueryResult,
-  RepoId,
   RemoteUrl,
+  RepoId,
   RepoIndex,
 } from 'git-en-boite-core'
 
@@ -17,7 +17,7 @@ export class LaBoîte implements Application {
   async commit(
     repoId: RepoId,
     branchName: BranchName,
-    files: GitFile[],
+    files: Files,
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

@@ -1,5 +1,5 @@
 import { GitProcess } from 'dugite'
-import { GitFile } from 'git-en-boite-core'
+import { GitFile, Files } from 'git-en-boite-core'
 import { AsyncQuery, Handle } from 'git-en-boite-message-dispatch'
 import { PassThrough, Readable } from 'stream'
 import Split from 'stream-split'
@@ -16,7 +16,7 @@ const streamToArray = (readableStream: Readable) => {
   })
 }
 
-export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, GitFile[]>> = async (
+export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> = async (
   repo,
   { branchName },
 ) => {

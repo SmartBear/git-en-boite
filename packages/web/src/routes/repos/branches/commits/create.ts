@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application, Author, BranchName, CommitMessage, GitFiles, RepoId } from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitMessage, RepoId, GitFiles } from 'git-en-boite-core'
 import { Context } from 'koa'
 
 import {

@@ -3,7 +3,7 @@ import {
   Branch,
   BranchName,
   CommitMessage,
-  GitFile,
+  Files,
   GitRepo,
   PendingCommitRef,
   RemoteUrl,
@@ -31,7 +31,7 @@ export class Repo {
 
   async commit(
     branchName: BranchName,
-    files: GitFile[],
+    files: Files,
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

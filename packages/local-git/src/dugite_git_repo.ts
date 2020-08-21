@@ -1,7 +1,7 @@
 import {
   Author,
   CommitMessage,
-  GitFile,
+  Files,
   GitRepo,
   PendingCommitRef,
   Refs,
@@ -22,7 +22,7 @@ export class DugiteGitRepo implements GitRepo {
 
   commit(
     commitRef: PendingCommitRef,
-    files: GitFile[],
+    files: Files,
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

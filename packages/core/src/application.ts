@@ -2,11 +2,11 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  GitFile,
   GitRepoInfo,
   QueryResult,
   RemoteUrl,
   RepoId,
+  Files,
 } from '.'
 
 export type Application = CommandsApplication & QueriesApplication & Versioned
@@ -15,7 +15,7 @@ export interface CommandsApplication {
   commit: (
     repoId: RepoId,
     branchName: BranchName,
-    files: GitFile[],
+    files: Files,
     author: Author,
     message: CommitMessage,
   ) => Promise<void>

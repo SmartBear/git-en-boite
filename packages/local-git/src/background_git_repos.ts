@@ -2,7 +2,7 @@ import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
   Author,
   CommitMessage,
-  GitFile,
+  Files,
   GitRepo,
   OpenGitRepo,
   OpensGitRepos,
@@ -88,7 +88,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
 
   async commit(
     commitRef: PendingCommitRef,
-    files: GitFile[],
+    files: Files,
     author: Author,
     message: CommitMessage,
   ): Promise<void> {

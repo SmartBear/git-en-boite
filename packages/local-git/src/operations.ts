@@ -3,7 +3,7 @@ import {
   BranchName,
   CommitMessage,
   CommitRef,
-  GitFile,
+  Files,
   PendingCommitRef,
   Refs,
   RemoteUrl,
@@ -13,7 +13,7 @@ import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 export class Commit {
   protected constructor(
     public readonly commitRef: CommitRef,
-    public readonly files: GitFile[],
+    public readonly files: Files,
     public readonly message: CommitMessage,
     public readonly author: Author,
   ) {}
@@ -31,7 +31,7 @@ export class Commit {
     return new Commit(this.commitRef, this.files, this.message, author)
   }
 
-  withFiles(files: GitFile[]): Commit {
+  withFiles(files: Files): Commit {
     return new Commit(this.commitRef, files, this.message, this.author)
   }
 
@@ -124,7 +124,7 @@ export type RepoProtocol = [
   AsyncCommand<Push>,
   AsyncCommand<SetOrigin>,
   AsyncCommand<ValidateRemote>,
-  AsyncQuery<GetFiles, GitFile[]>,
+  AsyncQuery<GetFiles, Files>,
   AsyncQuery<GetRefs, Refs>,
   AsyncQuery<GetConfig, Config>,
 ]

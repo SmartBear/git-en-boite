@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BranchName, GitFile } from 'git-en-boite-core'
+import { BranchName, Files, GitFile } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, contains } from 'hamjest'
 import path from 'path'
@@ -10,7 +10,7 @@ import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, GetFiles, Init } from '../operations'
 
-type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetFiles, GitFile[]>]
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<GetFiles, Files>]
 
 describe('handleGetFiles', () => {
   let root: string
