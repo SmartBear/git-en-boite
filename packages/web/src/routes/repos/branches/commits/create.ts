@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application, Author, BranchName, CommitMessage, RepoId, GitFiles } from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitMessage, RepoId, Files } from 'git-en-boite-core'
 import { Context } from 'koa'
 
 import {
@@ -15,7 +15,7 @@ export default (app: Application): Router =>
       await app.commit(
         RepoId.of(ctx.params.repoId),
         BranchName.of(ctx.params.branchName),
-        GitFiles.fromRequest(ctx.request.body.files),
+        Files.fromJSON(ctx.request.body.files as unknown),
         new Author(ctx.request.body.author.name, ctx.request.body.author.email),
         CommitMessage.of(ctx.request.body.message),
       )

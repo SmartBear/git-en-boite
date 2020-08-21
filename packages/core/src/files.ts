@@ -1,9 +1,11 @@
 import { GitFile } from '.'
+import { ensure, isArray, JSONObject } from 'tiny-types'
 
-export type Files = Array<GitFile>
+export class Files extends Array<GitFile> {
+  static fromJSON(json: unknown): Files {
+    ensure('Files', json, isArray())
+    const files = json as []
 
-export class GitFiles {
-  static fromRequest(files: Array<GitFile>): Files {
-    return files.map((file: GitFile) => new GitFile(file.path, file.content))
+    return files.map((json: JSONObject) => GitFile.fromJSON(json))
   }
 }
