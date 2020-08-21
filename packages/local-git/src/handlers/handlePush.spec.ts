@@ -1,5 +1,13 @@
 import fs from 'fs'
-import { BranchName, GitFile, PendingCommitRef, Refs, RemoteUrl } from 'git-en-boite-core'
+import {
+  BranchName,
+  GitFile,
+  PendingCommitRef,
+  Refs,
+  RemoteUrl,
+  FilePath,
+  FileContent,
+} from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, not } from 'hamjest'
 import path from 'path'
@@ -58,7 +66,7 @@ describe('handlePush', () => {
     await git(SetOrigin.toUrl(RemoteUrl.of(originPath)))
     await git(Fetch.fromOrigin())
 
-    const file = new GitFile('a.file', 'some content')
+    const file = new GitFile(new FilePath('a.file'), new FileContent('some content'))
     const commitRef = PendingCommitRef.forBranch(branchName)
     await git(Commit.toCommitRef(commitRef).withFiles([file]))
     const { revision: newCommit } = (await git(GetRefs.all())).forBranch(branchName)

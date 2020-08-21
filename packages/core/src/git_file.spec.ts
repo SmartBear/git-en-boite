@@ -1,4 +1,4 @@
-import { GitFile } from '.'
+import { GitFile, FilePath, FileContent } from '.'
 import { assertThat, equalTo, throws, hasProperty, containsString } from 'hamjest'
 
 describe(GitFile.name, () => {
@@ -7,7 +7,7 @@ describe(GitFile.name, () => {
       const path = 'file.path'
       const content = 'file content'
       const file = GitFile.fromJSON({ path, content })
-      assertThat(file, equalTo(new GitFile(path, content)))
+      assertThat(file, equalTo(new GitFile(new FilePath(path), new FileContent(content))))
     })
 
     it('throws when file does not include path', () => {

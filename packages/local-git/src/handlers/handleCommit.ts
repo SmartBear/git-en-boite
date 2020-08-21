@@ -24,9 +24,15 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
     async function addFiles() {
       for (const file of files) {
         const objectId = await repo.read('hash-object', ['-w', '--stdin'], {
-          stdin: file.content,
+          stdin: file.content.value,
         })
-        await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file.path])
+        await repo.exec('update-index', [
+          '--add',
+          '--cacheinfo',
+          '100644',
+          objectId,
+          file.path.value,
+        ])
       }
     }
 

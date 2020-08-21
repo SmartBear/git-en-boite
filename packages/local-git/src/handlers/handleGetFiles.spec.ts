@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BranchName, Files, GitFile } from 'git-en-boite-core'
+import { BranchName, Files, GitFile, FilePath, FileContent } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, contains } from 'hamjest'
 import path from 'path'
@@ -34,7 +34,7 @@ describe('handleGetFiles', () => {
 
   it('reads a single file from a repo', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
-    const file = new GitFile('a.file', 'some content')
+    const file = new GitFile(new FilePath('a.file'), new FileContent('some content'))
     const git = await openRepo(repoPath)
     await git(Init.bareRepo())
     const branchName = BranchName.of('a-branch')

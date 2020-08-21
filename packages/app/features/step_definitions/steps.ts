@@ -11,6 +11,8 @@ import {
   RepoId,
   NameOfPerson,
   Email,
+  FilePath,
+  FileContent,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -77,7 +79,7 @@ async function fetch(this: any) {
 }
 
 When('a consumer commits a new file to {BranchName}', async function (branchName: BranchName) {
-  const file = new GitFile('features/new.feature', 'Feature: New!')
+  const file = new GitFile(new FilePath('features/new.feature'), new FileContent('Feature: New!'))
   this.file = file
   const response = await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)

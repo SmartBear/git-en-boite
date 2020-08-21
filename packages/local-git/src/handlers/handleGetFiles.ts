@@ -1,5 +1,5 @@
 import { GitProcess } from 'dugite'
-import { GitFile, Files } from 'git-en-boite-core'
+import { GitFile, Files, FilePath, FileContent } from 'git-en-boite-core'
 import { AsyncQuery, Handle } from 'git-en-boite-message-dispatch'
 import { PassThrough, Readable } from 'stream'
 import Split from 'stream-split'
@@ -9,6 +9,7 @@ import { GetFiles } from '../operations'
 
 const streamToArray = (readableStream: Readable) => {
   return new Promise((resolve, reject) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const items: any[] = []
     readableStream.on('data', items.push.bind(items))
     readableStream.on('error', reject)
@@ -53,11 +54,16 @@ export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> =
   })
   ls.on('error', err => result.emit('error', err))
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stream.on('data', (data: any) => {
     const line = data.toString()
     const [, , entryType, gitBlobSha, path] = line.match(/^(\d+) ([a-z]+) ([a-f0-9]+)\t(.+)$/)
     if (entryType !== 'blob') return
-    result.write(repo.exec('show', [gitBlobSha]).then(content => new GitFile(path, content.stdout)))
+    result.write(
+      repo
+        .exec('show', [gitBlobSha])
+        .then(content => new GitFile(new FilePath(path), new FileContent(content.stdout))),
+    )
   })
 
   stream.on('end', () => {
