@@ -11,7 +11,7 @@ Feature: Connect
     Then it should respond with an error:
       """
       {
-        "error": "Could not connect to a git http server using remoteUrl 'a-bad-url'"
+        "error": "Could not connect to a Git HTTP server using remoteUrl 'a-bad-url'"
       }
       """
 

@@ -57,7 +57,7 @@ describe('POST /repos', () => {
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(400)
-    assertThat(response.body.error, containsString('Could not connect to a git HTTP server'))
+    assertThat(response.body.error, containsString('Could not connect to a Git HTTP server'))
   })
 
   describe('validation', () => {
