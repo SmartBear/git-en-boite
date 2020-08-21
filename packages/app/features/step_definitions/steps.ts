@@ -28,7 +28,7 @@ import {
   not,
 } from 'hamjest'
 import path from 'path'
-import { isSuccess } from 'features/support/matchers/is_success'
+import { isSuccess } from '../support/matchers/is_success'
 
 Given('a remote repo with branches:', async function (branchesTable) {
   const repoId = (this.repoId = RepoId.generate())
