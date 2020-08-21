@@ -46,37 +46,6 @@ describe('/repos', () => {
     })
   })
 
-  describe('POST /repos/', () => {
-    it('connects to the remote repo', async () => {
-      const repoId = RepoId.of('a-repo-id')
-      const remoteUrl = RemoteUrl.of('../tmp')
-      app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(repoId, remoteUrl).resolves()
-      await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(202)
-      assertThat(app.connectToRemote, wasCalled())
-    })
-
-    it('redirects to the repo if it already exists', async () => {
-      const repoInfo: GitRepoInfo = {
-        repoId: RepoId.of('a-repo-id'),
-        branches: [],
-      }
-      app.getInfo.resolves(QueryResult.from(repoInfo))
-      const connectRepoRequest = { repoId: 'a-repo-id', remoteUrl: '../tmp' }
-      await request.post('/repos').send(connectRepoRequest).expect(302)
-      const response = await request.post('/repos').send(connectRepoRequest).redirects(1)
-      assertThat(response.body, equalTo(bareObject(repoInfo)))
-    })
-
-    it('responds with 400 if the connection attempt fails', async () => {
-      const repoId = RepoId.of('a-repo-id')
-      const remoteUrl = RemoteUrl.of('a-bad-url')
-      app.getInfo.resolves(QueryResult.from())
-      app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
-      await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(400)
-    })
-  })
-
   describe('POST /repos/:repoId', () => {
     it('triggers a fetch for the repo', async () => {
       const repoId = RepoId.of('a-repo-id')

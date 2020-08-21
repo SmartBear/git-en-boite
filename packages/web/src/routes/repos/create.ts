@@ -24,6 +24,7 @@ export default (app: Application, router: Router): Router =>
       try {
         parsedBody = parseBody(ctx.request.body)
       } catch (error) {
+        console.log(error)
         ctx.response.body = { error }
         ctx.response.status = 400
         return next()
@@ -45,7 +46,7 @@ export default (app: Application, router: Router): Router =>
       }
 
       async function redirectToExisting(repoInfo: GitRepoInfo) {
-        ctx.response.redirect(router.url('get-repo', { repoId: repoInfo.repoId.value }))
+        ctx.response.redirect(router.url('get-repo', { repoId: repoInfo.repoId.urlEncode() }))
       }
     },
   )

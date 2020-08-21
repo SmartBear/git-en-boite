@@ -15,18 +15,17 @@ describe(RepoId.name, () => {
         throws(hasProperty('message', matchesPattern('should be a string'))),
       )
     })
-
-    it('fails when the value contains slashes', () => {
-      assertThat(
-        () => RepoId.fromJSON('a/b'),
-        throws(hasProperty('message', matchesPattern('should match pattern'))),
-      )
-    })
   })
 
   describe('generating values', () => {
     it('generates unique values', () => {
       assertThat(RepoId.generate(), not(equalTo(RepoId.generate())))
+    })
+  })
+
+  describe('encoding as a URL componenent', () => {
+    it('escapes slashes', () => {
+      assertThat(RepoId.of('one/two').urlEncode(), equalTo('one%2Ftwo'))
     })
   })
 })
