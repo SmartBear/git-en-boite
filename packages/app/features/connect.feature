@@ -14,3 +14,12 @@ Feature: Connect
         "error": "Could not connect to a git http server using remoteUrl 'a-bad-url'"
       }
       """
+
+  Scenario: Connection attempt using bad JSON
+    When a consumer tries to connect using a malformed payload
+    Then it should respond with an error:
+      """
+      {
+        "error": "Missing information from the request: repoId, remoteUrl"
+      }
+      """

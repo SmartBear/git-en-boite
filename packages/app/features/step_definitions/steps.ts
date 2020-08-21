@@ -4,15 +4,14 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  CommitName,
+  Email,
+  FileContent,
+  FilePath,
   GitFile,
-  RepoSnapshot,
+  NameOfPerson,
   RefName,
   RepoId,
-  NameOfPerson,
-  Email,
-  FilePath,
-  FileContent,
+  RepoSnapshot,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -22,16 +21,9 @@ import {
   LocalCommitRef,
   RepoFactory,
 } from 'git-en-boite-local-git'
-import {
-  assertThat,
-  contains,
-  containsInAnyOrder,
-  containsString,
-  equalTo,
-  matchesPattern,
-  not,
-} from 'hamjest'
+import { assertThat, contains, containsInAnyOrder, containsString, equalTo, not } from 'hamjest'
 import path from 'path'
+
 import { isSuccess } from '../support/matchers/is_success'
 
 Given('a remote repo with branches:', async function (branchesTable) {
@@ -68,6 +60,10 @@ When('a consumer tries to connect to the remote URL {string}', async function (r
   this.repoId = RepoId.generate()
   const repoInfo = { repoId: this.repoId, remoteUrl }
   this.lastResponse = await this.request.post('/repos').send(repoInfo)
+})
+
+When('a consumer tries to connect using a malformed payload', async function () {
+  this.lastResponse = await this.request.post('/repos').send('garbage')
 })
 
 When('a consumer triggers a manual fetch of the repo', fetch)
