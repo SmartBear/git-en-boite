@@ -2,7 +2,7 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  GitRepoInfo,
+  RepoSnapshot,
   QueryResult,
   RemoteUrl,
   RepoId,
@@ -24,7 +24,7 @@ export interface CommandsApplication {
 }
 
 export interface QueriesApplication {
-  getInfo: (repoId: RepoId) => Promise<QueryResult<GitRepoInfo>>
+  getInfo: (repoId: RepoId) => Promise<QueryResult<RepoSnapshot>>
 }
 
 export interface Versioned {

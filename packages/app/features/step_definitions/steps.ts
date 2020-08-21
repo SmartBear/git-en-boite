@@ -6,7 +6,7 @@ import {
   CommitMessage,
   CommitName,
   GitFile,
-  GitRepoInfo,
+  RepoSnapshot,
   RefName,
   RepoId,
   NameOfPerson,
@@ -115,7 +115,7 @@ Then("the repo's branches should be:", async function (expectedBranchesTable: Ta
   assertThat(response, isSuccess())
 
   assertThat(
-    (response.body as GitRepoInfo).branches.map(branch => branch.name),
+    (response.body as RepoSnapshot).branches.map(branch => branch.name),
     containsInAnyOrder(...expectedBranchNames),
   )
 })

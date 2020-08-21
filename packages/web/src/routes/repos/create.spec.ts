@@ -1,12 +1,12 @@
-import { Application, RepoId, RemoteUrl, QueryResult, GitRepoInfo } from 'git-en-boite-core'
-import { assertThat, containsString, equalTo } from 'hamjest'
+import { Application, RepoSnapshot, QueryResult, RemoteUrl, RepoId } from 'git-en-boite-core'
+import { assertThat, equalTo } from 'hamjest'
+import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
 
 import createWebApp from '../../create_web_app'
 import router from '../router'
-import { wasCalled } from 'hamjest-sinon'
 
 const bareObject = <T>(object: T): Record<string, unknown> => JSON.parse(JSON.stringify(object))
 
@@ -40,10 +40,7 @@ describe('POST /repos', () => {
 
   it('redirects to the repo if it already exists', async () => {
     const repoId = RepoId.of('a-repo-id/with-slashes')
-    const repoInfo: GitRepoInfo = {
-      repoId,
-      branches: [],
-    }
+    const repoInfo = new RepoSnapshot(repoId, [])
     app.getInfo.resolves(QueryResult.from(repoInfo))
     const connectRepoRequest = { repoId, remoteUrl: '../tmp' }
     await request.post('/repos').send(connectRepoRequest).expect(302)

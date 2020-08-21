@@ -1,4 +1,4 @@
-import { Application, GitRepoInfo, QueryResult, RepoId, RemoteUrl } from 'git-en-boite-core'
+import { Application, RepoSnapshot, QueryResult, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -31,10 +31,7 @@ describe('/repos', () => {
 
   describe('GET /repos/:repoId', () => {
     it('returns an object with info about the repo', async () => {
-      const repoInfo: GitRepoInfo = {
-        repoId: RepoId.of('a-repo-id'),
-        branches: [],
-      }
+      const repoInfo = new RepoSnapshot(RepoId.of('a-repo-id'), [])
       app.getInfo.resolves(QueryResult.from(repoInfo))
       const response = await request.get('/repos/a-repo-id').expect(200)
       assertThat(response.body, equalTo(bareObject(repoInfo)))

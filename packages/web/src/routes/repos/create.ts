@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application, GitRepoInfo, RemoteUrl, RepoId } from 'git-en-boite-core'
+import { Application, RepoSnapshot, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { Context, Next } from 'koa'
 
 import { checkForMissingRequestBodyContent, validateRequestBody } from '../../validate_request'
@@ -45,7 +45,7 @@ export default (app: Application, router: Router): Router =>
         }
       }
 
-      async function redirectToExisting(repoInfo: GitRepoInfo) {
+      async function redirectToExisting(repoInfo: RepoSnapshot) {
         ctx.response.redirect(router.url('get-repo', { repoId: repoInfo.repoId.urlEncode() }))
       }
     },

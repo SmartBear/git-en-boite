@@ -4,7 +4,7 @@ import {
   BranchName,
   CommitMessage,
   Files,
-  GitRepoInfo,
+  RepoSnapshot,
   QueryResult,
   RemoteUrl,
   RepoId,
@@ -35,11 +35,10 @@ export class LaBoîte implements Application {
     await repo.fetch()
   }
 
-  async getInfo(repoId: RepoId): Promise<QueryResult<GitRepoInfo>> {
+  async getInfo(repoId: RepoId): Promise<QueryResult<RepoSnapshot>> {
     if (!(await this.repoIndex.exists(repoId))) return QueryResult.from()
     const repo = await this.repoIndex.find(repoId)
     const branches = await repo.branches()
-    const result: GitRepoInfo = { repoId, branches }
-    return QueryResult.from(result)
+    return QueryResult.from(new RepoSnapshot(repoId, branches))
   }
 }
