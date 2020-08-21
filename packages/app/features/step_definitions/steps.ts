@@ -125,14 +125,10 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
 ) {
   const response = await this.request.get(`/repos/${this.repoId}`).set('Accept', 'application/json')
   assertThat(response, isSuccess())
-
-  // TODO: GitRepoInfo.parseJSON(response.body)
   assertThat(
-    CommitName.of(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      response.body.branches.find((branch: any) => BranchName.of(branch.name).equals(branchName))
-        .revision,
-    ),
+    RepoSnapshot.fromJSON(response.body).branches.find(branchSnapshot =>
+      branchName.equals(branchSnapshot.name),
+    ).revision,
     equalTo(this.lastCommitRevision),
   )
 })
