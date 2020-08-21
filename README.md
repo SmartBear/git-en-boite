@@ -6,13 +6,13 @@ Put git in a box to make it easy to work with in your apps.
 
 ## Features
 
-- Clone repos from 3rd party git providers - GitHub, GitLab, BitBucket etc. (DONE)
-- Fetch updates from origin on demand (DONE)
-- Create new commits on a branch and push to the origin (TODO)
+- ✅ Clone repos from 3rd party git providers - GitHub, GitLab, BitBucket etc.
+- ✅ Fetch updates from origin on demand
+- ✅ Create new commits on a branch and push to the origin
 - Set up webhooks to automatically fetch when origin is updated (TODO)
 - Emit events about changes in the repo (TODO)
 - Query the repo for:
-  - branches revisions (DONE)
+  - ✅ branch head revisions
   - file lists (TODO)
   - file contents (TODO)
 - Create pull requests on 3rd party providers from a local branch (TODO)
