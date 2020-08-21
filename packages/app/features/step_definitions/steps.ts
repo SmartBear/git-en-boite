@@ -64,11 +64,10 @@ Given('the remote repo has been connected', async function () {
   await this.request.post('/repos').send(repoInfo).expect(202)
 })
 
-When('a consumer tries to connect to a bad remote URL', async function () {
+When('a consumer tries to connect to the remote URL {string}', async function (remoteUrl) {
   this.repoId = RepoId.generate()
-  const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
-  const response = await this.request.post('/repos').send(repoInfo)
-  this.lastResponseCode = response.res.statusCode
+  const repoInfo = { repoId: this.repoId, remoteUrl }
+  this.lastResponse = await this.request.post('/repos').send(repoInfo)
 })
 
 When('a consumer triggers a manual fetch of the repo', fetch)
@@ -133,8 +132,9 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
   )
 })
 
-Then('it should respond with an error', function () {
-  assertThat(String(this.lastResponseCode), not(matchesPattern(/2\d\d/)))
+Then('it should respond with an error:', function (expectedJSON) {
+  assertThat(this.lastResponse, not(isSuccess()))
+  assertThat(this.lastResponse.body, equalTo(JSON.parse(expectedJSON)))
 })
 
 Then('the file should be in {BranchName} of the remote repo', async function (

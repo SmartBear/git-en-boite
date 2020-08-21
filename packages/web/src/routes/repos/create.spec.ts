@@ -1,5 +1,5 @@
 import { Application, RepoSnapshot, QueryResult, RemoteUrl, RepoId } from 'git-en-boite-core'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, equalTo, containsString } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
@@ -53,7 +53,11 @@ describe('POST /repos', () => {
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
     app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
-    await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(400)
+    const response = await request
+      .post('/repos')
+      .send({ repoId: repoId.value, remoteUrl })
+      .expect(400)
+    assertThat(response.body.error, containsString('Could not connect to a git HTTP server'))
   })
 
   describe('validation', () => {

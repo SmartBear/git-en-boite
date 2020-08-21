@@ -42,6 +42,9 @@ export default (app: Application, router: Router): Router =>
           ctx.response.status = 202
         } catch {
           ctx.response.status = 400
+          ctx.response.body = {
+            error: `Could not connect to a git http server using remoteUrl '${remoteUrl}'`,
+          }
         }
       }
 
