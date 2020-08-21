@@ -28,6 +28,7 @@ import {
   not,
 } from 'hamjest'
 import path from 'path'
+import { isSuccess } from 'features/support/matchers/is_success'
 
 Given('a remote repo with branches:', async function (branchesTable) {
   const repoId = (this.repoId = RepoId.generate())
@@ -76,7 +77,7 @@ async function fetch(this: any) {
 When('a consumer commits a new file to {BranchName}', async function (branchName: BranchName) {
   const file = new GitFile('features/new.feature', 'Feature: New!')
   this.file = file
-  await this.request
+  const response = await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
     .send({
       files: [file],
@@ -84,7 +85,7 @@ When('a consumer commits a new file to {BranchName}', async function (branchName
       message: CommitMessage.of('adding a file'),
     })
     .set('Accept', 'application/json')
-    .expect(200)
+  assertThat(response, isSuccess())
 })
 
 When('a consumer commits to {BranchName} with:', async function (
@@ -94,19 +95,17 @@ When('a consumer commits to {BranchName} with:', async function (
   const row = commitDetails.hashes()[0]
   const author = new Author(row['Author name'], row['Author email'])
   const message = CommitMessage.of(row['Commit message'])
-  await this.request
+  const response = await this.request
     .post(`/repos/${this.repoId}/branches/${branchName}/commits`)
     .send({ files: [], author, message })
     .set('Accept', 'application/json')
-    .expect(200)
+  assertThat(response, isSuccess())
 })
 
 Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
-  const response = await this.request
-    .get(`/repos/${this.repoId}`)
-    .set('Accept', 'application/json')
-    .expect(200)
+  const response = await this.request.get(`/repos/${this.repoId}`).set('Accept', 'application/json')
+  assertThat(response, isSuccess())
 
   assertThat(
     (response.body as GitRepoInfo).branches.map(branch => branch.name),
@@ -117,10 +116,8 @@ Then("the repo's branches should be:", async function (expectedBranchesTable: Ta
 Then('the repo should have the new commit at the head of {BranchName}', async function (
   branchName: BranchName,
 ) {
-  const response = await this.request
-    .get(`/repos/${this.repoId}`)
-    .set('Accept', 'application/json')
-    .expect(200)
+  const response = await this.request.get(`/repos/${this.repoId}`).set('Accept', 'application/json')
+  assertThat(response, isSuccess())
 
   // TODO: GitRepoInfo.parseJSON(response.body)
   assertThat(
