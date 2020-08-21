@@ -39,7 +39,7 @@ describe('POST /repos', () => {
     it('responds with 400 (invalid request) when repoId is not valid', async () => {
       const connectRepoRequest = { repoId: 'a/repo/id', remoteUrl: '../tmp' }
       const response = await request.post('/repos').send(connectRepoRequest).expect(400)
-      assertThat(response.body.error.repoId.msg, containsString('should match pattern'))
+      assertThat(response.body.error.message, containsString('should match pattern'))
     })
   })
 })

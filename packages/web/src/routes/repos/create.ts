@@ -1,16 +1,15 @@
-import Router, { RouterContext } from '@koa/router'
-import { Application, GitRepoInfo, RepoId, RemoteUrl } from 'git-en-boite-core'
+import Router from '@koa/router'
+import { Application, GitRepoInfo, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { Context, Next } from 'koa'
-import { body, IValidationState, validationResults } from 'koa-req-validation'
 
 import { checkForMissingRequestBodyContent, validateRequestBody } from '../../validate_request'
 
-const returnValidationErrors = async (ctx: RouterContext<IValidationState>, next: Next) => {
-  const result = validationResults(ctx)
-  if (!result.hasErrors()) return next()
-  ctx.response.body = { error: result.mapped() }
-  ctx.response.status = 400
-}
+type ParsedBody = { repoId: RepoId; remoteUrl: RemoteUrl }
+
+const parseBody: (body: any) => ParsedBody = (body: any) => ({
+  repoId: RepoId.fromJSON(body.repoId),
+  remoteUrl: RemoteUrl.fromJSON(body.remoteUrl),
+})
 
 export default (app: Application, router: Router): Router =>
   new Router().post(
@@ -20,15 +19,16 @@ export default (app: Application, router: Router): Router =>
       validateRequestBody(ctx, next, (received: any) => {
         checkForMissingRequestBodyContent({ received, expected: ['repoId', 'remoteUrl'] })
       }),
-    body('repoId')
-      .custom(async (json: string) => {
-        RepoId.fromJSON(json)
-      })
-      .build(),
-    returnValidationErrors,
-    async (ctx: Context) => {
-      const repoId = RepoId.fromJSON(ctx.request.body.repoId)
-      const remoteUrl = RemoteUrl.fromJSON(ctx.request.body.remoteUrl)
+    async (ctx: Context, next: Next) => {
+      let parsedBody: ParsedBody
+      try {
+        parsedBody = parseBody(ctx.request.body)
+      } catch (error) {
+        ctx.response.body = { error }
+        ctx.response.status = 400
+        return next()
+      }
+      const { repoId, remoteUrl } = parsedBody
       const result = await app.getInfo(repoId)
       await result.respond({
         foundOne: redirectToExisting,

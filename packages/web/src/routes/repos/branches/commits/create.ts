@@ -1,12 +1,12 @@
-import Router, { RouterContext } from '@koa/router'
+import Router from '@koa/router'
 import {
   Application,
   Author,
   BranchName,
   CommitMessage,
-  RepoId,
-  Files,
   CommitName,
+  Files,
+  RepoId,
 } from 'git-en-boite-core'
 import { Context, Next } from 'koa'
 
