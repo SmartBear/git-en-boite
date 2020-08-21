@@ -50,4 +50,16 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
       .expect(400)
     assertThat(response.body.error, equalTo('Missing information from the request: files, author'))
   })
+
+  it('responds with status 400 when files can not be deserialized', async () => {
+    const repoId = RepoId.of('repo-id')
+    const branchName = BranchName.of('a-branch')
+    const files = ['file']
+    const author = new Author('Bob', 'bob@example.com')
+    const message = CommitMessage.of('a message')
+    await request
+      .post(`/repos/${repoId}/branches/${branchName}/commits`)
+      .send({ files, author, message })
+      .expect(400)
+  })
 })
