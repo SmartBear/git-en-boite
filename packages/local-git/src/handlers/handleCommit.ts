@@ -43,6 +43,9 @@ export const handleCommit: Handle<GitDirectory, AsyncCommand<Commit>> = async (
         [treeName, '-m', message.value, ...commitArgs],
         {
           env: {
+            // Author *and* committer need to be set to overwrite the git config.
+            GIT_COMMITTER_NAME: author.name,
+            GIT_COMMITTER_EMAIL: author.email,
             GIT_AUTHOR_NAME: author.name,
             GIT_AUTHOR_EMAIL: author.email,
           },
