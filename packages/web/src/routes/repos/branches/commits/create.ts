@@ -1,27 +1,50 @@
 import Router from '@koa/router'
-import {
-  Application,
-  Author,
-  BranchName,
-  CommitMessage,
-  CommitName,
-  Files,
-  RepoId,
-} from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitName, Files, RepoId } from 'git-en-boite-core'
 import { Context, Next } from 'koa'
+import { createSchema as S, TsjsonParser } from 'ts-json-validator'
 
 import {
   checkForMissingRequestBodyContent,
   validateRequestBody,
 } from '../../../../validate_request'
 
-type ParsedBody = { files: Files; author: Author; commitMessage: CommitName }
+type ParsedBody = { files: Files; author: Author; message: CommitName }
 
-const parseBody: (body: any) => ParsedBody = (body: any) => ({
-  files: Files.fromJSON(body.files as unknown),
-  author: Author.fromJSON(body.author),
-  commitMessage: CommitMessage.of(body.message),
-})
+const parseBody: (body: string) => ParsedBody = (body: string) => {
+  const parsed: {
+    files: Array<{ path: string; content: string }>
+    author: { name: string; email: string }
+    message: string
+  } = parser.parse(body)
+  return {
+    files: Files.fromJSON(parsed.files),
+    author: Author.fromJSON(parsed.author),
+    message: CommitName.of(parsed.message),
+  }
+}
+
+const parser = new TsjsonParser(
+  S({
+    type: 'object',
+    properties: {
+      files: S({
+        type: 'array',
+      }),
+      author: S({
+        type: 'object',
+        properties: {
+          name: S({ type: 'string' }),
+          email: S({ type: 'string' }),
+        },
+        required: ['name', 'email'],
+      }),
+      message: S({
+        type: 'string',
+      }),
+    },
+    required: ['author'],
+  }),
+)
 
 export default (app: Application): Router =>
   new Router().post(
@@ -30,11 +53,11 @@ export default (app: Application): Router =>
     async (ctx: Context, next: Next) => {
       let parsedBody: ParsedBody
       try {
-        parsedBody = parseBody(ctx.request.body)
+        parsedBody = parseBody(ctx.request.rawBody)
       } catch (error) {
         ctx.response.body = { error }
         ctx.response.status = 400
-        return next()
+        return await next()
       }
 
       await app.commit(
@@ -42,7 +65,7 @@ export default (app: Application): Router =>
         BranchName.of(ctx.params.branchName),
         parsedBody.files,
         parsedBody.author,
-        parsedBody.commitMessage,
+        parsedBody.message,
       )
       ctx.body = {}
       ctx.status = 200

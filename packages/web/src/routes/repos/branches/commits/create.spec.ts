@@ -3,12 +3,11 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  GitFile,
-  RepoId,
+  CommitName,
   Email,
+  Files,
   NameOfPerson,
-  FilePath,
-  FileContent,
+  RepoId,
 } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
@@ -41,10 +40,9 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   it('accepts a valid payload with files and author', async () => {
     const repoId = RepoId.of('repo-id')
     const branchName = BranchName.of('a-branch')
-    const file = new GitFile(new FilePath('a.file'), new FileContent('some content'))
-    const files = [file]
+    const files = Files.fromJSON([{ path: 'path', content: 'content' }])
     const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
-    const message = CommitMessage.of('a message')
+    const message = CommitName.of('a message')
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
       .send({ files, author, message })

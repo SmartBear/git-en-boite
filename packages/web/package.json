@@ -33,6 +33,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-log": "^2.1.0",
     "koa2-cors": "^2.0.6",
+    "ts-json-validator": "^0.6.0",
     "validator": "^13.1.1"
   },
   "devDependencies": {
