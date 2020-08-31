@@ -71,6 +71,8 @@ workflows:
             - slack/status:
               fail_only: false
           filters:
+            tags:
+              only: /.*/
             branches:
               only:
                 - main
