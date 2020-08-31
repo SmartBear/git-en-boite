@@ -13,6 +13,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { GitDirectory } from './git_directory'
+import { IGitResult } from 'dugite'
 
 describe(GitDirectory.name, () => {
   let root: string
@@ -124,6 +125,27 @@ describe(GitDirectory.name, () => {
       const repo = new GitDirectory(repoPath)
       const result = await repo.withUniqueIndex(async () => new Promise(resolve => resolve(5)))
       assertThat(result, equalTo(5))
+    })
+
+    it('cleans up the index, but only once the operation is done', async () => {
+      const repo = new GitDirectory(repoPath)
+      await repo.exec('init')
+      const objectId = await repo.read('hash-object', ['-w', '--stdin'], {
+        stdin: 'My file content',
+      })
+      const file = 'a-file'
+      let done: (value?: unknown) => void
+      const untilDone = new Promise(_done => (done = _done))
+      let repoWithIndex: GitDirectory
+      const writingAFile = repo.withUniqueIndex(async _repoWithIndex => {
+        repoWithIndex = _repoWithIndex
+        await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
+        await untilDone
+      })
+      await assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
+      done()
+      await writingAFile
+      await assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo(['']))
     })
   })
 })

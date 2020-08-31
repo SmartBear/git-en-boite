@@ -39,7 +39,7 @@ export class GitDirectory {
 
   async withUniqueIndex<Result = void>(operateOnIndex: OperateOnIndex<Result>): Promise<Result> {
     const indexFile = path.resolve(this.path, `index-${uuid()}`)
-    const result = operateOnIndex(
+    const result = await operateOnIndex(
       new GitDirectory(this.path, {
         env: { GIT_INDEX_FILE: indexFile },
       }),
