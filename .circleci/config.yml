@@ -50,7 +50,7 @@ workflows:
       - docker/publish:
           image: smartbear/git-en-boite
           path: .
-          tag: latest,stable
+          tag: << pipeline.git.revision >>
           before_build:
             - run:
                 name: Creating container network
