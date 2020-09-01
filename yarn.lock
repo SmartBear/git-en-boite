@@ -357,15 +357,10 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-8.0.3.tgz#51b21b6acb6d1b923bbdc7725c38f9f455166402"
   integrity sha512-vyxR57nv8NfcU0GZu8EUXZLTbCMupIUwy95LJ6lllN+JRPG25CwMHoB1q5xKh8YKhQnHYRAn4yW2yuHbf/5xgg==
 
-"@types/node@*", "@types/node@^14.6.0":
-  version "14.6.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.6.0.tgz#7d4411bf5157339337d7cff864d9ff45f177b499"
-  integrity sha512-mikldZQitV94akrc4sCcSjtJfsTKt4p+e/s0AGscVA6XArQ9kFclP+ZiYUMnq987rc6QlYxXv/EivqlfSLxpKA==
-
-"@types/node@^11.15.20":
-  version "11.15.20"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.15.20.tgz#dacd63b282c1a0d40fa0ad216b7ca128afded614"
-  integrity sha512-DY2QwdrBqNlsxdMehwzUtSsWHgYYPLVCAuXvOcu3wkzYmchbRunQ7OEZFOrmFoBLfA1ysz2Ypr6vtNP9WQkUaQ==
+"@types/node@*", "@types/node@^14.6.0", "@types/node@^14.6.1":
+  version "14.6.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.6.2.tgz#264b44c5a28dfa80198fc2f7b6d3c8a054b9491f"
+  integrity sha512-onlIwbaeqvZyniGPfdw/TEhKIh79pz66L1q06WUQqJLnAb6wbjvOtepLYTGHTqzdXgBYIE3ZdmqHDGsRsbBz7A==
 
 "@types/q@1.0.7":
   version "1.0.7"
@@ -5006,12 +5001,12 @@ ts-node@^8.10.2:
     source-map-support "^0.5.17"
     yn "3.1.1"
 
-ts-sinon@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/ts-sinon/-/ts-sinon-1.2.1.tgz#b551e29db71ffa6f187314b42ebd8be0705d9e65"
-  integrity sha512-p+ZtMR7NfeBS0dGvPGhMrUY/wFdmTlhcyHIzKle32lQucPA2tF/2xO6oz5aYoXsxbrySu0SqcaupM6L+L9Msgg==
+ts-sinon@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ts-sinon/-/ts-sinon-2.0.1.tgz#77dd909ca85c6062990b2117554a03a74bfd132c"
+  integrity sha512-uI5huDCY6Gw6Yczmyd/Jcu8gZZYtWO0HakPShvDmlrgcywLyFZ7lgWt1y+gd/x79ReHh+rhMAJkhQkGRnPNikw==
   dependencies:
-    "@types/node" "^11.15.20"
+    "@types/node" "^14.6.1"
     "@types/sinon" "^9.0.5"
     "@types/sinon-chai" "^3.2.4"
     sinon "^9.0.3"

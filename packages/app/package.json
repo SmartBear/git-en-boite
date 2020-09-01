@@ -26,7 +26,7 @@
     "git-en-boite-repo-index": "0.0.0",
     "pg": "^8.3.3",
     "tiny-types": "^1.14.1",
-    "ts-sinon": "^1.2.1",
+    "ts-sinon": "^2.0.1",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
