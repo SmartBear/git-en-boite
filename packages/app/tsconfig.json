@@ -4,7 +4,7 @@
     "target": "es2019",
     "module": "commonjs",
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "strict": true,
     "strictNullChecks": false,
     "esModuleInterop": true,
@@ -14,11 +14,7 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": ["../../@types/*"]
-    }
+    "allowSyntheticDefaultImports": true
   },
   "references": [
     { "path": "../web" },

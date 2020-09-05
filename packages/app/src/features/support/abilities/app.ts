@@ -4,7 +4,7 @@ import { DugiteGitRepo } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { dirSync } from 'tmp'
 
-import { LaBoîte } from '../../../src/la_boîte'
+import { LaBoîte } from '../../../la_boîte'
 
 Before(async function () {
   const config = createConfig()
