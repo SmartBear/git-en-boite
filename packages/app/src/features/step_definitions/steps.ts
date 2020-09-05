@@ -12,6 +12,7 @@ import {
   RefName,
   RepoId,
   RepoSnapshot,
+  Repo,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -21,7 +22,16 @@ import {
   LocalCommitRef,
   RepoFactory,
 } from 'git-en-boite-local-git'
-import { assertThat, contains, containsInAnyOrder, containsString, equalTo, not } from 'hamjest'
+import {
+  assertThat,
+  contains,
+  containsInAnyOrder,
+  containsString,
+  equalTo,
+  not,
+  promiseThat,
+  fulfilled,
+} from 'hamjest'
 import path from 'path'
 
 import { isSuccess } from '../support/matchers/is_success'
@@ -51,10 +61,13 @@ When('a new commit is made on {BranchName} in the remote repo', async function (
   this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 })
 
-Given('the remote repo has been connected', async function () {
+Given('the remote repo has been connected', connect)
+When('a consumer connects the remote repo', connect)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function connect(this: any) {
   const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteRepoPath }
   await this.request.post('/repos').send(repoInfo).expect(202)
-})
+}
 
 When('a consumer tries to connect to the remote URL {string}', async function (remoteUrl) {
   this.repoId = RepoId.generate()
@@ -153,4 +166,29 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   const message = CommitMessage.of(row['Commit message'])
   assertThat(lastCommit, containsString(author.toString()))
   assertThat(lastCommit, containsString(message.toString()))
+})
+
+class DomainEvent {
+  constructor(public readonly occuredAt: Date) {}
+}
+
+class RepoEvent extends DomainEvent {
+  constructor(public readonly repoId: RepoId, occuredAt: Date) {
+    super(occuredAt)
+  }
+}
+
+class RepoBranchUpdated extends RepoEvent {
+  constructor(public readonly branchName: BranchName, repoId: RepoId, occurredAt: Date) {
+    super(repoId, occurredAt)
+  }
+}
+
+Then("the repo's {BranchName} should be updated", function (branchName: BranchName) {
+  const waitingForEvent = new Promise(received => {
+    this.app.on('repo.branch-updated', (event: RepoBranchUpdated) => {
+      if (event.branchName.equals(branchName)) received()
+    })
+  })
+  promiseThat(waitingForEvent, fulfilled())
 })
