@@ -4,6 +4,7 @@ import {
   Author,
   BranchName,
   CommitMessage,
+  DomainEventBus,
   Email,
   FileContent,
   FilePath,
@@ -12,9 +13,6 @@ import {
   RefName,
   RepoId,
   RepoSnapshot,
-  Repo,
-  RepoFetched,
-  DomainEventBus,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -30,9 +28,9 @@ import {
   containsInAnyOrder,
   containsString,
   equalTo,
+  fulfilled,
   not,
   promiseThat,
-  fulfilled,
 } from 'hamjest'
 import path from 'path'
 
