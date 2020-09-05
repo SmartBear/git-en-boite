@@ -5,14 +5,15 @@ type EventMap = Record<string, DomainEvent>
 type EventKey<T extends EventMap> = string & keyof T
 type EventHandler<T> = (params: T) => void
 
-interface Emitter<T extends EventMap> {
-  on<K extends EventKey<T>>(eventName: K, fn: EventHandler<T[K]>): void
-  off<K extends EventKey<T>>(eventName: K, fn: EventHandler<T[K]>): void
-  emit<K extends EventKey<T>>(eventName: K, params: T[K]): void
+interface EvenBus<Map extends EventMap> {
+  on<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
+  off<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
+  emit<Key extends EventKey<Map>>(eventName: Key, params: Map[Key]): void
 }
 
 class DomainEvent {
   public readonly occuredAt: Date
+
   constructor() {
     this.occuredAt = new Date()
   }
@@ -24,11 +25,7 @@ class RepoEvent extends DomainEvent {
   }
 }
 
-export class RepoBranchUpdated extends RepoEvent {
-  constructor(public readonly branchName: BranchName, repoId: RepoId) {
-    super(repoId)
-  }
-}
+export class RepoFetched extends RepoEvent {}
 
 export class RepoOriginSet extends RepoEvent {
   constructor(public readonly remoteUrl: RemoteUrl, repoId: RepoId) {
@@ -37,8 +34,8 @@ export class RepoOriginSet extends RepoEvent {
 }
 
 type DomainEvents = {
-  'repo.branch-updated': RepoBranchUpdated
+  'repo.fetched': RepoFetched
   'repo.origin-set': RepoOriginSet
 }
 
-export type DomainEventBus = Emitter<DomainEvents>
+export type DomainEventBus = EvenBus<DomainEvents>

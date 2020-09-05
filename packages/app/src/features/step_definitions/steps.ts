@@ -13,7 +13,7 @@ import {
   RepoId,
   RepoSnapshot,
   Repo,
-  RepoBranchUpdated,
+  RepoFetched,
   DomainEventBus,
 } from 'git-en-boite-core'
 import {
@@ -170,11 +170,11 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   assertThat(lastCommit, containsString(message.toString()))
 })
 
-Then("the repo's {BranchName} should be updated", async function (branchName: BranchName) {
+Then('the repo should be fetched', async function () {
   const domainEvents = this.domainEvents as DomainEventBus
   const waitingForEvent = new Promise(received => {
-    domainEvents.on('repo.branch-updated', event => {
-      if (event.branchName.equals(branchName)) received()
+    domainEvents.on('repo.fetched', event => {
+      if (event.repoId.equals(this.repoId)) received()
     })
   })
   await promiseThat(waitingForEvent, fulfilled())

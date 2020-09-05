@@ -9,7 +9,7 @@ import {
   RemoteUrl,
   RepoId,
 } from '.'
-import { DomainEventBus, RepoOriginSet } from './events'
+import { DomainEventBus, RepoOriginSet, RepoFetched } from './events'
 
 export class Repo {
   constructor(
@@ -20,6 +20,7 @@ export class Repo {
 
   async fetch(): Promise<void> {
     await this.git.fetch()
+    this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId))
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {

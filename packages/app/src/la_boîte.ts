@@ -9,10 +9,19 @@ import {
   RemoteUrl,
   RepoId,
   RepoIndex,
+  DomainEventBus,
+  Rule,
 } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
-  constructor(private readonly repoIndex: RepoIndex, public readonly version: string) {}
+  constructor(
+    readonly repoIndex: RepoIndex,
+    public readonly version: string,
+    readonly domainEvents: DomainEventBus,
+    rules: Rule[],
+  ) {
+    rules.map(rule => rule(domainEvents, this))
+  }
 
   async commit(
     repoId: RepoId,

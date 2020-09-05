@@ -35,16 +35,17 @@ describe(Repo.name, () => {
       )
     })
 
-    it('emits a repo.origin-set event', async () => {
+    it('emits a `repo.origin-set` event', async () => {
       const repoId = RepoId.of('a-repo-id')
       const remoteUrl = RemoteUrl.of('a-remote-url')
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.setOriginTo.resolves()
       const repo = new Repo(repoId, gitRepo, domainEvents)
       const waitingForEvent = new Promise(received =>
-        domainEvents.on('repo.origin-set', event => {
-          if (event.repoId.equals(repoId) && event.remoteUrl.equals(remoteUrl)) received()
-        }),
+        domainEvents.on(
+          'repo.origin-set',
+          event => event.repoId.equals(repoId) && event.remoteUrl.equals(remoteUrl) && received(),
+        ),
       )
       repo.setOriginTo(remoteUrl)
       await promiseThat(waitingForEvent, fulfilled())
@@ -58,6 +59,18 @@ describe(Repo.name, () => {
       gitRepo.setOriginTo.resolves()
       const repo = new Repo(RepoId.of('a-repo-id'), gitRepo, domainEvents)
       await promiseThat(repo.setOriginTo(RemoteUrl.of('a-remote-url')), fulfilled())
+    })
+
+    it('emits a `repo.fetched` event', async () => {
+      const repoId = RepoId.of('a-repo-id')
+      const gitRepo = stubInterface<GitRepo>()
+      gitRepo.fetch.resolves()
+      const repo = new Repo(repoId, gitRepo, domainEvents)
+      const waitingForEvent = new Promise(received =>
+        domainEvents.on('repo.fetched', event => event.repoId.equals(repoId) && received()),
+      )
+      repo.fetch()
+      await promiseThat(waitingForEvent, fulfilled())
     })
   })
 
