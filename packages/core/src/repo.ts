@@ -9,9 +9,14 @@ import {
   RemoteUrl,
   RepoId,
 } from '.'
+import { DomainEventBus, RepoOriginSet } from './events'
 
 export class Repo {
-  constructor(public readonly repoId: RepoId, private readonly git: GitRepo) {}
+  constructor(
+    public readonly repoId: RepoId,
+    private readonly git: GitRepo,
+    private readonly domainEvents: DomainEventBus,
+  ) {}
 
   async fetch(): Promise<void> {
     await this.git.fetch()
@@ -19,6 +24,7 @@ export class Repo {
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     await this.git.setOriginTo(remoteUrl)
+    this.domainEvents.emit('repo.origin-set', new RepoOriginSet(remoteUrl, this.repoId))
   }
 
   async branches(): Promise<BranchSnapshot[]> {

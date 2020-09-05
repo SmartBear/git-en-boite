@@ -13,6 +13,8 @@ import {
   RepoId,
   RepoSnapshot,
   Repo,
+  RepoBranchUpdated,
+  DomainEventBus,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -168,27 +170,12 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   assertThat(lastCommit, containsString(message.toString()))
 })
 
-class DomainEvent {
-  constructor(public readonly occuredAt: Date) {}
-}
-
-class RepoEvent extends DomainEvent {
-  constructor(public readonly repoId: RepoId, occuredAt: Date) {
-    super(occuredAt)
-  }
-}
-
-class RepoBranchUpdated extends RepoEvent {
-  constructor(public readonly branchName: BranchName, repoId: RepoId, occurredAt: Date) {
-    super(repoId, occurredAt)
-  }
-}
-
-Then("the repo's {BranchName} should be updated", function (branchName: BranchName) {
+Then("the repo's {BranchName} should be updated", async function (branchName: BranchName) {
+  const domainEvents = this.domainEvents as DomainEventBus
   const waitingForEvent = new Promise(received => {
-    this.app.on('repo.branch-updated', (event: RepoBranchUpdated) => {
+    domainEvents.on('repo.branch-updated', event => {
       if (event.branchName.equals(branchName)) received()
     })
   })
-  promiseThat(waitingForEvent, fulfilled())
+  await promiseThat(waitingForEvent, fulfilled())
 })

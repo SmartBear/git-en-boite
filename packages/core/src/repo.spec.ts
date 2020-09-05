@@ -1,12 +1,16 @@
+import { EventEmitter } from 'events'
 import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat } from 'hamjest'
 import { stubInterface } from 'ts-sinon'
 
-import { BranchSnapshot, BranchName, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
-import { RemoteUrl } from './remote_url'
+import { BranchName, BranchSnapshot, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
 import { CommitName } from './commit_name'
+import { DomainEventBus } from './events'
+import { RemoteUrl } from './remote_url'
 
 describe(Repo.name, () => {
-  context('connecting', () => {
+  const domainEvents: DomainEventBus = new EventEmitter()
+
+  context('setting the origin', () => {
     it('returns as soon as the git command has completed', async () => {
       let finishGitConnect: () => void
       const gitRepo = stubInterface<GitRepo>()
@@ -15,7 +19,7 @@ describe(Repo.name, () => {
           finishGitConnect = resolve
         }),
       )
-      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo, domainEvents)
       const connecting = repo.setOriginTo(RemoteUrl.of('a-remote-url'))
       finishGitConnect()
       await promiseThat(connecting, fulfilled())
@@ -24,11 +28,26 @@ describe(Repo.name, () => {
     it('rejects if the git command fails', async () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.setOriginTo.rejects(new Error('Unable to connect'))
-      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo, domainEvents)
       await promiseThat(
         repo.setOriginTo(RemoteUrl.of('a-bad-url')),
         isRejectedWith(new Error('Unable to connect')),
       )
+    })
+
+    it('emits a repo.origin-set event', async () => {
+      const repoId = RepoId.of('a-repo-id')
+      const remoteUrl = RemoteUrl.of('a-remote-url')
+      const gitRepo = stubInterface<GitRepo>()
+      gitRepo.setOriginTo.resolves()
+      const repo = new Repo(repoId, gitRepo, domainEvents)
+      const waitingForEvent = new Promise(received =>
+        domainEvents.on('repo.origin-set', event => {
+          if (event.repoId.equals(repoId) && event.remoteUrl.equals(remoteUrl)) received()
+        }),
+      )
+      repo.setOriginTo(remoteUrl)
+      await promiseThat(waitingForEvent, fulfilled())
     })
   })
 
@@ -37,7 +56,7 @@ describe(Repo.name, () => {
       const gitRepo = stubInterface<GitRepo>()
       gitRepo.fetch.resolves()
       gitRepo.setOriginTo.resolves()
-      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo, domainEvents)
       await promiseThat(repo.setOriginTo(RemoteUrl.of('a-remote-url')), fulfilled())
     })
   })
@@ -60,7 +79,7 @@ describe(Repo.name, () => {
         new BranchSnapshot(BranchName.of('main'), CommitName.of('1')),
         new BranchSnapshot(BranchName.of('develop'), CommitName.of('2')),
       ]
-      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo)
+      const repo = new Repo(RepoId.of('a-repo-id'), gitRepo, domainEvents)
       assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))
     })
   })
