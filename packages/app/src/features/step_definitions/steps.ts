@@ -86,11 +86,9 @@ When('a consumer triggers a manual fetch of the repo', async function () {
 Given('the repo has been fetched', async function () {
   const domainEvents = this.domainEvents as DomainEventBus
   await promiseThat(
-    new Promise(received => {
-      domainEvents.on('repo.fetched', event => {
-        if (event.repoId.equals(this.repoId)) received()
-      })
-    }),
+    new Promise(received =>
+      domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
+    ),
     fulfilled(),
   )
 })
@@ -179,10 +177,10 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
 
 Then('the repo should be fetched', async function () {
   const domainEvents = this.domainEvents as DomainEventBus
-  const waitingForEvent = new Promise(received => {
-    domainEvents.on('repo.fetched', event => {
-      if (event.repoId.equals(this.repoId)) received()
-    })
-  })
-  await promiseThat(waitingForEvent, fulfilled())
+  await promiseThat(
+    new Promise(received =>
+      domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
+    ),
+    fulfilled(),
+  )
 })
