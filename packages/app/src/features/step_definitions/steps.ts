@@ -63,7 +63,7 @@ When('a new commit is made on {BranchName} in the remote repo', async function (
   this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 })
 
-Given('the remote repo has been connected', connect)
+Given('a consumer has connected the remote repo', connect)
 When('a consumer connects the remote repo', connect)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function connect(this: any) {
@@ -81,12 +81,21 @@ When('a consumer tries to connect using a malformed payload', async function () 
   this.lastResponse = await this.request.post('/repos').send('garbage')
 })
 
-When('a consumer triggers a manual fetch of the repo', fetch)
-Given('the repo has been fetched', fetch)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function fetch(this: any) {
+When('a consumer triggers a manual fetch of the repo', async function () {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
-}
+})
+
+Given('the repo has been fetched', async function () {
+  const domainEvents = this.domainEvents as DomainEventBus
+  await promiseThat(
+    new Promise(received => {
+      domainEvents.on('repo.fetched', event => {
+        if (event.repoId.equals(this.repoId)) received()
+      })
+    }),
+    fulfilled(),
+  )
+})
 
 When('a consumer commits a new file to {BranchName}', async function (branchName: BranchName) {
   const file = new GitFile(new FilePath('features/new.feature'), new FileContent('Feature: New!'))
