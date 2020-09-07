@@ -19,23 +19,15 @@ class DomainEvent {
   }
 }
 
-class RepoEvent extends DomainEvent {
+export class RepoEvent extends DomainEvent {
   constructor(public readonly repoId: RepoId) {
     super()
   }
 }
 
-export class RepoFetched extends RepoEvent {}
-
-export class RepoOriginSet extends RepoEvent {
-  constructor(public readonly remoteUrl: RemoteUrl, repoId: RepoId) {
-    super(repoId)
-  }
-}
-
 type DomainEvents = {
-  'repo.fetched': RepoFetched
-  'repo.origin-set': RepoOriginSet
+  'repo.fetched': RepoEvent
+  'repo.connected': RepoEvent
 }
 
 export type DomainEventBus = EvenBus<DomainEvents>

@@ -1,7 +1,7 @@
 import {
   Author,
-  BranchSnapshot,
   BranchName,
+  BranchSnapshot,
   CommitMessage,
   Files,
   GitRepo,
@@ -9,7 +9,7 @@ import {
   RemoteUrl,
   RepoId,
 } from '.'
-import { DomainEventBus, RepoOriginSet, RepoFetched } from './events'
+import { DomainEventBus, RepoEvent } from './events'
 
 export class Repo {
   constructor(
@@ -20,12 +20,12 @@ export class Repo {
 
   async fetch(): Promise<void> {
     await this.git.fetch()
-    this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId))
+    this.domainEvents.emit('repo.fetched', new RepoEvent(this.repoId))
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     await this.git.setOriginTo(remoteUrl)
-    this.domainEvents.emit('repo.origin-set', new RepoOriginSet(remoteUrl, this.repoId))
+    this.domainEvents.emit('repo.connected', new RepoEvent(this.repoId))
   }
 
   async branches(): Promise<BranchSnapshot[]> {

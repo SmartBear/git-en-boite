@@ -1,5 +1,5 @@
 import { startWebServer } from 'git-en-boite-web'
-import { Application, DomainEventBus, fetchRepoAfterOriginSet } from 'git-en-boite-core'
+import { Application, DomainEventBus, fetchRepoAfterConnected } from 'git-en-boite-core'
 import { createConfig } from 'git-en-boite-config'
 import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
@@ -17,7 +17,7 @@ inConsole(async () => {
   await gitRepos.pingWorkers()
   const repoIndex = new DiskRepoIndex(config.git.root, gitRepos, domainEvents)
   const app: Application = new LaBoîte(repoIndex, config.version, domainEvents, [
-    fetchRepoAfterOriginSet,
+    fetchRepoAfterConnected,
   ])
 
   const port = 3001

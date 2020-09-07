@@ -1,2 +1,2 @@
-export * from './fetch_repo_after_origin_set'
+export * from './fetch_repo_after_connected'
 export * from './rule'
