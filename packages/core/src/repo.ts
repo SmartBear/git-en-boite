@@ -9,13 +9,13 @@ import {
   RemoteUrl,
   RepoId,
 } from '.'
-import { DomainEventBus, RepoEvent } from './events'
+import { PublishesDomainEvents, RepoEvent } from './events'
 
 export class Repo {
   constructor(
     public readonly repoId: RepoId,
     private readonly git: GitRepo,
-    private readonly domainEvents: DomainEventBus,
+    private readonly domainEvents: PublishesDomainEvents,
   ) {}
 
   async fetch(): Promise<void> {

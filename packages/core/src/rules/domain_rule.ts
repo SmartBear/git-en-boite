@@ -1,3 +1,3 @@
-import { DomainEventBus, CommandsApplication } from '..'
+import { CommandsApplication, SubscribesToDomainEvents } from '..'
 
-export type DomainRule = (domainEvents: DomainEventBus, app: CommandsApplication) => void
+export type DomainRule = (domainEvents: SubscribesToDomainEvents, app: CommandsApplication) => void

@@ -4,7 +4,6 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  DomainEventBus,
   Email,
   FileContent,
   FilePath,
@@ -13,6 +12,7 @@ import {
   RefName,
   RepoId,
   RepoSnapshot,
+  SubscribesToDomainEvents,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -84,7 +84,7 @@ When('a consumer triggers a manual fetch of the repo', async function () {
 })
 
 Given('the repo has been fetched', async function () {
-  const domainEvents = this.domainEvents as DomainEventBus
+  const domainEvents = this.domainEvents as SubscribesToDomainEvents
   await promiseThat(
     new Promise(received =>
       domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
@@ -176,7 +176,7 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
 })
 
 Then('the repo should be fetched', async function () {
-  const domainEvents = this.domainEvents as DomainEventBus
+  const domainEvents = this.domainEvents as SubscribesToDomainEvents
   await promiseThat(
     new Promise(received =>
       domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),

@@ -1,11 +1,18 @@
 import fs from 'fs'
-import { OpensGitRepos, Repo, RepoIndex, RepoPath, RepoId, DomainEventBus } from 'git-en-boite-core'
+import {
+  OpensGitRepos,
+  PublishesDomainEvents,
+  Repo,
+  RepoId,
+  RepoIndex,
+  RepoPath,
+} from 'git-en-boite-core'
 
 export class DiskRepoIndex implements RepoIndex {
   constructor(
     private basePath: string,
     private gitRepos: OpensGitRepos,
-    private domainEvents: DomainEventBus,
+    private domainEvents: PublishesDomainEvents,
   ) {}
 
   public async find(repoId: RepoId): Promise<Repo> {

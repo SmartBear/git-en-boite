@@ -4,10 +4,13 @@ type EventMap = Record<string, DomainEvent>
 type EventKey<T extends EventMap> = string & keyof T
 type EventHandler<T> = (params: T) => void
 
-interface EventBus<Map extends EventMap> {
+interface PublishesEvents<Map extends EventMap> {
+  emit<Key extends EventKey<Map>>(eventName: Key, params: Map[Key]): void
+}
+
+interface SubscribesToEvents<Map extends EventMap> {
   on<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
   off<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
-  emit<Key extends EventKey<Map>>(eventName: Key, params: Map[Key]): void
 }
 
 class DomainEvent {
@@ -29,4 +32,6 @@ type DomainEvents = {
   'repo.connected': RepoEvent
 }
 
-export type DomainEventBus = EventBus<DomainEvents>
+export type PublishesDomainEvents = PublishesEvents<DomainEvents>
+export type SubscribesToDomainEvents = SubscribesToEvents<DomainEvents>
+export type DomainEventBus = PublishesDomainEvents & SubscribesToDomainEvents
