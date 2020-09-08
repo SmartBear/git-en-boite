@@ -19,10 +19,20 @@ export default (app: Application): Router =>
     const bus: DomainEventBus = (app as any)['domainEvents']
     // TODO: some kind of wildcard event handler?
     bus.on('repo.fetched', e => {
+      // TODO: test this logic
       if (!e.repoId.equals(repoId)) return
       // TODO: put events in an envelope with type in it?
       events.write(`event: repo.fetched\n`)
       events.write(`data: ${JSON.stringify(e)}\n`)
       events.write(`\n`)
     })
+    bus.on('repo.connected', e => {
+      // TODO: test this logic
+      if (!e.repoId.equals(repoId)) return
+      // TODO: put events in an envelope with type in it?
+      events.write(`event: repo.connected\n`)
+      events.write(`data: ${JSON.stringify(e)}\n`)
+      events.write(`\n`)
+    })
+    // TODO: remove the event listener when the connection is closed.
   })

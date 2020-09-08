@@ -126,11 +126,14 @@ When('a consumer commits to {BranchName} with:', async function (
 })
 
 const closables: Array<{ close: () => void }> = []
-When('a consumer listens to the events on the repo', async function () {
+When('a consumer is listening to the events on the repo', async function () {
   this.events = []
   const events = new EventSource(`http://localhost:8888/repos/${this.repoId}/events`)
   // TODO: add listeners for each type of repo event
   events.addEventListener('repo.fetched', (event: Event) => {
+    this.events.push(event.type)
+  })
+  events.addEventListener('repo.connected', (event: Event) => {
     this.events.push(event.type)
   })
   closables.push(events)
