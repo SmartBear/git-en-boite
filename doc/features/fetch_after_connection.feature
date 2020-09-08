@@ -6,4 +6,4 @@ Feature: Fetch after connection
   Scenario: Succesful fetch after a new connection
     Given a remote repo with commits on the "main" branch
     When a consumer connects the remote repo
-    Then the repo should haven been fetched
+    Then the repo should have been fetched
