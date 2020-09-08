@@ -6,8 +6,8 @@ Feature: Repo info
     Given a remote repo with branches:
       | master  |
       | develop |
-    And the remote repo has been connected
-    When a consumer triggers a manual fetch of the repo
-    And the repo's branches should be:
+    And a consumer has connected the remote repo
+    When the repo has been fetched
+    Then the repo's branches should be:
       | master  |
       | develop |
