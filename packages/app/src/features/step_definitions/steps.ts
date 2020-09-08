@@ -1,5 +1,5 @@
 /* tslint:disable: only-arrow-functions */
-import { Given, TableDefinition, Then, When } from 'cucumber'
+import { Given, TableDefinition, Then, When, After } from 'cucumber'
 import {
   Author,
   BranchName,
@@ -35,6 +35,7 @@ import {
 import path from 'path'
 
 import { isSuccess } from '../support/matchers/is_success'
+import EventSource from 'eventsource'
 
 Given('a remote repo with branches:', async function (branchesTable) {
   const repoId = (this.repoId = RepoId.generate())
@@ -124,6 +125,22 @@ When('a consumer commits to {BranchName} with:', async function (
   assertThat(response, isSuccess())
 })
 
+const closables: Array<{ close: () => void }> = []
+When('a consumer listens to the events on the repo', async function () {
+  this.events = []
+  const events = new EventSource(`http://localhost:8888/repos/${this.repoId}/events`)
+  // TODO: add listeners for each type of repo event
+  events.addEventListener('repo.fetched', (event: Event) => {
+    this.events.push(event.type)
+  })
+  closables.push(events)
+})
+After(() => {
+  for (const closable of closables) {
+    closable.close()
+  }
+})
+
 Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
   const response = await this.request.get(`/repos/${this.repoId}`).set('Accept', 'application/json')
@@ -183,4 +200,8 @@ Then('the repo should have been fetched', async function () {
     ),
     fulfilled(),
   )
+})
+
+Then('the events received by the consumer should be:', function (expectedEvents: string) {
+  assertThat(this.events, equalTo(expectedEvents.split('\n')))
 })

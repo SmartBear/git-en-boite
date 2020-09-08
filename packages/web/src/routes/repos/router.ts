@@ -5,6 +5,7 @@ import get from './get'
 import update from './update'
 import { buildHandlers } from '../../build_handlers'
 import branches from './branches/router'
+import events from './events/router'
 
 export default (app: Application, parentRouter: Router): Router =>
   new Router()
@@ -13,4 +14,9 @@ export default (app: Application, parentRouter: Router): Router =>
       '/:repoId/branches',
       branches(app, parentRouter).routes(),
       branches(app, parentRouter).allowedMethods(),
+    )
+    .use(
+      '/:repoId/events',
+      events(app, parentRouter).routes(),
+      events(app, parentRouter).allowedMethods(),
     )
