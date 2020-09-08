@@ -10,7 +10,7 @@ import {
   RepoId,
   RepoIndex,
   DomainEventBus,
-  Rule,
+  DomainRule,
 } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
@@ -18,7 +18,7 @@ export class LaBoîte implements Application {
     readonly repoIndex: RepoIndex,
     public readonly version: string,
     readonly domainEvents: DomainEventBus,
-    rules: Rule[],
+    rules: DomainRule[],
   ) {
     rules.map(rule => rule(domainEvents, this))
   }
