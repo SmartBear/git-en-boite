@@ -1,11 +1,10 @@
-import { RepoId, BranchName } from '.'
-import { RemoteUrl } from './remote_url'
+import { RepoId } from '.'
 
 type EventMap = Record<string, DomainEvent>
 type EventKey<T extends EventMap> = string & keyof T
 type EventHandler<T> = (params: T) => void
 
-interface EvenBus<Map extends EventMap> {
+interface EventBus<Map extends EventMap> {
   on<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
   off<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
   emit<Key extends EventKey<Map>>(eventName: Key, params: Map[Key]): void
@@ -30,4 +29,4 @@ type DomainEvents = {
   'repo.connected': RepoEvent
 }
 
-export type DomainEventBus = EvenBus<DomainEvents>
+export type DomainEventBus = EventBus<DomainEvents>
