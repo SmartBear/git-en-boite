@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { Application, DomainEvents, RepoId } from 'git-en-boite-core'
+import { Application, DomainEvents, RepoId, RepoEvent, DomainEventBus } from 'git-en-boite-core'
 import { Context } from 'koa'
 import { PassThrough } from 'stream'
 
@@ -15,15 +15,18 @@ export default (app: Application): Router =>
     ctx.body = response
 
     const repoId = RepoId.fromJSON(ctx.params.repoId)
+    const emit = (eventKey: keyof DomainEvents) => (event: RepoEvent) => {
+      // TODO: test this logic
+      if (!event.repoId.equals(repoId)) return
+      response.write(`event: ${eventKey}\n`)
+      response.write(`data: ${JSON.stringify(event)}\n`)
+      response.write(`\n`)
+    }
     for (const eventKey of DomainEvents.keys) {
-      app.events.on(eventKey, event => {
-        // TODO: test this logic
-        if (!event.repoId.equals(repoId)) return
-        // TODO: put events in an envelope with type in it?
-        response.write(`event: ${eventKey}\n`)
-        response.write(`data: ${JSON.stringify(event)}\n`)
-        response.write(`\n`)
+      const listener = emit(eventKey)
+      app.events.on(eventKey, listener)
+      ctx.req.on('close', () => {
+        app.events.off(eventKey, listener)
       })
     }
-    // TODO: remove the event listener when the connection is closed.
   })
