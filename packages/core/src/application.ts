@@ -7,9 +7,10 @@ import {
   RemoteUrl,
   RepoId,
   Files,
+  SubscribesToDomainEvents,
 } from '.'
 
-export type Application = CommandsApplication & QueriesApplication & Versioned
+export type Application = CommandsApplication & QueriesApplication & ExposesDomainEvents & Versioned
 
 export interface CommandsApplication {
   commit: (
@@ -25,6 +26,10 @@ export interface CommandsApplication {
 
 export interface QueriesApplication {
   getInfo: (repoId: RepoId) => Promise<QueryResult<RepoSnapshot>>
+}
+
+export interface ExposesDomainEvents {
+  events: SubscribesToDomainEvents
 }
 
 export interface Versioned {

@@ -13,6 +13,7 @@ import {
   RepoId,
   RepoSnapshot,
   SubscribesToDomainEvents,
+  DomainEvents,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -129,13 +130,11 @@ const closables: Array<{ close: () => void }> = []
 When('a consumer is listening to the events on the repo', async function () {
   this.events = []
   const events = new EventSource(`http://localhost:8888/repos/${this.repoId}/events`)
-  // TODO: add listeners for each type of repo event
-  events.addEventListener('repo.fetched', (event: Event) => {
-    this.events.push(event.type)
-  })
-  events.addEventListener('repo.connected', (event: Event) => {
-    this.events.push(event.type)
-  })
+  for (const eventKey of DomainEvents.keys) {
+    events.addEventListener(eventKey, (event: Event) => {
+      this.events.push(event.type)
+    })
+  }
   closables.push(events)
 })
 After(() => {

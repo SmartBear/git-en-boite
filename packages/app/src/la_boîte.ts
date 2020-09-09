@@ -17,10 +17,10 @@ export class LaBoîte implements Application {
   constructor(
     readonly repoIndex: RepoIndex,
     public readonly version: string,
-    readonly domainEvents: SubscribesToDomainEvents,
+    public readonly events: SubscribesToDomainEvents,
     rules: DomainRule[],
   ) {
-    rules.map(rule => rule(domainEvents, this))
+    rules.map(rule => rule(events, this))
   }
 
   async commit(
