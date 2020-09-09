@@ -50,6 +50,20 @@ describe('GET /repos/:repoId/events', () => {
       assertThat(RepoId.fromJSON(JSON.parse(receivedEvent.data).repoId), equalTo(repoId))
     })
 
+    it('emits a ready event', async () => {
+      const domainEvents: DomainEventBus = new EventEmitter()
+      app.events = domainEvents
+      const repoId = RepoId.fromJSON('a-repo')
+      eventSource = new EventSource(`http://localhost:8888/repos/${repoId}/events`)
+      const waitingForEvent = new Promise<MessageEvent>(eventReceived =>
+        eventSource.addEventListener('message', (event: Event) =>
+          eventReceived(event as MessageEvent),
+        ),
+      )
+      const receivedEvent: MessageEvent = await waitingForEvent
+      assertThat(receivedEvent.data, equalTo('ready'))
+    })
+
     afterEach(() => {
       eventSource.close()
     })
