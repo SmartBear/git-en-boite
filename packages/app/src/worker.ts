@@ -14,5 +14,5 @@ function inConsole(start: () => Promise<void>): void {
 
 inConsole(async () => {
   const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
-  await gitRepos.startWorker()
+  await gitRepos.startWorker(console)
 })

@@ -16,7 +16,7 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
-    "paths": { "*": ["@types/*"] }
+    "paths": { "*": ["../../../@types/*"] }
   },
   "references": [{ "path": "../core" }]
 }

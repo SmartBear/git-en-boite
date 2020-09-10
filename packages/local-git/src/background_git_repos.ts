@@ -18,6 +18,15 @@ interface Closable {
   close(): Promise<void>
 }
 
+export type Logger = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  log: (...data: any[]) => void
+}
+export const Logger = {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  none: { log: () => {} },
+}
+
 export class BackgroundGitRepos {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private queue: Queue<any>
@@ -56,15 +65,15 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
-  async pingWorkers(timeout = 2000): Promise<void> {
+  async pingWorkers(timeout = 3000): Promise<void> {
     const job = await this.queue.add('ping', {})
     await job.waitUntilFinished(this.queueEvents, timeout).catch(() => {
       throw new Error(`No workers responded to a ping within ${timeout}ms`)
     })
   }
 
-  async startWorker(): Promise<void> {
-    this.worker = await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient)
+  async startWorker(logger: Logger): Promise<void> {
+    this.worker = await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient, logger)
   }
 
   async close(): Promise<void> {
@@ -122,35 +131,38 @@ class GitRepoWorker implements Closable {
   static async start(
     gitRepos: OpensGitRepos,
     createRedisClient: () => Promise<IORedis.Redis>,
+    logger: Logger,
   ): Promise<GitRepoWorker> {
     const connection = await createRedisClient()
-    return new GitRepoWorker(gitRepos, connection)
+    return new GitRepoWorker(gitRepos, connection, logger)
   }
 
-  protected constructor(gitRepos: OpensGitRepos, readonly redisClient: IORedis.Redis) {
+  protected constructor(
+    gitRepos: OpensGitRepos,
+    readonly redisClient: IORedis.Redis,
+    logger: Logger,
+  ) {
+    const processJob = async (job: Job) => {
+      logger.log({ name: job.name, data: job.data })
+      if (job.name === 'ping') {
+        return {}
+      }
+      const { path } = job.data
+      const git = await gitRepos.openGitRepo(path)
+      if (job.name === 'setOriginTo') {
+        const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
+        return await git.setOriginTo(remoteUrl)
+      }
+      if (job.name === 'fetch') {
+        return await git.fetch()
+      }
+      if (job.name === 'push') {
+        const { commitRef } = job.data
+        return await git.push(PendingCommitRef.fromJSON(commitRef))
+      }
+    }
     // TODO: pass redisUrl to Worker once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.worker = new Worker(
-      'main',
-      async (job: Job) => {
-        if (job.name === 'ping') {
-          return {}
-        }
-        const { path } = job.data
-        const git = await gitRepos.openGitRepo(path)
-        if (job.name === 'setOriginTo') {
-          const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
-          return await git.setOriginTo(remoteUrl)
-        }
-        if (job.name === 'fetch') {
-          return await git.fetch()
-        }
-        if (job.name === 'push') {
-          const { commitRef } = job.data
-          return await git.push(PendingCommitRef.fromJSON(commitRef))
-        }
-      },
-      { connection: this.redisClient },
-    )
+    this.worker = new Worker('main', processJob, { connection: this.redisClient })
   }
 
   async close(): Promise<void> {
