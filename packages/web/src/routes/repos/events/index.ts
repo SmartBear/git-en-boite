@@ -1,7 +1,7 @@
 import Router from '@koa/router'
 import { DomainEvents, ExposesDomainEvents, RepoEvent, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
-import { PassThrough, errorMonitor } from 'stream'
+import { PassThrough } from 'stream'
 
 export default (app: ExposesDomainEvents): Router =>
   new Router().get('/', async (ctx: Context) => {
@@ -22,7 +22,6 @@ export default (app: ExposesDomainEvents): Router =>
         app.events.off(eventKey, listener)
       })
     }
-    response.write('data: ready\n')
     response.write('\n')
 
     function buildListener(eventKey: keyof DomainEvents) {
