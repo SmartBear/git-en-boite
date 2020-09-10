@@ -1,9 +1,11 @@
 import { EventEmitter } from 'events'
 import EventSource from 'eventsource'
-import { Server } from 'http'
 import { Application, DomainEventBus, DomainEvents, RepoEvent, RepoId } from 'git-en-boite-core'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, equalTo, promiseThat, not, fulfilled } from 'hamjest'
+import { Server } from 'http'
+import fetch from 'node-fetch'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
+import { PassThrough } from 'stream'
 
 import createWebApp from '../../../create_web_app'
 import router from '../../router'
@@ -11,9 +13,12 @@ import router from '../../router'
 describe('GET /repos/:repoId/events', () => {
   let server: Server
   let app: StubbedInstance<Application>
+  const repoId = RepoId.fromJSON('a-repo')
+  let domainEvents: DomainEventBus
 
   beforeEach(() => {
     app = stubInterface<Application>()
+    app.events = domainEvents = new EventEmitter()
   })
 
   beforeEach(() => {
@@ -27,12 +32,8 @@ describe('GET /repos/:repoId/events', () => {
 
   describe('emitting events about the repo', () => {
     let eventSource: EventSource
-    let domainEvents: DomainEventBus
-    const repoId = RepoId.fromJSON('a-repo')
 
     beforeEach(() => {
-      domainEvents = new EventEmitter()
-      app.events = domainEvents
       eventSource = new EventSource(`http://localhost:8888/repos/${repoId}/events`)
     })
 
@@ -70,9 +71,17 @@ describe('GET /repos/:repoId/events', () => {
       }
     }
   })
-
-  describe('waiting for a particular event', () => {
-    it('ends the request when that event occurs')
+  describe('@wip waiting for a particular event', () => {
+    it('ends the request when that event occurs', async () => {
+      const response = await fetch(
+        `http://localhost:8888/repos/${repoId}/events?until=repo.fetched`,
+      )
+      const body = response.body as PassThrough
+      const waitingForRequestToEnd = new Promise(ended => body.on('finish', ended))
+      domainEvents.emit('repo.connected', new RepoEvent(repoId))
+      domainEvents.emit('repo.fetched', new RepoEvent(repoId))
+      await promiseThat(waitingForRequestToEnd, fulfilled())
+    })
     it('redirects the request if given a redirect_to parameter')
   })
 })

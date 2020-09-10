@@ -38,7 +38,10 @@
   },
   "devDependencies": {
     "@pact-foundation/pact": "^9.11.1",
+    "@types/node-fetch": "^2.5.7",
     "hamjest-sinon": "^1.0.4",
+    "hamjest": "^3.7.1",
+    "node-fetch": "^2.6.1",
     "supertest": "^5.0.0-0"
   }
 }
