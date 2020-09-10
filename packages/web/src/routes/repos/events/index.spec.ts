@@ -27,16 +27,17 @@ describe('GET /repos/:repoId/events', () => {
 
   describe('emitting events about the repo', () => {
     let eventSource: EventSource
+    let domainEvents: DomainEventBus
+    const repoId = RepoId.fromJSON('a-repo')
+
+    beforeEach(() => {
+      domainEvents = new EventEmitter()
+      app.events = domainEvents
+      eventSource = new EventSource(`http://localhost:8888/repos/${repoId}/events`)
+    })
 
     it('only emits events about that repo', async () => {
-      const domainEvents: DomainEventBus = new EventEmitter()
-      app.events = domainEvents
-      const repoId = RepoId.fromJSON('a-repo')
-      eventSource = new EventSource(`http://localhost:8888/repos/${repoId}/events`)
-      while (!(eventSource.readyState === EventSource.OPEN)) {
-        await new Promise(done => setTimeout(done, 1))
-      }
-
+      await eventSourceIsReady()
       const waitingForAnEvent = new Promise<MessageEvent>(eventReceived => {
         for (const eventKey of DomainEvents.keys) {
           eventSource.addEventListener(eventKey, (event: Event) => {
@@ -46,27 +47,28 @@ describe('GET /repos/:repoId/events', () => {
       })
       domainEvents.emit('repo.connected', new RepoEvent(RepoId.fromJSON('another-repo')))
       domainEvents.emit('repo.connected', new RepoEvent(repoId))
-      const receivedEvent: MessageEvent = await waitingForAnEvent
+      const receivedEvent = await waitingForAnEvent
       assertThat(RepoId.fromJSON(JSON.parse(receivedEvent.data).repoId), equalTo(repoId))
     })
 
     it('emits a ready event', async () => {
-      const domainEvents: DomainEventBus = new EventEmitter()
-      app.events = domainEvents
-      const repoId = RepoId.fromJSON('a-repo')
-      eventSource = new EventSource(`http://localhost:8888/repos/${repoId}/events`)
-      const waitingForEvent = new Promise<MessageEvent>(eventReceived =>
+      const receivedEvent = await new Promise<MessageEvent>(eventReceived =>
         eventSource.addEventListener('message', (event: Event) =>
           eventReceived(event as MessageEvent),
         ),
       )
-      const receivedEvent: MessageEvent = await waitingForEvent
       assertThat(receivedEvent.data, equalTo('ready'))
     })
 
     afterEach(() => {
       eventSource.close()
     })
+
+    async function eventSourceIsReady() {
+      while (!(eventSource.readyState === EventSource.OPEN)) {
+        await new Promise(done => setTimeout(done, 1))
+      }
+    }
   })
 
   describe('waiting for a particular event', () => {
