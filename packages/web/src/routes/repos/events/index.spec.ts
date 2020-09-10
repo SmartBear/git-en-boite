@@ -71,7 +71,7 @@ describe('GET /repos/:repoId/events', () => {
       }
     }
   })
-  describe('@wip waiting for a particular event', () => {
+  describe('waiting for a particular event', () => {
     it('ends the request when that event occurs', async () => {
       const response = await fetch(
         `http://localhost:8888/repos/${repoId}/events?until=repo.fetched`,
@@ -82,6 +82,5 @@ describe('GET /repos/:repoId/events', () => {
       domainEvents.emit('repo.fetched', new RepoEvent(repoId))
       await promiseThat(waitingForRequestToEnd, fulfilled())
     })
-    it('redirects the request if given a redirect_to parameter')
   })
 })
