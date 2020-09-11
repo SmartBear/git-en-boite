@@ -9,6 +9,7 @@ import {
   PendingCommitRef,
   Refs,
   RemoteUrl,
+  Logger,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -16,15 +17,6 @@ import { DugiteGitRepo } from './dugite_git_repo'
 
 interface Closable {
   close(): Promise<void>
-}
-
-export type Logger = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  log: (...data: any[]) => void
-}
-export const Logger = {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  none: { log: () => {} },
 }
 
 export class BackgroundGitRepos {

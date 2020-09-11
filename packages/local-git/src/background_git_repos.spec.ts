@@ -1,29 +1,26 @@
 import { createConfig } from 'git-en-boite-config'
-import { BranchName, RemoteUrl } from 'git-en-boite-core'
+import { RemoteUrl, Logger } from 'git-en-boite-core'
 import {
   assertThat,
+  equalTo,
   fulfilled,
   hasProperty,
   matchesPattern,
   promiseThat,
   rejected,
-  equalTo,
 } from 'hamjest'
-import { wasCalledWith, wasCalled } from 'hamjest-sinon'
+import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import path from 'path'
 import { dirSync } from 'tmp'
-import { StubbedInstance, stubInterface } from 'ts-sinon'
+import { stubInterface } from 'ts-sinon'
 
-import { Commit, LocalCommitRef, RepoFactory } from './'
-import { BackgroundGitRepos, Logger } from './background_git_repos'
+import { RepoFactory } from './'
+import { BackgroundGitRepos } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
-import { match, equal } from 'assert'
 
 const config = createConfig()
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noLogger: Logger = { log: () => {} }
 
 describe(BackgroundGitRepos.name, () => {
   context('when a worker is running', () => {
@@ -78,7 +75,7 @@ describe(BackgroundGitRepos.name, () => {
     })
 
     it('succeeds when a worker is running', async () => {
-      await gitRepos.startWorker(noLogger)
+      await gitRepos.startWorker(Logger.none)
       const pinging = gitRepos.pingWorkers(100)
       await promiseThat(pinging, fulfilled())
     })

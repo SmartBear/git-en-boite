@@ -11,16 +11,18 @@ import {
   RepoIndex,
   RepoSnapshot,
   SubscribesToDomainEvents,
+  Logger,
 } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
   constructor(
-    readonly repoIndex: RepoIndex,
+    private readonly repoIndex: RepoIndex,
     public readonly version: string,
     public readonly events: SubscribesToDomainEvents,
     rules: DomainRule[],
+    logger: Logger,
   ) {
-    rules.map(rule => rule(events, this))
+    rules.map(rule => rule(events, this, logger))
   }
 
   async commit(

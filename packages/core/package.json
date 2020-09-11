@@ -23,6 +23,7 @@
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "devDependencies": {
     "hamjest": "^3.5.0",
+    "ts-eventually": "^1.0.5",
     "ts-sinon": "^2.0.1"
   },
   "dependencies": {

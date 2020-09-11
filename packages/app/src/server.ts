@@ -15,10 +15,15 @@ inConsole(async () => {
   const domainEvents: DomainEventBus = new EventEmitter()
   const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
   await gitRepos.pingWorkers()
+  const logger = console
   const repoIndex = new DiskRepoIndex(config.git.root, gitRepos, domainEvents)
-  const app: Application = new LaBoîte(repoIndex, config.version, domainEvents, [
-    fetchRepoAfterConnected,
-  ])
+  const app: Application = new LaBoîte(
+    repoIndex,
+    config.version,
+    domainEvents,
+    [fetchRepoAfterConnected],
+    logger,
+  )
 
   const port = 3001
   startWebServer(app, port)
