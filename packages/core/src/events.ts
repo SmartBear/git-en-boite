@@ -1,4 +1,5 @@
 import { RepoId } from '.'
+import { EntityId } from './entity_id'
 
 type EventMap = Record<string, DomainEvent>
 type EventKey<T extends EventMap> = string & keyof T
@@ -13,21 +14,21 @@ interface SubscribesToEvents<Map extends EventMap> {
   off<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
 }
 
-class DomainEvent {
+export class DomainEvent {
   public readonly occuredAt: Date
 
-  constructor() {
+  constructor(public readonly entityId: EntityId) {
     this.occuredAt = new Date()
   }
 }
 
 export class RepoEvent extends DomainEvent {
   constructor(public readonly repoId: RepoId) {
-    super()
+    super(repoId)
   }
 }
 
-// Utility types for creating an exhaustive list of the keys in a type
+// Utility types for creating a type-checked exhaustive list of the keys in a type at runtime
 // See https://github.com/Microsoft/TypeScript/issues/13298#issuecomment-654906323
 type ValueOf<T> = T[keyof T]
 type NonEmptyArray<T> = [T, ...T[]]

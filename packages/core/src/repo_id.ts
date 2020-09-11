@@ -1,11 +1,9 @@
-import { ensure, isString, JSONPrimitive, TinyTypeOf } from 'tiny-types'
+import { ensure, isString, JSONPrimitive } from 'tiny-types'
 import { v4 as uuid } from 'uuid'
 
-export class RepoId extends TinyTypeOf<string>() {
-  protected constructor(value: string) {
-    super(value)
-  }
+import { EntityId } from './entity_id'
 
+export class RepoId extends EntityId {
   static of(value: string): RepoId {
     return new RepoId(value)
   }
