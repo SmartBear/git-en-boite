@@ -9,7 +9,7 @@ import {
   RemoteUrl,
   RepoId,
 } from '.'
-import { PublishesDomainEvents, RepoEvent } from './events'
+import { PublishesDomainEvents, RepoConnected, RepoFetched } from './events'
 
 export class Repo {
   constructor(
@@ -20,12 +20,12 @@ export class Repo {
 
   async fetch(): Promise<void> {
     await this.git.fetch()
-    this.domainEvents.emit('repo.fetched', new RepoEvent(this.repoId))
+    this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId))
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     await this.git.setOriginTo(remoteUrl)
-    this.domainEvents.emit('repo.connected', new RepoEvent(this.repoId))
+    this.domainEvents.emit('repo.connected', new RepoConnected(this.repoId))
   }
 
   async branches(): Promise<BranchSnapshot[]> {

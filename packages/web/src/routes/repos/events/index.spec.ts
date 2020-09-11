@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import EventSource from 'eventsource'
-import { Application, DomainEventBus, RepoEvent, RepoId } from 'git-en-boite-core'
+import { Application, DomainEventBus, RepoConnected, RepoFetched, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import { Server } from 'http'
 import fetch from 'node-fetch'
@@ -41,8 +41,8 @@ describe('GET /repos/:repoId/events', () => {
       eventSource = new EventSource(`http://localhost:8888/repos/${repoId}/events`)
 
       eventSource.onopen = () => {
-        domainEvents.emit('repo.connected', new RepoEvent(RepoId.fromJSON('another-repo')))
-        domainEvents.emit('repo.connected', new RepoEvent(repoId))
+        domainEvents.emit('repo.connected', new RepoConnected(RepoId.fromJSON('another-repo')))
+        domainEvents.emit('repo.connected', new RepoConnected(repoId))
       }
 
       const receivedEvent = await new Promise(resolve =>
@@ -62,8 +62,8 @@ describe('GET /repos/:repoId/events', () => {
       )
       const body = response.body as PassThrough
       const waitingForRequestToEnd = new Promise(ended => body.on('finish', ended))
-      domainEvents.emit('repo.connected', new RepoEvent(repoId))
-      domainEvents.emit('repo.fetched', new RepoEvent(repoId))
+      domainEvents.emit('repo.connected', new RepoConnected(repoId))
+      domainEvents.emit('repo.fetched', new RepoFetched(repoId))
       await promiseThat(waitingForRequestToEnd, fulfilled())
     })
   })

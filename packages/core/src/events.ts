@@ -1,31 +1,48 @@
 import { RepoId } from '.'
 import { EntityId } from './entity_id'
 
-type EventMap = Record<string, DomainEvent>
-type EventKey<T extends EventMap> = string & keyof T
-type EventHandler<T> = (params: T) => void
+type HasTypeProperty<Map> = { [Key in keyof Map]: { type: Key } }
+type DomainEventMap = EventMap<DomainEvent> & HasTypeProperty<EventMap<DomainEvent>>
+type EventMap<Event> = Record<string, Event>
+type EventKey<Map extends DomainEventMap> = string & keyof Map
+type EventHandler<Event> = (params: Event) => void
 
-interface PublishesEvents<Map extends EventMap> {
+interface PublishesEvents<Map extends DomainEventMap> {
   emit<Key extends EventKey<Map>>(eventName: Key, params: Map[Key]): void
 }
 
-interface SubscribesToEvents<Map extends EventMap> {
+interface SubscribesToEvents<Map extends DomainEventMap> {
   on<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
   off<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
 }
 
-export class DomainEvent {
+type DomainEvent = {
+  readonly entityId: EntityId
+  readonly occuredAt: Date
+  readonly type: EventKey<DomainEventMap>
+}
+
+export abstract class DomainEventBase implements DomainEvent {
   public readonly occuredAt: Date
 
   constructor(public readonly entityId: EntityId) {
     this.occuredAt = new Date()
   }
+
+  abstract get type(): EventKey<DomainEventMap>
 }
 
-export class RepoEvent extends DomainEvent {
+export abstract class RepoEvent extends DomainEventBase {
   constructor(public readonly repoId: RepoId) {
     super(repoId)
   }
+}
+
+export class RepoFetched extends RepoEvent {
+  public readonly type = 'repo.fetched'
+}
+export class RepoConnected extends RepoEvent {
+  public readonly type = 'repo.connected'
 }
 
 // Utility types for creating a type-checked exhaustive list of the keys in a type at runtime
@@ -36,8 +53,8 @@ type MustInclude<T, U extends T[]> = [T] extends [ValueOf<U>] ? U : never
 const enumerate = <T>() => <U extends NonEmptyArray<T>>(...elements: MustInclude<T, U>) => elements
 
 type RepoEvents = {
-  'repo.fetched': RepoEvent
-  'repo.connected': RepoEvent
+  'repo.fetched': RepoFetched
+  'repo.connected': RepoConnected
 }
 export type DomainEvents = RepoEvents
 export const DomainEvents = {
