@@ -19,11 +19,13 @@ export class Repo {
   ) {}
 
   async fetch(): Promise<void> {
-    await this.git.fetch().catch(error => {
-      this.domainEvents.emit('repo.fetch-failed', new RepoFetchFailed(error, this.repoId))
-      throw error
-    })
-    this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId))
+    await this.git
+      .fetch()
+      .then(() => this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId)))
+      .catch(error => {
+        this.domainEvents.emit('repo.fetch-failed', new RepoFetchFailed(error, this.repoId))
+        throw error
+      })
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
