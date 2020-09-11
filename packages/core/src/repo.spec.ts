@@ -1,6 +1,14 @@
 import { EventEmitter } from 'events'
-import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat } from 'hamjest'
-import { stubInterface } from 'ts-sinon'
+import {
+  assertThat,
+  containsInAnyOrder,
+  fulfilled,
+  isRejectedWith,
+  promiseThat,
+  rejected,
+  equalTo,
+} from 'hamjest'
+import { stubInterface, StubbedInstance } from 'ts-sinon'
 
 import { BranchName, BranchSnapshot, GitRepo, Ref, RefName, Refs, Repo, RepoId } from '.'
 import { CommitName } from './commit_name'
@@ -68,6 +76,37 @@ describe(Repo.name, () => {
       )
       repo.fetch()
       await promiseThat(waitingForEvent, fulfilled())
+    })
+
+    context('when the fetch fails', async () => {
+      const error = new Error('a git error')
+      const repoId = RepoId.of('a-repo-id')
+      let gitRepo: StubbedInstance<GitRepo>
+
+      beforeEach(() => {
+        gitRepo = stubInterface<GitRepo>()
+        gitRepo.fetch.rejects(error)
+      })
+
+      it('rejects with the error', async () => {
+        const repo = new Repo(repoId, gitRepo, domainEvents)
+        await promiseThat(repo.fetch(), rejected(equalTo(error)))
+      })
+
+      it('emits a `repo.fetch-failed` event', async () => {
+        const repo = new Repo(repoId, gitRepo, domainEvents)
+        await promiseThat(repo.fetch(), rejected(equalTo(error)))
+        const waitingForEvent = new Promise(received =>
+          domainEvents.on(
+            'repo.fetch-failed',
+            event => event.repoId.equals(repoId) && event.error === error && received(),
+          ),
+        )
+        repo.fetch().catch(() => {
+          // expected
+        })
+        await promiseThat(waitingForEvent, fulfilled())
+      })
     })
   })
 

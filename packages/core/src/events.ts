@@ -41,6 +41,15 @@ export abstract class RepoEvent extends DomainEventBase {
 export class RepoFetched extends RepoEvent {
   public readonly type = 'repo.fetched'
 }
+
+export class RepoFetchFailed extends RepoEvent {
+  public readonly type = 'repo.fetch-failed'
+
+  constructor(public readonly error: Error, repoId: RepoId) {
+    super(repoId)
+  }
+}
+
 export class RepoConnected extends RepoEvent {
   public readonly type = 'repo.connected'
 }
@@ -52,13 +61,13 @@ type NonEmptyArray<T> = [T, ...T[]]
 type MustInclude<T, U extends T[]> = [T] extends [ValueOf<U>] ? U : never
 const enumerate = <T>() => <U extends NonEmptyArray<T>>(...elements: MustInclude<T, U>) => elements
 
-type RepoEvents = {
+export type DomainEvents = {
   'repo.fetched': RepoFetched
+  'repo.fetch-failed': RepoFetchFailed
   'repo.connected': RepoConnected
 }
-export type DomainEvents = RepoEvents
 export const DomainEvents = {
-  keys: enumerate<keyof DomainEvents>()('repo.fetched', 'repo.connected'),
+  keys: enumerate<keyof DomainEvents>()('repo.fetched', 'repo.fetch-failed', 'repo.connected'),
 }
 
 export type PublishesDomainEvents = PublishesEvents<DomainEvents>

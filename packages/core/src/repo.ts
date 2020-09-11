@@ -9,7 +9,7 @@ import {
   RemoteUrl,
   RepoId,
 } from '.'
-import { PublishesDomainEvents, RepoConnected, RepoFetched } from './events'
+import { PublishesDomainEvents, RepoConnected, RepoFetched, RepoFetchFailed } from './events'
 
 export class Repo {
   constructor(
@@ -19,7 +19,10 @@ export class Repo {
   ) {}
 
   async fetch(): Promise<void> {
-    await this.git.fetch()
+    await this.git.fetch().catch(error => {
+      this.domainEvents.emit('repo.fetch-failed', new RepoFetchFailed(error, this.repoId))
+      throw error
+    })
     this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId))
   }
 
