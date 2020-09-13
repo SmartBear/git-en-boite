@@ -11,9 +11,9 @@ import {
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
+import Server from 'node-git-server'
 
 import { GitDirectory } from './git_directory'
-import { IGitResult } from 'dugite'
 
 describe(GitDirectory.name, () => {
   let root: string
@@ -45,23 +45,43 @@ describe(GitDirectory.name, () => {
       )
     })
 
-    it('never asks for a prompt @slow', async () => {
-      const repo = new GitDirectory(repoPath)
-      await promiseThat(
-        repo.exec('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git']),
-        rejected(),
-      )
-    }).timeout(10000)
+    context('for a private repo', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let server: any
+      beforeEach(async () => {
+        server = new Server(root, {
+          autoCreate: false,
+          authenticate: ({ repo }: { repo: string }) =>
+            new Promise((resolve, reject) =>
+              repo.match(/private/) ? reject('Access denied') : resolve(),
+            ),
+        })
+        await new Promise(started => server.listen(4000, started))
+      })
+      afterEach(async () => {
+        await server.close().catch(() => {
+          // ignore any error
+        })
+      })
 
-    it('is not possible to ask for terminal prompt @slow', async () => {
-      const repo = new GitDirectory(repoPath)
-      await promiseThat(
-        repo.exec('ls-remote', ['https://github.com/smartbear/git-en-boite-test-private.git'], {
-          env: { GIT_TERMINAL_PROMPT: 1 },
-        }),
-        rejected(),
-      )
-    }).timeout(10000)
+      it('never normally asks for a prompt', async () => {
+        const repo = new GitDirectory(repoPath)
+        await promiseThat(
+          repo.exec('ls-remote', ['http://localhost:4000/a-private-repo']),
+          rejected(hasProperty('message', matchesPattern('terminal prompts disabled'))),
+        )
+      })
+
+      it('is not possible to ask for terminal prompt, even if you try', async () => {
+        const repo = new GitDirectory(repoPath)
+        await promiseThat(
+          repo.exec('ls-remote', ['http://localhost:4000/a-private-repo'], {
+            env: { GIT_TERMINAL_PROMPT: 1 },
+          }),
+          rejected(),
+        )
+      })
+    })
 
     describe('options', () => {
       it('passes options', async () => {
