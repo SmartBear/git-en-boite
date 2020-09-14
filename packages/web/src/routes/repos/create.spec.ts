@@ -66,7 +66,9 @@ describe('POST /repos', () => {
       const response = await request.post('/repos').send(connectRepoRequest).expect(400)
       assertThat(
         response.body.error,
-        equalTo('Missing information from the request: repoId, remoteUrl'),
+        equalTo(
+          "should have required property 'repoId', should have required property 'remoteUrl'",
+        ),
       )
     })
   })
