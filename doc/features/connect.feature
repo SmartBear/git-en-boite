@@ -18,6 +18,6 @@ Feature: Connect
     Then it should respond with an error:
       """
       {
-        "error": "Missing information from the request: repoId, remoteUrl"
+        "error": "should have required property 'repoId', should have required property 'remoteUrl'"
       }
       """
