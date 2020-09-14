@@ -1,6 +1,10 @@
-const COMMON_FLAGS = "--require-module ts-node/register --require './src/features/**/*.ts'"
+const COMMON_FLAGS = [
+  '--require-module ts-node/register',
+  "--require './src/features/**/*.ts'",
+  `--publish${process.env.CI ? '' : '-quiet'}`,
+].join(' ')
 
 module.exports = {
-  default: `${COMMON_FLAGS} --tags "not @wip" --format ../../node_modules/cucumber-pretty`,
-  wip: `${COMMON_FLAGS} --tags @wip --format ../../node_modules/cucumber-pretty`,
+  default: `${COMMON_FLAGS} --tags "not @wip"`,
+  wip: `${COMMON_FLAGS} --tags @wip`,
 }

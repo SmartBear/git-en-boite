@@ -1,11 +1,12 @@
 import request from 'supertest'
-import { Before, After } from 'cucumber'
+import { Before, After } from '@cucumber/cucumber'
 import { Server } from 'http'
 import { startWebServer } from 'git-en-boite-web'
+import { World } from '../world'
 
 let webServer: Server
 
-Before(function () {
+Before(function (this: World) {
   webServer = startWebServer(this.app, 8888)
   this.request = request(webServer)
 })

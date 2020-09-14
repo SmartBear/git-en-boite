@@ -1,4 +1,4 @@
-import { Before } from 'cucumber'
+import { Before } from '@cucumber/cucumber'
 import { EventEmitter } from 'events'
 import { createConfig } from 'git-en-boite-config'
 import { fetchRepoAfterConnected, Logger } from 'git-en-boite-core'
@@ -7,8 +7,9 @@ import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { dirSync } from 'tmp'
 
 import { LaBoîte } from '../../../la_boîte'
+import { World } from '../world'
 
-Before(async function () {
+Before(async function (this: World) {
   this.domainEvents = new EventEmitter()
   const config = createConfig()
   const gitReposPath = dirSync().name

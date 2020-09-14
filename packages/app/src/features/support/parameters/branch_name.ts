@@ -1,4 +1,4 @@
-import { defineParameterType } from 'cucumber'
+import { defineParameterType } from '@cucumber/cucumber'
 import { BranchName } from 'git-en-boite-core'
 
 defineParameterType({

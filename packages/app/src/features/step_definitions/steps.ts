@@ -1,9 +1,11 @@
 /* tslint:disable: only-arrow-functions */
-import { Given, TableDefinition, Then, When, After } from 'cucumber'
+import { After, DataTable, Given, Then, When } from '@cucumber/cucumber'
+import EventSource from 'eventsource'
 import {
   Author,
   BranchName,
   CommitMessage,
+  DomainEvents,
   Email,
   FileContent,
   FilePath,
@@ -13,7 +15,6 @@ import {
   RepoId,
   RepoSnapshot,
   SubscribesToDomainEvents,
-  DomainEvents,
 } from 'git-en-boite-core'
 import {
   Commit,
@@ -36,9 +37,9 @@ import {
 import path from 'path'
 
 import { isSuccess } from '../support/matchers/is_success'
-import EventSource from 'eventsource'
+import { World } from '../support/world'
 
-Given('a remote repo with branches:', async function (branchesTable) {
+Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
   const repoId = (this.repoId = RepoId.generate())
   this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', repoId.value)
   const git = await new RepoFactory().open(this.remoteRepoPath)
@@ -48,7 +49,10 @@ Given('a remote repo with branches:', async function (branchesTable) {
   }
 })
 
-Given('a remote repo with commits on {BranchName}', async function (branchName: BranchName) {
+Given('a remote repo with commits on {BranchName}', async function (
+  this: World,
+  branchName: BranchName,
+) {
   const repoId = (this.repoId = RepoId.generate())
   this.remoteRepoPath = path.resolve(this.tmpDir, 'remote', repoId.value)
   const git = await new RepoFactory().open(this.remoteRepoPath)
@@ -56,6 +60,7 @@ Given('a remote repo with commits on {BranchName}', async function (branchName: 
 })
 
 When('a new commit is made on {BranchName} in the remote repo', async function (
+  this: World,
   branchName: BranchName,
 ) {
   const git = await new RepoFactory().open(this.remoteRepoPath)
@@ -71,21 +76,24 @@ async function connect(this: any) {
   await this.request.post('/repos').send(repoInfo).expect(202)
 }
 
-When('a consumer tries to connect to the remote URL {string}', async function (remoteUrl) {
+When('a consumer tries to connect to the remote URL {string}', async function (
+  this: World,
+  remoteUrl: string,
+) {
   this.repoId = RepoId.generate()
   const repoInfo = { repoId: this.repoId, remoteUrl }
   this.lastResponse = await this.request.post('/repos').send(repoInfo)
 })
 
-When('a consumer tries to connect using a malformed payload', async function () {
+When('a consumer tries to connect using a malformed payload', async function (this: World) {
   this.lastResponse = await this.request.post('/repos').send('garbage')
 })
 
-When('a consumer triggers a manual fetch of the repo', async function () {
+When('a consumer triggers a manual fetch of the repo', async function (this: World) {
   await this.request.post(`/repos/${this.repoId}`).expect(202)
 })
 
-Given('the repo has been fetched', async function () {
+Given('the repo has been fetched', async function (this: World) {
   const domainEvents = this.domainEvents as SubscribesToDomainEvents
   await promiseThat(
     new Promise(received =>
@@ -95,7 +103,10 @@ Given('the repo has been fetched', async function () {
   )
 })
 
-When('a consumer commits a new file to {BranchName}', async function (branchName: BranchName) {
+When('a consumer commits a new file to {BranchName}', async function (
+  this: World,
+  branchName: BranchName,
+) {
   const file = new GitFile(new FilePath('features/new.feature'), new FileContent('Feature: New!'))
   this.file = file
   const response = await this.request
@@ -110,8 +121,9 @@ When('a consumer commits a new file to {BranchName}', async function (branchName
 })
 
 When('a consumer commits to {BranchName} with:', async function (
+  this: World,
   branchName: BranchName,
-  commitDetails: TableDefinition,
+  commitDetails: DataTable,
 ) {
   const row = commitDetails.hashes()[0]
   const author = new Author(
@@ -127,7 +139,7 @@ When('a consumer commits to {BranchName} with:', async function (
 })
 
 const closables: Array<{ close: () => void }> = []
-When('a consumer is listening to the events on the repo', async function () {
+When('a consumer is listening to the events on the repo', async function (this: World) {
   this.events = []
   const events = new EventSource(`http://localhost:8888/repos/${this.repoId}/events`)
   for (const eventKey of DomainEvents.keys) {
@@ -143,7 +155,10 @@ After(() => {
   }
 })
 
-Then("the repo's branches should be:", async function (expectedBranchesTable: TableDefinition) {
+Then("the repo's branches should be:", async function (
+  this: World,
+  expectedBranchesTable: DataTable,
+) {
   const expectedBranchNames = expectedBranchesTable.raw().map(row => row[0])
   const response = await this.request.get(`/repos/${this.repoId}`).set('Accept', 'application/json')
   assertThat(response, isSuccess())
@@ -155,6 +170,7 @@ Then("the repo's branches should be:", async function (expectedBranchesTable: Ta
 })
 
 Then('the repo should have the new commit at the head of {BranchName}', async function (
+  this: World,
   branchName: BranchName,
 ) {
   const response = await this.request.get(`/repos/${this.repoId}`).set('Accept', 'application/json')
@@ -167,12 +183,13 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
   )
 })
 
-Then('it should respond with an error:', function (expectedJSON) {
+Then('it should respond with an error:', function (this: World, expectedJSON: string) {
   assertThat(this.lastResponse, not(isSuccess()))
   assertThat(this.lastResponse.body, equalTo(JSON.parse(expectedJSON)))
 })
 
 Then('the file should be in {BranchName} of the remote repo', async function (
+  this: World,
   branchName: BranchName,
 ) {
   const git = await new RepoFactory().open(this.remoteRepoPath)
@@ -181,8 +198,9 @@ Then('the file should be in {BranchName} of the remote repo', async function (
 })
 
 Then('the remote repo should have a new commit at the head of {BranchName}:', async function (
+  this: World,
   branchName: BranchName,
-  commitDetails: TableDefinition,
+  commitDetails: DataTable,
 ) {
   const branchRef = RefName.localBranch(branchName)
   const repo = new GitDirectory(this.remoteRepoPath)
@@ -194,16 +212,18 @@ Then('the remote repo should have a new commit at the head of {BranchName}:', as
   assertThat(lastCommit, containsString(message.toString()))
 })
 
-Then('the repo should have been fetched', async function () {
-  const domainEvents = this.domainEvents as SubscribesToDomainEvents
+Then('the repo should have been fetched', async function (this: World) {
   await promiseThat(
     new Promise(received =>
-      domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
+      this.domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
     ),
     fulfilled(),
   )
 })
 
-Then('the events received by the consumer should be:', function (expectedEvents: string) {
+Then('the events received by the consumer should be:', function (
+  this: World,
+  expectedEvents: string,
+) {
   assertThat(this.events, equalTo(expectedEvents.split('\n')))
 })
