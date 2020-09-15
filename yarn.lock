@@ -395,11 +395,6 @@
     "@types/keygrip" "*"
     "@types/node" "*"
 
-"@types/cucumber@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@types/cucumber/-/cucumber-6.0.1.tgz#0fe9673d34568d35ff21957af049883635472fcd"
-  integrity sha512-+GZV6xfN0MeN9shDCdny8GbC8N0+U6uca8cjyaJndcwmrUhwS6qOU2vmYn0d71EOwJF568/v3SxJ8VKxuZNYRw==
-
 "@types/eventsource@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@types/eventsource/-/eventsource-1.1.4.tgz#932cc925978ceba0508ed11d581204facafd1075"
@@ -5884,13 +5879,6 @@ ts-eventually@^1.0.5:
   integrity sha512-XSnKV9wsRZxsR8qEaqdLNQKI4qlqBLQzlfk3t9m9384UXgzIL9qQgkH2bCYs1nPFHJxxTbXV10CT5WQOOfNVKw==
   dependencies:
     typings "^2.1.1"
-
-ts-json-validator@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/ts-json-validator/-/ts-json-validator-0.6.0.tgz#fbe228ce0edb40820bd5f914fee353521ac3f8a6"
-  integrity sha512-6oootzu0+6OxP9Chv2pufG+G2nmozE/fIB/Kzwj4QFK5AvHfyXDZ4zELGJgMKChURWr0UlN/p6XIwf3yiM241Q==
-  dependencies:
-    ajv "^6.10.2"
 
 ts-node-dev@^1.0.0-pre.62:
   version "1.0.0-pre.62"

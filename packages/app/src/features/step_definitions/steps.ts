@@ -183,9 +183,9 @@ Then('the repo should have the new commit at the head of {BranchName}', async fu
   )
 })
 
-Then('it should respond with an error:', function (this: World, expectedJSON: string) {
+Then('it should respond with an error:', function (this: World, expectedMessage: string) {
   assertThat(this.lastResponse, not(isSuccess()))
-  assertThat(this.lastResponse.body, equalTo(JSON.parse(expectedJSON)))
+  assertThat(this.lastResponse.text, equalTo(JSON.parse(expectedMessage)))
 })
 
 Then('the file should be in {BranchName} of the remote repo', async function (

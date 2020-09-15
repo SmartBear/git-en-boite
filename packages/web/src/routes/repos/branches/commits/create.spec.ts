@@ -55,9 +55,12 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     const branchName = BranchName.of('a-branch')
     const response = await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
-      .send({})
+      .send({ files: 'file.feature' })
       .expect(400)
-    assertThat(response.body.error, equalTo('Missing information from the request: files, author'))
+    assertThat(
+      response.text,
+      equalTo("payload.files should be array, payload should have required property 'author'"),
+    )
   })
 
   it('responds with status 400 when files can not be deserialized', async () => {

@@ -1,5 +1,5 @@
 import { Application, RepoSnapshot, QueryResult, RemoteUrl, RepoId } from 'git-en-boite-core'
-import { assertThat, equalTo, containsString } from 'hamjest'
+import { assertThat, equalTo } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
@@ -57,17 +57,20 @@ describe('POST /repos', () => {
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(400)
-    assertThat(response.body.error, containsString('Could not connect to a Git HTTP server'))
+    assertThat(
+      response.text,
+      equalTo(`Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}'`),
+    )
   })
 
   describe('validation', () => {
-    it('responds with 400 (invalid request) when the request body is missing required content', async () => {
-      const connectRepoRequest = {}
+    it('responds with 400 (invalid request) when the request body is malformed', async () => {
+      const connectRepoRequest = { repoId: 1 }
       const response = await request.post('/repos').send(connectRepoRequest).expect(400)
       assertThat(
-        response.body.error,
+        response.text,
         equalTo(
-          "should have required property 'repoId', should have required property 'remoteUrl'",
+          "payload.repoId should be string, payload should have required property 'remoteUrl'",
         ),
       )
     })
