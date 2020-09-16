@@ -10,6 +10,7 @@ import {
   GitFile,
   GitRepo,
   NameOfPerson,
+  NotFound,
   OpenGitRepo,
   PendingCommitRef,
   RemoteUrl,
@@ -76,7 +77,7 @@ export const verifyRepoContract = (
     it("fails for a repo that doesn't exist", async () => {
       await promiseThat(
         git.setOriginTo(remoteUrl(RepoId.of('does-not-exist'))),
-        rejected(new Error('Not found')),
+        rejected(instanceOf(NotFound)),
       )
     })
 

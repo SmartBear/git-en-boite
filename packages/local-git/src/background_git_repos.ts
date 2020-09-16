@@ -1,16 +1,17 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
+  AccessDenied,
   Author,
   CommitMessage,
   Files,
   GitRepo,
+  Logger,
+  NotFound,
   OpenGitRepo,
   OpensGitRepos,
   PendingCommitRef,
   Refs,
   RemoteUrl,
-  Logger,
-  AccessDenied,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -103,6 +104,9 @@ export class BackgroundGitRepoProxy implements GitRepo {
       // TODO: call a factory to de-serialize the errors properly and consistenly
       if (error.message === 'Access denied') {
         throw new AccessDenied()
+      }
+      if (error.message === 'Not found') {
+        throw new NotFound()
       }
       throw error
     })
