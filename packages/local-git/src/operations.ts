@@ -75,10 +75,8 @@ export class GetRefs {
 }
 
 export class Init {
-  protected constructor(public readonly isBare: boolean) {}
-
   static bareRepo(): Init {
-    return new Init(true)
+    return new Init()
   }
 }
 

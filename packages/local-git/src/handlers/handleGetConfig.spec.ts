@@ -11,7 +11,6 @@ import { handleInit } from './handleInit'
 
 type Protocol = [AsyncCommand<Init>, AsyncQuery<GetConfig, Config>]
 
-// TODO: Do we still need the config if it's only for checking the bare property?
 describe('handleGetConfig', () => {
   let root: string
 
