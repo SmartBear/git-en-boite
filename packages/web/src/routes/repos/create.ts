@@ -37,7 +37,7 @@ export default (app: Application, router: Router): Router =>
         try {
           await app.connectToRemote(repoId, remoteUrl)
           ctx.response.status = 202
-        } catch {
+        } catch (error) {
           ctx.throw(400, `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}'`)
         }
       }
