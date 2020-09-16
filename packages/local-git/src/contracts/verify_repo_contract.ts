@@ -3,18 +3,20 @@ import {
   BranchName,
   CommitMessage,
   CommitName,
+  Email,
+  FileContent,
+  FilePath,
   GitFile,
   GitRepo,
+  NameOfPerson,
   OpenGitRepo,
   PendingCommitRef,
   RemoteUrl,
-  NameOfPerson,
-  Email,
-  FilePath,
-  FileContent,
+  RepoId,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
-import { assertThat, equalTo, matchesPattern } from 'hamjest'
+import { assertThat, equalTo, fulfilled, matchesPattern, promiseThat, rejected } from 'hamjest'
+import Server from 'node-git-server'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -43,14 +45,85 @@ export const verifyRepoContract = (
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
+  describe('@wip setting origin', () => {
+    let originPath: string
+    const gitPort = 4000
+    const remoteUrl = (repoId: RepoId) => RemoteUrl.of(`http://localhost:${gitPort}/${repoId}`)
+
+    beforeEach(async () => {
+      originPath = path.resolve(root, 'origin')
+      const origin = await createOriginRepo(originPath)
+      await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let server: any
+    beforeEach(async () => {
+      server = new Server(root, {
+        autoCreate: false,
+        authenticate: ({ repo }: { repo: string }) =>
+          new Promise((resolve, reject) =>
+            repo.match(/private/) ? reject('Access denied') : resolve(),
+          ),
+      })
+      await new Promise(started => server.listen(gitPort, started))
+    })
+    afterEach(async () => {
+      await server.close().catch(() => {
+        // ignore any error
+      })
+    })
+
+    it('succeeds for a valid remoteUrl', async () => {
+      await promiseThat(git.setOriginTo(remoteUrl(RepoId.of('origin'))), fulfilled())
+    })
+    it("fails for a repo that doesn't exist", async () => {
+      await promiseThat(
+        git.setOriginTo(remoteUrl(RepoId.of('does-not-exist'))),
+        rejected(new Error('Not found')),
+      )
+    })
+    it('fails for invalid credentials', async () => {
+      await promiseThat(
+        git.setOriginTo(remoteUrl(RepoId.of('private'))),
+        rejected(new Error('Access denied')),
+      )
+    })
+  })
+
   describe('fetching commits', () => {
     context('from an origin repo with commits on the main branch', () => {
       let latestCommit: CommitName
-      let originUrl: RemoteUrl
+      let originPath: string
+      const gitPort = 4000
+      const originUrl = RemoteUrl.of(`http://localhost:${gitPort}/origin`)
 
       beforeEach(async () => {
-        originUrl = RemoteUrl.of(path.resolve(root, 'remote', 'a-repo-id'))
-        const origin = await createOriginRepo(originUrl.value)
+        originPath = path.resolve(root, 'origin')
+        const origin = await createOriginRepo(originPath)
+        await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+        latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let server: any
+      beforeEach(async () => {
+        server = new Server(root, {
+          autoCreate: false,
+          authenticate: ({ repo }: { repo: string }) =>
+            new Promise((resolve, reject) =>
+              repo.match(/private/) ? reject('Access denied') : resolve(),
+            ),
+        })
+        await new Promise(started => server.listen(gitPort, started))
+      })
+      afterEach(async () => {
+        await server.close().catch(() => {
+          // ignore any error
+        })
+      })
+
+      beforeEach(async () => {
+        const origin = await createOriginRepo(originPath)
         await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
         latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
       })
@@ -62,18 +135,6 @@ export const verifyRepoContract = (
         const ref = refs.find(ref => ref.isRemote)
         await assertThat(ref.revision, equalTo(latestCommit))
       })
-
-      //     it('fails when the remote does not exist', async () => {
-      //       const repoPath = path.resolve(root, 'a-repo-id')
-      //       const git = await factory.open(repoPath)
-      //       await git(SetOrigin.toUrl('invalid-remote-url'))
-      //       await promiseThat(
-      //         git(Fetch.fromOrigin()),
-      //         isRejectedWith(
-      //           hasProperty('message', matchesPattern('does not appear to be a git repository')),
-      //         ),
-      //       )
-      //     })
     })
   })
 
