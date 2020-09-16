@@ -15,13 +15,21 @@ import {
   RepoId,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
-import { assertThat, equalTo, fulfilled, matchesPattern, promiseThat, rejected } from 'hamjest'
+import {
+  assertThat,
+  equalTo,
+  fulfilled,
+  instanceOf,
+  matchesPattern,
+  promiseThat,
+  rejected,
+} from 'hamjest'
 import Server from 'node-git-server'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { Commit, GetRefs, LocalCommitRef, RepoProtocol } from '..'
-import { GitDirectory } from '../git_directory'
+import { AccessDenied, GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
 
@@ -85,7 +93,7 @@ export const verifyRepoContract = (
     it('fails for invalid credentials', async () => {
       await promiseThat(
         git.setOriginTo(remoteUrl(RepoId.of('private'))),
-        rejected(new Error('Access denied')),
+        rejected(instanceOf(AccessDenied)),
       )
     })
   })

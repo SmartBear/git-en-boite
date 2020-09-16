@@ -14,6 +14,7 @@ import {
 import IORedis from 'ioredis'
 
 import { DugiteGitRepo } from './dugite_git_repo'
+import { AccessDenied } from './git_directory'
 
 interface Closable {
   close(): Promise<void>
@@ -98,16 +99,24 @@ export class BackgroundGitRepoProxy implements GitRepo {
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
-    return job.waitUntilFinished(this.queueEvents)
+    return job.waitUntilFinished(this.queueEvents).catch(error => {
+      // TODO: call a factory to de-serialize the errors properly and consistenly
+      if (error.message === 'Access denied') {
+        throw new AccessDenied()
+      }
+      throw error
+    })
   }
 
   async fetch(): Promise<void> {
     const job = await this.queue.add('fetch', { path: this.path })
+    // TODO: catch and de-serialize errors
     return job.waitUntilFinished(this.queueEvents)
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {
     const job = await this.queue.add('push', { path: this.path, commitRef })
+    // TODO: catch and de-serialize errors
     return job.waitUntilFinished(this.queueEvents)
   }
 
