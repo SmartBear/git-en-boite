@@ -1,14 +1,14 @@
 import fs from 'fs'
-import { AccessDenied, NotFound, RemoteUrl, RepoId } from 'git-en-boite-core'
+import { AccessDenied, NotFound, RepoId } from 'git-en-boite-core'
 import { AsyncCommand, messageDispatch } from 'git-en-boite-message-dispatch'
 import { fulfilled, instanceOf, promiseThat, rejected } from 'hamjest'
 import path from 'path'
-import { runGitHttpServer } from '../test/run_git_http_server'
 import { dirSync } from 'tmp'
 
 import { handleInit, handleValidateRemote } from '.'
 import { GitDirectory } from '../git_directory'
 import { Init, ValidateRemote } from '../operations'
+import { runGitHttpServer } from '../test/run_git_http_server'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<ValidateRemote>]
 

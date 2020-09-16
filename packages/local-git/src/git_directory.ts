@@ -1,10 +1,10 @@
 import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
+import fs from 'fs'
+import { AccessDenied, NotFound } from 'git-en-boite-core'
 import { merge } from 'lodash'
 import path from 'path'
-import { v4 as uuid } from 'uuid'
-import fs from 'fs'
 import { promisify } from 'util'
-import { AccessDenied, NotFound } from 'git-en-boite-core'
+import { v4 as uuid } from 'uuid'
 
 const unlink = promisify(fs.unlink)
 const exists = promisify(fs.exists)

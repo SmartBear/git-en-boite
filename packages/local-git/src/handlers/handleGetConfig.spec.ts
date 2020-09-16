@@ -1,12 +1,12 @@
 import fs from 'fs'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { Config, GetConfig, Init } from '../operations'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
 import { handleGetConfig } from '.'
 import { GitDirectory } from '../git_directory'
+import { Config, GetConfig, Init } from '../operations'
 import { handleInit } from './handleInit'
 
 type Protocol = [AsyncCommand<Init>, AsyncQuery<GetConfig, Config>]

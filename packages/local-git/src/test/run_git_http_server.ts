@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RepoId, RemoteUrl } from 'git-en-boite-core'
+import { RemoteUrl, RepoId } from 'git-en-boite-core'
 import Server from 'node-git-server'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

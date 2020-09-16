@@ -3,12 +3,12 @@ import {
   BranchName,
   CommitMessage,
   CommitRef,
+  Email,
   Files,
+  NameOfPerson,
   PendingCommitRef,
   Refs,
   RemoteUrl,
-  NameOfPerson,
-  Email,
 } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery } from 'git-en-boite-message-dispatch'
 

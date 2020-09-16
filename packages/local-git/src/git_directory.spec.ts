@@ -1,22 +1,21 @@
 import fs from 'fs'
+import { AccessDenied, RepoId } from 'git-en-boite-core'
 import {
   assertThat,
+  containsString,
+  equalTo,
   hasProperty,
+  instanceOf,
   matchesPattern,
   promiseThat,
   rejected,
   startsWith,
-  containsString,
-  equalTo,
-  instanceOf,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
-import Server from 'node-git-server'
 import { eventually } from 'ts-eventually'
 
 import { GitDirectory } from './git_directory'
-import { AccessDenied, RepoId } from 'git-en-boite-core'
 import { runGitHttpServer } from './test/run_git_http_server'
 
 describe(GitDirectory.name, () => {
