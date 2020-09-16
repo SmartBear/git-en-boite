@@ -16,7 +16,8 @@ import Server from 'node-git-server'
 import { eventually } from 'ts-eventually'
 
 import { GitDirectory } from './git_directory'
-import { AccessDenied } from 'git-en-boite-core'
+import { AccessDenied, RepoId } from 'git-en-boite-core'
+import { runGitHttpServer } from './test/run_git_http_server'
 
 describe(GitDirectory.name, () => {
   let root: string
@@ -49,28 +50,17 @@ describe(GitDirectory.name, () => {
     })
 
     context('for a private repo', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let server: any
-      beforeEach(async () => {
-        server = new Server(root, {
-          autoCreate: false,
-          authenticate: ({ repo }: { repo: string }) =>
-            new Promise((resolve, reject) =>
-              repo.match(/private/) ? reject('Access denied') : resolve(),
-            ),
-        })
-        await new Promise(started => server.listen(4000, started))
-      })
-      afterEach(async () => {
-        await server.close().catch(() => {
-          // ignore any error
-        })
+      const remoteUrl = runGitHttpServer(() => root, {
+        authenticate: ({ repo }: { repo: string }) =>
+          new Promise((resolve, reject) =>
+            repo.match(/private/) ? reject('Access denied') : resolve(),
+          ),
       })
 
       it('never normally asks for a prompt', async () => {
         const repo = new GitDirectory(repoPath)
         await promiseThat(
-          repo.exec('ls-remote', ['http://localhost:4000/a-private-repo']),
+          repo.exec('ls-remote', [remoteUrl(RepoId.of('a-private-repo')).value]),
           rejected(instanceOf(AccessDenied)),
         )
       })
@@ -78,7 +68,7 @@ describe(GitDirectory.name, () => {
       it('is not possible to ask for terminal prompt, even if you try', async () => {
         const repo = new GitDirectory(repoPath)
         await promiseThat(
-          repo.exec('ls-remote', ['http://localhost:4000/a-private-repo'], {
+          repo.exec('ls-remote', [remoteUrl(RepoId.of('a-private-repo')).value], {
             env: { GIT_TERMINAL_PROMPT: 1 },
           }),
           rejected(),

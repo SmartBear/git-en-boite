@@ -1,9 +1,9 @@
 import fs from 'fs'
-import { AccessDenied, NotFound, RemoteUrl } from 'git-en-boite-core'
+import { AccessDenied, NotFound, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { AsyncCommand, messageDispatch } from 'git-en-boite-message-dispatch'
 import { fulfilled, instanceOf, promiseThat, rejected } from 'hamjest'
-import Server from 'node-git-server'
 import path from 'path'
+import { runGitHttpServer } from '../test/run_git_http_server'
 import { dirSync } from 'tmp'
 
 import { handleInit, handleValidateRemote } from '.'
@@ -30,22 +30,11 @@ describe('handleValidateRemote', () => {
     ])
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let server: any
-  beforeEach(async () => {
-    server = new Server(root, {
-      autoCreate: false,
-      authenticate: ({ repo }: { repo: string }) =>
-        new Promise((resolve, reject) =>
-          repo.match(/private/) ? reject('Access denied') : resolve(),
-        ),
-    })
-    await new Promise(started => server.listen(4000, started))
-  })
-  afterEach(async () => {
-    await server.close().catch(() => {
-      // ignore any error
-    })
+  const remoteUrl = runGitHttpServer(() => root, {
+    authenticate: ({ repo }: { repo: string }) =>
+      new Promise((resolve, reject) =>
+        repo.match(/private/) ? reject('Access denied') : resolve(),
+      ),
   })
 
   beforeEach(async () => {
@@ -58,24 +47,26 @@ describe('handleValidateRemote', () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
-    const repoUrl = RemoteUrl.of('http://localhost:4000/origin')
-    await promiseThat(git(ValidateRemote.url(repoUrl)), fulfilled())
-    await server.close()
+    await promiseThat(git(ValidateRemote.url(remoteUrl(RepoId.of('origin')))), fulfilled())
   })
 
   it('fails if the remote URL returns 404', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
-    const repoUrl = RemoteUrl.of('http://localhost:4000/no-such-repo')
-    await promiseThat(git(ValidateRemote.url(repoUrl)), rejected(instanceOf(NotFound)))
+    await promiseThat(
+      git(ValidateRemote.url(remoteUrl(RepoId.of('no-such-repo')))),
+      rejected(instanceOf(NotFound)),
+    )
   })
 
   it('fails if the remote URL requires authentication', async () => {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
-    const repoUrl = RemoteUrl.of('http://localhost:4000/a-private-repo')
-    await promiseThat(git(ValidateRemote.url(repoUrl)), rejected(instanceOf(AccessDenied)))
+    await promiseThat(
+      git(ValidateRemote.url(remoteUrl(RepoId.of('a-private-repo')))),
+      rejected(instanceOf(AccessDenied)),
+    )
   })
 })
