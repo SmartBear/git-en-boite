@@ -1,12 +1,11 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
-  AccessDenied,
   Author,
   CommitMessage,
   Files,
+  GitError,
   GitRepo,
   Logger,
-  NotFound,
   OpenGitRepo,
   OpensGitRepos,
   PendingCommitRef,
@@ -101,14 +100,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
     return job.waitUntilFinished(this.queueEvents).catch(error => {
-      // TODO: call a factory to de-serialize the errors properly and consistenly
-      if (error.message === 'Access denied') {
-        throw new AccessDenied()
-      }
-      if (error.message === 'Not found') {
-        throw new NotFound()
-      }
-      throw error
+      throw GitError.deserialise(error)
     })
   }
 
