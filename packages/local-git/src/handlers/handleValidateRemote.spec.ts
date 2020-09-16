@@ -1,10 +1,10 @@
 import fs from 'fs'
-import { RemoteUrl } from 'git-en-boite-core'
+import { AccessDenied, NotFound, RemoteUrl } from 'git-en-boite-core'
 import { AsyncCommand, messageDispatch } from 'git-en-boite-message-dispatch'
-import { fulfilled, hasProperty, matchesPattern, promiseThat, rejected } from 'hamjest'
+import { fulfilled, instanceOf, promiseThat, rejected } from 'hamjest'
+import Server from 'node-git-server'
 import path from 'path'
 import { dirSync } from 'tmp'
-import Server from 'node-git-server'
 
 import { handleInit, handleValidateRemote } from '.'
 import { GitDirectory } from '../git_directory'
@@ -68,10 +68,7 @@ describe('handleValidateRemote', () => {
     const git = repo(repoPath)
     await git(Init.bareRepo())
     const repoUrl = RemoteUrl.of('http://localhost:4000/no-such-repo')
-    await promiseThat(
-      git(ValidateRemote.url(repoUrl)),
-      rejected(hasProperty('message', matchesPattern('repository not found'))),
-    )
+    await promiseThat(git(ValidateRemote.url(repoUrl)), rejected(instanceOf(NotFound)))
   })
 
   it('fails if the remote URL requires authentication', async () => {
@@ -79,9 +76,6 @@ describe('handleValidateRemote', () => {
     const git = repo(repoPath)
     await git(Init.bareRepo())
     const repoUrl = RemoteUrl.of('http://localhost:4000/a-private-repo')
-    await promiseThat(
-      git(ValidateRemote.url(repoUrl)),
-      rejected(hasProperty('message', matchesPattern('terminal prompts disabled'))),
-    )
+    await promiseThat(git(ValidateRemote.url(repoUrl)), rejected(instanceOf(AccessDenied)))
   })
 })

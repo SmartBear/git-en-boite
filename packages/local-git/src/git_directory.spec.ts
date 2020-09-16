@@ -8,12 +8,15 @@ import {
   startsWith,
   containsString,
   equalTo,
+  instanceOf,
 } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 import Server from 'node-git-server'
+import { eventually } from 'ts-eventually'
 
 import { GitDirectory } from './git_directory'
+import { AccessDenied } from 'git-en-boite-core'
 
 describe(GitDirectory.name, () => {
   let root: string
@@ -68,7 +71,7 @@ describe(GitDirectory.name, () => {
         const repo = new GitDirectory(repoPath)
         await promiseThat(
           repo.exec('ls-remote', ['http://localhost:4000/a-private-repo']),
-          rejected(hasProperty('message', matchesPattern('terminal prompts disabled'))),
+          rejected(instanceOf(AccessDenied)),
         )
       })
 
@@ -162,7 +165,9 @@ describe(GitDirectory.name, () => {
         await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
         await untilDone
       })
-      await assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
+      await eventually(async () => {
+        assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
+      })
       done()
       await writingAFile
       await assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo(['']))

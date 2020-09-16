@@ -1,4 +1,5 @@
 import {
+  AccessDenied,
   Author,
   BranchName,
   CommitMessage,
@@ -29,7 +30,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { Commit, GetRefs, LocalCommitRef, RepoProtocol } from '..'
-import { AccessDenied, GitDirectory } from '../git_directory'
+import { GitDirectory } from '../git_directory'
 
 type OpenOriginRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
 
@@ -53,7 +54,7 @@ export const verifyRepoContract = (
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
   })
 
-  describe('@wip setting origin', () => {
+  describe('setting origin', () => {
     let originPath: string
     const gitPort = 4000
     const remoteUrl = (repoId: RepoId) => RemoteUrl.of(`http://localhost:${gitPort}/${repoId}`)

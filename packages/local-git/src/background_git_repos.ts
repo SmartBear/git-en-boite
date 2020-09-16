@@ -10,11 +10,11 @@ import {
   Refs,
   RemoteUrl,
   Logger,
+  AccessDenied,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DugiteGitRepo } from './dugite_git_repo'
-import { AccessDenied } from './git_directory'
 
 interface Closable {
   close(): Promise<void>
