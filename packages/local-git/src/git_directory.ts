@@ -1,6 +1,6 @@
 import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
 import fs from 'fs'
-import { AccessDenied, NotFound } from 'git-en-boite-core'
+import { AccessDenied } from 'git-en-boite-core'
 import { merge } from 'lodash'
 import path from 'path'
 import { promisify } from 'util'
@@ -27,10 +27,6 @@ export class GitDirectory {
     if (result.exitCode !== 0) {
       if (result.stderr.match(/terminal prompts disabled/)) {
         throw new AccessDenied()
-      }
-      // TODO: test this logic
-      if (result.stderr.match(/repository not found/)) {
-        throw new NotFound()
       }
       throw new Error(
         `Git command \`${cmd} ${args.join(' ')}\` returned exit code ${result.exitCode}:\n${

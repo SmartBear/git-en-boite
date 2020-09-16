@@ -1,10 +1,16 @@
 import { ValidateRemote } from '../operations'
 import { Handle, AsyncCommand } from 'git-en-boite-message-dispatch'
 import { GitDirectory } from '../git_directory'
+import { NotFound } from 'git-en-boite-core'
 
 export const handleValidateRemote: Handle<GitDirectory, AsyncCommand<ValidateRemote>> = async (
   repo,
   { url },
 ) => {
-  await repo.exec('ls-remote', [url.value])
+  await repo.exec('ls-remote', [url.value]).catch(error => {
+    if (error.message.match(/remote:.*not found|the requested url returned error/i)) {
+      throw new NotFound()
+    }
+    throw error
+  })
 }
