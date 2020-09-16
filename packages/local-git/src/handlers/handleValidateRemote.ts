@@ -8,7 +8,11 @@ export const handleValidateRemote: Handle<GitDirectory, AsyncCommand<ValidateRem
   { url },
 ) => {
   await repo.exec('ls-remote', [url.value]).catch(error => {
-    if (error.message.match(/remote:.*not found|the requested url returned error/i)) {
+    if (
+      error.message.match(
+        /not found|the requested url returned error|does not appear to be a git repository/i,
+      )
+    ) {
       throw new NotFound()
     }
     throw error

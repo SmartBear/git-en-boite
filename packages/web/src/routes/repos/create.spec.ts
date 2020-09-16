@@ -1,4 +1,12 @@
-import { Application, RepoSnapshot, QueryResult, RemoteUrl, RepoId } from 'git-en-boite-core'
+import {
+  AccessDenied,
+  Application,
+  NotFound,
+  QueryResult,
+  RemoteUrl,
+  RepoId,
+  RepoSnapshot,
+} from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -48,19 +56,48 @@ describe('POST /repos', () => {
     assertThat(response.body, equalTo(bareObject(repoInfo)))
   })
 
-  it('responds with 400 if the connection attempt fails', async () => {
+  it('responds with 400 if the connection attempt fails with NotFound', async () => {
     const repoId = RepoId.of('a-repo-id')
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
-    app.connectToRemote.withArgs(repoId, remoteUrl).rejects()
+    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new NotFound())
     const response = await request
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(400)
     assertThat(
       response.text,
-      equalTo(`Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}'`),
+      equalTo(`Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': Not found`),
     )
+  })
+
+  it('responds with 403 if the connection attempt fails with AccessDenied', async () => {
+    const repoId = RepoId.of('a-repo-id')
+    const remoteUrl = RemoteUrl.of('a-bad-url')
+    app.getInfo.resolves(QueryResult.from())
+    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new AccessDenied())
+    const response = await request
+      .post('/repos')
+      .send({ repoId: repoId.value, remoteUrl })
+      .expect(403)
+    assertThat(
+      response.text,
+      equalTo(
+        `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': Access denied`,
+      ),
+    )
+  })
+
+  it('responds with 500 for any other type of error', async () => {
+    const repoId = RepoId.of('a-repo-id')
+    const remoteUrl = RemoteUrl.of('a-bad-url')
+    app.getInfo.resolves(QueryResult.from())
+    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new Error('unexpected'))
+    const response = await request
+      .post('/repos')
+      .send({ repoId: repoId.value, remoteUrl })
+      .expect(500)
+    assertThat(response.text, equalTo('Internal Server Error'))
   })
 
   describe('validation', () => {

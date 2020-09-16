@@ -1,13 +1,9 @@
 export class GitError extends Error {}
 
 export class AccessDenied extends GitError {
-  constructor() {
-    super('Access denied')
-  }
+  public readonly message = 'Access denied'
 }
 
 export class NotFound extends GitError {
-  constructor() {
-    super('Not found')
-  }
+  public readonly message = 'Not found'
 }

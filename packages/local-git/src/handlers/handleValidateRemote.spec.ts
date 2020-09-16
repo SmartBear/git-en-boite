@@ -71,6 +71,16 @@ describe('handleValidateRemote', () => {
     )
   })
 
+  it('fails if the remote URL does not appear to be a repository', async () => {
+    const repoPath = path.resolve(root, 'a-repo-id')
+    const git = repo(repoPath)
+    await git(Init.bareRepo())
+    await promiseThat(
+      git(ValidateRemote.url(RemoteUrl.of('a-bad-url'))),
+      rejected(instanceOf(NotFound)),
+    )
+  })
+
   xcontext('for real provider URLs @slow', function (this: Suite) {
     let git: Dispatch<Protocol>
     this.timeout(3000)

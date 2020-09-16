@@ -1,5 +1,12 @@
 import Router from '@koa/router'
-import { Application, RepoSnapshot, RemoteUrl, RepoId } from 'git-en-boite-core'
+import {
+  Application,
+  RepoSnapshot,
+  RemoteUrl,
+  RepoId,
+  AccessDenied,
+  NotFound,
+} from 'git-en-boite-core'
 import { Context } from 'koa'
 import validateRequestBody from '../../validate_request'
 
@@ -38,7 +45,22 @@ export default (app: Application, router: Router): Router =>
           await app.connectToRemote(repoId, remoteUrl)
           ctx.response.status = 202
         } catch (error) {
-          ctx.throw(400, `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}'`)
+          switch (error.constructor) {
+            case AccessDenied:
+              ctx.throw(
+                403,
+                `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': ${error.message}`,
+              )
+
+            case NotFound:
+              ctx.throw(
+                400,
+                `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': ${error.message}`,
+              )
+
+            default:
+              ctx.throw(error)
+          }
         }
       }
 

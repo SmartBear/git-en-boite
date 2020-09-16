@@ -8,7 +8,7 @@ Feature: Connect
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:
       """
-      "Could not connect to a Git HTTP server using remoteUrl 'a-bad-url'"
+      "Could not connect to a Git HTTP server using remoteUrl 'a-bad-url': Not found"
       """
 
   Scenario: Connection attempt using bad JSON
