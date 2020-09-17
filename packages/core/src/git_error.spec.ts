@@ -2,7 +2,7 @@ import { assertThat, equalTo, instanceOf } from 'hamjest'
 
 import { AccessDenied, GitError, InvalidRepoUrl } from './git_error'
 
-describe(GitError.name + '@wip', () => {
+describe(GitError.name, () => {
   it('serializes an InvalidRepoUrl', () => {
     const original = new InvalidRepoUrl('nope')
     const serialized = original.asSerializedError()

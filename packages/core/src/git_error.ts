@@ -1,5 +1,3 @@
-import { RepoId } from './repo_id'
-
 type ErrorEnvelope = {
   type: string
   props: {
