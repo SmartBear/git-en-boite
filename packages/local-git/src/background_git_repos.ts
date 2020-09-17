@@ -140,22 +140,27 @@ class GitRepoWorker implements Closable {
     logger: Logger,
   ) {
     const processJob = async (job: Job) => {
-      logger.log({ name: job.name, data: job.data })
-      if (job.name === 'ping') {
-        return {}
-      }
-      const { path } = job.data
-      const git = await gitRepos.openGitRepo(path)
-      if (job.name === 'setOriginTo') {
-        const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
-        return await git.setOriginTo(remoteUrl)
-      }
-      if (job.name === 'fetch') {
-        return await git.fetch()
-      }
-      if (job.name === 'push') {
-        const { commitRef } = job.data
-        return await git.push(PendingCommitRef.fromJSON(commitRef))
+      try {
+        logger.log({ name: job.name, data: job.data })
+        if (job.name === 'ping') {
+          return {}
+        }
+        const { path } = job.data
+        const git = await gitRepos.openGitRepo(path)
+        if (job.name === 'setOriginTo') {
+          const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
+          return await git.setOriginTo(remoteUrl)
+        }
+        if (job.name === 'fetch') {
+          return await git.fetch()
+        }
+        if (job.name === 'push') {
+          const { commitRef } = job.data
+          return await git.push(PendingCommitRef.fromJSON(commitRef))
+        }
+      } catch (error) {
+        if (error instanceof GitError) throw error.asSerializedError()
+        throw error
       }
     }
     // TODO: pass redisUrl to Worker once https://github.com/taskforcesh/bullmq/issues/171 fixed

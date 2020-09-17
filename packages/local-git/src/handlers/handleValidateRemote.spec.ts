@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { AccessDenied, NotFound, RemoteUrl, RepoId } from 'git-en-boite-core'
+import { AccessDenied, InvalidRepoUrl, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { fulfilled, instanceOf, promiseThat, rejected } from 'hamjest'
 import { Suite } from 'mocha'
@@ -57,7 +57,7 @@ describe('handleValidateRemote', () => {
     await git(Init.bareRepo())
     await promiseThat(
       git(ValidateRemote.url(remoteUrl(RepoId.of('no-such-repo')))),
-      rejected(instanceOf(NotFound)),
+      rejected(instanceOf(InvalidRepoUrl)),
     )
   })
 
@@ -77,7 +77,7 @@ describe('handleValidateRemote', () => {
     await git(Init.bareRepo())
     await promiseThat(
       git(ValidateRemote.url(RemoteUrl.of('a-bad-url'))),
-      rejected(instanceOf(NotFound)),
+      rejected(instanceOf(InvalidRepoUrl)),
     )
   })
 
@@ -114,7 +114,7 @@ describe('handleValidateRemote', () => {
       it('throws NotFound for a nonsense URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://gitlab.com/mattwynne.git'))),
-          rejected(instanceOf(NotFound)),
+          rejected(instanceOf(InvalidRepoUrl)),
         ))
     })
 
@@ -134,7 +134,7 @@ describe('handleValidateRemote', () => {
       it('throws NotFound for a nonsense URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://bitbucket.org/not-a-repo.git'))),
-          rejected(instanceOf(NotFound)),
+          rejected(instanceOf(InvalidRepoUrl)),
         ))
     })
 
@@ -142,7 +142,7 @@ describe('handleValidateRemote', () => {
       it('throws NotFound for a nonsense URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://github.com/not-a-repo.git'))),
-          rejected(instanceOf(NotFound)),
+          rejected(instanceOf(InvalidRepoUrl)),
         ))
 
       it('throws AccessDenied for a non-existent but valid-looking repo URL', () =>

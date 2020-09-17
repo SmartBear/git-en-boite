@@ -8,12 +8,17 @@ Feature: Connect
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:
       """
-      "Could not connect to a Git HTTP server using remoteUrl 'a-bad-url': Not found"
+      'a-bad-url' does not appear to be a git repository
+      Could not read from remote repository.
+
+      Please make sure you have the correct access rights
+      and the repository exists.
+
       """
 
   Scenario: Connection attempt using bad JSON
     When a consumer tries to connect using a malformed payload
     Then it should respond with an error:
       """
-      "payload should have required property 'repoId', payload should have required property 'remoteUrl'"
+      payload should have required property 'repoId', payload should have required property 'remoteUrl'
       """

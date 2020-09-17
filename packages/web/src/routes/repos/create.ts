@@ -5,7 +5,7 @@ import {
   RemoteUrl,
   RepoId,
   AccessDenied,
-  NotFound,
+  InvalidRepoUrl,
 } from 'git-en-boite-core'
 import { Context } from 'koa'
 import validateRequestBody from '../../validate_request'
@@ -52,11 +52,8 @@ export default (app: Application, router: Router): Router =>
                 `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': ${error.message}`,
               )
 
-            case NotFound:
-              ctx.throw(
-                400,
-                `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': ${error.message}`,
-              )
+            case InvalidRepoUrl:
+              ctx.throw(400, error.message)
 
             default:
               ctx.throw(error)

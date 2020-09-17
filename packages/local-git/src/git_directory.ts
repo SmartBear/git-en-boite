@@ -11,6 +11,16 @@ const exists = promisify(fs.exists)
 
 type OperateOnIndex<Result = void> = (index: GitDirectory) => Promise<Result>
 
+class GitCommandError extends Error {
+  constructor(
+    public readonly cmd: string,
+    public readonly args: string[],
+    public readonly result: IGitResult,
+  ) {
+    super(result.stderr)
+  }
+}
+
 export class GitDirectory {
   constructor(public readonly path: string, public readonly options: IGitExecutionOptions = {}) {}
 
@@ -28,11 +38,7 @@ export class GitDirectory {
       if (result.stderr.match(/terminal prompts disabled/)) {
         throw new AccessDenied()
       }
-      throw new Error(
-        `Git command \`${cmd} ${args.join(' ')}\` returned exit code ${result.exitCode}:\n${
-          result.stderr
-        }`,
-      )
+      throw new GitCommandError(cmd, args, result)
     }
     return result
   }
