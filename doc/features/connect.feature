@@ -8,8 +8,6 @@ Feature: Connect
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:
       """
-      'a-bad-url' does not appear to be a git repository
-      Could not read from remote repository.
 
       Please make sure you have the correct access rights
       and the repository exists.
