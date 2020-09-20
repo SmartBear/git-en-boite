@@ -9,9 +9,9 @@ type ErrorEnvelope = {
 const hasSerializedMessage = (error: Error) => {
   try {
     return JSON.parse(error.message) instanceof Object
-  } catch (error) {
-    if (error instanceof SyntaxError) return false
-    throw error
+  } catch (parseError) {
+    if (parseError instanceof SyntaxError) return false
+    throw parseError
   }
 }
 
