@@ -8,10 +8,7 @@ Feature: Connect
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:
       """
-
-      Please make sure you have the correct access rights
-      and the repository exists.
-
+      Repository 'a-bad-url' not found.
       """
 
   Scenario: Connection attempt using bad JSON

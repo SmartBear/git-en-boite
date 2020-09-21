@@ -47,13 +47,10 @@ export default (app: Application, router: Router): Router =>
         } catch (error) {
           switch (error.constructor) {
             case AccessDenied:
-              ctx.throw(
-                403,
-                `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': ${error.message}`,
-              )
+              ctx.throw(403, `Access denied to '${remoteUrl}'`)
 
             case InvalidRepoUrl:
-              ctx.throw(400, error.message)
+              ctx.throw(400, `Repository '${remoteUrl}' not found.`)
 
             default:
               ctx.throw(error)
