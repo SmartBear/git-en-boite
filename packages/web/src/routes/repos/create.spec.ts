@@ -72,12 +72,12 @@ describe('POST /repos', () => {
     const repoId = RepoId.of('a-repo-id')
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
-    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new AccessDenied())
+    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new AccessDenied('Sorry!'))
     const response = await request
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(403)
-    assertThat(response.text, equalTo(`Access denied to 'a-bad-url'`))
+    assertThat(response.text, equalTo(`Access denied to 'a-bad-url': Sorry!`))
   })
 
   it('responds with 500 for any other type of error', async () => {

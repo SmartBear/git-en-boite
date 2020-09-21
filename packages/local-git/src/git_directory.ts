@@ -1,25 +1,15 @@
 import { GitProcess, IGitExecutionOptions, IGitResult } from 'dugite'
 import fs from 'fs'
-import { AccessDenied } from 'git-en-boite-core'
 import { merge } from 'lodash'
 import path from 'path'
 import { promisify } from 'util'
 import { v4 as uuid } from 'uuid'
+import { GitCommandError } from './git_command_error'
 
 const unlink = promisify(fs.unlink)
 const exists = promisify(fs.exists)
 
 type OperateOnIndex<Result = void> = (index: GitDirectory) => Promise<Result>
-
-class GitCommandError extends Error {
-  constructor(
-    public readonly cmd: string,
-    public readonly args: string[],
-    public readonly result: IGitResult,
-  ) {
-    super(result.stderr)
-  }
-}
 
 export class GitDirectory {
   constructor(public readonly path: string, public readonly options: IGitExecutionOptions = {}) {}
@@ -34,13 +24,8 @@ export class GitDirectory {
     options?: IGitExecutionOptions,
   ): Promise<IGitResult> {
     const result = await GitProcess.exec([cmd, ...args], this.path, this.buildOptions(options))
-    if (result.exitCode !== 0) {
-      if (result.stderr.match(/terminal prompts disabled/)) {
-        throw new AccessDenied()
-      }
-      throw new GitCommandError(cmd, args, result)
-    }
-    return result
+    if (result.exitCode === 0) return result
+    throw GitCommandError.for(cmd, args, result)
   }
 
   private buildOptions(options: IGitExecutionOptions = {}): IGitExecutionOptions {

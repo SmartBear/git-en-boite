@@ -47,8 +47,7 @@ export default (app: Application, router: Router): Router =>
         } catch (error) {
           switch (error.constructor) {
             case AccessDenied:
-              ctx.throw(403, `Access denied to '${remoteUrl}'`)
-
+              ctx.throw(403, `Access denied to '${remoteUrl}': ${error.message}`)
             case InvalidRepoUrl:
               ctx.throw(400, `Repository '${remoteUrl}' not found.`)
 

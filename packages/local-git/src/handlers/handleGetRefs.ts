@@ -13,6 +13,7 @@ export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Refs>> = as
         .map(([revision, name]) => new Ref(CommitName.of(revision), RefName.parse(name))),
     )
   } catch (error) {
+    // TODO: only wrap the git call in the error handler so we don't swallow errors parsing the git output
     return new Refs()
   }
 }
