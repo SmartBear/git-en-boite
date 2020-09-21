@@ -1,7 +1,7 @@
 import {
   AccessDenied,
   Application,
-  NotFound,
+  InvalidRepoUrl,
   QueryResult,
   RemoteUrl,
   RepoId,
@@ -56,19 +56,16 @@ describe('POST /repos', () => {
     assertThat(response.body, equalTo(bareObject(repoInfo)))
   })
 
-  it('responds with 400 if the connection attempt fails with NotFound', async () => {
+  it('responds with 400 if the connection attempt fails with InvalidRepoUrl', async () => {
     const repoId = RepoId.of('a-repo-id')
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
-    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new NotFound())
+    app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new InvalidRepoUrl())
     const response = await request
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(400)
-    assertThat(
-      response.text,
-      equalTo(`Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': Not found`),
-    )
+    assertThat(response.text, equalTo(`Repository 'a-bad-url' not found.`))
   })
 
   it('responds with 403 if the connection attempt fails with AccessDenied', async () => {
@@ -80,12 +77,7 @@ describe('POST /repos', () => {
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(403)
-    assertThat(
-      response.text,
-      equalTo(
-        `Could not connect to a Git HTTP server using remoteUrl '${remoteUrl}': Access denied`,
-      ),
-    )
+    assertThat(response.text, equalTo(`Access denied to 'a-bad-url'`))
   })
 
   it('responds with 500 for any other type of error', async () => {

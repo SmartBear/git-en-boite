@@ -1,10 +1,11 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
+  AccessDenied,
   Author,
   CommitMessage,
   Files,
-  GitError,
   GitRepo,
+  InvalidRepoUrl,
   Logger,
   OpenGitRepo,
   OpensGitRepos,
@@ -58,7 +59,7 @@ export class BackgroundGitRepos {
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
-  async pingWorkers(timeout = 3000): Promise<void> {
+  async pingWorkers(timeout = 5000): Promise<void> {
     const job = await this.queue.add('ping', {})
     await job.waitUntilFinished(this.queueEvents, timeout).catch(() => {
       throw new Error(`No workers responded to a ping within ${timeout}ms`)
@@ -100,7 +101,7 @@ export class BackgroundGitRepoProxy implements GitRepo {
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
     return job.waitUntilFinished(this.queueEvents).catch(error => {
-      throw GitError.deserialise(error)
+      throw deserialize(error)
     })
   }
 
@@ -140,22 +141,27 @@ class GitRepoWorker implements Closable {
     logger: Logger,
   ) {
     const processJob = async (job: Job) => {
-      logger.log({ name: job.name, data: job.data })
-      if (job.name === 'ping') {
-        return {}
-      }
-      const { path } = job.data
-      const git = await gitRepos.openGitRepo(path)
-      if (job.name === 'setOriginTo') {
-        const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
-        return await git.setOriginTo(remoteUrl)
-      }
-      if (job.name === 'fetch') {
-        return await git.fetch()
-      }
-      if (job.name === 'push') {
-        const { commitRef } = job.data
-        return await git.push(PendingCommitRef.fromJSON(commitRef))
+      try {
+        logger.log({ name: job.name, data: job.data })
+        if (job.name === 'ping') {
+          return {}
+        }
+        const { path } = job.data
+        const git = await gitRepos.openGitRepo(path)
+        if (job.name === 'setOriginTo') {
+          const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
+          return await git.setOriginTo(remoteUrl)
+        }
+        if (job.name === 'fetch') {
+          return await git.fetch()
+        }
+        if (job.name === 'push') {
+          const { commitRef } = job.data
+          return await git.push(PendingCommitRef.fromJSON(commitRef))
+        }
+      } catch (error) {
+        logger.error(error)
+        throw asSerializedError(error)
       }
     }
     // TODO: pass redisUrl to Worker once https://github.com/taskforcesh/bullmq/issues/171 fixed
@@ -180,3 +186,38 @@ async function connectToRedis(url: string): Promise<IORedis.Redis> {
       }),
   )
 }
+
+type ErrorEnvelope = {
+  type: string
+  props: Record<string, unknown>
+}
+
+const asSerializedError = <AnError extends Error>(anError: AnError & Record<string, unknown>) => {
+  type Props = Record<string, unknown>
+  const props = Object.getOwnPropertyNames(anError).reduce<Props>(
+    (props, prop) => Object.assign(props, { [prop]: anError[prop] }),
+    {},
+  )
+  const envelope: ErrorEnvelope = { props, type: anError.constructor.name }
+  return new Error(JSON.stringify(envelope))
+}
+
+const buildDeserializeError = (...constructors: Array<{ new (message?: string): Error }>) => (
+  anError: Error,
+): Error => {
+  if (!hasSerializedMessage(anError)) return anError
+  const errorEnvelope: ErrorEnvelope = JSON.parse(anError.message)
+  const Constructor = constructors.find(constructor => constructor.name === errorEnvelope.type)
+  return Object.assign(new Constructor(), errorEnvelope.props)
+
+  function hasSerializedMessage(error: Error) {
+    try {
+      return JSON.parse(error.message) instanceof Object
+    } catch (parseError) {
+      if (parseError instanceof SyntaxError) return false
+      throw parseError
+    }
+  }
+}
+
+const deserialize = buildDeserializeError(InvalidRepoUrl, AccessDenied)
