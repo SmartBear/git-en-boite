@@ -98,27 +98,29 @@ export class BackgroundGitRepoProxy implements GitRepo {
     await this.gitRepo.commit(commitRef, files, author, message)
   }
 
+  async getRefs(): Promise<Refs> {
+    return this.gitRepo.getRefs()
+  }
+
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
-    return job.waitUntilFinished(this.queueEvents).catch(error => {
-      throw deserialize(error)
-    })
+    return this.whenFinished(job)
   }
 
   async fetch(): Promise<void> {
     const job = await this.queue.add('fetch', { path: this.path })
-    // TODO: catch and de-serialize errors
-    return job.waitUntilFinished(this.queueEvents)
+    return this.whenFinished(job)
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {
     const job = await this.queue.add('push', { path: this.path, commitRef })
-    // TODO: catch and de-serialize errors
-    return job.waitUntilFinished(this.queueEvents)
+    return this.whenFinished(job)
   }
 
-  getRefs(): Promise<Refs> {
-    return this.gitRepo.getRefs()
+  private whenFinished(job: Job): Promise<void> {
+    return job.waitUntilFinished(this.queueEvents).catch(error => {
+      throw deserialize(error)
+    })
   }
 }
 
