@@ -34,7 +34,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-log": "^2.1.0",
     "koa2-cors": "^2.0.6",
-    "validator": "^13.1.1"
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "@pact-foundation/pact": "^9.11.1",
