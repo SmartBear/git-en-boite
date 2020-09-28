@@ -18,11 +18,11 @@ import {
 } from 'git-en-boite-core'
 import {
   Commit,
+  dispatchToRepo,
   GetFiles,
   GetRefs,
   GitDirectory,
   LocalCommitRef,
-  RepoFactory,
 } from 'git-en-boite-local-git'
 import {
   assertThat,
@@ -40,7 +40,7 @@ import { World } from '../support/world'
 
 Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
   const repoId = (this.repoId = RepoId.generate())
-  const git = await new RepoFactory().open(this.remotePath(repoId))
+  const git = await dispatchToRepo(this.remotePath(repoId))
   const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
   for (const branchName of branches) {
     await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
@@ -52,7 +52,7 @@ Given('a remote repo with commits on {BranchName}', async function (
   branchName: BranchName,
 ) {
   this.repoId = RepoId.generate()
-  const git = await new RepoFactory().open(this.remotePath(this.repoId))
+  const git = await dispatchToRepo(this.remotePath(this.repoId))
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
@@ -60,7 +60,7 @@ When('a new commit is made on {BranchName} in the remote repo', async function (
   this: World,
   branchName: BranchName,
 ) {
-  const git = await new RepoFactory().open(this.remotePath(this.repoId))
+  const git = await dispatchToRepo(this.remotePath(this.repoId))
   await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
   this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 })
@@ -189,7 +189,7 @@ Then('the file should be in {BranchName} of the remote repo', async function (
   this: World,
   branchName: BranchName,
 ) {
-  const git = await new RepoFactory().open(this.remotePath(this.repoId))
+  const git = await dispatchToRepo(this.remotePath(this.repoId))
   const files = await git(GetFiles.for(branchName))
   assertThat(files, contains(this.file))
 })

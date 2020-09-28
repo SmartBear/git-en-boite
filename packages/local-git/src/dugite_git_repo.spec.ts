@@ -1,15 +1,14 @@
 import { dirSync } from 'tmp'
 
-import { RepoFactory } from '.'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DugiteGitRepo } from './dugite_git_repo'
+import { dispatchToRepo } from './dispatch_to_repo'
 
 describe(DugiteGitRepo.name, () => {
   const openRepo = DugiteGitRepo.openGitRepo
-  const repoFactory = new RepoFactory()
-  verifyRepoFactoryContract(openRepo, repoFactory.open)
-  verifyRepoContract(openRepo, repoFactory.open)
+  verifyRepoFactoryContract(openRepo, dispatchToRepo)
+  verifyRepoContract(openRepo, dispatchToRepo)
 
   let root: string
 

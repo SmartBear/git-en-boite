@@ -10,11 +10,11 @@ import {
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
-import { RepoFactory } from './repo_factory'
+import { dispatchToRepo } from './dispatch_to_repo'
 
 export class DugiteGitRepo implements GitRepo {
   static async openGitRepo(path: string): Promise<GitRepo> {
-    const dispatch = await new RepoFactory().open(path)
+    const dispatch = await dispatchToRepo(path)
     return new DugiteGitRepo(dispatch)
   }
 

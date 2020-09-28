@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { BranchName, CommitName, RemoteUrl } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import {
   equalTo,
@@ -13,11 +14,10 @@ import path from 'path'
 import { dirSync } from 'tmp'
 
 import { handleFetch, handleInit } from '.'
-import { RepoFactory, LocalCommitRef } from '..'
+import { dispatchToRepo, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, SetOrigin } from '../operations'
 import { handleSetOrigin } from './handleSetOrigin'
-import { BranchName, RemoteUrl, CommitName } from 'git-en-boite-core'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<SetOrigin>, AsyncCommand<Fetch>]
 
@@ -35,7 +35,7 @@ describe('handleFetch', () => {
     repoPath = path.resolve(root, 'a-repo-id')
     originPath = path.resolve(root, 'remote', 'a-repo-id')
 
-    const origin = await new RepoFactory().open(originPath)
+    const origin = await dispatchToRepo(originPath)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
     fs.mkdirSync(repoPath, { recursive: true })

@@ -1,12 +1,12 @@
 import fs from 'fs'
 import {
   BranchName,
+  FileContent,
+  FilePath,
   GitFile,
   PendingCommitRef,
   Refs,
   RemoteUrl,
-  FilePath,
-  FileContent,
 } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, not } from 'hamjest'
@@ -21,7 +21,7 @@ import {
   handlePush,
   handleSetOrigin,
 } from '.'
-import { LocalCommitRef, RepoFactory } from '..'
+import { dispatchToRepo, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, Push, SetOrigin } from '../operations'
 
@@ -60,7 +60,7 @@ describe('handlePush', () => {
   })
 
   it('pushes a commit to origin', async () => {
-    const origin = await new RepoFactory().open(originPath)
+    const origin = await dispatchToRepo(originPath)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     const { revision: firstCommit } = (await origin(GetRefs.all())).forBranch(branchName)
     await git(SetOrigin.toUrl(RemoteUrl.of(originPath)))
