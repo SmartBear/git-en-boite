@@ -1,3 +1,4 @@
+import fs from 'fs'
 import {
   Author,
   CommitMessage,
@@ -9,12 +10,16 @@ import {
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
-import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
+import { Commit, Connect, Fetch, GetRefs, Init, Push, RepoProtocol } from './operations'
 import { dispatchToRepo } from './dispatch_to_repo'
 
 export class DugiteGitRepo implements GitRepo {
   static async openGitRepo(path: string): Promise<GitRepo> {
     const dispatch = await dispatchToRepo(path)
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true })
+      await dispatch(Init.bareRepo())
+    }
     return new DugiteGitRepo(dispatch)
   }
 
