@@ -32,13 +32,9 @@ import { dirSync } from 'tmp'
 import { Commit, GetRefs, LocalCommitRef, RepoProtocol } from '..'
 import { GitDirectory } from '../git_directory'
 import { runGitHttpServer } from '../test/run_git_http_server'
+import { createBareRepo as createOriginRepo } from '../bare_repo'
 
-type OpenOriginRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
-
-export const verifyRepoContract = (
-  openGitRepo: OpenGitRepo,
-  createOriginRepo: OpenOriginRepo,
-): void => {
+export const verifyRepoContract = (openGitRepo: OpenGitRepo): void => {
   const branchName = BranchName.of('main')
   let root: string
   let repoPath: string

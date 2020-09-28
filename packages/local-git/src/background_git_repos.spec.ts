@@ -14,7 +14,7 @@ import path from 'path'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
 
-import { dispatchToRepo } from './'
+import { createBareRepo, openBareRepo } from './'
 import { BackgroundGitRepos } from './background_git_repos'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
@@ -35,13 +35,13 @@ describe(BackgroundGitRepos.name, () => {
 
     const openRepo = (path: string) => gitRepos.openGitRepo(path)
 
-    verifyRepoFactoryContract(openRepo, dispatchToRepo)
-    verifyRepoContract(openRepo, dispatchToRepo)
+    verifyRepoFactoryContract(openRepo, openBareRepo)
+    verifyRepoContract(openRepo)
 
     it('logs each git operation', async () => {
       const root = dirSync().name
       const originUrl = RemoteUrl.of(path.resolve(root, 'origin'))
-      await dispatchToRepo(originUrl.value)
+      await createBareRepo(originUrl.value)
       await gitRepos.pingWorkers()
       const git = await gitRepos.openGitRepo(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)

@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 
 import { GitDirectory } from './git_directory'
@@ -27,9 +28,9 @@ import {
   ValidateRemote,
 } from './operations'
 
-type BareRepo = Dispatch<RepoProtocol>
+export type BareRepo = Dispatch<RepoProtocol>
 
-export const dispatchToRepo = async (repoPath: string): Promise<BareRepo> => {
+export const openBareRepo = async (repoPath: string): Promise<BareRepo> => {
   const repo = new GitDirectory(repoPath)
   return messageDispatch<RepoProtocol>().withHandlers(repo, [
     [Commit, handleCommit],
@@ -43,4 +44,11 @@ export const dispatchToRepo = async (repoPath: string): Promise<BareRepo> => {
     [GetRefs, handleGetRefs],
     [GetConfig, handleGetConfig],
   ])
+}
+
+export const createBareRepo = async (repoPath: string): Promise<BareRepo> => {
+  fs.mkdirSync(repoPath, { recursive: true })
+  const git = await openBareRepo(repoPath)
+  await git(Init.bareRepo())
+  return git
 }
