@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test-server:
+  test-core:
     name: Run tests on core package
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +19,7 @@ jobs:
       - run: yarn install
       - run: yarn core test
 
-  test-git:
+  test-local-git:
     name: Run tests on local-git package
     runs-on: ubuntu-latest
     steps:
