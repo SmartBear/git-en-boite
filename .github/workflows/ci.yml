@@ -58,7 +58,7 @@ jobs:
   publish-image:
     name: Build and publish Docker image to smartbear/git-en-boite<git-sha>
     runs-on: ubuntu-latest
-    needs: [test-app, test-server, test-local-git, test-core, test-web]
+    needs: [test-core, test-local-git, test-app, test-web]
     if: github.event_name == 'push'
 
     steps:
