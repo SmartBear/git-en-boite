@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_ROOT: /git-repos
+      REDIS_URL: redis://localhost:6379
     steps:
       - uses: actions/checkout@v2
       - uses: supercharge/redis-github-action@1.1.0
@@ -39,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_ROOT: /git-repos
+      REDIS_URL: redis://localhost:6379
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
