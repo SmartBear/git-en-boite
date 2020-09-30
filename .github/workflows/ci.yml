@@ -22,8 +22,11 @@ jobs:
   test-local-git:
     name: Run tests on local-git package
     runs-on: ubuntu-latest
+    env:
+      GIT_ROOT: /git-repos
     steps:
       - uses: actions/checkout@v2
+      - uses: supercharge/redis-github-action@1.1.0
       - uses: actions/setup-node@v1
         with:
           node-version: 14.x
@@ -34,6 +37,8 @@ jobs:
   test-app:
     name: Run tests on app package
     runs-on: ubuntu-latest
+    env:
+      GIT_ROOT: /git-repos
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
