@@ -1,0 +1,12 @@
+name: Update changelog
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate changelog
+        uses: heinrichreimer/action-github-changelog-generator@v2.1.1
