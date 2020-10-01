@@ -34,7 +34,8 @@
         "headers": {
           "Content-Type": "application/json; charset=utf-8"
         },
-        "body": {}
+        "body": {
+        }
       }
     },
     {
@@ -53,7 +54,8 @@
       },
       "response": {
         "status": 202,
-        "headers": {}
+        "headers": {
+        }
       }
     },
     {
@@ -72,7 +74,8 @@
       },
       "response": {
         "status": 302,
-        "headers": {}
+        "headers": {
+        }
       }
     },
     {
@@ -83,8 +86,9 @@
         "path": "/repos/a-repo-id"
       },
       "response": {
-        "status": 202,
-        "headers": {}
+        "status": 200,
+        "headers": {
+        }
       }
     }
   ],

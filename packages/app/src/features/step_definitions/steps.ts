@@ -94,7 +94,7 @@ When('a consumer tries to connect using a malformed payload', async function (th
 })
 
 When('a consumer triggers a manual fetch of the repo', async function (this: World) {
-  await this.request.post(`/repos/${this.repoId}`).expect(202)
+  assertThat(await this.request.post(`/repos/${this.repoId}`), isSuccess())
 })
 
 Given('the repo has been fetched', async function (this: World) {

@@ -30,7 +30,7 @@ describe('POST /repos/:repoId', () => {
   it('fetches the Repo', async () => {
     const repoId = RepoId.of('a-repo-id')
     app.fetchFromRemote.resolves()
-    await request.post(`/repos/${repoId}`).send().expect(202)
+    await request.post(`/repos/${repoId}`).send().expect(200)
     assertThat(app.fetchFromRemote, wasCalledWith(repoId))
   })
 })
