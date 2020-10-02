@@ -1,4 +1,4 @@
-[![Test & Deploy](https://circleci.com/gh/SmartBear/git-en-boite/tree/main.svg?style=shield)](https://app.circleci.com/pipelines/github/SmartBear/git-en-boite)
+![Test & Deploy](https://github.com/SmartBear/git-en-boite/workflows/Run%20tests/badge.svg)
 
 # git-en-boite
 
