@@ -17,7 +17,7 @@ jobs:
         with:
           status: starting
           channel: "#cucumber-gherkin-editor"
-        if: allways()
+        if: always()
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
