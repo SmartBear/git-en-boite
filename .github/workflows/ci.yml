@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      GIT_ROOT: /git-repos
+      REDIS_URL: redis://localhost:6379
     steps:
       - uses: act10ns/slack@v1
         with:
@@ -23,6 +25,7 @@ jobs:
         with:
           node-version: 14.x
       - uses: egordm/gha-yarn-node-cache@v1
+      - uses: supercharge/redis-github-action@1.1.0
       - run: yarn install
       - run: yarn test
       - uses: act10ns/slack@v1
