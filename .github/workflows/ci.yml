@@ -7,110 +7,35 @@ on:
     branches: [main]
 
 jobs:
-  test-core:
-    name: Run tests on core package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - uses: egordm/gha-yarn-node-cache@v1
-      - run: yarn install
-      - run: yarn core test
-
-  test-local-git:
-    name: Run tests on local-git package
+  test:
+    name: Run tests on each package
     runs-on: ubuntu-latest
     env:
-      GIT_ROOT: /git-repos
-      REDIS_URL: redis://localhost:6379
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: supercharge/redis-github-action@1.1.0
-      - uses: actions/setup-node@v1
+      - uses: act10ns/slack@v1
         with:
-          node-version: 14.x
-      - uses: egordm/gha-yarn-node-cache@v1
-      - run: yarn install
-      - run: yarn local-git test
-
-  test-app:
-    name: Run tests on app package
-    runs-on: ubuntu-latest
-    env:
-      GIT_ROOT: /git-repos
-      REDIS_URL: redis://localhost:6379
-    steps:
+          status: starting
+          channel: "#cucumber-gherkin-editor"
+        if: allways()
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 14.x
       - uses: egordm/gha-yarn-node-cache@v1
       - run: yarn install
-      - run: yarn app test
-
-  test-web:
-    name: Run tests on web package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - run: yarn test
+      - uses: act10ns/slack@v1
         with:
-          node-version: 14.x
-      - uses: egordm/gha-yarn-node-cache@v1
-      - run: yarn install
-      - run: yarn web test
-
-  test-config:
-    name: Run tests on config package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - uses: egordm/gha-yarn-node-cache@v1
-      - run: yarn install
-      - run: yarn workspace git-en-boite-config test
-
-  test-message-dispatch:
-    name: Run tests on message-dispatch package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - uses: egordm/gha-yarn-node-cache@v1
-      - run: yarn install
-      - run: yarn workspace git-en-boite-message-dispatch test
-
-  test-repo-index:
-    name: Run tests on repo-index package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - uses: egordm/gha-yarn-node-cache@v1
-      - run: yarn install
-      - run: yarn workspace git-en-boite-repo-index test
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#cucumber-gherkin-editor"
+        if: always()
 
   build-test-publish-image:
     name: Build & publish Docker image
     runs-on: ubuntu-latest
-    needs:
-      [
-        test-core,
-        test-local-git,
-        test-app,
-        test-web,
-        test-config,
-        test-message-dispatch,
-        test-repo-index,
-      ]
+    needs: [test]
     steps:
       - uses: actions/checkout@v2
       - run: echo "${{ github.run_number }}#${GITHUB_SHA::8}" > .build-number
@@ -121,7 +46,7 @@ jobs:
       - run: docker run --network=git-en-boite -e DATABASE_URL=postgres://postgres@postgres/git-en-boite-test -e GIT_ROOT=/git-repos -e REDIS_URL=redis://redis:6379 --workdir /app smartbear/git-en-boite:latest yarn test
       - name: Only continue if this was a push to the main branch
         if: github.event_name != 'push'
-        run: exit 1
+        run: exit 0
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
