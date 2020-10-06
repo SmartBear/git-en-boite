@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "app": "yarn workspace git-en-boite-app",
+    "build:clean": "yarn workspaces run build:clean",
     "build": "tsc --build",
     "lint": "yarn workspaces run lint",
     "local-git": "yarn workspace git-en-boite-local-git",

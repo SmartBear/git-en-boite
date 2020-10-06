@@ -3,12 +3,11 @@
   "version": "0.0.0",
   "description": "Smoke tests for Git-en-Boîte",
   "scripts": {
+    "build:clean": "rm -rf dist *.tsbuildinfo",
     "test": "echo 'TODO'"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-  },
-  "devDependencies": {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

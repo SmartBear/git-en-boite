@@ -4,6 +4,7 @@
   "description": "Adapter that holds the index of info about all repos",
   "main": "dist/index.js",
   "scripts": {
+    "build:clean": "rm -rf dist *.tsbuildinfo",
     "test": "#noop",
     "test:wip": "#noop",
     "lint": "eslint '*/**/*.ts' --quiet --fix"

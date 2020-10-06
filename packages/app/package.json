@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Main entry point for Git-en-Boîte",
   "scripts": {
+    "build:clean": "rm -rf dist *.tsbuildinfo",
     "test": "yarn test:acceptance",
     "test:wip": "yarn test:acceptance:wip",
     "test:acceptance": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features",
