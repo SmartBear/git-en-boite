@@ -8,7 +8,7 @@ COPY yarn.lock .
 COPY package.json .
 COPY .build-number .
 RUN yarn
-RUN yarn lint && rm -rf packages/**/src
+RUN yarn lint
 
 EXPOSE 3001
 CMD yarn app start
