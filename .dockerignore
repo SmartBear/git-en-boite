@@ -1,5 +1,4 @@
 **/cucumber.js
 **/features
 **/node_modules/*
-**/*.spec*
 doc
