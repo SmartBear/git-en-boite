@@ -42,7 +42,7 @@ jobs:
       - run: echo "${{ github.run_number }}#${GITHUB_SHA::8}" > .build-number
       - run: docker build -t smartbear/git-en-boite:latest .
       - run: docker-compose up --detach
-      - run: bash ./packages/smoke-test/test.sh localhost:3001
+      - run: bash ./packages/smoke-tests/test.sh localhost:3001
       - run: docker-compose stop
       - name: Only continue if this was a push to the main branch
         if: github.event_name != 'push'
