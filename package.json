@@ -9,7 +9,8 @@
     "test": "yarn workspaces run test",
     "test:wip": "yarn workspaces run test:wip",
     "web": "yarn workspace git-en-boite-web",
-    "core": "yarn workspace git-en-boite-core"
+    "core": "yarn workspace git-en-boite-core",
+    "smoke": "yarn workspace git-en-boite-smoke-tests"
   },
   "workspaces": [
     "packages/app",
@@ -18,6 +19,18 @@
     "packages/core",
     "packages/local-git",
     "packages/message-dispatch",
-    "packages/repo-index"
-  ]
+    "packages/repo-index",
+    "packages/smoke-tests"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.3.0",
+    "@typescript-eslint/parser": "^4.3.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
+  },
+  "dependencies": {
+    "typescript": "^3.9.7"
+  }
 }
