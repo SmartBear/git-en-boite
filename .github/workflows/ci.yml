@@ -22,6 +22,7 @@ jobs:
       - uses: egordm/gha-yarn-node-cache@v1
       - uses: supercharge/redis-github-action@1.1.0
       - run: yarn install
+      - run: yarn build
       - run: yarn test
       - uses: act10ns/slack@v1
         with:
