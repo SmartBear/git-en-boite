@@ -15,11 +15,6 @@ jobs:
       GIT_ROOT: /git-repos
       REDIS_URL: redis://localhost:6379
     steps:
-      - uses: act10ns/slack@v1
-        with:
-          status: starting
-          channel: "#cucumber-gherkin-editor"
-        if: always()
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
@@ -57,3 +52,9 @@ jobs:
           password: ${{ secrets.DOCKER_KEY }}
       - run: docker tag smartbear/git-en-boite:latest smartbear/git-en-boite:${{ github.sha }}
       - run: docker push smartbear/git-en-boite:${{ github.sha }}
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#cucumber-gherkin-editor"
+        if: always()
