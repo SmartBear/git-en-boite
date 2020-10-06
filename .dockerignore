@@ -1,5 +1,7 @@
 **/cucumber.js
+**/features
 **/test
 **/contracts
 **/node_modules/*
 **/*.spec*
+doc
