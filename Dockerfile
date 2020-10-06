@@ -7,8 +7,10 @@ COPY @types @types
 COPY yarn.lock .
 COPY package.json .
 COPY .build-number .
-RUN yarn
-RUN yarn lint && rm -rf packages/**/src
+COPY tsconfig.json .
+
+RUN yarn install --production
+RUN yarn tsc --build && rm -rf packages/**/src
 
 EXPOSE 3001
 CMD yarn app start

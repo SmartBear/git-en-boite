@@ -2,7 +2,7 @@
   "name": "git-en-boite-local-git",
   "version": "0.0.0",
   "description": "Concrete implementation of the interface defined by git-en-boite-core-git-port",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i",
     "test:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip",

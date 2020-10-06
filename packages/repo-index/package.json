@@ -2,7 +2,7 @@
   "name": "git-en-boite-repo-index",
   "version": "0.0.0",
   "description": "Adapter that holds the index of info about all repos",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test": "#noop",
     "test:wip": "#noop",

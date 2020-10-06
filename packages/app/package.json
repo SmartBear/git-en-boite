@@ -7,8 +7,8 @@
     "test:wip": "yarn test:acceptance:wip",
     "test:acceptance": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features",
     "test:acceptance:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features -p wip",
-    "start:server": "ts-node -r tsconfig-paths/register src/server.ts",
-    "start:worker": "ts-node -r tsconfig-paths/register src/worker.ts",
+    "start:server": "ts-node -r tsconfig-paths/register dist/server.js",
+    "start:worker": "ts-node -r tsconfig-paths/register dist/worker.js",
     "start": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:worker\" -n server,worker -c green,yellow",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
@@ -27,6 +27,10 @@
     "git-en-boite-web": "0.0.0",
     "pg": "^8.3.3",
     "tiny-types": "^1.15.0",
+    "typescript": "^4.0.3",
+    "tsconfig-paths": "^3.9.0",
+    "ts-node": "^9.0.0",
+    "ts-node-dev": "^1.0.0-pre.63",
     "ts-sinon": "^2.0.1",
     "uuid": "^8.3.0"
   },
@@ -45,7 +49,6 @@
     "prettier": "^2.1.2",
     "supertest": "^5.0.0",
     "tmp": "^0.2.1",
-    "ts-node": "9",
     "ts-node-dev": "^1.0.0-pre.63",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.0.3"
