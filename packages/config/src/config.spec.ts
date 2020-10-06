@@ -1,6 +1,6 @@
-import { assertThat, equalTo, hasProperty, throws, matchesPattern } from 'hamjest'
+import { assertThat, equalTo, hasProperty, matchesPattern, throws } from 'hamjest'
 
-import { createConfig } from 'git-en-boite-config'
+import { createConfig } from './config'
 
 describe('createConfig', () => {
   const defaultEnv = {
