@@ -1,0 +1,14 @@
+{
+  "name": "git-en-boite-smoke-tests",
+  "version": "0.0.0",
+  "description": "Smoke tests for Git-en-Boîte",
+  "scripts": {
+    "test": "echo 'TODO'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
