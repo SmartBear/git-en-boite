@@ -22,9 +22,12 @@ jobs:
           node-version: 14.x
       - uses: egordm/gha-yarn-node-cache@v1
       - uses: supercharge/redis-github-action@1.1.0
-      - run: yarn install
-      - run: yarn build
-      - run: yarn test
+      - name: Install dependencies
+        run: yarn install
+      - name: Build Typescript
+        run: yarn build
+      - name: Run tests in each workspace
+        run: yarn test
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -44,6 +47,9 @@ jobs:
       - run: docker build -t smartbear/git-en-boite:latest .
       - run: docker-compose up --detach
       - run: docker-compose logs
+      - uses: ifaxity/wait-on-action
+        with:
+          resource: http://localhost:3001
       - run: bash ./packages/smoke-tests/test.sh localhost:3001
       - run: docker-compose stop
       - name: Only continue if this was a push to the main branch
