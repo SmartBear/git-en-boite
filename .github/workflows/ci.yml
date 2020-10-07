@@ -35,16 +35,13 @@ jobs:
           channel: "#cucumber-gherkin-editor"
         if: failure()
 
-  build-test-publish-image:
-    name: Build & publish Docker image
+  test-docker-image:
+    name: Smoke test Docker image
     runs-on: ubuntu-latest
-    needs: [test]
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v2
-      - run: echo "${{ github.run_number }}#${GITHUB_SHA::8}" > .build-number
-      - run: docker build -t smartbear/git-en-boite:latest .
       - run: docker-compose up --detach
       - run: docker-compose logs
       - uses: ifaxity/wait-on-action@v1
@@ -52,9 +49,24 @@ jobs:
           resource: http://localhost:3001
       - run: bash ./packages/smoke-tests/test.sh localhost:3001
       - run: docker-compose stop
-      - name: Only continue if this was a push to the main branch
-        if: github.event_name != 'push'
-        run: exit 0
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: "#cucumber-gherkin-editor"
+        if: failure()
+
+  publish-docker-image:
+    name: Publish Docker image
+    runs-on: ubuntu-latest
+    needs: [test, test-docker-image]
+    if: github.event_name != 'push'
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo "${{ github.run_number }}#${GITHUB_SHA::8}" > .build-number
+      - run: docker build -t smartbear/git-en-boite:latest .
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
