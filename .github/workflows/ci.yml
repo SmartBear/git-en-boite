@@ -33,7 +33,7 @@ jobs:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
           channel: "#cucumber-gherkin-editor"
-        if: always()
+        if: failure()
 
   build-test-publish-image:
     name: Build & publish Docker image
