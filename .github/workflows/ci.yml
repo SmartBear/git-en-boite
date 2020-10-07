@@ -47,7 +47,7 @@ jobs:
       - run: docker build -t smartbear/git-en-boite:latest .
       - run: docker-compose up --detach
       - run: docker-compose logs
-      - uses: ifaxity/wait-on-action
+      - uses: ifaxity/wait-on-action@v1
         with:
           resource: http://localhost:3001
       - run: bash ./packages/smoke-tests/test.sh localhost:3001
