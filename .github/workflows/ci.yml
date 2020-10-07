@@ -60,7 +60,7 @@ jobs:
     name: Publish Docker image
     runs-on: ubuntu-latest
     needs: [test, test-docker-image]
-    if: github.event_name != 'push'
+    if: github.event_name == 'push'
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
