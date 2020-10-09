@@ -1,6 +1,6 @@
 name: Auto-merge dependabot PRs
 
-on: pull_request
+on: [pull_request, push]
 
 jobs:
   auto-merge:
@@ -10,3 +10,4 @@ jobs:
       - uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           target: minor
+          github-token: ${{ github.token }}
