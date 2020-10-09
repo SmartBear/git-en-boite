@@ -26,7 +26,7 @@
     "git-en-boite-local-clones": "0.0.0",
     "git-en-boite-repo-index": "0.0.0",
     "git-en-boite-web": "0.0.0",
-    "pg": "^8.4.0",
+    "pg": "^8.4.1",
     "tiny-types": "^1.15.0",
     "typescript": "^4.0.3",
     "tsconfig-paths": "^3.9.0",
