@@ -3,7 +3,7 @@ import {
   Author,
   CommitMessage,
   Files,
-  GitRepo,
+  LocalClone,
   PendingCommitRef,
   Refs,
   RemoteUrl,
@@ -13,10 +13,10 @@ import { Dispatch } from 'git-en-boite-message-dispatch'
 import { createBareRepo, openBareRepo } from './bare_repo'
 import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
 
-export class DugiteGitRepo implements GitRepo {
-  static async openGitRepo(path: string): Promise<GitRepo> {
+export class DirectLocalClone implements LocalClone {
+  static async openLocalClone(path: string): Promise<LocalClone> {
     const dispatch = await (!fs.existsSync(path) ? createBareRepo(path) : openBareRepo(path))
-    return new DugiteGitRepo(dispatch)
+    return new DirectLocalClone(dispatch)
   }
 
   protected constructor(private readonly git: Dispatch<RepoProtocol>) {}

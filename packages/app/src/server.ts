@@ -1,7 +1,7 @@
 import { startWebServer } from 'git-en-boite-web'
 import { Application, DomainEventBus, fetchRepoAfterConnected } from 'git-en-boite-core'
 import { createConfig } from 'git-en-boite-config'
-import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-local-git'
+import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-git'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 
 import { LaBoîte } from './la_boîte'
@@ -13,10 +13,10 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 inConsole(async () => {
   const domainEvents: DomainEventBus = new EventEmitter()
-  const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
-  await gitRepos.pingWorkers()
+  const localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+  await localClones.pingWorkers()
   const logger = console
-  const repoIndex = new DiskRepoIndex(config.git.root, gitRepos, domainEvents)
+  const repoIndex = new DiskRepoIndex(config.git.root, localClones, domainEvents)
   const app: Application = new LaBoîte(
     repoIndex,
     config.version,

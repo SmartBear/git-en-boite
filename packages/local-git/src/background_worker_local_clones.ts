@@ -4,24 +4,23 @@ import {
   Author,
   CommitMessage,
   Files,
-  GitRepo,
   InvalidRepoUrl,
+  LocalClone,
   Logger,
-  OpenGitRepo,
-  OpensGitRepos,
+  OpensLocalClones,
   PendingCommitRef,
   Refs,
   RemoteUrl,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
-import { DugiteGitRepo } from './dugite_git_repo'
+import { DirectLocalClone } from './dugite_git_repo'
 
 interface Closable {
   close(): Promise<void>
 }
 
-export class BackgroundGitRepos {
+export class BackgroundWorkerLocalClones {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private queue: Queue<any>
   private queueEvents: QueueEvents
@@ -33,19 +32,19 @@ export class BackgroundGitRepos {
   }
 
   static async connect(
-    gitRepos: { openGitRepo: OpenGitRepo },
+    localClones: OpensLocalClones,
     redisUrl: string,
-  ): Promise<BackgroundGitRepos> {
+  ): Promise<BackgroundWorkerLocalClones> {
     const createRedisClient = async () => connectToRedis(redisUrl)
-    return await new BackgroundGitRepos(gitRepos, createRedisClient).connect()
+    return await new BackgroundWorkerLocalClones(localClones, createRedisClient).connect()
   }
 
   protected constructor(
-    private readonly gitRepos: { openGitRepo: OpenGitRepo },
+    private readonly localClones: OpensLocalClones,
     private readonly createRedisClient: () => Promise<IORedis.Redis>,
   ) {}
 
-  protected async connect(): Promise<BackgroundGitRepos> {
+  protected async connect(): Promise<BackgroundWorkerLocalClones> {
     this.queueClient = await this.createRedisClient()
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
     this.queue = new Queue('main', { connection: this.queueClient })
@@ -54,8 +53,8 @@ export class BackgroundGitRepos {
     return this
   }
 
-  async openGitRepo(path: string): Promise<GitRepo> {
-    const gitRepo = await this.gitRepos.openGitRepo(path)
+  async openLocalClone(path: string): Promise<LocalClone> {
+    const gitRepo = await this.localClones.openLocalClone(path)
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents)
   }
 
@@ -67,7 +66,7 @@ export class BackgroundGitRepos {
   }
 
   async startWorker(logger: Logger): Promise<void> {
-    this.worker = await GitRepoWorker.start(DugiteGitRepo, this.createRedisClient, logger)
+    this.worker = await GitRepoWorker.start(DirectLocalClone, this.createRedisClient, logger)
   }
 
   async close(): Promise<void> {
@@ -80,10 +79,10 @@ export class BackgroundGitRepos {
   }
 }
 
-export class BackgroundGitRepoProxy implements GitRepo {
+export class BackgroundGitRepoProxy implements LocalClone {
   constructor(
     private readonly path: string,
-    private readonly gitRepo: GitRepo,
+    private readonly gitRepo: LocalClone,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly queue: Queue<any>,
     private readonly queueEvents: QueueEvents,
@@ -129,16 +128,16 @@ class GitRepoWorker implements Closable {
   protected worker: Worker<any>
 
   static async start(
-    gitRepos: OpensGitRepos,
+    localClones: OpensLocalClones,
     createRedisClient: () => Promise<IORedis.Redis>,
     logger: Logger,
   ): Promise<GitRepoWorker> {
     const connection = await createRedisClient()
-    return new GitRepoWorker(gitRepos, connection, logger)
+    return new GitRepoWorker(localClones, connection, logger)
   }
 
   protected constructor(
-    gitRepos: OpensGitRepos,
+    gitRepos: OpensLocalClones,
     readonly redisClient: IORedis.Redis,
     logger: Logger,
   ) {
@@ -149,7 +148,7 @@ class GitRepoWorker implements Closable {
           return {}
         }
         const { path } = job.data
-        const git = await gitRepos.openGitRepo(path)
+        const git = await gitRepos.openLocalClone(path)
         if (job.name === 'setOriginTo') {
           const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
           return await git.setOriginTo(remoteUrl)

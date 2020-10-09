@@ -1,4 +1,4 @@
-import { BackgroundGitRepos, DugiteGitRepo } from 'git-en-boite-local-git'
+import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-git'
 import { createConfig } from 'git-en-boite-config'
 
 const config = createConfig(process.env)
@@ -13,6 +13,6 @@ function inConsole(start: () => Promise<void>): void {
 }
 
 inConsole(async () => {
-  const gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
-  await gitRepos.startWorker(console)
+  const localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+  await localClones.startWorker(console)
 })

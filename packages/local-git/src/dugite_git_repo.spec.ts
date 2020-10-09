@@ -3,12 +3,12 @@ import { dirSync } from 'tmp'
 import { openBareRepo } from './bare_repo'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
-import { DugiteGitRepo } from './dugite_git_repo'
+import { DirectLocalClone } from './dugite_git_repo'
 
-describe(DugiteGitRepo.name, () => {
-  const openRepo = DugiteGitRepo.openGitRepo
-  verifyRepoFactoryContract(openRepo, openBareRepo)
-  verifyRepoContract(openRepo)
+describe(DirectLocalClone.name, () => {
+  const openLocalClone = DirectLocalClone.openLocalClone
+  verifyRepoFactoryContract(openLocalClone, openBareRepo)
+  verifyRepoContract(openLocalClone)
 
   let root: string
 

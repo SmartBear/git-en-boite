@@ -4,7 +4,7 @@ import {
   BranchSnapshot,
   CommitMessage,
   Files,
-  GitRepo,
+  LocalClone,
   PendingCommitRef,
   RemoteUrl,
   RepoId,
@@ -14,12 +14,12 @@ import { PublishesDomainEvents, RepoConnected, RepoFetched, RepoFetchFailed } fr
 export class Repo {
   constructor(
     public readonly repoId: RepoId,
-    private readonly git: GitRepo,
+    private readonly localClone: LocalClone,
     private readonly domainEvents: PublishesDomainEvents,
   ) {}
 
   async fetch(): Promise<void> {
-    await this.git
+    await this.localClone
       .fetch()
       .then(() => this.domainEvents.emit('repo.fetched', new RepoFetched(this.repoId)))
       .catch(error => {
@@ -29,12 +29,12 @@ export class Repo {
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
-    await this.git.setOriginTo(remoteUrl)
+    await this.localClone.setOriginTo(remoteUrl)
     this.domainEvents.emit('repo.connected', new RepoConnected(this.repoId))
   }
 
   async branches(): Promise<BranchSnapshot[]> {
-    const refs = await this.git.getRefs()
+    const refs = await this.localClone.getRefs()
     return refs.reduce(
       (branches, ref) => (ref.isRemote ? branches.concat(ref.toBranch()) : branches),
       [],
@@ -48,7 +48,7 @@ export class Repo {
     message: CommitMessage,
   ): Promise<void> {
     const commitRef = PendingCommitRef.forBranch(branchName)
-    await this.git.commit(commitRef, files, author, message)
-    await this.git.push(commitRef)
+    await this.localClone.commit(commitRef, files, author, message)
+    await this.localClone.push(commitRef)
   }
 }

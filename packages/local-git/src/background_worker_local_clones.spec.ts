@@ -14,36 +14,35 @@ import path from 'path'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
 
-import { createBareRepo, openBareRepo } from './'
-import { BackgroundGitRepos } from './background_git_repos'
+import { BackgroundWorkerLocalClones, createBareRepo, openBareRepo } from '.'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
-import { DugiteGitRepo } from './dugite_git_repo'
+import { DirectLocalClone } from './dugite_git_repo'
 
 const config = createConfig()
 
-describe(BackgroundGitRepos.name, () => {
+describe(BackgroundWorkerLocalClones.name, () => {
   context('when a worker is running', () => {
-    let gitRepos: BackgroundGitRepos
+    let localClones: BackgroundWorkerLocalClones
     const logger = stubInterface<Logger>()
 
     before(async function () {
-      gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
-      await gitRepos.startWorker(logger)
+      localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+      await localClones.startWorker(logger)
     })
-    after(async () => await gitRepos.close())
+    after(async () => await localClones.close())
 
-    const openRepo = (path: string) => gitRepos.openGitRepo(path)
+    const openLocalClone = (path: string) => localClones.openLocalClone(path)
 
-    verifyRepoFactoryContract(openRepo, openBareRepo)
-    verifyRepoContract(openRepo)
+    verifyRepoFactoryContract(openLocalClone, openBareRepo)
+    verifyRepoContract(openLocalClone)
 
     it('logs each git operation', async () => {
       const root = dirSync().name
       const originUrl = RemoteUrl.of(path.resolve(root, 'origin'))
       await createBareRepo(originUrl.value)
-      await gitRepos.pingWorkers()
-      const git = await gitRepos.openGitRepo(path.resolve(root, 'repo'))
+      await localClones.pingWorkers()
+      const git = await localClones.openLocalClone(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)
       assertThat(logger.log, wasCalled())
       assertThat(logger.log, wasCalledWith(hasProperty('name', matchesPattern('setOrigin'))))
@@ -55,18 +54,18 @@ describe(BackgroundGitRepos.name, () => {
   })
 
   context('checking for running workers', () => {
-    let gitRepos: BackgroundGitRepos
+    let localClones: BackgroundWorkerLocalClones
 
     beforeEach(async function () {
-      gitRepos = await BackgroundGitRepos.connect(DugiteGitRepo, config.redis)
+      localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
     })
 
     afterEach(async () => {
-      await gitRepos.close()
+      await localClones.close()
     })
 
     it('throws an error when no workers are running', async () => {
-      const pinging = gitRepos.pingWorkers(1)
+      const pinging = localClones.pingWorkers(1)
       await promiseThat(
         pinging,
         rejected(hasProperty('message', matchesPattern('No workers responded'))),
@@ -74,8 +73,8 @@ describe(BackgroundGitRepos.name, () => {
     })
 
     it('succeeds when a worker is running', async () => {
-      await gitRepos.startWorker(Logger.none)
-      const pinging = gitRepos.pingWorkers(100)
+      await localClones.startWorker(Logger.none)
+      const pinging = localClones.pingWorkers(100)
       await promiseThat(pinging, fulfilled())
     })
   })
@@ -83,7 +82,7 @@ describe(BackgroundGitRepos.name, () => {
   context('connecting', () => {
     it('throws an error if the redis connection cannot be established', async () => {
       const badRedisOptions = 'redis://localhost:1234'
-      const connecting = BackgroundGitRepos.connect(DugiteGitRepo, badRedisOptions)
+      const connecting = BackgroundWorkerLocalClones.connect(DirectLocalClone, badRedisOptions)
       await promiseThat(connecting, rejected())
     })
   })

@@ -8,10 +8,10 @@ import {
   FileContent,
   FilePath,
   GitFile,
-  GitRepo,
+  LocalClone,
   NameOfPerson,
   InvalidRepoUrl,
-  OpenGitRepo,
+  OpenLocalClone,
   PendingCommitRef,
   RemoteUrl,
   RepoId,
@@ -34,16 +34,16 @@ import { GitDirectory } from '../git_directory'
 import { runGitHttpServer } from '../test/run_git_http_server'
 import { createBareRepo as createOriginRepo } from '../bare_repo'
 
-export const verifyRepoContract = (openGitRepo: OpenGitRepo): void => {
+export const verifyRepoContract = (openLocalClone: OpenLocalClone): void => {
   const branchName = BranchName.of('main')
   let root: string
   let repoPath: string
-  let git: GitRepo
+  let localClone: LocalClone
 
   beforeEach(async () => {
     root = dirSync().name
     repoPath = path.resolve(root, 'a-repo-id')
-    git = await openGitRepo(repoPath)
+    localClone = await openLocalClone(repoPath)
   })
 
   afterEach(function () {
@@ -67,19 +67,19 @@ export const verifyRepoContract = (openGitRepo: OpenGitRepo): void => {
     })
 
     it('succeeds for a valid remoteUrl', async () => {
-      await promiseThat(git.setOriginTo(remoteUrl(originId)), fulfilled())
+      await promiseThat(localClone.setOriginTo(remoteUrl(originId)), fulfilled())
     })
 
     it("fails for a repo that doesn't exist", async () => {
       await promiseThat(
-        git.setOriginTo(remoteUrl(RepoId.of('does-not-exist'))),
+        localClone.setOriginTo(remoteUrl(RepoId.of('does-not-exist'))),
         rejected(instanceOf(InvalidRepoUrl)),
       )
     })
 
     it('fails for invalid credentials', async () => {
       await promiseThat(
-        git.setOriginTo(remoteUrl(RepoId.of('private'))),
+        localClone.setOriginTo(remoteUrl(RepoId.of('private'))),
         rejected(instanceOf(AccessDenied)),
       )
     })
@@ -104,9 +104,9 @@ export const verifyRepoContract = (openGitRepo: OpenGitRepo): void => {
       })
 
       it('fetches commits from the origin repo', async () => {
-        await git.setOriginTo(remoteUrl(repoId))
-        await git.fetch()
-        const refs = await git.getRefs()
+        await localClone.setOriginTo(remoteUrl(repoId))
+        await localClone.fetch()
+        const refs = await localClone.getRefs()
         const ref = refs.find(ref => ref.isRemote)
         await assertThat(ref.revision, equalTo(latestCommit))
       })
@@ -119,7 +119,7 @@ export const verifyRepoContract = (openGitRepo: OpenGitRepo): void => {
       const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
       const commitRef = LocalCommitRef.forBranch(branchName)
       const message = CommitMessage.of('a message')
-      await git.commit(commitRef, [file], author, message)
+      await localClone.commit(commitRef, [file], author, message)
       const backDoor = new GitDirectory(repoPath)
       const result = await backDoor.exec('ls-tree', [branchName.value, '--name-only'])
       assertThat(result.stdout, matchesPattern(file.path.value))
@@ -137,15 +137,15 @@ export const verifyRepoContract = (openGitRepo: OpenGitRepo): void => {
     })
 
     it('pushes a commit to a remote branch', async () => {
-      await git.setOriginTo(originUrl)
-      await git.fetch()
+      await localClone.setOriginTo(originUrl)
+      await localClone.fetch()
       const file = new GitFile(new FilePath('a.feature'), new FileContent('Feature: A'))
       const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
       const commitRef = PendingCommitRef.forBranch(branchName)
       const message = CommitMessage.of('a message')
-      await git.commit(commitRef, [file], author, message)
-      await git.push(commitRef)
-      const { revision: commitName } = (await git.getRefs()).forBranch(branchName)
+      await localClone.commit(commitRef, [file], author, message)
+      await localClone.push(commitRef)
+      const { revision: commitName } = (await localClone.getRefs()).forBranch(branchName)
       const { revision: originCommitName } = (await origin(GetRefs.all())).forBranch(branchName)
       await assertThat(originCommitName, equalTo(commitName))
     })
