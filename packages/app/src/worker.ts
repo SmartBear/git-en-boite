@@ -1,4 +1,4 @@
-import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-git'
+import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-clones'
 import { createConfig } from 'git-en-boite-config'
 
 const config = createConfig(process.env)

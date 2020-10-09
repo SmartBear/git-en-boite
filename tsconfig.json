@@ -4,7 +4,7 @@
     { "path": "./packages/web" },
     { "path": "./packages/config" },
     { "path": "./packages/core" },
-    { "path": "./packages/local-git" },
+    { "path": "./packages/local-clones" },
     { "path": "./packages/message-dispatch" },
     { "path": "./packages/repo-index" }
   ],

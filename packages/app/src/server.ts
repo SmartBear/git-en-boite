@@ -1,7 +1,7 @@
 import { startWebServer } from 'git-en-boite-web'
 import { Application, DomainEventBus, fetchRepoAfterConnected } from 'git-en-boite-core'
 import { createConfig } from 'git-en-boite-config'
-import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-git'
+import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-clones'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 
 import { LaBoîte } from './la_boîte'

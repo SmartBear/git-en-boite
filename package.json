@@ -5,7 +5,7 @@
     "build:clean": "yarn workspaces run build:clean",
     "build": "tsc --build",
     "lint": "yarn workspaces run lint",
-    "local-git": "yarn workspace git-en-boite-local-git",
+    "local-clones": "yarn workspace git-en-boite-local-clones",
     "start": "yarn app start",
     "test": "yarn workspaces run test",
     "test:wip": "yarn workspaces run test:wip",
@@ -18,7 +18,7 @@
     "packages/web",
     "packages/config",
     "packages/core",
-    "packages/local-git",
+    "packages/local-clones",
     "packages/message-dispatch",
     "packages/repo-index",
     "packages/smoke-tests"

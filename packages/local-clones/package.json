@@ -1,7 +1,7 @@
 {
-  "name": "git-en-boite-local-git",
+  "name": "git-en-boite-local-clones",
   "version": "0.0.0",
-  "description": "Concrete implementation of the interface defined by git-en-boite-core-git-port",
+  "description": "For interacting with local clones of users' remote git repositories",
   "main": "dist/index.js",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",

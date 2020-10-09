@@ -2,7 +2,7 @@ import { Before } from '@cucumber/cucumber'
 import { EventEmitter } from 'events'
 import { createConfig } from 'git-en-boite-config'
 import { fetchRepoAfterConnected, Logger } from 'git-en-boite-core'
-import { DirectLocalClone } from 'git-en-boite-local-git'
+import { DirectLocalClone } from 'git-en-boite-local-clones'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { dirSync } from 'tmp'
 

@@ -26,7 +26,7 @@ import {
   Init,
   LocalCommitRef,
   createBareRepo,
-} from 'git-en-boite-local-git'
+} from 'git-en-boite-local-clones'
 import {
   assertThat,
   contains,

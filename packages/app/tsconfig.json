@@ -23,7 +23,7 @@
   "references": [
     { "path": "../web" },
     { "path": "../core" },
-    { "path": "../local-git" },
+    { "path": "../local-clones" },
     { "path": "../repo-index" }
   ]
 }
