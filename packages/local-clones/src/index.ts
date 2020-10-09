@@ -1,5 +1,5 @@
 export * from './bare_repo'
-export * from './dugite_git_repo'
+export * from './direct_local_clone'
 export * from './background_worker_local_clones'
 export * from './operations'
 export * from './local_commit_ref'

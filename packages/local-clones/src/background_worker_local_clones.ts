@@ -14,7 +14,7 @@ import {
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
-import { DirectLocalClone } from './dugite_git_repo'
+import { DirectLocalClone } from '.'
 
 interface Closable {
   close(): Promise<void>

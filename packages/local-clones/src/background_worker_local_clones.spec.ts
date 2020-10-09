@@ -17,7 +17,7 @@ import { stubInterface } from 'ts-sinon'
 import { BackgroundWorkerLocalClones, createBareRepo, openBareRepo } from '.'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
-import { DirectLocalClone } from './dugite_git_repo'
+import { DirectLocalClone } from '.'
 
 const config = createConfig()
 
