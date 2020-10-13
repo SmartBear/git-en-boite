@@ -16,20 +16,22 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 
+const url = process.env.smoke_tests_web_server_url
+const remoteUrl = process.env.smoke_tests_remote_repo_url
+
+if(!url) throw new Error("Please define smoke_tests_web_server_url env var")
+if(!remoteUrl) throw new Error("Please define smoke_tests_remote_repo_url env var")
+
 describe('smoke test', function(){
   this.timeout(10000)
 
-  let url = `http://localhost:3001`
   const repoId = RepoId.of(`smoke-test-${uuid()}`)
-
-  let remote_url='https://cbohiptest:18e4bd8544d794df8e7c13cc841df2e9c1f1a7d2@github.com/smartbear/git-en-boite-demo.git'
-
   const localRepoPath = fs.mkdtempSync(`${os.tmpdir()}${path.sep}`)
   const localRepo = new GitDirectory(localRepoPath)
 
   before(async ()=>{
     await localRepo.exec("init")
-    await localRepo.exec("remote", ["add", "origin", remote_url])
+    await localRepo.exec("remote", ["add", "origin", remoteUrl])
     await cleanUpRemoteRepo()
   })
 
@@ -46,7 +48,7 @@ describe('smoke test', function(){
   })
 
   it('Creates a repo', async() => {
-    const params = {'repoId': repoId, 'remoteUrl': remote_url};
+    const params = {'repoId': repoId, 'remoteUrl': remoteUrl};
     const response = await fetch(`${url}/repos`,
       {
         method: 'POST',
