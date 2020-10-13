@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      smoke_tests_web_server_url: ${{ secrets.SMOKE_TESTS_CI_WEB_SERVER_URL }}
+      smoke_tests_web_server_url: http://web-server:3001
       smoke_tests_remote_repo_url: ${{ secrets.SMOKE_TESTS_CI_WEB_REMOTE_REPO_URL }}
     steps:
       - uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
       - run: docker-compose logs
       - uses: ifaxity/wait-on-action@v1
         with:
-          resource: ${{ secrets.SMOKE_TESTS_CI_WEB_SERVER_URL }}
+          resource: http://localhost:3001
           timeout: 60000
           verbose: true
       - run: docker-compose run smoke-tests yarn smoke start
