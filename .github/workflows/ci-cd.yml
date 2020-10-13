@@ -49,6 +49,7 @@ jobs:
           resource: http://localhost:3001
           timeout: 60000
           verbose: true
+      - run: npm ls
       - run: yarn smoke start
       - run: docker-compose stop
       - uses: act10ns/slack@v1
