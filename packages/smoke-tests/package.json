@@ -8,6 +8,10 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "git-en-boite-core": "0.0.0",
+    "git-en-boite-local-clones": "0.0.0",
+    "supertest": "5.0.0"
+  },
   "devDependencies": {}
 }
