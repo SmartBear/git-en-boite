@@ -9,7 +9,7 @@ COPY package.json .
 COPY .build-number .
 COPY tsconfig.json .
 
-RUN yarn install --production
+RUN yarn install
 RUN rm -rf **/*.spec.ts
 RUN rm -rf packages/app/features
 RUN yarn tsc --build && rm -rf packages/**/src
