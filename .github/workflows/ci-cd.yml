@@ -41,7 +41,7 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       smoke_tests_web_server_url: http://web-server:3001
-      smoke_tests_remote_repo_url: ${{ secrets.SMOKE_TESTS_CI_WEB_REMOTE_REPO_URL }}
+      smoke_tests_remote_repo_url: ${{ secrets.SMOKE_TESTS_CI_REMOTE_REPO_URL }}
     steps:
       - uses: actions/checkout@v2
       - run: docker-compose up --detach
