@@ -5,8 +5,7 @@
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
     "start": "TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i",
-    "test": "echo NO OP",
-    "debug": "echo $PATH"
+    "test": "echo NO OP"
   },
   "author": "",
   "license": "ISC",

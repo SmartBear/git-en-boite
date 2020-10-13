@@ -10,9 +10,6 @@ COPY .build-number .
 COPY tsconfig.json .
 
 RUN yarn install
-RUN ls packages/smoke-tests/node_modules/.bin -l
-RUN echo $PATH
-RUN yarn smoke debug
 RUN rm -rf **/*.spec.ts
 RUN rm -rf packages/app/features
 RUN yarn tsc --build && rm -rf packages/**/src
