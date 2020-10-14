@@ -73,3 +73,30 @@ Start the app locally:
 ```
 yarn start
 ```
+
+## Smoke tests
+
+Git-en-boîte ships with smoke tests that can be run against any instance of itself.
+
+To run them, two environment variables need to be set:
+
+- `smoke_tests_web_server_url`:  the base URL for the Git-en-boîte instance you want to test.
+- `smoke_tests_remote_repo_url`: the URL of a Git repository that will be used by the smoke tests.
+                                 [git-en-boite-demo](https://github.com/SmartBear/git-en-boite-demo) typically serves that purpose.
+                                 Write operations are performed during the test, make sure the
+                                 URL includes the proper credentials (e.g. a GitHub username/token pair).
+
+### Examples
+
+To run against a locally-running instance:
+
+    smoke_tests_web_server_url=http://localhost:3001 smoke_tests_remote_repo_url=https://<user>:<token>@github.com/SmartBear/git-en-boite-demo docker-compose run smoke-tests yarn smoke start
+
+Run against a local container:
+
+    docker-compose up
+    smoke_tests_web_server_url=http://web-server:3001 smoke_tests_remote_repo_url=https://<user>:<token>@github.com/SmartBear/git-en-boite-demo docker-compose run smoke-tests yarn smoke start
+
+Run against production:
+
+    smoke_tests_web_server_url=http://dev.git.smartbear.io/ smoke_tests_remote_repo_url=https://<user>:<token>@github.com/SmartBear/git-en-boite-demo docker-compose run smoke-tests yarn smoke start
