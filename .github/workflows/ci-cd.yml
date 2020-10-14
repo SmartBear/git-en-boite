@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Run tests on each package
+    name: Test all packages
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -36,7 +36,7 @@ jobs:
         if: failure()
 
   test-docker-image:
-    name: Smoke test Docker image
+    name: "Smoke tests: local Docker container"
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
