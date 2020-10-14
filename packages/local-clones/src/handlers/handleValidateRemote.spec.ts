@@ -12,11 +12,12 @@ import { Init, ValidateRemote } from '../operations'
 import { runGitHttpServer } from '../test/run_git_http_server'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<ValidateRemote>]
+type GitOperationType = 'push' | 'fetch'
 
-describe('handleValidateRemote', () => {
-  let root: string
+describe('handleValidateRemote', function () {
+  const root = dirSync().name
+  const originPath = path.resolve(root, 'origin')
 
-  beforeEach(() => (root = dirSync().name))
   afterEach(function () {
     if (this.currentTest.state === 'failed' && this.currentTest.err)
       this.currentTest.err.message = `\nFailed using tmp directory:\n${root}\n${this.currentTest.err?.message}`
@@ -32,14 +33,15 @@ describe('handleValidateRemote', () => {
   }
 
   const remoteUrl = runGitHttpServer(() => root, {
-    authenticate: ({ repo }: { repo: string }) =>
-      new Promise((resolve, reject) =>
-        repo.match(/private/) ? reject('Access denied') : resolve(),
-      ),
+    authenticate: ({ type, repo }: { type: GitOperationType; repo: string }) =>
+      new Promise((resolve, reject) => {
+        if (repo.match(/private/)) return reject('Access denied')
+        if (type === 'push' && repo.match(/read-only/)) return reject('Write access denied')
+        resolve()
+      }),
   })
 
   beforeEach(async () => {
-    const originPath = path.resolve(root, 'origin')
     const origin = await repo(originPath)
     await origin(Init.bareRepo())
   })
@@ -69,6 +71,28 @@ describe('handleValidateRemote', () => {
       git(ValidateRemote.url(remoteUrl(RepoId.of('a-private-repo')))),
       rejected(instanceOf(AccessDenied)),
     )
+  })
+
+  it('fails if the remote URL does not allow for write access', async () => {
+    const repoId = RepoId.of('a-read-only-repo')
+    const repoPath = path.resolve(root, repoId.value)
+    const git = repo(repoPath)
+    await git(Init.bareRepo())
+    await promiseThat(
+      git(ValidateRemote.url(remoteUrl(repoId))),
+      rejected(instanceOf(AccessDenied)),
+    )
+  })
+
+  it('cleans up after committing a test branch to check write permission', async () => {
+    const repoPath = path.resolve(root, 'a-repo-id')
+    const git = repo(repoPath)
+    await git(Init.bareRepo())
+    await promiseThat(git(ValidateRemote.url(remoteUrl(RepoId.of('origin')))), fulfilled())
+
+    const remoteRepo = new GitDirectory(originPath)
+    // Git exits with 1 when the ref listing is empty, let's expect that:
+    await promiseThat(remoteRepo.read('show-ref', []), rejected())
   })
 
   it('fails if the remote URL does not appear to be a repository', async () => {
