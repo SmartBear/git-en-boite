@@ -9,19 +9,13 @@ services:
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-production
       - REDIS_URL=redis://redis:6379
+      - smoke_tests_web_server_url
+      - smoke_tests_remote_repo_url
     depends_on:
       - postgres
       - redis
     volumes:
       - ./git-repos:/git-repos
-
-  smoke-tests:
-    build: .
-    environment:
-      - smoke_tests_web_server_url
-      - smoke_tests_remote_repo_url
-    command: "echo \"NO OP: please run `yarn smoke start`\""
-
 
   postgres:
     image: postgres:12.2-alpine
