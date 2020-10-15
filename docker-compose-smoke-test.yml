@@ -1,7 +1,7 @@
 version: "3"
 services:
   git-en-boite:
-    image: smartbear/git-en-boite:$GIT_EN_BOITE_IMAGE_VERSION$
+    image: smartbear/git-en-boite:${GIT_EN_BOITE_IMAGE_VERSION}
     ports:
       - 3001:3001
     environment:

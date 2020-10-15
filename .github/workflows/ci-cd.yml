@@ -69,18 +69,19 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       smoke_tests_web_server_url: http://git-en-boite:3001
       smoke_tests_remote_repo_url: ${{ secrets.SMOKE_TESTS_CI_REMOTE_REPO_URL }}
+      GIT_EN_BOITE_IMAGE_VERSION: ${{ github.sha }}
+      COMPOSE_FILE: docker-compose-smoke-test.yml
     steps:
       - uses: actions/checkout@v2
-      - run: sed 's/\$GIT_EN_BOITE_IMAGE_VERSION$/${{ github.sha }}/g' docker-compose-smoke-test.template.yml > docker-compose-smoke-test.yml
-      - run: docker-compose -f docker-compose-smoke-test.yml up --detach
-      - run: docker-compose -f docker-compose-smoke-test.yml logs
+      - run: docker-compose up --detach
+      - run: docker-compose logs
       - uses: ifaxity/wait-on-action@v1
         with:
           resource: http://localhost:3001
           timeout: 60000
           verbose: true
-      - run: docker-compose -f docker-compose-smoke-test.yml run smoke-tests yarn smoke start
-      - run: docker-compose -f docker-compose-smoke-test.yml stop
+      - run: docker-compose run smoke-tests yarn smoke start
+      - run: docker-compose stop
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
