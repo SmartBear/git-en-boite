@@ -81,7 +81,7 @@ jobs:
           resource: http://localhost:3001
           timeout: 60000
           verbose: true
-      - run: docker-compose run smoke-tests yarn smoke start
+      - run: docker-compose run git-en-boite yarn smoke start
       - run: docker-compose stop
       - uses: act10ns/slack@v1
         with:
