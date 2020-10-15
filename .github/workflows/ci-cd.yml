@@ -73,6 +73,7 @@ jobs:
       COMPOSE_FILE: docker-compose-smoke-test.yml
     steps:
       - uses: actions/checkout@v2
+      - run: docker-compose config
       - run: docker-compose up --detach
       - run: docker-compose logs
       - uses: ifaxity/wait-on-action@v1
