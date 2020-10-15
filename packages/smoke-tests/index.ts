@@ -23,7 +23,7 @@ if (!url) throw new Error('Please define smoke_tests_web_server_url env var')
 if (!remoteUrl) throw new Error('Please define smoke_tests_remote_repo_url env var')
 
 describe('smoke test', function () {
-  this.timeout(10000)
+  this.timeout(20000)
 
   const repoId = RepoId.of(`smoke-test-${nanoid(8)}`)
   const localRepoPath = fs.mkdtempSync(`${os.tmpdir()}${path.sep}`)
