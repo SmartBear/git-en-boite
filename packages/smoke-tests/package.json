@@ -4,8 +4,8 @@
   "description": "Smoke tests for Git-en-Boîte",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
-    "start": "TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i",
-    "test": "echo NO OP"
+    "start": "TS_NODE_TRANSPILE_ONLY=1 mocha --bail",
+    "test": "#noop"
   },
   "author": "",
   "license": "ISC",
