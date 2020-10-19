@@ -1,7 +1,5 @@
 import path from 'path'
 
-import { ProcessEnv } from './environment'
-
 const appRoot = path.resolve(__dirname, '../../..')
 
 export interface Config {
@@ -14,7 +12,7 @@ interface GitOptions {
   root: string
 }
 
-const createGitConfig = (env: ProcessEnv): GitOptions => {
+const createGitConfig = (env: { GIT_ROOT?: string }): GitOptions => {
   if (!env.GIT_ROOT) throw new Error('Please set GIT_ROOT')
   return {
     root: env.GIT_ROOT,
@@ -22,7 +20,7 @@ const createGitConfig = (env: ProcessEnv): GitOptions => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createVersionConfig = (env: ProcessEnv, fs: any): string => {
+const createVersionConfig = (env: { npm_package_version?: string }, fs: any): string => {
   const buildNumPath = path.resolve(appRoot, '.build-number')
   if (!fs.existsSync(buildNumPath)) {
     throw new Error(`Build number file not found at ${buildNumPath}`)
@@ -30,12 +28,19 @@ const createVersionConfig = (env: ProcessEnv, fs: any): string => {
   return `${env.npm_package_version}.${fs.readFileSync(buildNumPath)}`
 }
 
-const createRedisConfig = (env: ProcessEnv): string => {
+const createRedisConfig = (env: { REDIS_URL?: string }): string => {
   if (!env.REDIS_URL) throw new Error('Please set REDIS_URL')
   return env.REDIS_URL
 }
 
-export const createConfig = (env: ProcessEnv = process.env, fs = require('fs')): Config => {
+type Environment = {
+  NODE_ENV?: string
+  GIT_ROOT?: string
+  REDIS_URL?: string
+  npm_package_version?: string
+}
+
+export const createConfig = (env: Environment = process.env, fs = require('fs')): Config => {
   if (!env.NODE_ENV) throw new Error('Please set NODE_ENV')
   return {
     git: createGitConfig(env),
