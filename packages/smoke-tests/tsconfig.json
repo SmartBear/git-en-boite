@@ -3,7 +3,8 @@
     "composite": true,
     "target": "es2019",
     "module": "commonjs",
-    "rootDir": ".",
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "strictNullChecks": false,
     "esModuleInterop": true,
@@ -14,13 +15,5 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": ["../../@types/*"]
-    }
   },
-  "references": [
-    { "path": "../core" },
-    { "path": "../local-clones" }
-  ]
 }
