@@ -1,12 +1,11 @@
-import { EventEmitter } from 'events'
-import { createConfig } from 'git-en-boite-config'
+import { startWebServer } from 'git-en-boite-web'
 import { Application, DomainEventBus, fetchRepoAfterConnected } from 'git-en-boite-core'
+import { createConfig } from 'git-en-boite-config'
 import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-clones'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
-import { startWebServer } from 'git-en-boite-web'
-import { runSmokeTests } from 'git-en-boite-smoke-tests'
 
 import { LaBoîte } from './la_boîte'
+import { EventEmitter } from 'events'
 
 const config = createConfig(process.env)
 console.log(`git-en-boite starting up...`)
@@ -27,10 +26,8 @@ inConsole(async () => {
   )
 
   const port = 3001
-  const url = `http://localhost:${port}`
   startWebServer(app, port)
-  await runSmokeTests(url)
-  console.log(`Server listening on ${url}`)
+  console.log(`Server listening on http://localhost:${port}`)
 })
 
 function inConsole(start: () => Promise<void>): void {

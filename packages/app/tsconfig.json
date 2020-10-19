@@ -24,7 +24,6 @@
     { "path": "../web" },
     { "path": "../core" },
     { "path": "../local-clones" },
-    { "path": "../repo-index" },
-    { "path": "../smoke-tests" }
+    { "path": "../repo-index" }
   ]
 }

@@ -1,6 +1,6 @@
 module.exports = {
-  extension: ['ts'],
-  spec: 'src/smoke_tests.ts',
-  require: 'ts-node/register',
-  color: true,
+  "extension": ["ts"],
+  "spec": "index.ts",
+  "require": "ts-node/register",
+  "color": true
 }

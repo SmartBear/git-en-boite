@@ -2,7 +2,6 @@
   "name": "git-en-boite-smoke-tests",
   "version": "0.0.0",
   "description": "Smoke tests for Git-en-Boîte",
-  "main": "dist/index.js",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
     "start": "TS_NODE_TRANSPILE_ONLY=1 mocha --bail",
