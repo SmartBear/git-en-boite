@@ -1,20 +1,11 @@
 import Router from '@koa/router'
-import { Application, Author, BranchName, CommitName, Files, RepoId } from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitMessage, Files, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 import validateRequestBody from '../../../../validate_request'
 
-type ParsedBody = { files: Files; author: Author; message: CommitName }
-
-const parseBody: (body: any) => ParsedBody = ({ files, author, message }) => {
-  return {
-    files: Files.fromJSON(files),
-    author: Author.fromJSON(author),
-    message: CommitName.of(message),
-  }
-}
-
 const fileSchema = {
   type: 'object',
+  required: ['path', 'content'],
   propeties: {
     path: 'string',
     content: 'string',
@@ -23,6 +14,7 @@ const fileSchema = {
 
 const authorSchema = {
   type: 'object',
+  required: ['name', 'email'],
   propeties: {
     name: 'string',
     email: 'string',
@@ -31,14 +23,14 @@ const authorSchema = {
 
 const schema = {
   type: 'object',
-  required: ['author'],
+  required: ['files', 'author', 'message'],
   properties: {
-    message: { type: 'string' },
     files: {
       type: 'array',
       items: fileSchema,
     },
     author: authorSchema,
+    message: { type: 'string' },
   },
 }
 
@@ -47,14 +39,12 @@ export default (app: Application): Router =>
     '/',
     async (ctx, next) => validateRequestBody(ctx, next, schema),
     async (ctx: Context) => {
-      const parsedBody: ParsedBody = parseBody(ctx.request.body)
-
       await app.commit(
         RepoId.of(ctx.params.repoId),
         BranchName.of(ctx.params.branchName),
-        parsedBody.files,
-        parsedBody.author,
-        parsedBody.message,
+        Files.fromJSON(ctx.request.body.files),
+        Author.fromJSON(ctx.request.body.author),
+        CommitMessage.of(ctx.request.body.message),
       )
       ctx.body = {}
       ctx.status = 200
