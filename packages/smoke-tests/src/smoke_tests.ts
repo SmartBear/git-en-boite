@@ -16,6 +16,7 @@ import fetch from 'node-fetch'
 import os from 'os'
 import path from 'path'
 import supertest from 'supertest'
+import waitOn from 'wait-on'
 
 const url = process.env.smoke_tests_web_server_url
 const remoteUrl = process.env.smoke_tests_remote_repo_url
@@ -23,8 +24,10 @@ const remoteUrl = process.env.smoke_tests_remote_repo_url
 if (!url) throw new Error('Please define smoke_tests_web_server_url env var')
 if (!remoteUrl) throw new Error('Please define smoke_tests_remote_repo_url env var')
 
-describe('smoke test', function () {
-  this.timeout(20000)
+const TIMEOUT = 20000
+
+describe(`Smoke tests on ${url}`, function () {
+  this.timeout(TIMEOUT)
 
   const repoId = RepoId.of(`smoke-test-${nanoid(8)}`)
   const localRepoPath = fs.mkdtempSync(`${os.tmpdir()}${path.sep}`)
@@ -44,6 +47,7 @@ describe('smoke test', function () {
   })
 
   it(`Checks if the server is up: ${url}`, async () => {
+    await waitOn({ resources: [url], timeout: TIMEOUT * 0.5 })
     const response = await fetch(url)
     assertThat(response.status, equalTo(200))
   })
