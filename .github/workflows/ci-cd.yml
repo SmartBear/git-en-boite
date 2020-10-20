@@ -45,7 +45,7 @@ jobs:
       smoke_tests_web_server_url: http://git-en-boite:3001
       smoke_tests_remote_repo_url: ${{ secrets.SMOKE_TESTS_CI_REMOTE_REPO_URL }}
       GIT_EN_BOITE_IMAGE_VERSION: ${{ github.sha }}
-      COMPOSE_FILE: docker-compose-smoke-test.yml
+      COMPOSE_FILE: docker-compose.yml:docker-compose.ci.yml
     steps:
       - uses: actions/checkout@v2
       - name: BUILD -- Generate .build-number

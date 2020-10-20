@@ -34,10 +34,9 @@ services:
   smoke-tests:
     build: .
     environment:
-      - smoke_tests_web_server_url
+      - smoke_tests_web_server_url=http://web-server:3001
       - smoke_tests_remote_repo_url
     command: "echo \"NO OP: please run `yarn smoke start`\""
-
 
   postgres:
     image: postgres:12.2-alpine

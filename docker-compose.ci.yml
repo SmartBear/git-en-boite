@@ -1,0 +1,11 @@
+# Used by .github/workflows/ci-cd.yml as an extension to the main docker-compose.yml to run against a specific build image version
+version: "3"
+services:
+  web-server:
+    image: smartbear/git-en-boite:${GIT_EN_BOITE_IMAGE_VERSION}
+
+  git-worker:
+    image: smartbear/git-en-boite:${GIT_EN_BOITE_IMAGE_VERSION}
+
+  smoke-tests:
+    image: smartbear/git-en-boite:${GIT_EN_BOITE_IMAGE_VERSION}
