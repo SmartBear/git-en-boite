@@ -19,6 +19,7 @@ import waitOn from 'wait-on'
 
 const url = process.env.smoke_tests_web_server_url
 const remoteUrl = process.env.smoke_tests_remote_repo_url
+const deliberateError = process.env.smoke_tests_deliberate_error
 
 if (!url) throw new Error('Please define smoke_tests_web_server_url env var')
 if (!remoteUrl) throw new Error('Please define smoke_tests_remote_repo_url env var')
@@ -43,6 +44,11 @@ describe(`Smoke tests on ${url}`, function () {
       .stdout
     if (remoteRefs === '') return
     await localRepo.exec('push', ['origin', '--delete', branchName.toString()])
+  })
+
+  before(() => {
+    if (!deliberateError) return
+    throw new Error(`Deliberate error: ${deliberateError}`)
   })
 
   it(`Checks if the server is up: ${url}`, async () => {
