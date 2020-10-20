@@ -3,7 +3,6 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  CommitName,
   Email,
   Files,
   NameOfPerson,
@@ -22,6 +21,8 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   let request: SuperTest<Test>
   let server: Server
   let app: StubbedInstance<Application>
+  const branchName = BranchName.of('a-branch')
+  const repoId = RepoId.of('repo-id')
 
   beforeEach(() => {
     app = stubInterface<Application>()
@@ -37,41 +38,48 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     server.close()
   })
 
-  it('accepts a valid payload with files and author', async () => {
-    const repoId = RepoId.of('repo-id')
-    const branchName = BranchName.of('a-branch')
+  it('accepts a valid payload', async () => {
     const files = Files.fromJSON([{ path: 'path', content: 'content' }])
     const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
-    const message = CommitName.of('a message')
+    const message = CommitMessage.of('a message')
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
-      .send({ files, author, message })
+      .send({
+        files,
+        author,
+        message,
+      })
       .expect(200)
     assertThat(app.commit, wasCalledWith(repoId, branchName, files, author, message))
   })
 
   it('responds with 400 if the payload has missing params', async () => {
-    const repoId = RepoId.of('repo-id')
-    const branchName = BranchName.of('a-branch')
     const response = await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
-      .send({ files: 'file.feature' })
+      .send({})
       .expect(400)
     assertThat(
       response.text,
-      equalTo("payload.files should be array, payload should have required property 'author'"),
+      equalTo(
+        "payload should have required property 'files', payload should have required property 'author', payload should have required property 'message'",
+      ),
     )
   })
 
-  it('responds with status 400 when files can not be deserialized', async () => {
-    const repoId = RepoId.of('repo-id')
-    const branchName = BranchName.of('a-branch')
+  it('responds with status 400 body parameters are malformed', async () => {
     const files = ['file']
-    const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
-    const message = CommitMessage.of('a message')
-    await request
+    const author = { email: 'bob@example.com' }
+    const message: [] = []
+    const response = await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
       .send({ files, author, message })
       .expect(400)
+
+    assertThat(
+      response.text,
+      equalTo(
+        "payload.files[0] should be object, payload.author should have required property 'name', payload.message should be string",
+      ),
+    )
   })
 })
