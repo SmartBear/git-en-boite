@@ -67,7 +67,7 @@ jobs:
           timeout: 60000
           verbose: true
       - name: SMOKE TESTS -- Run smoke tests
-        run: docker-compose run git-en-boite yarn smoke start
+        run: docker-compose run smoke-tests yarn smoke start
       - name: PUBLISH -- Authenticate with DockerHub
         uses: docker/login-action@v1
         with:
