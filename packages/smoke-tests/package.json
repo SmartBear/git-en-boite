@@ -5,7 +5,8 @@
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
     "start": "TS_NODE_TRANSPILE_ONLY=1 mocha --bail",
-    "test": "#noop"
+    "test": "#noop",
+    "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "author": "",
   "license": "ISC",
