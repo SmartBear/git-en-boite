@@ -82,7 +82,7 @@ describe(`Smoke tests on ${url}`, function () {
     const author = new Author(new NameOfPerson('Bob'), new Email('bob@example.com'))
     const message = CommitName.of('a message')
 
-    let request = supertest(url)
+    const request = supertest(url)
 
     await request
       .post(`/repos/${repoId}/branches/${branchName}/commits`)
