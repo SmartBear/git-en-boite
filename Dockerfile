@@ -10,9 +10,8 @@ COPY .build-number .
 COPY tsconfig.json .
 
 RUN yarn install
-RUN rm -rf **/*.spec.ts
-RUN rm -rf packages/app/features
-RUN yarn tsc --build && rm -rf packages/**/src
+RUN yarn tsc --build 
+RUN rm -rf packages/**/src
 
 EXPOSE 3001
 CMD yarn app start
