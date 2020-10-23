@@ -58,8 +58,7 @@ direnv allow .
 The integration tests need redis and postgres to be running somewhere. If you don't have or want to have them installed on your dev machine, you can spin them up in Docker:
 
 ```bash
-docker-compose run --detach --publish 6379:6379 redis
-docker-compose run --detach --publish 5432:5432 postgres
+docker-compose up --detach redis postgres
 ```
 
 Run the tests in each of the packages:

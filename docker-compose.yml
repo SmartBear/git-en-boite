@@ -44,6 +44,10 @@ services:
     environment:
       - POSTGRES_DB=git-en-boite-development
       - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 127.0.0.1:5432:5432
 
   redis:
     image: redis:latest
+    ports:
+      - 127.0.0.1:6379:6379
