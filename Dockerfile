@@ -1,4 +1,4 @@
-FROM node:14.14.0
+FROM node:15.0.1
 
 WORKDIR /app
 COPY packages packages
