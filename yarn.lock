@@ -424,10 +424,10 @@
     "@types/keygrip" "*"
     "@types/node" "*"
 
-"@types/eventsource@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@types/eventsource/-/eventsource-1.1.4.tgz#932cc925978ceba0508ed11d581204facafd1075"
-  integrity sha512-sahECwAoLSqqMwLc0pH6GFUft0sCDGtW36xWT4IzfSqpc1QLUqDSZMcc0xyESAgLZ1SFUhW1b1dHINULI18OVA==
+"@types/eventsource@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@types/eventsource/-/eventsource-1.1.5.tgz#408e9b45efb176c8bea672ab58c81e7ab00d24bc"
+  integrity sha512-BA9q9uC2PAMkUS7DunHTxWZZaVpeNzDG8lkBxcKwzKJClfDQ4Z59/Csx7HSH/SIqFN2JWh0tAKAM6k/wRR0OZg==
 
 "@types/express-serve-static-core@*":
   version "4.17.7"
