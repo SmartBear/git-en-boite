@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
-    "@types/lodash": "^4.14.163",
+    "@types/lodash": "^4.14.164",
     "@types/uuid": "^8.3.0",
     "bullmq": "^1.10.0",
     "dugite": "^1.91.3",
