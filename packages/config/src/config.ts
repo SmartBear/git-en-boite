@@ -10,12 +10,14 @@ export interface Config {
 
 interface GitOptions {
   root: string
+  queueName: string
 }
 
 const createGitConfig = (env: { GIT_ROOT?: string }): GitOptions => {
   if (!env.GIT_ROOT) throw new Error('Please set GIT_ROOT')
   return {
     root: env.GIT_ROOT,
+    queueName: 'main',
   }
 }
 

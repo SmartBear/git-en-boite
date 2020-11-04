@@ -13,6 +13,10 @@ function inConsole(start: () => Promise<void>): void {
 }
 
 inConsole(async () => {
-  const localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+  const localClones = await BackgroundWorkerLocalClones.connect(
+    DirectLocalClone,
+    config.redis,
+    config.git.queueName,
+  )
   await localClones.startWorker(console)
 })

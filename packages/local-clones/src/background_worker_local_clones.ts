@@ -34,22 +34,26 @@ export class BackgroundWorkerLocalClones {
   static async connect(
     localClones: OpensLocalClones,
     redisUrl: string,
+    queueName: string,
   ): Promise<BackgroundWorkerLocalClones> {
     const createRedisClient = async () => connectToRedis(redisUrl)
-    return await new BackgroundWorkerLocalClones(localClones, createRedisClient).connect()
+    return await new this(localClones, createRedisClient, queueName).connect()
   }
 
   protected constructor(
     private readonly localClones: OpensLocalClones,
     private readonly createRedisClient: () => Promise<IORedis.Redis>,
+    private readonly queueName: string,
   ) {}
 
   protected async connect(): Promise<BackgroundWorkerLocalClones> {
     this.queueClient = await this.createRedisClient()
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.queue = new Queue('main', { connection: this.queueClient })
+    this.queue = new Queue(this.queueName, { connection: this.queueClient })
     // according to the docs, the QueueEvents needs its own connection
-    this.queueEvents = new QueueEvents('main', { connection: await this.createRedisClient() })
+    this.queueEvents = new QueueEvents(this.queueName, {
+      connection: await this.createRedisClient(),
+    })
     return this
   }
 
@@ -66,7 +70,12 @@ export class BackgroundWorkerLocalClones {
   }
 
   async startWorker(logger: Logger): Promise<void> {
-    this.worker = await GitRepoWorker.start(DirectLocalClone, this.createRedisClient, logger)
+    this.worker = await GitRepoWorker.start(
+      DirectLocalClone,
+      this.createRedisClient,
+      logger,
+      this.queueName,
+    )
   }
 
   async close(): Promise<void> {
@@ -131,15 +140,17 @@ class GitRepoWorker implements Closable {
     localClones: OpensLocalClones,
     createRedisClient: () => Promise<IORedis.Redis>,
     logger: Logger,
+    queueName: string,
   ): Promise<GitRepoWorker> {
     const connection = await createRedisClient()
-    return new GitRepoWorker(localClones, connection, logger)
+    return new GitRepoWorker(localClones, connection, logger, queueName)
   }
 
   protected constructor(
     gitRepos: OpensLocalClones,
     readonly redisClient: IORedis.Redis,
     logger: Logger,
+    queueName: string,
   ) {
     const processJob = async (job: Job) => {
       try {
@@ -166,7 +177,7 @@ class GitRepoWorker implements Closable {
       }
     }
     // TODO: pass redisUrl to Worker once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.worker = new Worker('main', processJob, { connection: this.redisClient })
+    this.worker = new Worker(queueName, processJob, { connection: this.redisClient })
   }
 
   async close(): Promise<void> {

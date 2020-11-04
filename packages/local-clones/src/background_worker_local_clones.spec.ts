@@ -18,6 +18,7 @@ import { BackgroundWorkerLocalClones, createBareRepo, openBareRepo } from '.'
 import { verifyRepoContract } from './contracts/verify_repo_contract'
 import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
 import { DirectLocalClone } from '.'
+import { nanoid } from 'nanoid'
 
 const config = createConfig()
 
@@ -27,7 +28,12 @@ describe(BackgroundWorkerLocalClones.name, () => {
     const logger = stubInterface<Logger>()
 
     before(async function () {
-      localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+      const queueName = nanoid()
+      localClones = await BackgroundWorkerLocalClones.connect(
+        DirectLocalClone,
+        config.redis,
+        queueName,
+      )
       await localClones.startWorker(logger)
     })
     after(async () => await localClones.close())
@@ -57,7 +63,12 @@ describe(BackgroundWorkerLocalClones.name, () => {
     let localClones: BackgroundWorkerLocalClones
 
     beforeEach(async function () {
-      localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+      const queueName = nanoid()
+      localClones = await BackgroundWorkerLocalClones.connect(
+        DirectLocalClone,
+        config.redis,
+        queueName,
+      )
     })
 
     afterEach(async () => {
@@ -82,7 +93,11 @@ describe(BackgroundWorkerLocalClones.name, () => {
   context('connecting', () => {
     it('throws an error if the redis connection cannot be established', async () => {
       const badRedisOptions = 'redis://localhost:1234'
-      const connecting = BackgroundWorkerLocalClones.connect(DirectLocalClone, badRedisOptions)
+      const connecting = BackgroundWorkerLocalClones.connect(
+        DirectLocalClone,
+        badRedisOptions,
+        'a-queue',
+      )
       await promiseThat(connecting, rejected())
     })
   })

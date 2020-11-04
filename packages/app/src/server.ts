@@ -13,7 +13,11 @@ console.log(`Using config: ${JSON.stringify(config, null, 2)}`)
 
 inConsole(async () => {
   const domainEvents: DomainEventBus = new EventEmitter()
-  const localClones = await BackgroundWorkerLocalClones.connect(DirectLocalClone, config.redis)
+  const localClones = await BackgroundWorkerLocalClones.connect(
+    DirectLocalClone,
+    config.redis,
+    config.git.queueName,
+  )
   await localClones.pingWorkers()
   const logger = console
   const repoIndex = new DiskRepoIndex(config.git.root, localClones, domainEvents)
