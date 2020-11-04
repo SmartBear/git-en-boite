@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "app": "yarn workspace git-en-boite-app",
+    "acceptance": "yarn workspace git-en-boite-acceptance-tests",
     "build:clean": "yarn workspaces run build:clean",
     "build": "tsc --build",
     "lint": "yarn workspaces run lint",
@@ -14,14 +15,7 @@
     "smoke": "yarn workspace git-en-boite-smoke-tests"
   },
   "workspaces": [
-    "packages/app",
-    "packages/web",
-    "packages/config",
-    "packages/core",
-    "packages/local-clones",
-    "packages/message-dispatch",
-    "packages/repo-index",
-    "packages/smoke-tests"
+    "packages/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.6.1",

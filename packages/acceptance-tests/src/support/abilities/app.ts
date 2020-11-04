@@ -6,7 +6,7 @@ import { DirectLocalClone } from 'git-en-boite-local-clones'
 import { DiskRepoIndex } from 'git-en-boite-repo-index'
 import { dirSync } from 'tmp'
 
-import { LaBoîte } from '../../../la_boîte'
+import { LaBoîte } from 'git-en-boite-app'
 import { World } from '../world'
 
 Before(async function (this: World) {

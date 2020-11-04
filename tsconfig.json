@@ -1,5 +1,6 @@
 {
   "references": [
+    { "path": "./packages/acceptance-tests" },
     { "path": "./packages/app" },
     { "path": "./packages/web" },
     { "path": "./packages/config" },
