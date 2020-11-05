@@ -50,10 +50,10 @@ describe(BackgroundWorkerLocalClones.name, () => {
       await localClones.pingWorkers()
       const git = await localClones.openLocalClone(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)
-      assertThat(logger.log, wasCalled())
-      assertThat(logger.log, wasCalledWith(hasProperty('name', matchesPattern('setOrigin'))))
+      assertThat(logger.info, wasCalled())
+      assertThat(logger.info, wasCalledWith(hasProperty('name', matchesPattern('setOrigin'))))
       assertThat(
-        logger.log,
+        logger.info,
         wasCalledWith(hasProperty('data', hasProperty('remoteUrl', equalTo(originUrl.value)))),
       )
     })

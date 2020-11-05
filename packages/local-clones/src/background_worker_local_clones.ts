@@ -154,7 +154,7 @@ class GitRepoWorker implements Closable {
   ) {
     const processJob = async (job: Job) => {
       try {
-        logger.log({ name: job.name, data: job.data })
+        logger.info('received job', { name: job.name, data: job.data })
         if (job.name === 'ping') {
           return {}
         }

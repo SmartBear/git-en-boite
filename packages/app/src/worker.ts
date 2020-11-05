@@ -1,22 +1,13 @@
 import { BackgroundWorkerLocalClones, DirectLocalClone } from 'git-en-boite-local-clones'
-import { createConfig } from 'git-en-boite-config'
+import { runProcess } from './runProcess'
 
-const config = createConfig(process.env)
-
-function inConsole(start: () => Promise<void>): void {
-  start()
-    .then(() => console.log('git-en-boite git background worker started ✅'))
-    .catch(error => {
-      console.error(error)
-      process.exit(1)
-    })
-}
-
-inConsole(async () => {
+runProcess(async (config, logger) => {
+  logger.info('git-en-boite background worker starting up', { config })
   const localClones = await BackgroundWorkerLocalClones.connect(
     DirectLocalClone,
     config.redis,
     config.git.queueName,
   )
-  await localClones.startWorker(console)
+  await localClones.startWorker(logger)
+  logger.info('git-en-boite background worker started ✅')
 })

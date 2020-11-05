@@ -6,11 +6,16 @@ export interface Config {
   git: GitOptions
   version: string
   redis: string
+  logger: LoggerOptions
 }
 
 interface GitOptions {
   root: string
   queueName: string
+}
+
+export type LoggerOptions = {
+  readableBy: 'human' | 'machine'
 }
 
 const createGitConfig = (env: { GIT_ROOT?: string }): GitOptions => {
@@ -48,5 +53,6 @@ export const createConfig = (env: Environment = process.env, fs = require('fs'))
     git: createGitConfig(env),
     version: createVersionConfig(env, fs),
     redis: createRedisConfig(env),
+    logger: { readableBy: env.NODE_ENV === 'production' ? 'machine' : 'human' },
   }
 }
