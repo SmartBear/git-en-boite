@@ -17,5 +17,4 @@ const loggers = {
   }),
 }
 
-export const createLogger = ({ logger: { readableBy } }: { logger: LoggerOptions }): Logger =>
-  loggers[readableBy]
+export const createLogger = ({ readableBy }: LoggerOptions): Logger => loggers[readableBy]
