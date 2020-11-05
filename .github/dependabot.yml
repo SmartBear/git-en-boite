@@ -4,14 +4,14 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-      time: "08:00"
+      time: "07:00"
       timezone: "Europe/London"
     open-pull-requests-limit: 10
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: daily
-      time: "08:00"
+      time: "07:00"
       timezone: "Europe/London"
     open-pull-requests-limit: 10
     ignore:
