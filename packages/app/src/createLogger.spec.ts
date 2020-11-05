@@ -2,12 +2,22 @@ import { createLogger } from './createLogger'
 import { assertThat, containsString, equalTo } from 'hamjest'
 
 describe(createLogger.name, () => {
+  const logger = createLogger({ readableBy: 'human' })
+
   it('logs to the console', () => {
-    const logger = createLogger({ readableBy: 'human' })
     const lines = captureStdOut(() => {
       logger.info('test', { one: { two: 3 } })
     })
     assertThat(lines[0], containsString('test'))
+  })
+
+  describe('removing sensitive fields', () => {
+    it('sanitizes remoteUrl in the root of the metadata', () => {
+      const lines = captureStdOut(() => {
+        logger.info('test', { remoteUrl: 'https://token@github.com/org/project' })
+      })
+      assertThat(lines[0], containsString('https://***@github.com/org/project'))
+    })
   })
 })
 
