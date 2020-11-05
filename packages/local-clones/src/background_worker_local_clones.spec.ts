@@ -1,6 +1,7 @@
 import { createConfig } from 'git-en-boite-config'
 import { Logger, RemoteUrl } from 'git-en-boite-core'
 import {
+  anything,
   assertThat,
   equalTo,
   fulfilled,
@@ -51,10 +52,16 @@ describe(BackgroundWorkerLocalClones.name, () => {
       const git = await localClones.openLocalClone(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)
       assertThat(logger.info, wasCalled())
-      assertThat(logger.info, wasCalledWith(hasProperty('name', matchesPattern('setOrigin'))))
       assertThat(
         logger.info,
-        wasCalledWith(hasProperty('data', hasProperty('remoteUrl', equalTo(originUrl.value)))),
+        wasCalledWith(anything(), hasProperty('name', matchesPattern('setOrigin'))),
+      )
+      assertThat(
+        logger.info,
+        wasCalledWith(
+          anything(),
+          hasProperty('data', hasProperty('remoteUrl', equalTo(originUrl.value))),
+        ),
       )
     })
   })
