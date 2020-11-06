@@ -1,6 +1,13 @@
 import { EventEmitter } from 'events'
 import EventSource from 'eventsource'
-import { Application, DomainEventBus, RepoConnected, RepoFetched, RepoId } from 'git-en-boite-core'
+import {
+  Application,
+  DomainEventBus,
+  Logger,
+  RepoConnected,
+  RepoFetched,
+  RepoId,
+} from 'git-en-boite-core'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import { Server } from 'http'
 import fetch from 'node-fetch'
@@ -22,7 +29,7 @@ describe('GET /repos/:repoId/events', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app))
+    const webApp = createWebApp(router(app), Logger.none)
     server = webApp.listen(8888)
   })
 

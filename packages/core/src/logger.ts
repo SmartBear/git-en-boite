@@ -1,16 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Logger = {
-  info: (...data: any[]) => void
-  error: (...data: any[]) => void
+  debug: Logs
+  info: Logs
+  warn: Logs
+  error: Logs
+}
+
+type Logs = (...data: any[]) => void
+
+const noop = () => {
+  /* noop */
 }
 
 class NullLogger implements Logger {
-  info: (...data: any[]) => void = () => {
-    // no-op
-  }
-  error: (...data: any[]) => void = () => {
-    // no-op
-  }
+  debug = noop
+  warn = noop
+  info = noop
+  error = noop
 }
 
 export const Logger = {

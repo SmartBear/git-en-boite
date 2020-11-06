@@ -1,43 +1,52 @@
 import * as winston from 'winston'
+import rfdc from 'rfdc'
+
+const clone = rfdc()
 
 export type SantizedFieldDefinition = {
   field: string
   replace?: [pattern: RegExp, replacement: string]
 }
 
-type Sanitizes = (anObject: any) => void
+type SanitizeValues = (aValue: string) => void
 
 const sanitizeField = (
-  theField: string,
   replace: [pattern: RegExp, replacement: string] = [/.*/, '***'],
-): Sanitizes => anObject => {
-  if (typeof anObject[theField] !== 'string') throw new Error('Unable to sanitize field')
-  anObject[theField] = anObject[theField].replace(...replace)
+): SanitizeValues => aValue => {
+  if (typeof aValue !== 'string')
+    throw new Error(`Unable to sanitize field '${aValue}' of type ${typeof aValue}`)
+  return aValue.replace(...replace)
 }
 
 export function sanitize(...definitions: SantizedFieldDefinition[]): winston.Logform.Format {
   const sanitizerFor = definitions.reduce(
-    (sanitizers: Record<string, Sanitizes>, { field, replace }) =>
+    (sanitizers: Record<string, SanitizeValues>, { field, replace }) =>
       Object.assign(sanitizers, {
-        [field]: sanitizeField(field, replace),
+        [field]: sanitizeField(replace),
       }),
     {},
   )
 
   return {
     transform: (info: winston.Logform.TransformableInfo) => {
-      const recurse = (field: string) => (object: any) => {
-        object[field] = sanitizeValue(object[field])
-      }
-      return sanitizeValue(info)
+      const fields = Object.getOwnPropertyNames(info).filter(
+        key => !['level', 'message'].includes(key),
+      )
 
-      function sanitizeValue(aValue: any) {
-        if (typeof aValue !== 'object') return aValue
-        for (const field of Object.keys(aValue)) {
-          const sanitize = sanitizerFor[field] || recurse(field)
-          sanitize(aValue)
+      for (const field of fields) {
+        const value = clone(info[field])
+        info[field] = (sanitizerFor[field] || sanitizeFields)(value)
+      }
+
+      return info
+
+      function sanitizeFields(anObject: any) {
+        if (typeof anObject !== 'object') return anObject
+        for (const field of Object.getOwnPropertyNames(anObject)) {
+          const value = anObject[field]
+          anObject[field] = (sanitizerFor[field] || sanitizeFields)(value)
         }
-        return aValue
+        return anObject
       }
     },
   }

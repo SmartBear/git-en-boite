@@ -1,4 +1,4 @@
-import { assertThat, containsString } from 'hamjest'
+import { assertThat, containsString, equalTo } from 'hamjest'
 
 import { createLogger } from './createLogger'
 
@@ -40,6 +40,14 @@ describe(createLogger.name, () => {
           logger.info('test', { data: { token: 'a-token' } })
         })
         assertThat(lines[0], containsString('"token":"***"'))
+      })
+
+      it('does not mutate the original value', () => {
+        const meta = { data: { token: 'a-token' } }
+        captureStdOut(() => {
+          logger.info('test', meta)
+        })
+        assertThat(meta.data.token, equalTo('a-token'))
       })
     })
   })

@@ -27,7 +27,7 @@ runProcess(async (config: Config, logger: Logger) => {
   )
 
   const port = 3001
-  startWebServer(app, port)
+  startWebServer(app, port, logger)
   const url = `http://localhost:${port}`
   logger.info(`git-en-boite server listening on ${url} ✅`)
 })

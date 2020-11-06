@@ -1,6 +1,5 @@
-import { Application, RepoSnapshot, QueryResult, RepoId } from 'git-en-boite-core'
+import { Application, Logger, QueryResult, RepoId, RepoSnapshot } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
-import { wasCalled } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -18,7 +17,7 @@ describe('/repos', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app))
+    const webApp = createWebApp(router(app), Logger.none)
     server = webApp.listen(8888)
     request = supertest(server)
   })

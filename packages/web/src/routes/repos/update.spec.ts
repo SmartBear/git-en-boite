@@ -1,4 +1,4 @@
-import { Application, RepoId } from 'git-en-boite-core'
+import { Application, Logger, RepoId } from 'git-en-boite-core'
 import { assertThat } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -18,7 +18,7 @@ describe('POST /repos/:repoId', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app))
+    const webApp = createWebApp(router(app), Logger.none)
     server = webApp.listen(8888)
     request = supertest(server)
   })

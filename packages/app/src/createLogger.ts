@@ -8,7 +8,7 @@ const transports = [new winston.transports.Console()]
 const sanitizeFields = sanitize(
   {
     field: 'remoteUrl',
-    replace: [/(https:\/\/)(\w+)(@.+)/, '$1***$3'],
+    replace: [/(https:\/\/)([^@]+)(@.+)/, '$1***$3'],
   },
   { field: 'token' },
 )

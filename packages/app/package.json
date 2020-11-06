@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/eventsource": "^1.1.5",
     "@types/intercept-stdout": "^0.1.0",
+    "@types/rfdc": "^1.1.0",
     "@types/supertest": "^2.0.10",
     "bullmq": "^1.10.0",
     "concurrently": "^5.3.0",
@@ -30,6 +31,7 @@
     "git-en-boite-web": "0.0.0",
     "intercept-stdout": "^0.1.2",
     "pg": "^8.4.2",
+    "rfdc": "^1.1.4",
     "tiny-types": "^1.15.0",
     "ts-node": "^9.0.0",
     "ts-node-dev": "^1.0.0",
