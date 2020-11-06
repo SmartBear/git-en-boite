@@ -2,7 +2,7 @@ import { assertThat, containsString } from 'hamjest'
 
 import { createLogger } from './createLogger'
 
-describe(createLogger.name + '@wip', () => {
+describe(createLogger.name, () => {
   context('in human-readable mode', () => {
     const logger = createLogger({ readableBy: 'human' })
 
