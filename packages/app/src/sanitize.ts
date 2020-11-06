@@ -1,7 +1,7 @@
 import * as winston from 'winston'
 import rfdc from 'rfdc'
 
-const clone = rfdc()
+const clone = rfdc({ circles: true })
 
 export type SantizedFieldDefinition = {
   field: string
@@ -14,7 +14,7 @@ const sanitizeField = (
   replace: [pattern: RegExp, replacement: string] = [/.*/, '***'],
 ): SanitizeValues => aValue => {
   if (typeof aValue !== 'string')
-    throw new Error(`Unable to sanitize field '${aValue}' of type ${typeof aValue}`)
+    throw new Error(`Unable to sanitize field '${JSON.stringify(aValue)}' of type ${typeof aValue}`)
   return aValue.replace(...replace)
 }
 
@@ -28,7 +28,7 @@ export function sanitize(...definitions: SantizedFieldDefinition[]): winston.Log
   )
 
   return {
-    transform: (info: winston.Logform.TransformableInfo) => {
+    transform: (info: winston.Logform.TransformableInfo): winston.Logform.TransformableInfo => {
       const fields = Object.getOwnPropertyNames(info).filter(
         key => !['level', 'message'].includes(key),
       )
@@ -42,6 +42,7 @@ export function sanitize(...definitions: SantizedFieldDefinition[]): winston.Log
 
       function sanitizeFields(anObject: any) {
         if (typeof anObject !== 'object') return anObject
+        if (!anObject) return anObject
         for (const field of Object.getOwnPropertyNames(anObject)) {
           const value = anObject[field]
           anObject[field] = (sanitizerFor[field] || sanitizeFields)(value)
