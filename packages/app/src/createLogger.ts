@@ -4,17 +4,16 @@ import * as winston from 'winston'
 
 const sanitize = (...definitions: SantizedFieldDefinition[]) => ({
   transform: (info: winston.Logform.TransformableInfo) => {
-    const sanitizers = definitions
-      .map(definition => new SanitizeField(definition))
-      .reduce((sanitizers: Record<string, SanitizeField>, sanitizer) => {
-        sanitizers[sanitizer.field] = sanitizer
-        return sanitizers
-      }, {})
+    const sanitizers = definitions.reduce(
+      (sanitizers: Record<string, SanitizesField>, { field, replace }) =>
+        Object.assign(sanitizers, {
+          [field]: sanitizeField(field, replace),
+        }),
+      {},
+    )
 
-    const recurse = {
-      apply: (object: any, field: string) => {
-        object[field] = sanitizeObject(object[field])
-      },
+    const recurse: SanitizesField = (object: any, field: string) => {
+      object[field] = sanitizeObject(object[field])
     }
     return sanitizeObject(info)
 
@@ -22,7 +21,7 @@ const sanitize = (...definitions: SantizedFieldDefinition[]) => ({
       if (typeof object !== 'object') return object
       for (const field of Object.keys(object)) {
         const sanitizer = sanitizers[field] || recurse
-        sanitizer.apply(object, field)
+        sanitizer(object, field)
       }
       return object
     }
@@ -31,28 +30,18 @@ const sanitize = (...definitions: SantizedFieldDefinition[]) => ({
 
 type SantizedFieldDefinition = {
   field: string
-  pattern?: RegExp
-  replacement?: string
+  replace?: [pattern: RegExp, replacement: string]
 }
 
-class SanitizeField {
-  public readonly field
-  constructor(private readonly definition: SantizedFieldDefinition) {
-    this.field = definition.field
-    this.definition.pattern = this.definition.pattern || /.*/
-    this.definition.replacement = this.definition.replacement || '***'
-  }
+type SanitizesField = (anObject: any, aField: string) => void
 
-  appliesTo(field: string) {
-    return field === this.definition.field
-  }
-
-  apply(object: any, field: string): boolean {
-    if (!this.appliesTo(field)) return
-    if (typeof object[field] !== 'string') throw new Error('Unable to sanitize field')
-    object[field] = object[field].replace(this.definition.pattern, this.definition.replacement)
-    return true
-  }
+const sanitizeField = (
+  theField: string,
+  replace: [pattern: RegExp, replacement: string] = [/.*/, '***'],
+): SanitizesField => (anObject, aField) => {
+  if (!(theField === aField)) return
+  if (typeof anObject[theField] !== 'string') throw new Error('Unable to sanitize field')
+  anObject[theField] = anObject[theField].replace(...replace)
 }
 
 const transports = [new winston.transports.Console()]
@@ -64,8 +53,7 @@ const loggers = {
       sanitize(
         {
           field: 'remoteUrl',
-          pattern: /(https:\/\/)(\w+)(@.+)/,
-          replacement: '$1***$3',
+          replace: [/(https:\/\/)(\w+)(@.+)/, '$1***$3'],
         },
         { field: 'token' },
       ),
