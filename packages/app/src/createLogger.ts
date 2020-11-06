@@ -5,17 +5,19 @@ import { sanitize } from './sanitize'
 
 const transports = [new winston.transports.Console()]
 
+const sanitizeFields = sanitize(
+  {
+    field: 'remoteUrl',
+    replace: [/(https:\/\/)(\w+)(@.+)/, '$1***$3'],
+  },
+  { field: 'token' },
+)
+
 const loggers = {
   human: winston.createLogger({
     level: 'info',
     format: winston.format.combine(
-      sanitize(
-        {
-          field: 'remoteUrl',
-          replace: [/(https:\/\/)(\w+)(@.+)/, '$1***$3'],
-        },
-        { field: 'token' },
-      ),
+      sanitizeFields,
       winston.format.prettyPrint(),
       winston.format.simple(),
     ),
@@ -23,7 +25,7 @@ const loggers = {
   }),
   machine: winston.createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: winston.format.combine(sanitizeFields, winston.format.json()),
     transports,
   }),
 }

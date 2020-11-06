@@ -43,6 +43,19 @@ describe(createLogger.name + '@wip', () => {
       })
     })
   })
+
+  context('in machine-readable mode', () => {
+    const logger = createLogger({ readableBy: 'machine' })
+
+    describe('removing sensitive fields', () => {
+      it('sanitizes token deep in the metadata', () => {
+        const lines = captureStdOut(() => {
+          logger.info('test', { data: { token: 'a-token' } })
+        })
+        assertThat(lines[0], containsString('"token":"***"'))
+      })
+    })
+  })
 })
 
 function captureStdOut(fn: () => void) {
