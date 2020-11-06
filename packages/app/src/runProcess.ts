@@ -4,7 +4,7 @@ import { Logger } from 'git-en-boite-core'
 import { createLogger } from './createLogger'
 
 const config = createConfig(process.env)
-const logger = createLogger(config)
+const logger = createLogger(config.logger)
 
 export function runProcess(start: (config: Config, logger: Logger) => Promise<void>): void {
   start(config, logger).catch(error => {
