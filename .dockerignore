@@ -1,6 +1,6 @@
-packages/acceptance-tests
-**/test
-**/contracts
+packages/acceptance-tests/src
+packages/local-clones/src/test
+packages/local-clones/src/contracts
 **/node_modules/*
 **/*.spec*
 doc
