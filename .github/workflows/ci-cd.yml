@@ -2,7 +2,8 @@ name: Test and publish container
 
 on:
   push:
-    branches: [main, ci, publish-after-running-smoke-test]
+    branches: [main, ci]
+    tags: ['v*']
   pull_request:
     branches: [main]
 
