@@ -1,5 +1,5 @@
 **/cucumber.js
-**/features
+**/acceptance_tests
 **/test
 **/contracts
 **/node_modules/*

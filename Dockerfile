@@ -11,8 +11,8 @@ COPY tsconfig.json .
 
 ENV NODE_ENV=production
 
-RUN yarn install
-RUN yarn tsc --build 
+RUN yarn install --production
+RUN yarn build
 RUN rm -rf packages/**/src
 
 EXPOSE 3001
