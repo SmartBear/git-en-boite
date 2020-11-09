@@ -1,5 +1,4 @@
-**/cucumber.js
-**/acceptance_tests
+packages/acceptance-tests
 **/test
 **/contracts
 **/node_modules/*
