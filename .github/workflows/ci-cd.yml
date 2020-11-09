@@ -15,6 +15,7 @@ jobs:
       GIT_ROOT: /git-repos
       REDIS_URL: redis://localhost:6379
       ACTIONS_STEP_DEBUG: true
+      CUCUMBER_PUBLISH_TOKEN: ${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
