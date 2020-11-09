@@ -1,12 +1,33 @@
 name: Update changelog
 
 on:
+  workflow_dispatch:
+  issues:
+    types: [closed, labeled, unlabeled]
   push:
-    branches: [main]
+    tags:
+      - "v*"
 
 jobs:
   update-changelog:
     runs-on: ubuntu-latest
+    env:
+      CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@v2
       - name: Generate changelog
         uses: heinrichreimer/action-github-changelog-generator@v2.1.1
+        with:
+          excludeLabels: "dependencies,wontfix,no-changelog"
+      - run: git pull --rebase
+      - run: git stash pop
+      - uses: zwaldowski/git-commit-action@v1
+        with:
+          commit_message: |
+            Update CHANGELOG.md
+
+            [ci skip]
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
