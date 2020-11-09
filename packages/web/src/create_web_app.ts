@@ -12,6 +12,7 @@ export default (routes: Router = new Router(), logger: Logger): Koa => {
   webApp.use(
     new Cabin({
       axe: { logger },
+      capture: false,
     }).middleware,
   )
   webApp.use(routes.middleware())
