@@ -9,6 +9,8 @@ COPY package.json .
 COPY .build-number .
 COPY tsconfig.json .
 
+ENV NODE_ENV=production
+
 RUN yarn install
 RUN yarn tsc --build 
 RUN rm -rf packages/**/src
