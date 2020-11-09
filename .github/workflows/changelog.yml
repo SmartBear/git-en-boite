@@ -21,7 +21,7 @@ jobs:
           excludeLabels: "dependencies,wontfix,no-changelog"
       - run: git add CHANGELOG.md
       - run: git stash
-      - run: git pull --rebase
+      - run: git pull --rebase origin main
       - run: git stash pop
       - uses: zwaldowski/git-commit-action@v1
         with:
