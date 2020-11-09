@@ -92,17 +92,14 @@ describe(sanitize.name + '@wip', () => {
     assertThat(result.meta.token, equalTo('***'))
   })
 
-  it('throws if a field to be sanitized is not a string', () => {
+  it('if a field to be sanitized is not a string, it sanitizes it anyway', () => {
     const format = sanitize({ field: 'token' })
-    assertThat(
-      () =>
-        format.transform({
-          level: 'info',
-          message: 'a token',
-          token: {},
-        }) as winston.Logform.TransformableInfo,
-      throws(hasProperty('message', matchesPattern(/Unable to sanitize/))),
-    )
+    const result = format.transform({
+      level: 'info',
+      message: 'a token',
+      token: {},
+    }) as winston.Logform.TransformableInfo
+    assertThat(result, hasProperty('token', equalTo('***')))
   })
 
   it('allows custom transformation', () => {
@@ -120,15 +117,12 @@ describe(sanitize.name + '@wip', () => {
     const meta2 = { meta: meta1, token: 'a-token' }
     meta1['meta'] = meta2
     const format = sanitize({ field: 'meta' })
-    assertThat(
-      () =>
-        format.transform({
-          level: 'info',
-          message: 'a message',
-          meta: { meta1, meta2 },
-        }) as winston.Logform.TransformableInfo,
-      throws(hasProperty('message', matchesPattern(/circular/))),
-    )
+    const result = format.transform({
+      level: 'info',
+      message: 'a message',
+      meta: { meta1, meta2 },
+    }) as winston.Logform.TransformableInfo
+    assertThat(result, hasProperty('meta', equalTo('***')))
   })
 
   it('does not mutate a meta object', () => {

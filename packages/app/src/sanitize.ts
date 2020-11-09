@@ -1,4 +1,5 @@
 import * as winston from 'winston'
+import { inspect } from 'util'
 import rfdc from 'rfdc'
 
 const clone = rfdc({ circles: true })
@@ -11,12 +12,9 @@ export type SantizedFieldDefinition = {
 type SanitizeValues = (aValue: string) => void
 
 const sanitizeField = (
-  replace: [pattern: RegExp, replacement: string] = [/.*/, '***'],
-): SanitizeValues => aValue => {
-  if (typeof aValue !== 'string')
-    throw new Error(`Unable to sanitize field '${JSON.stringify(aValue)}' of type ${typeof aValue}`)
-  return aValue.replace(...replace)
-}
+  replace: [pattern: RegExp, replacement: string] = [/[\s\S]*/, '***'],
+): SanitizeValues => aValue =>
+  (typeof aValue !== 'string' ? inspect(aValue) : aValue).replace(...replace)
 
 export function sanitize(...definitions: SantizedFieldDefinition[]): winston.Logform.Format {
   const sanitizerFor = definitions.reduce(
