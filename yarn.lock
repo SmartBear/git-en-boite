@@ -689,10 +689,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
   integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
 
-"@types/wait-on@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@types/wait-on/-/wait-on-4.0.0.tgz#fb6fa2854b592f7344f1dd9836b5655795510dce"
-  integrity sha512-Cj2jcMOzrdvWMP+Vl+qlz942eQfJk96S9kRnB1ejVMl+w9/9mUn0+pF4J+v0Iv+6zCrmBBODZAXKsRo6Y91Cfw==
+"@types/wait-on@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@types/wait-on/-/wait-on-5.2.0.tgz#f9096b7bd0c9c03052d6d402ae5cd51714480b2d"
+  integrity sha512-3+jsMyPm8aot1mqDUDLOl+dejPvpysUUoUXD6CCRY20MNNhcjEfvdcBnGdnk7DEYs9Hr16ubGJA/9/QW0Df/9g==
 
 "@typescript-eslint/eslint-plugin@^4.7.0":
   version "4.7.0"
