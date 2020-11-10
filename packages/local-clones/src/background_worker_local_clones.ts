@@ -1,10 +1,8 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
-  AccessDenied,
   Author,
   CommitMessage,
   Files,
-  InvalidRepoUrl,
   LocalClone,
   Logger,
   OpensLocalClones,
@@ -15,6 +13,7 @@ import {
 import IORedis from 'ioredis'
 
 import { DirectLocalClone } from '.'
+import { asSerializedError, deserialize } from './serialize_errors'
 
 interface Closable {
   close(): Promise<void>
@@ -158,6 +157,7 @@ class GitRepoWorker implements Closable {
         if (job.name === 'ping') {
           return {}
         }
+        throw new Error('Yikes')
         const { path } = job.data
         const git = await gitRepos.openLocalClone(path)
         if (job.name === 'setOriginTo') {
@@ -198,38 +198,3 @@ async function connectToRedis(url: string): Promise<IORedis.Redis> {
       }),
   )
 }
-
-type ErrorEnvelope = {
-  type: string
-  props: Record<string, unknown>
-}
-
-const asSerializedError = <AnError extends Error>(anError: AnError & Record<string, unknown>) => {
-  type Props = Record<string, unknown>
-  const props = Object.getOwnPropertyNames(anError).reduce<Props>(
-    (props, prop) => Object.assign(props, { [prop]: anError[prop] }),
-    {},
-  )
-  const envelope: ErrorEnvelope = { props, type: anError.constructor.name }
-  return new Error(JSON.stringify(envelope))
-}
-
-const buildDeserializeError = (...constructors: Array<{ new (message?: string): Error }>) => (
-  anError: Error,
-): Error => {
-  if (!hasSerializedMessage(anError)) return anError
-  const errorEnvelope: ErrorEnvelope = JSON.parse(anError.message)
-  const Constructor = constructors.find(constructor => constructor.name === errorEnvelope.type)
-  return Object.assign(new Constructor(), errorEnvelope.props)
-
-  function hasSerializedMessage(error: Error) {
-    try {
-      return JSON.parse(error.message) instanceof Object
-    } catch (parseError) {
-      if (parseError instanceof SyntaxError) return false
-      throw parseError
-    }
-  }
-}
-
-const deserialize = buildDeserializeError(InvalidRepoUrl, AccessDenied)
