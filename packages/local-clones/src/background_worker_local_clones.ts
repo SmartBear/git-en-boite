@@ -157,7 +157,6 @@ class GitRepoWorker implements Closable {
         if (job.name === 'ping') {
           return {}
         }
-        throw new Error('Yikes')
         const { path } = job.data
         const git = await gitRepos.openLocalClone(path)
         if (job.name === 'setOriginTo') {
