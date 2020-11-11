@@ -4,7 +4,7 @@ updates:
     labels:
       - "dependencies"
       - "bots"
-      - "risks"
+      - "risk"
     directory: "/"
     schedule:
       interval: daily
