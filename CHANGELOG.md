@@ -4,7 +4,17 @@
 
 ## [v0.1.1](https://github.com/SmartBear/git-en-boite/tree/v0.1.1) (2020-11-11)
 
+**Closed issues:**
+
+- Fix CI dockerfile for smoke testing container image [\#327](https://github.com/SmartBear/git-en-boite/issues/327)
+
 ## [v0.1.0](https://github.com/SmartBear/git-en-boite/tree/v0.1.0) (2020-11-11)
+
+**Closed issues:**
+
+- Generate / update CHANGELOG.md for each release version tag [\#321](https://github.com/SmartBear/git-en-boite/issues/321)
+- Use root package version for displayed version [\#320](https://github.com/SmartBear/git-en-boite/issues/320)
+- Log in production as a single line of JSON [\#287](https://github.com/SmartBear/git-en-boite/issues/287)
 
 ## [v0.0.7](https://github.com/SmartBear/git-en-boite/tree/v0.0.7) (2020-11-09)
 
@@ -14,12 +24,24 @@
 
 ## [v0.0.4](https://github.com/SmartBear/git-en-boite/tree/v0.0.4) (2020-11-09)
 
+**Closed issues:**
+
+- Tagging releases [\#240](https://github.com/SmartBear/git-en-boite/issues/240)
+
 ## [v0.0.2](https://github.com/SmartBear/git-en-boite/tree/v0.0.2) (2020-11-09)
 
 ## [v0.0.1](https://github.com/SmartBear/git-en-boite/tree/v0.0.1) (2020-11-09)
 
 **Closed issues:**
 
+- `yarn lint` is broken [\#283](https://github.com/SmartBear/git-en-boite/issues/283)
+- --- [\#270](https://github.com/SmartBear/git-en-boite/issues/270)
+- Automatically merge dependency update PRs [\#262](https://github.com/SmartBear/git-en-boite/issues/262)
+- Rename "GitRepo" to "LocalClone" [\#254](https://github.com/SmartBear/git-en-boite/issues/254)
+- Docker image should be clean with only `dist` folders [\#250](https://github.com/SmartBear/git-en-boite/issues/250)
+- Add some smoke test [\#249](https://github.com/SmartBear/git-en-boite/issues/249)
+- Move CI to GitHub Actions [\#241](https://github.com/SmartBear/git-en-boite/issues/241)
+- Concurrent git commands on the same repo fail [\#211](https://github.com/SmartBear/git-en-boite/issues/211)
 - Manual fetch should respond with 200 not a 202 [\#209](https://github.com/SmartBear/git-en-boite/issues/209)
 - Use a \(configurable\) temporary queue for tests [\#207](https://github.com/SmartBear/git-en-boite/issues/207)
 - Use tmp library for creating temp directories in all tests [\#43](https://github.com/SmartBear/git-en-boite/issues/43)
