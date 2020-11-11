@@ -54,13 +54,19 @@ describe(BackgroundWorkerLocalClones.name, () => {
       assertThat(logger.info, wasCalled())
       assertThat(
         logger.info,
-        wasCalledWith(anything(), hasProperty('name', matchesPattern('setOrigin'))),
+        wasCalledWith(
+          'received: setOriginTo',
+          hasProperty('job', hasProperty('name', matchesPattern('setOrigin'))),
+        ),
       )
       assertThat(
         logger.info,
         wasCalledWith(
           anything(),
-          hasProperty('data', hasProperty('remoteUrl', equalTo(originUrl.value))),
+          hasProperty(
+            'job',
+            hasProperty('data', hasProperty('remoteUrl', equalTo(originUrl.value))),
+          ),
         ),
       )
     })
