@@ -65,6 +65,16 @@
 - Use hamjest-sinon [\#149](https://github.com/SmartBear/git-en-boite/issues/149)
 - Use tmp library for creating temp directories in all tests [\#43](https://github.com/SmartBear/git-en-boite/issues/43)
 - Shallow fetch [\#33](https://github.com/SmartBear/git-en-boite/issues/33)
+- rename `GIT\_EN\_BOITE\_PG\_URL` to `DATABASE\_URL` [\#20](https://github.com/SmartBear/git-en-boite/issues/20)
+- \[dx\] Make it easy to get set up for development [\#19](https://github.com/SmartBear/git-en-boite/issues/19)
+- Hash folder name for repo [\#18](https://github.com/SmartBear/git-en-boite/issues/18)
+- Redis config [\#17](https://github.com/SmartBear/git-en-boite/issues/17)
+- Put version / build number into production build and surface it [\#14](https://github.com/SmartBear/git-en-boite/issues/14)
+- CI: Make `node/with-cache` work [\#10](https://github.com/SmartBear/git-en-boite/issues/10)
+- CI: Tag versions of Docker image on git tags [\#9](https://github.com/SmartBear/git-en-boite/issues/9)
+- Run tests \*within\* Docker container on CI [\#8](https://github.com/SmartBear/git-en-boite/issues/8)
+- Publish to DockerHub as part of build [\#5](https://github.com/SmartBear/git-en-boite/issues/5)
+- Run mocha unit tests as part of the build [\#4](https://github.com/SmartBear/git-en-boite/issues/4)
 
 
 
