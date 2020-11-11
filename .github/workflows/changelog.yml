@@ -3,7 +3,7 @@ name: Update changelog
 on:
   workflow_dispatch:
   issues:
-    types: [closed, labeled, unlabeled]
+    types: [closed]
   push:
     tags:
       - "v*"
