@@ -1,6 +1,10 @@
 version: 2
 updates:
   - package-ecosystem: npm
+    labels:
+      - "dependencies"
+      - "bots"
+      - "risks"
     directory: "/"
     schedule:
       interval: daily
@@ -11,6 +15,10 @@ updates:
       - dependency-name: "node"
         versions: ["15.x"]
   - package-ecosystem: docker
+    labels:
+      - "dependencies"
+      - "bots"
+      - "risks"
     directory: "/"
     schedule:
       interval: daily
