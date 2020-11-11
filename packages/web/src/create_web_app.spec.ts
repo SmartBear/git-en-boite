@@ -1,9 +1,9 @@
 import Router from '@koa/router'
 import { Logger } from 'git-en-boite-core'
-import { assertThat, equalTo, hasProperty, isEmpty, matchesPattern } from 'hamjest'
+import { assertThat, equalTo, hasProperty, isEmpty, matchesPattern, not } from 'hamjest'
 import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import { Context } from 'koa'
-import supertest, { SuperTest, Test } from 'supertest'
+import supertest from 'supertest'
 import { stubInterface } from 'ts-sinon'
 
 import createWebApp from './create_web_app'
@@ -68,6 +68,8 @@ describe(createWebApp.name + 'createWebApp @wip', () => {
 
     it('logs 500 responses as error', async () => {
       const logger = stubInterface<Logger>()
+      // Use this if you want to have a look at the complete logged message:
+      // logger.error = sinon.spy((...args: any[]) => console.log(...args))
       const app = createWebApp(
         new Router().get('/', (ctx: Context) => ctx.throw(new Error('yikes'))),
         logger,
@@ -116,6 +118,35 @@ describe(createWebApp.name + 'createWebApp @wip', () => {
           process.stderr.write = original
         }
       }
+    })
+
+    it('logs Internal Server errors', async () => {
+      const logger = stubInterface<Logger>()
+      const error = new Error('yikes')
+      const app = createWebApp(
+        new Router().get('/', (ctx: Context) => ctx.throw(error)),
+        logger,
+      )
+      const server = app.listen()
+      const request = supertest(server)
+      await request.get('/').expect(500)
+      assertThat(logger.error.callCount, equalTo(2))
+      assertThat(logger.error, wasCalledWith(error))
+      server.close()
+    })
+
+    it('does not log 4xx errors', async () => {
+      const logger = stubInterface<Logger>()
+      const error = new Error('whoops')
+      const app = createWebApp(
+        new Router().get('/', (ctx: Context) => ctx.throw(400, error)),
+        logger,
+      )
+      const server = app.listen()
+      const request = supertest(server)
+      await request.get('/').expect(400)
+      assertThat(logger.error.callCount, equalTo(1))
+      server.close()
     })
   })
 })
