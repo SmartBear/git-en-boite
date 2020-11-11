@@ -1,14 +1,14 @@
 import Router from '@koa/router'
 import { Logger } from 'git-en-boite-core'
-import { assertThat, equalTo, hasProperty, isEmpty, matchesPattern, not } from 'hamjest'
+import { assertThat, equalTo, hasProperty, isEmpty, matchesPattern } from 'hamjest'
 import { wasCalled, wasCalledWith } from 'hamjest-sinon'
 import { Context } from 'koa'
-import supertest from 'supertest'
+import supertest, { SuperTest, Test } from 'supertest'
 import { stubInterface } from 'ts-sinon'
 
 import createWebApp from './create_web_app'
 
-describe(createWebApp.name + 'createWebApp @wip', () => {
+describe(createWebApp.name, () => {
   describe('routing requests', () => {
     it('handles a regular route', async () => {
       const logger = stubInterface<Logger>()
