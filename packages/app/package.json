@@ -30,7 +30,7 @@
     "git-en-boite-repo-index": "0.0.0",
     "git-en-boite-web": "0.0.0",
     "intercept-stdout": "^0.1.2",
-    "pg": "^8.4.2",
+    "pg": "^8.5.0",
     "rfdc": "^1.1.4",
     "tiny-types": "^1.15.0",
     "ts-node": "^9.0.0",
