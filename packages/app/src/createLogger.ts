@@ -1,4 +1,5 @@
 import ErrorStackParser, { StackFrame } from 'error-stack-parser'
+import chalk from 'chalk'
 import { LoggerOptions } from 'git-en-boite-config'
 import { Logger } from 'git-en-boite-core'
 import * as winston from 'winston'
@@ -30,8 +31,8 @@ const prettyPrintErrors: winston.Logform.Format = {
     if (!(error instanceof Error)) return anInfo
     const removeFirstLineOf = (text: string) => text.substring(text.indexOf('\n') + 1)
     return Object.assign({}, error, {
-      message: `${error.constructor.name}: ${error.message}\n${removeFirstLineOf(
-        error.stack,
+      message: `${error.constructor.name}: ${error.message}\n${chalk.blackBright(
+        removeFirstLineOf(error.stack),
       )}\n   `,
     })
   },
