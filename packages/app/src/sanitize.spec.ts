@@ -1,9 +1,9 @@
-import { assertThat, defined, equalTo, hasProperty, matchesPattern, not, throws } from 'hamjest'
+import { assertThat, defined, equalTo, hasProperty, not } from 'hamjest'
 import * as winston from 'winston'
 
 import { sanitize } from './sanitize'
 
-describe(sanitize.name + '@wip', () => {
+describe(sanitize.name, () => {
   it('transforms a log entry metadata field in the root', () => {
     const format = sanitize({ field: 'token' })
     const result = format.transform({
