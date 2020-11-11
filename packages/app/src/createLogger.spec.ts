@@ -1,3 +1,4 @@
+import stripAnsi from 'strip-ansi'
 import { Logger } from 'git-en-boite-core'
 import { assertThat, containsString, equalTo } from 'hamjest'
 
@@ -25,15 +26,36 @@ const verifyContract = (logger: Logger) => {
         logger.error(error)
       })
       assertThat(lines[0], containsString('yikes'))
-      console.log(lines[0])
     })
 
-    xit('logs the stack trace', () => {
+    it('logs the stack trace', () => {
       const error = new Error('yikes')
       const lines = captureStdOut(() => {
         logger.error(error)
       })
       assertThat(lines[0], containsString('app/src/createLogger.spec.ts'))
+    })
+
+    it("logs a custom error's type", () => {
+      class CustomError extends Error {}
+      const error = new CustomError('yikes')
+      const lines = captureStdOut(() => {
+        logger.error(error)
+      })
+      assertThat(lines[0], containsString('CustomError'))
+    })
+
+    it("logs a custom error's attributes", () => {
+      class CustomError extends Error {
+        constructor(public readonly message: string, public readonly someAttribute: string) {
+          super(message)
+        }
+      }
+      const error = new CustomError('yikes', 'a-value')
+      const lines = captureStdOut(() => {
+        logger.error(error)
+      })
+      assertThat(lines[0], containsString('"someAttribute":"a-value"'))
     })
   })
 
@@ -74,6 +96,29 @@ describe(createLogger.name, () => {
     const logger = createLogger({ readableBy: 'human' })
 
     verifyContract(logger)
+
+    it('prints en exception in a readable way', () => {
+      class CustomError extends Error {
+        constructor(public readonly message: string, public readonly someAttribute: string) {
+          super(message)
+        }
+      }
+      const error = new CustomError('yikes', 'a-value')
+      error.stack = `Error: yikes
+    at Context.<anonymous> (a/file.ts:99:27)
+    at callFn (/node_modules/mocha/lib/runnable.js:364:21)`
+      const lines = captureStdOut(() => {
+        logger.error(error)
+      })
+      assertThat(
+        stripAnsi(lines[0]),
+        equalTo(`error: CustomError: yikes
+    at Context.<anonymous> (a/file.ts:99:27)
+    at callFn (/node_modules/mocha/lib/runnable.js:364:21)
+    {"someAttribute":"a-value"}
+`),
+      )
+    })
   })
 
   context('in machine-readable mode', () => {

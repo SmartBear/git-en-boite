@@ -1,4 +1,4 @@
-import ErrorStackParser from 'error-stack-parser'
+import ErrorStackParser, { StackFrame } from 'error-stack-parser'
 import { LoggerOptions } from 'git-en-boite-config'
 import { Logger } from 'git-en-boite-core'
 import * as winston from 'winston'
@@ -15,11 +15,25 @@ const sanitizeFields = sanitize(
 )
 
 const parseErrors: winston.Logform.Format = {
-  transform: (info: winston.Logform.TransformableInfo) => {
-    const error = info
-    if (!(error instanceof Error)) return info
-    info.stack = ErrorStackParser.parse(error)
-    return info
+  transform: (anInfo: winston.Logform.TransformableInfo) => {
+    const error = anInfo
+    if (!(error instanceof Error)) return anInfo
+    anInfo.stack = ErrorStackParser.parse(error)
+    anInfo.type = error.constructor.name
+    return anInfo
+  },
+}
+
+const prettyPrintErrors: winston.Logform.Format = {
+  transform: (anInfo: winston.Logform.TransformableInfo) => {
+    const error = anInfo
+    if (!(error instanceof Error)) return anInfo
+    const removeFirstLineOf = (text: string) => text.substring(text.indexOf('\n') + 1)
+    return Object.assign({}, error, {
+      message: `${error.constructor.name}: ${error.message}\n${removeFirstLineOf(
+        error.stack,
+      )}\n   `,
+    })
   },
 }
 
@@ -27,8 +41,9 @@ const loggers = {
   human: winston.createLogger({
     level: 'info',
     format: winston.format.combine(
-      parseErrors,
+      prettyPrintErrors,
       sanitizeFields,
+      winston.format.colorize(),
       winston.format.prettyPrint(),
       winston.format.simple(),
     ),
