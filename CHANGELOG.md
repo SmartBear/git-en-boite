@@ -63,6 +63,7 @@
 - Better feedback if you post bad JSON [\#152](https://github.com/SmartBear/git-en-boite/issues/152)
 - Server won't start: Fails to load additional type declarations from local-git package [\#151](https://github.com/SmartBear/git-en-boite/issues/151)
 - Use hamjest-sinon [\#149](https://github.com/SmartBear/git-en-boite/issues/149)
+- Handle errors when connecting a repo [\#109](https://github.com/SmartBear/git-en-boite/issues/109)
 - Use tmp library for creating temp directories in all tests [\#43](https://github.com/SmartBear/git-en-boite/issues/43)
 - Shallow fetch [\#33](https://github.com/SmartBear/git-en-boite/issues/33)
 - rename `GIT\_EN\_BOITE\_PG\_URL` to `DATABASE\_URL` [\#20](https://github.com/SmartBear/git-en-boite/issues/20)
