@@ -59,6 +59,10 @@
 - Refactor code now push is "working" [\#161](https://github.com/SmartBear/git-en-boite/issues/161)
 - Specify author and commit message when committing [\#160](https://github.com/SmartBear/git-en-boite/issues/160)
 - Don't remove existing files when pushing new ones [\#159](https://github.com/SmartBear/git-en-boite/issues/159)
+- Use a fake local server for tests that need to hit a real git remote http server [\#153](https://github.com/SmartBear/git-en-boite/issues/153)
+- Better feedback if you post bad JSON [\#152](https://github.com/SmartBear/git-en-boite/issues/152)
+- Server won't start: Fails to load additional type declarations from local-git package [\#151](https://github.com/SmartBear/git-en-boite/issues/151)
+- Use hamjest-sinon [\#149](https://github.com/SmartBear/git-en-boite/issues/149)
 - Use tmp library for creating temp directories in all tests [\#43](https://github.com/SmartBear/git-en-boite/issues/43)
 - Shallow fetch [\#33](https://github.com/SmartBear/git-en-boite/issues/33)
 
