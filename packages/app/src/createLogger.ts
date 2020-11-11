@@ -19,9 +19,11 @@ const parseErrors: winston.Logform.Format = {
   transform: (anInfo: winston.Logform.TransformableInfo) => {
     const error = anInfo
     if (!(error instanceof Error)) return anInfo
-    anInfo.stack = ErrorStackParser.parse(error)
-    anInfo.type = error.constructor.name
-    return anInfo
+    return Object.assign({}, anInfo, {
+      stack: ErrorStackParser.parse(error),
+      type: error.constructor.name,
+      message: error.message,
+    })
   },
 }
 
