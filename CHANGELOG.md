@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.1.3](https://github.com/SmartBear/git-en-boite/tree/v0.1.3) (2020-11-11)
+
 ## [v0.1.2](https://github.com/SmartBear/git-en-boite/tree/v0.1.2) (2020-11-11)
 
 ## [v0.1.1](https://github.com/SmartBear/git-en-boite/tree/v0.1.1) (2020-11-11)
@@ -7,7 +9,6 @@
 **Closed issues:**
 
 - Fix CI dockerfile for smoke testing container image [\#327](https://github.com/SmartBear/git-en-boite/issues/327)
-- Add some smoke test [\#249](https://github.com/SmartBear/git-en-boite/issues/249)
 
 ## [v0.1.0](https://github.com/SmartBear/git-en-boite/tree/v0.1.0) (2020-11-11)
 
@@ -40,6 +41,7 @@
 - Automatically merge dependency update PRs [\#262](https://github.com/SmartBear/git-en-boite/issues/262)
 - Rename "GitRepo" to "LocalClone" [\#254](https://github.com/SmartBear/git-en-boite/issues/254)
 - Docker image should be clean with only `dist` folders [\#250](https://github.com/SmartBear/git-en-boite/issues/250)
+- Add some smoke test [\#249](https://github.com/SmartBear/git-en-boite/issues/249)
 - Move CI to GitHub Actions [\#241](https://github.com/SmartBear/git-en-boite/issues/241)
 - Clear feedback if you connect with a bad URL [\#218](https://github.com/SmartBear/git-en-boite/issues/218)
 - Validate push authorisation on connect [\#217](https://github.com/SmartBear/git-en-boite/issues/217)
