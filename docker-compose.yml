@@ -1,33 +1,33 @@
 version: "3"
 services:
-  web-server:
+  server:
     build: .
     ports:
       - 3001:3001
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
     depends_on:
       - postgres
       - redis
-      - git-worker
-    command: yarn app start:server
+      - worker
+    command: yarn start:server
     volumes:
       - ./git-repos:/git-repos
 
-  git-worker:
+  worker:
     build: .
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
     depends_on:
       - postgres
       - redis
-    command: yarn app start:worker
+    command: yarn start:worker
     volumes:
       - ./git-repos:/git-repos
 

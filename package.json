@@ -8,6 +8,8 @@
     "lint": "yarn workspaces run lint",
     "local-clones": "yarn workspace git-en-boite-local-clones",
     "start": "yarn app start",
+    "start:server": "node packages/app/dist/server.js",
+    "start:worker": "node packages/app/dist/worker.js",
     "test": "yarn workspaces run test",
     "test:wip": "yarn workspaces run test:wip",
     "web": "yarn workspace git-en-boite-web",
