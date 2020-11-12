@@ -5,7 +5,7 @@ services:
     ports:
       - 3001:3001
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
@@ -20,7 +20,7 @@ services:
   worker:
     build: .
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
@@ -40,14 +40,15 @@ services:
 
   postgres:
     image: postgres:12.2-alpine
-    restart: always
     environment:
       - POSTGRES_DB=git-en-boite-development
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
-      - 127.0.0.1:5432:5432
+      - target: 5432
+        published: 5433
 
   redis:
     image: redis:latest
     ports:
-      - 127.0.0.1:6379:6379
+      - target: 6379
+        published: 6380
