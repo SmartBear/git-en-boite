@@ -60,6 +60,13 @@ The integration tests need redis and postgres to be running somewhere. If you do
 ```bash
 docker-compose up --detach redis postgres
 ```
+On ubuntu 20, the default docker package should be replaced by the latest one to use the long syntax in docker-compose.yml
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose -version
+```
+The version returned should be 1.27.4, build 40524192
 
 Run the tests in each of the packages:
 
