@@ -15,6 +15,7 @@ runProcess(async (config: Config, logger: Logger) => {
     DirectLocalClone,
     config.redis,
     config.git.queueName,
+    logger,
   )
   await localClones.pingWorkers()
   const repoIndex = new DiskRepoIndex(config.git.root, localClones, domainEvents)

@@ -7,6 +7,7 @@ runProcess(async (config, logger) => {
     DirectLocalClone,
     config.redis,
     config.git.queueName,
+    logger,
   )
   await localClones.startWorker(logger)
   logger.info('git-en-boite background worker started ✅')

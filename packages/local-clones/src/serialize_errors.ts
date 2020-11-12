@@ -1,4 +1,4 @@
-import { AccessDenied, InvalidRepoUrl } from 'git-en-boite-core'
+import { AccessDenied, InvalidRepoUrl, Logger } from 'git-en-boite-core'
 
 type ErrorEnvelope = {
   type: string
@@ -17,11 +17,17 @@ export const asSerializedError = <AnError extends Error>(anError: AnError): Erro
 
 const buildDeserializeError = (...constructors: Array<{ new (message?: string): Error }>) => (
   anError: Error,
+  logger: Logger,
 ): Error => {
   if (!hasSerializedMessage(anError)) return anError
   const errorEnvelope: ErrorEnvelope = JSON.parse(anError.message)
   const Constructor = constructors.find(constructor => constructor.name === errorEnvelope.type)
-  return Object.assign(new Constructor(), errorEnvelope.props)
+  if (!Constructor) {
+    logger.warn(
+      `Unable to propertly deserialize an Error of type: ${errorEnvelope.type}. Add the constructor to ${__filename}. Returning as a regular Error for now.`,
+    )
+  }
+  return Object.assign(new (Constructor || Error)(), errorEnvelope.props)
 
   function hasSerializedMessage(error: Error) {
     try {

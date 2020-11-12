@@ -24,9 +24,10 @@ import { nanoid } from 'nanoid'
 const config = createConfig()
 
 describe(BackgroundWorkerLocalClones.name, () => {
+  const logger = stubInterface<Logger>()
+
   context('when a worker is running', () => {
     let localClones: BackgroundWorkerLocalClones
-    const logger = stubInterface<Logger>()
 
     before(async function () {
       const queueName = nanoid()
@@ -34,6 +35,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
         DirectLocalClone,
         config.redis,
         queueName,
+        logger,
       )
       await localClones.startWorker(logger)
     })
@@ -81,6 +83,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
         DirectLocalClone,
         config.redis,
         queueName,
+        logger,
       )
     })
 
@@ -110,6 +113,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
         DirectLocalClone,
         badRedisOptions,
         'a-queue',
+        logger,
       )
       await promiseThat(connecting, rejected())
     })
