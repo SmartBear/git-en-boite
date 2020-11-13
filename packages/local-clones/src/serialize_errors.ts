@@ -24,7 +24,7 @@ const buildDeserializeError = (...constructors: Array<{ new (message?: string): 
   const Constructor = constructors.find(constructor => constructor.name === errorEnvelope.type)
   if (!Constructor) {
     logger.warn(
-      `Unable to propertly deserialize an Error of type: ${errorEnvelope.type}. Add the constructor to ${__filename}. Returning as a regular Error for now.`,
+      `Unable to properly deserialize an Error of type: ${errorEnvelope.type}. Add the constructor to ${__filename}. Returning as a regular Error for now.`,
     )
   }
   return Object.assign(new (Constructor || Error)(), errorEnvelope.props)
