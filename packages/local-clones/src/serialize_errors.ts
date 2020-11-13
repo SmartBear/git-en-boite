@@ -1,4 +1,5 @@
 import { AccessDenied, InvalidRepoUrl, Logger } from 'git-en-boite-core'
+import { GitCommandError } from './git_command_error'
 
 type ErrorEnvelope = {
   type: string
@@ -15,7 +16,11 @@ export const asSerializedError = <AnError extends Error>(anError: AnError): Erro
   return new Error(JSON.stringify(envelope))
 }
 
-const buildDeserializeError = (...constructors: Array<{ new (message?: string): Error }>) => (
+type ErrorConstructor = {
+  new (message?: string): Error
+}
+
+const buildDeserializeError = (...constructors: Array<ErrorConstructor>) => (
   anError: Error,
   logger: Logger,
 ): Error => {
@@ -39,4 +44,9 @@ const buildDeserializeError = (...constructors: Array<{ new (message?: string): 
   }
 }
 
-export const deserialize = buildDeserializeError(InvalidRepoUrl, AccessDenied, Error)
+export const deserialize = buildDeserializeError(
+  InvalidRepoUrl,
+  AccessDenied,
+  Error,
+  GitCommandError,
+)
