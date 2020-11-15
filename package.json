@@ -14,7 +14,8 @@
     "test:wip": "yarn workspaces run test:wip",
     "web": "yarn workspace git-en-boite-web",
     "core": "yarn workspace git-en-boite-core",
-    "smoke": "yarn workspace git-en-boite-smoke-tests"
+    "smoke": "yarn workspace git-en-boite-smoke-tests",
+    "inventory": "yarn workspace git-en-boite-inventory"
   },
   "workspaces": [
     "packages/*"

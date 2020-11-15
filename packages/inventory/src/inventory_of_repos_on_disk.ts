@@ -5,8 +5,8 @@ import {
   Repo,
   RepoId,
   InventoryOfRepos,
-  RepoPath,
 } from 'git-en-boite-core'
+import { RepoPath } from './repo_path'
 
 export class InventoryOfReposOnDisk implements InventoryOfRepos {
   constructor(
