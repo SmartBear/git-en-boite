@@ -4,11 +4,11 @@ import {
   PublishesDomainEvents,
   Repo,
   RepoId,
-  RepoIndex,
+  InventoryOfRepos,
   RepoPath,
 } from 'git-en-boite-core'
 
-export class DiskRepoIndex implements RepoIndex {
+export class InventoryOfReposOnDisk implements InventoryOfRepos {
   constructor(
     private basePath: string,
     private localClones: OpensLocalClones,

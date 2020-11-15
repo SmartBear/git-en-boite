@@ -7,7 +7,7 @@
     { "path": "./packages/core" },
     { "path": "./packages/local-clones" },
     { "path": "./packages/message-dispatch" },
-    { "path": "./packages/repo-index" }
+    { "path": "./packages/inventory" }
   ],
   "files": [],
   "include": [],

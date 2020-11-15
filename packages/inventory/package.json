@@ -1,12 +1,12 @@
 {
-  "name": "git-en-boite-repo-index",
+  "name": "git-en-boite-inventory",
   "version": "0.0.0",
   "description": "Adapter that holds the index of info about all repos",
   "main": "dist/index.js",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
-    "test": "#noop",
-    "test:wip": "#noop",
+    "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i",
+    "test:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "repository": {

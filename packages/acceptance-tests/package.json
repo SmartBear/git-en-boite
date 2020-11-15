@@ -20,7 +20,7 @@
     "git-en-boite-app": "0.0.0",
     "git-en-boite-core": "0.0.0",
     "git-en-boite-local-clones": "0.0.0",
-    "git-en-boite-repo-index": "0.0.0",
+    "git-en-boite-inventory": "0.0.0",
     "git-en-boite-web": "0.0.0",
     "pg": "^8.5.0",
     "tiny-types": "^1.15.0",
