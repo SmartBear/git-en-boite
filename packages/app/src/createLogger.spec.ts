@@ -93,7 +93,7 @@ const verifyContract = (logger: Logger) => {
 
 describe(createLogger.name, () => {
   context('in human-readable mode', () => {
-    const logger = createLogger({ readableBy: 'human' })
+    const logger = createLogger({ readableBy: 'humans' })
 
     verifyContract(logger)
 
@@ -122,7 +122,7 @@ describe(createLogger.name, () => {
   })
 
   context('in machine-readable mode', () => {
-    const logger = createLogger({ readableBy: 'machine' })
+    const logger = createLogger({ readableBy: 'machines' })
 
     verifyContract(logger)
   })

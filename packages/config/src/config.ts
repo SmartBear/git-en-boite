@@ -15,7 +15,7 @@ interface GitOptions {
 }
 
 export type LoggerOptions = {
-  readableBy: 'human' | 'machine'
+  readableBy: 'humans' | 'machines' | 'nobody'
 }
 
 const createGitConfig = (env: { GIT_ROOT?: string }): GitOptions => {
@@ -40,6 +40,10 @@ const createRedisConfig = (env: { REDIS_URL?: string }): string => {
   return env.REDIS_URL
 }
 
+const createLoggerConfig = (env: { NODE_ENV?: string }): LoggerOptions => {
+  return { readableBy: env.NODE_ENV === 'production' ? 'machines' : 'humans' }
+}
+
 type Environment = {
   NODE_ENV?: string
   GIT_ROOT?: string
@@ -53,6 +57,6 @@ export const createConfig = (env: Environment = process.env, fs = require('fs'))
     git: createGitConfig(env),
     version: createVersionConfig(env, fs),
     redis: createRedisConfig(env),
-    logger: { readableBy: env.NODE_ENV === 'production' ? 'machine' : 'human' },
+    logger: createLoggerConfig(env),
   }
 }

@@ -80,6 +80,14 @@ Start the app locally:
 yarn start
 ```
 
+### Debugging the acceptance tests
+
+When the acceptance tests fail, it's often useful to debug them by logging. You can turn on logging to console like this:
+
+    show_logs=1 yarn acceptance test
+
+See `packages/acceptance-tests/serc/support/abilities/request` for details.
+
 ## Smoke tests
 
 Git-en-boîte ships with smoke tests that can be run against any instance of itself.

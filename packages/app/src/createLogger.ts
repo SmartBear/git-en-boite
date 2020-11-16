@@ -1,8 +1,9 @@
-import ErrorStackParser, { StackFrame } from 'error-stack-parser'
 import chalk from 'chalk'
+import ErrorStackParser from 'error-stack-parser'
 import { LoggerOptions } from 'git-en-boite-config'
 import { Logger } from 'git-en-boite-core'
 import * as winston from 'winston'
+
 import { sanitize } from './sanitize'
 
 const transports = [new winston.transports.Console()]
@@ -41,7 +42,7 @@ const prettyPrintErrors: winston.Logform.Format = {
 }
 
 const loggers = {
-  human: winston.createLogger({
+  humans: winston.createLogger({
     level: 'info',
     format: winston.format.combine(
       prettyPrintErrors,
@@ -52,11 +53,12 @@ const loggers = {
     ),
     transports,
   }),
-  machine: winston.createLogger({
+  machines: winston.createLogger({
     level: 'info',
     format: winston.format.combine(parseErrors, sanitizeFields, winston.format.json()),
     transports,
   }),
+  nobody: Logger.none,
 }
 
 export const createLogger = ({ readableBy }: LoggerOptions): Logger => loggers[readableBy]
