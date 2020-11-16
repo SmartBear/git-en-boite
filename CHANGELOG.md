@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.4](https://github.com/SmartBear/git-en-boite/tree/v0.1.4) (2020-11-16)
+
+**Fixed bugs:**
+
+- Handle custom Error types that can't be deserialized in the BackgroundGitLocalClone [\#332](https://github.com/SmartBear/git-en-boite/issues/332)
+
 ## [v0.1.3](https://github.com/SmartBear/git-en-boite/tree/v0.1.3) (2020-11-11)
 
 ## [v0.1.2](https://github.com/SmartBear/git-en-boite/tree/v0.1.2) (2020-11-11)
