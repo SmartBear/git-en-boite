@@ -34,7 +34,7 @@ import { GitDirectory } from '../git_directory'
 import { runGitHttpServer } from '../test/run_git_http_server'
 import { createBareRepo as createOriginRepo } from '../bare_repo'
 
-export const verifyRepoContract = (openLocalClone: OpenLocalClone): void => {
+export const verifyRepoContract = (createLocalClone: OpenLocalClone): void => {
   const branchName = BranchName.of('main')
   let root: string
   let repoPath: string
@@ -43,7 +43,7 @@ export const verifyRepoContract = (openLocalClone: OpenLocalClone): void => {
   beforeEach(async () => {
     root = dirSync().name
     repoPath = path.resolve(root, 'a-repo-id')
-    localClone = await openLocalClone(repoPath)
+    localClone = await createLocalClone(repoPath)
   })
 
   afterEach(function () {

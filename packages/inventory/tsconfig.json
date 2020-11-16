@@ -14,7 +14,11 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["../../@types/*"]
+    }
   },
   "references": [{ "path": "../core" }]
 }

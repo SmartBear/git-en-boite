@@ -9,4 +9,4 @@ export interface LocalClone {
 }
 
 export type OpenLocalClone = (path: string) => Promise<LocalClone>
-export type OpensLocalClones = { openLocalClone: OpenLocalClone }
+export type OpensLocalClones = { openLocalClone: OpenLocalClone; createLocalClone: OpenLocalClone }

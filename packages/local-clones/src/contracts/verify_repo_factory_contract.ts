@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { OpenLocalClone } from 'git-en-boite-core'
+import { OpenLocalClone, OpensLocalClones } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
@@ -11,7 +11,7 @@ import { GitDirectory } from '../git_directory'
 type OpenBareRepo = (path: string) => Promise<Dispatch<RepoProtocol>>
 
 export const verifyRepoFactoryContract = (
-  openLocalClone: OpenLocalClone,
+  makeLocalClones: () => OpensLocalClones,
   openBareRepo: OpenBareRepo,
 ): void => {
   let root: string
@@ -26,7 +26,8 @@ export const verifyRepoFactoryContract = (
     context('when the directory does not exist', () => {
       it('creates an initialised repo', async () => {
         const repoPath = path.resolve(root, 'a-repo-id')
-        await openLocalClone(repoPath)
+        const localClones = makeLocalClones()
+        await localClones.createLocalClone(repoPath)
         const git = await openBareRepo(repoPath)
         const config = await git(GetConfig.forRepo())
         await assertThat(config['user.name'], equalTo('Git en boîte'))
@@ -38,7 +39,8 @@ export const verifyRepoFactoryContract = (
         const repoPath = path.resolve(root, 'an-existing-repo-id')
         fs.mkdirSync(repoPath, { recursive: true })
         await new GitDirectory(repoPath).exec('init')
-        await openLocalClone(repoPath)
+        const localClones = makeLocalClones()
+        await localClones.openLocalClone(repoPath)
         const git = await openBareRepo(repoPath)
         const config = await git(GetConfig.forRepo())
         await assertThat(config['user.name'], undefined)

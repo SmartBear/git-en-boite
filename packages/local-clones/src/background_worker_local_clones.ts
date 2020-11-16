@@ -5,6 +5,7 @@ import {
   Files,
   LocalClone,
   Logger,
+  OpenLocalClone,
   OpensLocalClones,
   PendingCommitRef,
   Refs,
@@ -19,7 +20,7 @@ interface Closable {
   close(): Promise<void>
 }
 
-export class BackgroundWorkerLocalClones {
+export class BackgroundWorkerLocalClones implements OpensLocalClones {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private queue: Queue<any>
   private queueEvents: QueueEvents
@@ -60,6 +61,11 @@ export class BackgroundWorkerLocalClones {
 
   async openLocalClone(path: string): Promise<LocalClone> {
     const gitRepo = await this.localClones.openLocalClone(path)
+    return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.logger)
+  }
+
+  async createLocalClone(path: string): Promise<LocalClone> {
+    const gitRepo = await this.localClones.createLocalClone(path)
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.logger)
   }
 

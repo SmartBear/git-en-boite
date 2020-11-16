@@ -9,14 +9,20 @@ import {
   RemoteUrl,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
+import { errorMonitor } from 'koa'
 
 import { createBareRepo, openBareRepo } from './bare_repo'
 import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
 
 export class DirectLocalClone implements LocalClone {
   static async openLocalClone(path: string): Promise<LocalClone> {
-    const dispatch = await (!fs.existsSync(path) ? createBareRepo(path) : openBareRepo(path))
-    return new DirectLocalClone(dispatch)
+    if (!fs.existsSync(path)) throw new Error('Local clone does not exist')
+    return new DirectLocalClone(await openBareRepo(path))
+  }
+
+  static async createLocalClone(path: string): Promise<LocalClone> {
+    if (fs.existsSync(path)) throw new Error('Local clone already exists')
+    return new DirectLocalClone(await createBareRepo(path))
   }
 
   protected constructor(private readonly git: Dispatch<RepoProtocol>) {}

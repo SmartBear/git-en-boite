@@ -41,9 +41,9 @@ describe(BackgroundWorkerLocalClones.name, () => {
     })
     after(async () => await localClones.close())
 
-    const openLocalClone = (path: string) => localClones.openLocalClone(path)
+    const openLocalClone = (path: string) => localClones.createLocalClone(path)
 
-    verifyRepoFactoryContract(openLocalClone, openBareRepo)
+    verifyRepoFactoryContract(() => localClones, openBareRepo)
     verifyRepoContract(openLocalClone)
 
     it('logs each git operation', async () => {
@@ -51,7 +51,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
       const originUrl = RemoteUrl.of(path.resolve(root, 'origin'))
       await createBareRepo(originUrl.value)
       await localClones.pingWorkers()
-      const git = await localClones.openLocalClone(path.resolve(root, 'repo'))
+      const git = await localClones.createLocalClone(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)
       assertThat(logger.info, wasCalled())
       assertThat(

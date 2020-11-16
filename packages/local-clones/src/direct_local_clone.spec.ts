@@ -6,9 +6,9 @@ import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contr
 import { DirectLocalClone } from '.'
 
 describe(DirectLocalClone.name, () => {
-  const openLocalClone = DirectLocalClone.openLocalClone
-  verifyRepoFactoryContract(openLocalClone, openBareRepo)
-  verifyRepoContract(openLocalClone)
+  const createLocalClone = DirectLocalClone.createLocalClone
+  verifyRepoFactoryContract(() => DirectLocalClone, openBareRepo)
+  verifyRepoContract(createLocalClone)
 
   let root: string
 
