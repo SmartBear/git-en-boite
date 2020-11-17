@@ -4,6 +4,11 @@ Feature: Connect
 
   You supply a Git HTTP URL and we take care of connecting it up.
 
+  Scenario: Successful connection
+    Given a remote repo with commits on the "main" branch
+    When a consumer tries to connect to the remote repo
+    Then it should respond with 202 status
+
   Scenario: Connection fails due to bad URL
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:

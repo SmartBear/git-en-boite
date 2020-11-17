@@ -74,11 +74,15 @@ When('a new commit is made on {BranchName} in the remote repo', async function (
 
 Given('a consumer has connected the remote repo', connect)
 When('a consumer connects the remote repo', connect)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function connect(this: any) {
+async function connect(this: World) {
   const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteUrl(this.repoId) }
   await this.request.post('/repos').send(repoInfo).expect(202)
 }
+
+When('a consumer tries to connect to the remote repo', async function (this: World) {
+  const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteUrl(this.repoId) }
+  this.lastResponse = await this.request.post('/repos').send(repoInfo)
+})
 
 When('a consumer tries to connect to the remote URL {string}', async function (
   this: World,
@@ -230,4 +234,8 @@ Then('the events received by the consumer should be:', function (
   expectedEvents: string,
 ) {
   assertThat(this.events, equalTo(expectedEvents.split('\n')))
+})
+
+Then('it should respond with 202 status', function (this: World) {
+  assertThat(this.lastResponse.status, equalTo(202))
 })
