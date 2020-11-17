@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.2.0](https://github.com/SmartBear/git-en-boite/tree/v0.2.0) (2020-11-17)
+
 ## [v0.1.4](https://github.com/SmartBear/git-en-boite/tree/v0.1.4) (2020-11-16)
 
 **Fixed bugs:**
