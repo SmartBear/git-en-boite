@@ -2,9 +2,13 @@
 
 ## [v0.2.0](https://github.com/SmartBear/git-en-boite/tree/v0.2.0) (2020-11-17)
 
+**Closed issues:**
+
+- Ensure a repo does not "exist" after a failed initial connection attempt [\#333](https://github.com/SmartBear/git-en-boite/issues/333)
+
 ## [v0.1.4](https://github.com/SmartBear/git-en-boite/tree/v0.1.4) (2020-11-16)
 
-**Fixed bugs:**
+**Closed issues:**
 
 - Handle custom Error types that can't be deserialized in the BackgroundGitLocalClone [\#332](https://github.com/SmartBear/git-en-boite/issues/332)
 
