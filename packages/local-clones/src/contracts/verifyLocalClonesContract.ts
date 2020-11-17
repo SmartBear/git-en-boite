@@ -1,6 +1,6 @@
 import fs from 'fs'
-import { LocalClones, RepoAlreadyExists } from 'git-en-boite-core'
-import { assertThat, equalTo, instanceOf, promiseThat, rejected } from 'hamjest'
+import { LocalClones } from 'git-en-boite-core'
+import { assertThat, equalTo, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
