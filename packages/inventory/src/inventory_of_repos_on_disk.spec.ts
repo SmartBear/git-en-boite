@@ -1,12 +1,22 @@
 import fs from 'fs'
 import {
   DomainEventBus,
-  NoSuchRepo,
+  InventoryOfRepos,
   LocalClones,
+  NoSuchRepo,
   RepoAlreadyExists,
   RepoId,
 } from 'git-en-boite-core'
-import { assertThat, defined, equalTo, hasProperty, promiseThat, rejected } from 'hamjest'
+import {
+  assertThat,
+  defined,
+  equalTo,
+  truthy,
+  hasProperty,
+  promiseThat,
+  rejected,
+  falsey,
+} from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
@@ -15,14 +25,23 @@ import { InventoryOfReposOnDisk } from './inventory_of_repos_on_disk'
 import { RepoPath } from './repo_path'
 
 describe(InventoryOfReposOnDisk.name, () => {
-  const repoId = RepoId.generate()
-  const basePath = dirSync().name
-  const localClones = stubInterface<LocalClones>()
-  const domainEvents = stubInterface<DomainEventBus>()
-  const inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
+  let repoId: RepoId
+  let basePath: string
+  let repoPath: RepoPath
+  let localClones: LocalClones
+  let domainEvents: DomainEventBus
+  let inventory: InventoryOfRepos
+
+  beforeEach(() => {
+    repoId = RepoId.generate()
+    basePath = dirSync().name
+    localClones = stubInterface<LocalClones>()
+    domainEvents = stubInterface<DomainEventBus>()
+    inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
+  })
 
   describe('creating new repos', () => {
-    it('creates a new LocalClone in a directory', async () => {
+    it('creates a new LocalClone', async () => {
       await inventory.create(repoId)
       assertThat(localClones.createNew, wasCalled())
     })
@@ -34,9 +53,12 @@ describe(InventoryOfReposOnDisk.name, () => {
     })
 
     context('when the repo already exists', () => {
-      it('returns an error', async () => {
-        const repoPath = RepoPath.for(basePath, repoId)
+      beforeEach(() => {
+        repoPath = RepoPath.for(basePath, repoId)
         fs.mkdirSync(repoPath.value, { recursive: true })
+      })
+
+      it(`fails with ${RepoAlreadyExists.name}`, async () => {
         await promiseThat(inventory.create(repoId), rejected(RepoAlreadyExists.forRepoId(repoId)))
       })
     })
@@ -44,29 +66,39 @@ describe(InventoryOfReposOnDisk.name, () => {
 
   describe('finding existing repos', () => {
     context('when a folder exists for the repo', () => {
-      const repoPath = RepoPath.for(basePath, repoId)
-      it('returns a Repo', async () => {
+      beforeEach(() => {
+        repoPath = RepoPath.for(basePath, repoId)
         fs.mkdirSync(repoPath.value, { recursive: true })
+      })
 
+      it('returns a Repo', async () => {
         const repo = await inventory.find(repoId)
         assertThat(repo, defined())
         assertThat(repo, hasProperty('repoId', equalTo(repoId)))
       })
 
       it('opens a LocalClone', async () => {
-        fs.mkdirSync(repoPath.value, { recursive: true })
         await inventory.find(repoId)
         assertThat(localClones.openExisting, wasCalled())
       })
     })
 
-    it('fails when the repo does not exist', async () => {
+    it(`fails with ${NoSuchRepo.name} when the repo does not exist`, async () => {
       const repoId = RepoId.generate()
       await promiseThat(inventory.find(repoId), rejected(NoSuchRepo.forRepoId(repoId)))
     })
   })
 
   describe('checking if a repo exists', () => {
-    it('returns true if a folder exists for the repo')
+    it('returns true if a folder exists for the repo', async () => {
+      repoPath = RepoPath.for(basePath, repoId)
+      fs.mkdirSync(repoPath.value, { recursive: true })
+      assertThat(await inventory.exists(repoId), truthy())
+    })
+
+    it('returns false if no folder exists for the repo', async () => {
+      repoPath = RepoPath.for(basePath, repoId)
+      assertThat(await inventory.exists(repoId), falsey())
+    })
   })
 })
