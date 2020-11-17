@@ -4,9 +4,8 @@ import {
   CommitMessage,
   Files,
   LocalClone,
+  LocalClones,
   Logger,
-  OpenLocalClone,
-  OpensLocalClones,
   PendingCommitRef,
   Refs,
   RemoteUrl,
@@ -20,7 +19,7 @@ interface Closable {
   close(): Promise<void>
 }
 
-export class BackgroundWorkerLocalClones implements OpensLocalClones {
+export class BackgroundWorkerLocalClones implements LocalClones {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private queue: Queue<any>
   private queueEvents: QueueEvents
@@ -32,7 +31,7 @@ export class BackgroundWorkerLocalClones implements OpensLocalClones {
   }
 
   static async connect(
-    localClones: OpensLocalClones,
+    localClones: LocalClones,
     redisUrl: string,
     queueName: string,
     logger: Logger,
@@ -42,7 +41,7 @@ export class BackgroundWorkerLocalClones implements OpensLocalClones {
   }
 
   protected constructor(
-    private readonly localClones: OpensLocalClones,
+    private readonly localClones: LocalClones,
     private readonly createRedisClient: () => Promise<IORedis.Redis>,
     private readonly queueName: string,
     private readonly logger: Logger,
@@ -59,13 +58,13 @@ export class BackgroundWorkerLocalClones implements OpensLocalClones {
     return this
   }
 
-  async openLocalClone(path: string): Promise<LocalClone> {
-    const gitRepo = await this.localClones.openLocalClone(path)
+  async openExisting(path: string): Promise<LocalClone> {
+    const gitRepo = await this.localClones.openExisting(path)
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.logger)
   }
 
-  async createLocalClone(path: string): Promise<LocalClone> {
-    const gitRepo = await this.localClones.createLocalClone(path)
+  async createNew(path: string): Promise<LocalClone> {
+    const gitRepo = await this.localClones.createNew(path)
     return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.logger)
   }
 
@@ -145,7 +144,7 @@ class GitRepoWorker implements Closable {
   protected worker: Worker<any>
 
   static async start(
-    localClones: OpensLocalClones,
+    localClones: LocalClones,
     createRedisClient: () => Promise<IORedis.Redis>,
     logger: Logger,
     queueName: string,
@@ -155,7 +154,7 @@ class GitRepoWorker implements Closable {
   }
 
   protected constructor(
-    gitRepos: OpensLocalClones,
+    gitRepos: LocalClones,
     readonly redisClient: IORedis.Redis,
     logger: Logger,
     queueName: string,
@@ -167,7 +166,7 @@ class GitRepoWorker implements Closable {
           return {}
         }
         const { path } = job.data
-        const git = await gitRepos.openLocalClone(path)
+        const git = await gitRepos.openExisting(path)
         if (job.name === 'setOriginTo') {
           const remoteUrl = RemoteUrl.fromJSON(job.data.remoteUrl)
           return await git.setOriginTo(remoteUrl)

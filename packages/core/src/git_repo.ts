@@ -8,5 +8,7 @@ export interface LocalClone {
   getRefs(): Promise<Refs>
 }
 
-export type OpenLocalClone = (path: string) => Promise<LocalClone>
-export type OpensLocalClones = { openLocalClone: OpenLocalClone; createLocalClone: OpenLocalClone }
+export type LocalClones = {
+  openExisting: (path: string) => Promise<LocalClone>
+  createNew: (path: string) => Promise<LocalClone>
+}

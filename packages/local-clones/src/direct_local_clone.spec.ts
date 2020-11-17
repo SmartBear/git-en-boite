@@ -1,14 +1,12 @@
 import { dirSync } from 'tmp'
 
-import { openBareRepo } from './bare_repo'
-import { verifyRepoContract } from './contracts/verify_repo_contract'
-import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
+import { verifyLocalCloneContract } from './contracts/verifyLocalCloneContract'
+import { verifyLocalClonesContract } from './contracts/verifyLocalClonesContract'
 import { DirectLocalClone } from '.'
 
 describe(DirectLocalClone.name, () => {
-  const createLocalClone = DirectLocalClone.createLocalClone
-  verifyRepoFactoryContract(() => DirectLocalClone, openBareRepo)
-  verifyRepoContract(createLocalClone)
+  verifyLocalClonesContract(() => DirectLocalClone)
+  verifyLocalCloneContract(() => DirectLocalClone)
 
   let root: string
 

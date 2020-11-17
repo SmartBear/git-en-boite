@@ -1,6 +1,6 @@
 import fs from 'fs'
 import {
-  OpensLocalClones,
+  LocalClones,
   PublishesDomainEvents,
   Repo,
   RepoId,
@@ -13,7 +13,7 @@ import { RepoPath } from './repo_path'
 export class InventoryOfReposOnDisk implements InventoryOfRepos {
   constructor(
     private basePath: string,
-    private localClones: OpensLocalClones,
+    private localClones: LocalClones,
     private domainEvents: PublishesDomainEvents,
   ) {}
 
@@ -21,13 +21,13 @@ export class InventoryOfReposOnDisk implements InventoryOfRepos {
     if (await this.exists(repoId))
       throw new RepoAlreadyExists('Repository already exists in the inventory', repoId)
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    return new Repo(repoId, await this.localClones.createLocalClone(repoPath), this.domainEvents)
+    return new Repo(repoId, await this.localClones.createNew(repoPath), this.domainEvents)
   }
 
   public async find(repoId: RepoId): Promise<Repo> {
     if (!(await this.exists(repoId))) throw new NoSuchRepo('No such repository', repoId)
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    return new Repo(repoId, await this.localClones.openLocalClone(repoPath), this.domainEvents)
+    return new Repo(repoId, await this.localClones.openExisting(repoPath), this.domainEvents)
   }
 
   public async exists(repoId: RepoId): Promise<boolean> {

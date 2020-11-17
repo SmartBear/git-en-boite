@@ -11,15 +11,14 @@ import {
   rejected,
 } from 'hamjest'
 import { wasCalled, wasCalledWith } from 'hamjest-sinon'
+import { nanoid } from 'nanoid'
 import path from 'path'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
 
-import { BackgroundWorkerLocalClones, createBareRepo, openBareRepo } from '.'
-import { verifyRepoContract } from './contracts/verify_repo_contract'
-import { verifyRepoFactoryContract } from './contracts/verify_repo_factory_contract'
-import { DirectLocalClone } from '.'
-import { nanoid } from 'nanoid'
+import { BackgroundWorkerLocalClones, createBareRepo, DirectLocalClone } from '.'
+import { verifyLocalClonesContract } from './contracts/verifyLocalClonesContract'
+import { verifyLocalCloneContract } from './contracts/verifyLocalCloneContract'
 
 const config = createConfig()
 
@@ -41,17 +40,15 @@ describe(BackgroundWorkerLocalClones.name, () => {
     })
     after(async () => await localClones.close())
 
-    const openLocalClone = (path: string) => localClones.createLocalClone(path)
-
-    verifyRepoFactoryContract(() => localClones, openBareRepo)
-    verifyRepoContract(openLocalClone)
+    verifyLocalClonesContract(() => localClones)
+    verifyLocalCloneContract(() => localClones)
 
     it('logs each git operation', async () => {
       const root = dirSync().name
       const originUrl = RemoteUrl.of(path.resolve(root, 'origin'))
       await createBareRepo(originUrl.value)
       await localClones.pingWorkers()
-      const git = await localClones.createLocalClone(path.resolve(root, 'repo'))
+      const git = await localClones.createNew(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)
       assertThat(logger.info, wasCalled())
       assertThat(

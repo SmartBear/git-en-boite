@@ -2,7 +2,7 @@ import fs from 'fs'
 import {
   DomainEventBus,
   NoSuchRepo,
-  OpensLocalClones,
+  LocalClones,
   RepoAlreadyExists,
   RepoId,
 } from 'git-en-boite-core'
@@ -17,14 +17,14 @@ import { RepoPath } from './repo_path'
 describe(InventoryOfReposOnDisk.name, () => {
   const repoId = RepoId.generate()
   const basePath = dirSync().name
-  const localClones = stubInterface<OpensLocalClones>()
+  const localClones = stubInterface<LocalClones>()
   const domainEvents = stubInterface<DomainEventBus>()
   const inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
 
   describe('creating new repos', () => {
     it('creates a new LocalClone in a directory', async () => {
       await inventory.create(repoId)
-      assertThat(localClones.createLocalClone, wasCalled())
+      assertThat(localClones.createNew, wasCalled())
     })
 
     it('returns a Repo', async () => {
@@ -59,7 +59,7 @@ describe(InventoryOfReposOnDisk.name, () => {
       it('opens a LocalClone', async () => {
         fs.mkdirSync(repoPath.value, { recursive: true })
         await inventory.find(repoId)
-        assertThat(localClones.openLocalClone, wasCalled())
+        assertThat(localClones.openExisting, wasCalled())
       })
     })
 
