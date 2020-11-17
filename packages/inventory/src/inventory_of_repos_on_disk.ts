@@ -18,14 +18,13 @@ export class InventoryOfReposOnDisk implements InventoryOfRepos {
   ) {}
 
   public async create(repoId: RepoId): Promise<Repo> {
-    if (await this.exists(repoId))
-      throw new RepoAlreadyExists('Repository already exists in the inventory', repoId)
+    if (await this.exists(repoId)) throw RepoAlreadyExists.forRepoId(repoId)
     const repoPath = RepoPath.for(this.basePath, repoId).value
     return new Repo(repoId, await this.localClones.createNew(repoPath), this.domainEvents)
   }
 
   public async find(repoId: RepoId): Promise<Repo> {
-    if (!(await this.exists(repoId))) throw new NoSuchRepo('No such repository', repoId)
+    if (!(await this.exists(repoId))) throw NoSuchRepo.forRepoId(repoId)
     const repoPath = RepoPath.for(this.basePath, repoId).value
     return new Repo(repoId, await this.localClones.openExisting(repoPath), this.domainEvents)
   }

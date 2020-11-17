@@ -37,10 +37,7 @@ describe(InventoryOfReposOnDisk.name, () => {
       it('returns an error', async () => {
         const repoPath = RepoPath.for(basePath, repoId)
         fs.mkdirSync(repoPath.value, { recursive: true })
-        await promiseThat(
-          inventory.create(repoId),
-          rejected(new RepoAlreadyExists('Repository already exists in the inventory', repoId)),
-        )
+        await promiseThat(inventory.create(repoId), rejected(RepoAlreadyExists.forRepoId(repoId)))
       })
     })
   })
@@ -65,10 +62,7 @@ describe(InventoryOfReposOnDisk.name, () => {
 
     it('fails when the repo does not exist', async () => {
       const repoId = RepoId.generate()
-      await promiseThat(
-        inventory.find(repoId),
-        rejected(new NoSuchRepo('No such repository', repoId)),
-      )
+      await promiseThat(inventory.find(repoId), rejected(NoSuchRepo.forRepoId(repoId)))
     })
   })
 
