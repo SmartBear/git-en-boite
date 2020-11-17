@@ -16,35 +16,27 @@ import { RepoPath } from './repo_path'
 
 describe(InventoryOfReposOnDisk.name, () => {
   describe('creating new repos', () => {
+    const basePath = dirSync().name
+    const repoId = RepoId.generate()
+    const localClones = stubInterface<OpensLocalClones>()
+    const domainEvents = stubInterface<DomainEventBus>()
+    const inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
+
     it('creates a new LocalClone in a directory', async () => {
-      const basePath = dirSync().name
-      const repoId = RepoId.generate()
-      const localClones = stubInterface<OpensLocalClones>()
-      const domainEvents = stubInterface<DomainEventBus>()
-      const inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       await inventory.create(repoId)
       assertThat(localClones.createLocalClone, wasCalled())
     })
 
     it('returns a Repo', async () => {
-      const basePath = dirSync().name
-      const repoId = RepoId.generate()
-      const localClones = stubInterface<OpensLocalClones>()
-      const domainEvents = stubInterface<DomainEventBus>()
-      const inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       const repo = await inventory.create(repoId)
       assertThat(repo, defined())
       assertThat(repo, hasProperty('repoId', equalTo(repoId)))
     })
+
     context('when the repo already exists', () => {
       it('returns an error', async () => {
-        const basePath = dirSync().name
-        const repoId = RepoId.generate()
         const repoPath = RepoPath.for(basePath, repoId)
-        const localClones = stubInterface<OpensLocalClones>()
-        const domainEvents = stubInterface<DomainEventBus>()
         fs.mkdirSync(repoPath.value, { recursive: true })
-        const inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
         await promiseThat(
           inventory.create(repoId),
           rejected(new RepoAlreadyExists('Repository already exists in the inventory', repoId)),
