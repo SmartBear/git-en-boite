@@ -30,55 +30,50 @@ We use [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces) to mana
 
 The following docker-compose command starts the backend HTTP API
 
-```bash
-docker-compose up
-```
+    docker-compose up
 
 Now you can hit the service:
 
-```bash
-curl http://localhost:3001
-```
+    curl http://localhost:3001
 
 ## Development
 
 Install yarn, then install dependencies:
 
-```
-yarn
-```
+    yarn
 
 Set up default environment variables (assumes you're using [direnv](https://direnv.net/)):
 
-```
-cp .envrc.default .envrc
-direnv allow .
-```
+    cp .envrc.default .envrc
+    direnv allow .
 
 The integration tests need redis and postgres to be running somewhere. If you don't have or want to have them installed on your dev machine, you can spin them up in Docker:
 
-```bash
-docker-compose up --detach redis postgres
-```
+    docker-compose up --detach redis postgres
+
+### Note for Ubuntu 20 users
+
 On ubuntu 20, the default docker package should be replaced by the latest one to use the long syntax in docker-compose.yml
-```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-docker-compose -version
-```
+
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    docker-compose -version
+
 The version returned should be 1.27.4, build 40524192
+
+### Run tests
+
+Build first:
+
+    yarn build
 
 Run the tests in each of the packages:
 
-```
-yarn test
-```
+    yarn test
 
 Start the app locally:
 
-```
-yarn start
-```
+    yarn start
 
 ### Debugging the acceptance tests
 
