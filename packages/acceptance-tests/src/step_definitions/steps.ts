@@ -79,6 +79,12 @@ async function connect(this: World) {
   await this.request.post('/repos').send(repoInfo).expect(202)
 }
 
+Given('a consumer has failed to connect to a remote repo', async function (this: World) {
+  this.repoId = RepoId.generate()
+  const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
+  await this.request.post('/repos').send(repoInfo).expect(400)
+})
+
 When('a consumer tries to connect to the remote repo', async function (this: World) {
   const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteUrl(this.repoId) }
   this.lastResponse = await this.request.post('/repos').send(repoInfo)
@@ -91,6 +97,10 @@ When('a consumer tries to connect to the remote URL {string}', async function (
   this.repoId = RepoId.generate()
   const repoInfo = { repoId: this.repoId, remoteUrl }
   this.lastResponse = await this.request.post('/repos').send(repoInfo)
+})
+
+When("a/the consumer tries to get the repo's info", async function (this: World) {
+  this.lastResponse = await this.request.get(`/repos/${this.repoId}`)
 })
 
 When('a consumer tries to connect using a malformed payload', async function (this: World) {
@@ -236,6 +246,6 @@ Then('the events received by the consumer should be:', function (
   assertThat(this.events, equalTo(expectedEvents.split('\n')))
 })
 
-Then('it should respond with 202 status', function (this: World) {
-  assertThat(this.lastResponse.status, equalTo(202))
+Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
+  assertThat(this.lastResponse.status, equalTo(expectedStatus))
 })

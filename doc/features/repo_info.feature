@@ -11,3 +11,9 @@ Feature: Repo info
     Then the repo's branches should be:
       | master  |
       | develop |
+
+  @wip
+  Scenario: Failed to connect
+    Given a consumer has failed to connect to a remote repo
+    When the consumer tries to get the repo's info
+    Then it should respond with 404 status
