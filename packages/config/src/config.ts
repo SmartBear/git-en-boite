@@ -1,4 +1,5 @@
 import path from 'path'
+import * as getEnv from 'env-var'
 
 const appRoot = path.resolve(__dirname, '../../..')
 
@@ -18,10 +19,9 @@ export type LoggerOptions = {
   readableBy: 'humans' | 'machines' | 'nobody'
 }
 
-const createGitConfig = (env: { GIT_ROOT?: string }): GitOptions => {
-  if (!env.GIT_ROOT) throw new Error('Please set GIT_ROOT')
+const createGitConfig = (env: { get: (key: string) => getEnv.IOptionalVariable }): GitOptions => {
   return {
-    root: env.GIT_ROOT,
+    root: env.get('GIT_ROOT').required().asString(),
     queueName: 'main',
   }
 }
@@ -35,9 +35,8 @@ const createVersionConfig = (env: { npm_package_version?: string }, fs: any): st
   return `${env.npm_package_version}.${fs.readFileSync(buildNumPath)}`
 }
 
-const createRedisConfig = (env: { REDIS_URL?: string }): string => {
-  if (!env.REDIS_URL) throw new Error('Please set REDIS_URL')
-  return env.REDIS_URL
+const createRedisConfig = (env: { get: (key: string) => getEnv.IOptionalVariable }): string => {
+  return env.get('REDIS_URL').required().asString()
 }
 
 const createLoggerConfig = (env: { NODE_ENV?: string }): LoggerOptions => {
@@ -51,12 +50,13 @@ type Environment = {
   npm_package_version?: string
 }
 
-export const createConfig = (env: Environment = process.env, fs = require('fs')): Config => {
-  if (!env.NODE_ENV) throw new Error('Please set NODE_ENV')
+export const createConfig = (rawEnv: Environment = process.env, fs = require('fs')): Config => {
+  const env = getEnv.from(rawEnv)
+  if (!rawEnv.NODE_ENV) throw new Error('Please set NODE_ENV')
   return {
     git: createGitConfig(env),
-    version: createVersionConfig(env, fs),
+    version: createVersionConfig(rawEnv, fs),
     redis: createRedisConfig(env),
-    logger: createLoggerConfig(env),
+    logger: createLoggerConfig(rawEnv),
   }
 }
