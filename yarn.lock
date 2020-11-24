@@ -1027,22 +1027,22 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.1.tgz#e1e82e4f3e999e2cfd61b161280d16a111f86428"
   integrity sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA==
 
-axe@^6.0.7:
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/axe/-/axe-6.0.7.tgz#2587b62c8e4298e1986ab50925dd9325f1ff579b"
-  integrity sha512-ooH0lIr0H1AQ4yqKVurVV9476s794EFA6F6s8iximUujMNdML9qbwQ9sMOW8PTeX/tzF5AvQ31O5UpBp0dYNPQ==
+axe@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/axe/-/axe-7.0.1.tgz#eda433b9d1a5c5d3faad0dd1373d8f11d40301de"
+  integrity sha512-Lp13JjzeUSIlzhhqQwVATgAZkESrh1sF/YDaJjWr6IilVMihnk0qFwrupf1NGl0SYRjcM9UJDfwqj7tcfeDbMA==
   dependencies:
     "@ladjs/format-util" "^1.0.4"
-    boolean "^3.0.1"
+    boolean "^3.0.2"
     console-polyfill "^0.3.0"
     cuid "^2.1.8"
     fast-safe-stringify "^2.0.7"
     format-specifiers "^1.0.0"
     iserror "^0.0.2"
     lodash.omit "^4.5.0"
-    parse-app-info "^3.0.3"
+    parse-app-info "^4.0.1"
     parse-err "^0.0.12"
-    superagent "^6.0.0"
+    superagent "^6.1.0"
 
 axios@^0.19.2:
   version "0.19.2"
@@ -1130,7 +1130,7 @@ body-parser@1.19.0, body-parser@^1.18.2:
     raw-body "2.4.0"
     type-is "~1.6.17"
 
-boolean@^3.0.1:
+boolean@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/boolean/-/boolean-3.0.2.tgz#df1baa18b6a2b0e70840475e1d93ec8fe75b2570"
   integrity sha512-RwywHlpCRc3/Wh81MiCKun4ydaIFyW5Ea6JbL6sRCVx5q5irDw7pMXBUFYF/jArQ6YrG36q0kpovc9P/Kd3I4g==
@@ -1258,13 +1258,13 @@ bytes@3.1.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
-cabin@^8.0.7:
-  version "8.0.7"
-  resolved "https://registry.yarnpkg.com/cabin/-/cabin-8.0.7.tgz#ec634f84ba9b485f702c43d91ab13a19471c2b94"
-  integrity sha512-xUyR8NwzNIItC8ODe3JWA40xT/uX6ndYPKL6CaRZa2xYRhq+vtDzyUi1vRgTgowSHn0vAvLZOl39BAp0OvHPVw==
+cabin@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/cabin/-/cabin-9.0.1.tgz#ece13b9748562088490eef761f2be43a5d50f434"
+  integrity sha512-j6vIX2OpeFsZEm8jg9eVtdQesH7TyFNvQFVUPW8tCUYW1VuDyzf5rDoLytO/txdEEsvWylL+YGE3KDGD+IEc5A==
   dependencies:
     ansi-colors "^4.1.1"
-    axe "^6.0.7"
+    axe "^7.0.1"
     clf-date "^0.2.0"
     iserror "^0.0.2"
     ms "^2.1.2"
@@ -1859,6 +1859,13 @@ debug@=3.1.0, debug@~3.1.0:
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
   dependencies:
     ms "2.0.0"
+
+debug@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
+  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+  dependencies:
+    ms "2.1.2"
 
 decamelize@^1.1.2, decamelize@^1.2.0:
   version "1.2.0"
@@ -4575,14 +4582,14 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-app-info@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/parse-app-info/-/parse-app-info-3.0.3.tgz#de5b77e59af3b8065c65abdebd9b89d16eb1d12b"
-  integrity sha512-YsHpEJBJh1e3IO5maUG82nx0cAjk+vAvInYeOdVObQFrDkmtnPggfkZy4BGAsv6aKq4iZ9Ao9G3SF5ixOYS2Gg==
+parse-app-info@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/parse-app-info/-/parse-app-info-4.0.1.tgz#de104a3170995e0dac46fad61493a4b6d9f4196b"
+  integrity sha512-8IBPGC6SMdm6KLlG26V7vSJYHT4J73yqYWeS5NJqXme8vp81nZTBiMrC8e3bNuduuJgymFlWm7TNq8xfsw1VbQ==
   dependencies:
-    debug "^4.1.1"
+    debug "^4.3.1"
     last-commit-log "^3.0.4"
-    lodash "^4.17.15"
+    lodash "^4.17.20"
     read-pkg-up "^7.0.1"
     semver "^7.3.2"
 
@@ -5848,7 +5855,7 @@ sumchecker@^2.0.2:
   dependencies:
     debug "^2.2.0"
 
-superagent@6.1.0, superagent@^6.0.0:
+superagent@6.1.0, superagent@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-6.1.0.tgz#09f08807bc41108ef164cfb4be293cebd480f4a6"
   integrity sha512-OUDHEssirmplo3F+1HWKUrUjvnQuA+nZI6i/JJBdXb5eq9IyEQwPyPpqND+SSsxf6TygpBEkUjISVRN4/VOpeg==
