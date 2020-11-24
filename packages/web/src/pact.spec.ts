@@ -25,16 +25,7 @@ describe('HTTP Api', () => {
 
   const opts: VerifierOptions = {
     providerBaseUrl: `http://localhost:${PORT}`,
-    pactUrls: [
-      path.resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'pacts',
-        'gitenboitegitrepo-gitenboiteservice.json',
-      ),
-    ],
+    pactUrls: [path.resolve(__dirname, '..', '..', '..', 'pacts', 'gherkineditor-gitenboite.json')],
     logLevel: 'info',
     stateHandlers: {
       'a repo exists': async () => {

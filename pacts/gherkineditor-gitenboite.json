@@ -1,11 +1,25 @@
 {
   "consumer": {
-    "name": "GitEnBoiteGitRepo"
+    "name": "GherkinEditor"
   },
   "provider": {
-    "name": "GitEnBoiteService"
+    "name": "GitEnBoite"
   },
   "interactions": [
+    {
+      "description": "a request at the root",
+      "providerState": "blank",
+      "request": {
+        "method": "HEAD",
+        "path": "/"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/plain; charset=utf-8"
+        }
+      }
+    },
     {
       "description": "a new file to commit",
       "providerState": "blank",
