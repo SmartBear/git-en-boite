@@ -1,19 +1,23 @@
 FROM node:14.14.0
 
 WORKDIR /app
-COPY packages packages
-COPY pacts pacts
-COPY @types @types
-COPY yarn.lock .
-COPY package.json .
-COPY .build-number .
-COPY tsconfig.json .
 
-ENV NODE_ENV=production
+COPY @types @types
+COPY package.json .
+COPY packages packages
+COPY tsconfig.json .
+COPY yarn.lock .
 
 RUN yarn install --production
+
+ARG git_ref
+ENV git_ref=$git_ref
+ARG build_number
+ENV build_number=$build_number
+
 RUN yarn build
 RUN rm -rf packages/**/src
 
 EXPOSE 3001
+
 CMD yarn app start

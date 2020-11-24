@@ -1,4 +1,4 @@
-name: Test and publish container
+name: CI
 
 on:
   push:
@@ -55,10 +55,17 @@ jobs:
       - name: Get git tag name
         id: tag
         run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
-      - name: BUILD -- Generate .build-number
-        run: echo "${{ github.run_number }}#${{ github.sha }}" > .build-number
+      - name: Get short sha for build args
+        id: short-sha
+        run: echo ::set-output name=value::${GITHUB_SHA::7}
       - name: BUILD -- Build smartbear/git-en-boite docker image
-        run: docker build -t smartbear/git-en-boite:latest -t smartbear/git-en-boite:${{ github.sha }} .
+        run: |
+          docker build \
+            --build-arg git_ref=${{ steps.short-sha.outputs.value }} \
+            --build-arg build_number=${{github.run_number}} \
+            --tag smartbear/git-en-boite:latest \
+            --tag smartbear/git-en-boite:${{ github.sha }} \
+            .
       - name: BUILD -- Add release tag to docker image
         if: startsWith(github.ref, 'refs/tags/v')
         run: docker tag smartbear/git-en-boite:${{ github.sha }} smartbear/git-en-boite:${{ steps.tag.outputs.tag }}

@@ -1,7 +1,4 @@
-import path from 'path'
 import * as getEnv from 'env-var'
-
-const appRoot = path.resolve(__dirname, '../../..')
 
 export interface Config {
   git: GitOptions
@@ -27,20 +24,23 @@ const createGitConfig = (env: { get: (key: string) => getEnv.IOptionalVariable }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createVersionConfig = (env: { npm_package_version?: string }, fs: any): string => {
-  const buildNumPath = path.resolve(appRoot, '.build-number')
-  if (!fs.existsSync(buildNumPath)) {
-    throw new Error(`Build number file not found at ${buildNumPath}`)
-  }
-  return `${env.npm_package_version}.${fs.readFileSync(buildNumPath)}`
+const createVersionConfig = (env: ReadableEnvironment): string => {
+  const packageVersion = env.get('npm_package_version').required().asString()
+  const gitRef = env.get('git_ref').default('dev').asString()
+  const buildNumber = env.get('build_number').default('dev').asString()
+  return `${packageVersion}.${buildNumber}#${gitRef}`
 }
 
-const createRedisConfig = (env: { get: (key: string) => getEnv.IOptionalVariable }): string => {
+type ReadableEnvironment = { get: (key: string) => getEnv.IOptionalVariable }
+
+const createRedisConfig = (env: ReadableEnvironment): string => {
   return env.get('REDIS_URL').required().asString()
 }
 
-const createLoggerConfig = (env: { NODE_ENV?: string }): LoggerOptions => {
-  return { readableBy: env.NODE_ENV === 'production' ? 'machines' : 'humans' }
+const createLoggerConfig = (env: ReadableEnvironment): LoggerOptions => {
+  return {
+    readableBy: env.get('NODE_ENV').required().asString() === 'production' ? 'machines' : 'humans',
+  }
 }
 
 type Environment = {
@@ -50,13 +50,13 @@ type Environment = {
   npm_package_version?: string
 }
 
-export const createConfig = (rawEnv: Environment = process.env, fs = require('fs')): Config => {
+export const createConfig = (rawEnv: Environment = process.env): Config => {
   const env = getEnv.from(rawEnv)
-  if (!rawEnv.NODE_ENV) throw new Error('Please set NODE_ENV')
+  env.get('NODE_ENV').required()
   return {
     git: createGitConfig(env),
-    version: createVersionConfig(rawEnv, fs),
+    version: createVersionConfig(env),
     redis: createRedisConfig(env),
-    logger: createLoggerConfig(rawEnv),
+    logger: createLoggerConfig(env),
   }
 }

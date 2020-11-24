@@ -1,7 +1,11 @@
 version: "3"
 services:
   server:
-    build: .
+    build: 
+      context: .
+      args:
+        git_ref: 'git-ref'
+        build_number: 'build-number'
     ports:
       - 3001:3001
     environment:
@@ -18,7 +22,11 @@ services:
       - ./git-repos:/git-repos
 
   worker:
-    build: .
+    build:
+      context: .
+      args:
+        git_ref: 'git-ref'
+        build_number: 'build-number'
     environment:
       - NODE_ENV=development
       - GIT_ROOT=/git-repos
