@@ -1027,10 +1027,10 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.1.tgz#e1e82e4f3e999e2cfd61b161280d16a111f86428"
   integrity sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA==
 
-axe@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/axe/-/axe-7.0.1.tgz#eda433b9d1a5c5d3faad0dd1373d8f11d40301de"
-  integrity sha512-Lp13JjzeUSIlzhhqQwVATgAZkESrh1sF/YDaJjWr6IilVMihnk0qFwrupf1NGl0SYRjcM9UJDfwqj7tcfeDbMA==
+axe@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/axe/-/axe-7.0.2.tgz#af25476d582f07570b894d1e5a676f96578743a8"
+  integrity sha512-0/M6LLm3voYUbPJvWZ0g8ME4S5VPIblc0EVgSESsPhcPiztCij6uGlKjw9dg4+dPCNVfkxvytt/lOZtw5swx6Q==
   dependencies:
     "@ladjs/format-util" "^1.0.4"
     boolean "^3.0.2"
@@ -1040,7 +1040,7 @@ axe@^7.0.1:
     format-specifiers "^1.0.0"
     iserror "^0.0.2"
     lodash.omit "^4.5.0"
-    parse-app-info "^4.0.1"
+    parse-app-info "^4.0.2"
     parse-err "^0.0.12"
     superagent "^6.1.0"
 
@@ -1258,13 +1258,13 @@ bytes@3.1.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
-cabin@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/cabin/-/cabin-9.0.1.tgz#ece13b9748562088490eef761f2be43a5d50f434"
-  integrity sha512-j6vIX2OpeFsZEm8jg9eVtdQesH7TyFNvQFVUPW8tCUYW1VuDyzf5rDoLytO/txdEEsvWylL+YGE3KDGD+IEc5A==
+cabin@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/cabin/-/cabin-9.0.2.tgz#5e542ff2fd76ed259bab00e51006fe443de78f88"
+  integrity sha512-+8lafXrMUsLMDRkdkMU3XCX8mDWAVyxAVgf6QyAsIDigldOVUYtznoAV04F0K3fN/4D9In5WnNgyCCVKC9yiKg==
   dependencies:
     ansi-colors "^4.1.1"
-    axe "^7.0.1"
+    axe "^7.0.2"
     clf-date "^0.2.0"
     iserror "^0.0.2"
     ms "^2.1.2"
@@ -4582,10 +4582,10 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-app-info@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/parse-app-info/-/parse-app-info-4.0.1.tgz#de104a3170995e0dac46fad61493a4b6d9f4196b"
-  integrity sha512-8IBPGC6SMdm6KLlG26V7vSJYHT4J73yqYWeS5NJqXme8vp81nZTBiMrC8e3bNuduuJgymFlWm7TNq8xfsw1VbQ==
+parse-app-info@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/parse-app-info/-/parse-app-info-4.0.2.tgz#29def0399df86fcb79018c6ea4b0dad5b50f9b38"
+  integrity sha512-L+ZMasW/MnCKHYncUQhj0mkkngqvK/FGzZPEGxjvCbpZpVtKvUgpXhe3c0xNqWRbvez9h12x3e3W/gweNHtTlg==
   dependencies:
     debug "^4.3.1"
     last-commit-log "^3.0.4"
