@@ -5,6 +5,7 @@
     "acceptance": "yarn workspace git-en-boite-acceptance-tests",
     "build:clean": "yarn workspaces run build:clean",
     "build": "tsc --build",
+    "bumbailiff": "bumbailiff 999",
     "lint": "yarn workspaces run lint",
     "local-clones": "yarn workspace git-en-boite-local-clones",
     "start": "yarn app start",
@@ -17,15 +18,22 @@
     "smoke": "yarn workspace git-en-boite-smoke-tests",
     "inventory": "yarn workspace git-en-boite-inventory"
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn bumbailiff"
+    }
+  },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
-    "eslint": "^7.14.0",
+    "bumbailiff": "^0.1.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "eslint": "^7.14.0",
+    "husky": "^4.3.0",
     "prettier": "^2.2.0"
   },
   "dependencies": {
