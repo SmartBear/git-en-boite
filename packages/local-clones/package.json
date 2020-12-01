@@ -32,7 +32,7 @@
     "git-en-boite-message-dispatch": "0.0.0",
     "ioredis": "^4.19.2",
     "lodash": "^4.17.20",
-    "nanoid": "^3.1.18",
+    "nanoid": "^3.1.19",
     "stream-split": "^1.1.0",
     "uuid": "^8.3.1"
   },
