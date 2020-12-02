@@ -4,6 +4,7 @@ import {
   InventoryOfRepos,
   LocalClones,
   NoSuchRepo,
+  Repo,
   RepoAlreadyExists,
   RepoId,
 } from 'git-en-boite-core'
@@ -41,15 +42,42 @@ describe(InventoryOfReposOnDisk.name, () => {
   })
 
   describe('creating new repos', () => {
-    it('creates a new LocalClone', async () => {
-      await inventory.create(repoId)
+    it('creates a new LocalClone when transaction succeeds', async () => {
+      await inventory.create(repoId, async () => {})
       assertThat(localClones.createNew, wasCalled())
     })
 
-    it('returns a Repo', async () => {
-      const repo = await inventory.create(repoId)
-      assertThat(repo, defined())
-      assertThat(repo, hasProperty('repoId', equalTo(repoId)))
+    it('yields a Repo to the transaction', async () => {
+      let foundRepo: Repo
+      await inventory.create(repoId, async repo => {
+        foundRepo = repo
+      })
+      assertThat(foundRepo, defined())
+      assertThat(foundRepo, hasProperty('repoId', equalTo(repoId)))
+    })
+
+    context('when the transaction fails', () => {
+      it('throws an error from the transaction', async () => {
+        const error = new Error('oops')
+
+        await promiseThat(
+          inventory.create(repoId, async () => {
+            throw error
+          }),
+          rejected(error),
+        )
+      })
+
+      it('@wip does not create a repo', async () => {
+        try {
+          await inventory.create(repoId, async () => {
+            throw new Error('oops')
+          })
+        } catch {}
+        // TODO: This assertion doesn't work because LocalClone instance is a stub.
+        // We either need to use a mock assertions against localClones or use a real localClones.
+        await promiseThat(inventory.find(repoId), rejected(NoSuchRepo.forRepoId(repoId)))
+      })
     })
 
     context('when the repo already exists', () => {
@@ -59,7 +87,10 @@ describe(InventoryOfReposOnDisk.name, () => {
       })
 
       it(`fails with ${RepoAlreadyExists.name}`, async () => {
-        await promiseThat(inventory.create(repoId), rejected(RepoAlreadyExists.forRepoId(repoId)))
+        await promiseThat(
+          inventory.create(repoId, async () => {}),
+          rejected(RepoAlreadyExists.forRepoId(repoId)),
+        )
       })
     })
   })

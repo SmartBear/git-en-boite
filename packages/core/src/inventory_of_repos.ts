@@ -19,7 +19,9 @@ export class RepoAlreadyExists extends InventoryOfReposError {
 }
 
 export interface InventoryOfRepos {
-  create(repoId: RepoId): Promise<Repo>
+  create(repoId: RepoId, transaction: Transaction<Repo>): Promise<void>
   exists(repoId: RepoId): Promise<boolean>
   find(repoId: RepoId): Promise<Repo>
 }
+
+export type Transaction<Entity> = (repo: Entity) => Promise<void>
