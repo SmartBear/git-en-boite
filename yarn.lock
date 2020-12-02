@@ -1233,10 +1233,10 @@ bullmq@^1.11.0:
     tslib "^1.10.0"
     uuid "^8.2.0"
 
-bumbailiff@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/bumbailiff/-/bumbailiff-0.1.0.tgz#b8e4104d975e1835a4a05b31ea2dc4402372fdf0"
-  integrity sha512-wz3gRbQlaG2aQGOYskGO9aqw9ZLGHaR2ccnII2jebdR4RMGxZYzT2ijELCshbHQcvSrAvXbl+YcR0mZOPJiXpg==
+bumbailiff@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/bumbailiff/-/bumbailiff-0.2.0.tgz#1ac37a677655cc494ab53879eff631a5b762aacc"
+  integrity sha512-HfrhDyFNXQQIm4MB1fRovP1rw41knxzSwbQx3qFatb3fBFDmHEOIA31XS6Rv5F2/T9bRihnpswRcIOypR859hg==
 
 bunyan-prettystream@0.1.3, bunyan-prettystream@^0.1.3:
   version "0.1.3"
