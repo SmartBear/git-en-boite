@@ -34,7 +34,7 @@ describe('handleValidateRemote', function () {
 
   const remoteUrl = runGitHttpServer(() => root, {
     authenticate: ({ type, repo }: { type: GitOperationType; repo: string }) =>
-      new Promise((resolve, reject) => {
+      new Promise<void>((resolve, reject) => {
         if (repo.match(/private/)) return reject('Access denied')
         if (type === 'push' && repo.match(/read-only/)) return reject('Write access denied')
         resolve()
