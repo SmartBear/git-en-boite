@@ -7,6 +7,7 @@ import {
   InventoryOfRepos,
   NoSuchRepo,
   RepoAlreadyExists,
+  Transaction,
 } from 'git-en-boite-core'
 import { RepoPath } from './repo_path'
 
@@ -17,10 +18,12 @@ export class InventoryOfReposOnDisk implements InventoryOfRepos {
     private domainEvents: PublishesDomainEvents,
   ) {}
 
-  public async create(repoId: RepoId): Promise<Repo> {
+  public async create(repoId: RepoId, transaction: Transaction<Repo>): Promise<void> {
     if (await this.exists(repoId)) throw RepoAlreadyExists.forRepoId(repoId)
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    return new Repo(repoId, await this.localClones.createNew(repoPath), this.domainEvents)
+    const localClone = await this.localClones.createNew(repoPath)
+    const repo = new Repo(repoId, localClone, this.domainEvents)
+    await transaction(repo)
   }
 
   public async find(repoId: RepoId): Promise<Repo> {
