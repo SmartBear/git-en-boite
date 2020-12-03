@@ -51,7 +51,7 @@ describe(GitDirectory.name, () => {
     context('for a private repo', () => {
       const remoteUrl = runGitHttpServer(() => root, {
         authenticate: ({ repo }: { repo: string }) =>
-          new Promise((resolve, reject) =>
+          new Promise<void>((resolve, reject) =>
             repo.match(/private/) ? reject('Access denied') : resolve(),
           ),
       })

@@ -114,7 +114,7 @@ When('a consumer triggers a manual fetch of the repo', async function (this: Wor
 Given('the repo has been fetched', async function (this: World) {
   const domainEvents = this.domainEvents as SubscribesToDomainEvents
   await promiseThat(
-    new Promise(received =>
+    new Promise<void>(received =>
       domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
     ),
     fulfilled(),
@@ -234,7 +234,7 @@ Then(
 
 Then('the repo should have been fetched', async function (this: World) {
   await promiseThat(
-    new Promise(received =>
+    new Promise<void>(received =>
       this.domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
     ),
     fulfilled(),

@@ -49,7 +49,7 @@ describe(Repo.name, () => {
       const localClone = stubInterface<LocalClone>()
       localClone.setOriginTo.resolves()
       const repo = new Repo(repoId, localClone, domainEvents)
-      const waitingForEvent = new Promise(received =>
+      const waitingForEvent = new Promise<void>(received =>
         domainEvents.on('repo.connected', event => event.repoId.equals(repoId) && received()),
       )
       repo.setOriginTo(remoteUrl)
@@ -71,7 +71,7 @@ describe(Repo.name, () => {
       const localClone = stubInterface<LocalClone>()
       localClone.fetch.resolves()
       const repo = new Repo(repoId, localClone, domainEvents)
-      const waitingForEvent = new Promise(received =>
+      const waitingForEvent = new Promise<void>(received =>
         domainEvents.on('repo.fetched', event => event.repoId.equals(repoId) && received()),
       )
       repo.fetch()
@@ -96,7 +96,7 @@ describe(Repo.name, () => {
       it('emits a `repo.fetch-failed` event', async () => {
         const repo = new Repo(repoId, localClone, domainEvents)
         await promiseThat(repo.fetch(), rejected(equalTo(error)))
-        const waitingForEvent = new Promise(received =>
+        const waitingForEvent = new Promise<void>(received =>
           domainEvents.on(
             'repo.fetch-failed',
             event => event.repoId.equals(repoId) && event.error === error && received(),

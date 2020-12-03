@@ -62,7 +62,7 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
 
     const remoteUrl = runGitHttpServer(() => root, {
       authenticate: ({ repo }: { repo: string }) =>
-        new Promise((resolve, reject) =>
+        new Promise<void>((resolve, reject) =>
           repo.match(/private/) ? reject('Access denied') : resolve(),
         ),
     })
@@ -99,7 +99,7 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
 
       const remoteUrl = runGitHttpServer(() => root, {
         authenticate: ({ repo }: { repo: string }) =>
-          new Promise((resolve, reject) =>
+          new Promise<void>((resolve, reject) =>
             repo.match(/private/) ? reject('Access denied') : resolve(),
           ),
       })
