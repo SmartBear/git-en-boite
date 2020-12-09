@@ -47,6 +47,10 @@ export class BackgroundWorkerLocalClones implements LocalClones {
     private readonly logger: Logger,
   ) {}
 
+  public async removeExisting(path: string): Promise<void> {
+    await this.localClones.removeExisting(path)
+  }
+
   protected async connect(): Promise<BackgroundWorkerLocalClones> {
     this.queueClient = await this.createRedisClient()
     // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed

@@ -68,15 +68,13 @@ describe(InventoryOfReposOnDisk.name, () => {
         )
       })
 
-      it('@wip does not create a repo', async () => {
+      it('removes the local clone', async () => {
         try {
           await inventory.create(repoId, async () => {
             throw new Error('oops')
           })
         } catch {}
-        // TODO: This assertion doesn't work because LocalClone instance is a stub.
-        // We either need to use a mock assertions against localClones or use a real localClones.
-        await promiseThat(inventory.find(repoId), rejected(NoSuchRepo.forRepoId(repoId)))
+        assertThat(localClones.removeExisting, wasCalled())
       })
     })
 
