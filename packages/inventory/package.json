@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "hamjest": "^3.7.1",
-    "hamjest-sinon": "^1.0.4",
+    "hamjest-sinon": "^1.0.5",
     "ts-sinon": "^2.0.1"
   }
 }
