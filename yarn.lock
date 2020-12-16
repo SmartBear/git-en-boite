@@ -2940,10 +2940,10 @@ growl@1.10.5:
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
   integrity sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
 
-hamjest-sinon@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/hamjest-sinon/-/hamjest-sinon-1.0.4.tgz#782ad98ea799e2179fe9769478dd513d973d9ca8"
-  integrity sha512-OggLxqu3YFDGgJF5C57xEfs2vl/B15MfueLJq79cB84D1Zoh3YJH8ambFutt005L4/BL93SauPir9NFTKEKhcA==
+hamjest-sinon@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/hamjest-sinon/-/hamjest-sinon-1.0.5.tgz#eb07de2c9eb8d18e2c697bea826fe04cb4713fb6"
+  integrity sha512-RPNnJSWguimzD0CH95LnWjh2nGGzhCZu2HyWkL3f/HFEtvI9Vj20jrlzKFztActQyzKgQtnchtEKXI6sm0CEtA==
 
 hamjest@^3.5.0:
   version "3.5.0"
