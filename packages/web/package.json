@@ -29,7 +29,7 @@
     "@types/koa-log": "^2.1.1",
     "@types/koa2-cors": "^2.0.1",
     "@types/koa__router": "^8.0.3",
-    "ajv": "^6.12.6",
+    "ajv": "^7.0.1",
     "cabin": "^9.0.2",
     "git-en-boite-core": "0.0.0",
     "koa": "^2.13.0",
