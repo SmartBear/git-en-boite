@@ -74,5 +74,10 @@ export const verifyLocalClonesContract = (makeLocalClones: () => LocalClones): v
       await localClones.removeExisting(repoPath)
       await promiseThat(localClones.openExisting(repoPath), rejected())
     })
+
+    it('throws when a LocalClone does not exist', async () => {
+      repoPath = path.resolve(root, 'a-repo-to-remove')
+      await promiseThat(localClones.removeExisting(repoPath), rejected())
+    })
   })
 }

@@ -25,6 +25,7 @@ export class DirectLocalClone implements LocalClone {
   }
 
   static async removeExisting(path: string): Promise<void> {
+    if (!fs.existsSync(path)) throw new Error(`Local clone does not exist at path ${path}`)
     fs.rmdirSync(path, { recursive: true })
   }
 
