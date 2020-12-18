@@ -23,7 +23,7 @@ export class DirectLocalClone implements LocalClone {
     if (fs.existsSync(path)) throw new Error(`Local clone already exists at path ${path}`)
     return new DirectLocalClone(await createBareRepo(path))
   }
-  //TODO: Test me
+
   static async removeExisting(path: string): Promise<void> {
     fs.rmdirSync(path, { recursive: true })
   }
