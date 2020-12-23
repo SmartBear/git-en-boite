@@ -15,13 +15,19 @@ import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operation
 
 export class DirectLocalClone implements LocalClone {
   static async openExisting(path: string): Promise<LocalClone> {
-    if (!fs.existsSync(path)) throw new Error(`Local clone does not exist at path ${path}`)
+    if (!this.confirmExists(path)) throw new Error(`Local clone does not exist at path ${path}`)
     return new DirectLocalClone(await openBareRepo(path))
   }
 
   static async createNew(path: string): Promise<LocalClone> {
-    if (fs.existsSync(path)) throw new Error(`Local clone already exists at path ${path}`)
+    if (this.confirmExists(path)) {
+      throw new Error(`Local clone already exists at path ${path}`)
+    }
     return new DirectLocalClone(await createBareRepo(path))
+  }
+
+  static confirmExists(path: string): boolean {
+    return fs.existsSync(path)
   }
 
   protected constructor(private readonly git: Dispatch<RepoProtocol>) {}

@@ -11,4 +11,5 @@ export interface LocalClone {
 export type LocalClones = {
   openExisting: (path: string) => Promise<LocalClone>
   createNew: (path: string) => Promise<LocalClone>
+  confirmExists: (path: string) => boolean
 }
