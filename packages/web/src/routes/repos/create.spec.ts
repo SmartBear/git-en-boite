@@ -100,7 +100,7 @@ describe('POST /repos', () => {
       assertThat(
         response.text,
         equalTo(
-          "payload.repoId should be string, payload should have required property 'remoteUrl'",
+          "payload should have required property 'remoteUrl', payload/repoId should be string",
         ),
       )
     })

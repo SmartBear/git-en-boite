@@ -79,7 +79,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     assertThat(
       response.text,
       equalTo(
-        "payload.files[0] should be object, payload.author should have required property 'name', payload.message should be string",
+        "payload/files/0 should be object, payload/author should have required property 'name', payload/message should be string",
       ),
     )
   })
