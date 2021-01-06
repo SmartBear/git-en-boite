@@ -6,18 +6,18 @@ import validateRequestBody from '../../../../validate_request'
 const fileSchema = {
   type: 'object',
   required: ['path', 'content'],
-  propeties: {
-    path: 'string',
-    content: 'string',
+  properties: {
+    path: { type: 'string' },
+    content: { type: 'string' },
   },
 }
 
 const authorSchema = {
   type: 'object',
   required: ['name', 'email'],
-  propeties: {
-    name: 'string',
-    email: 'string',
+  properties: {
+    name: { type: 'string' },
+    email: { type: 'string' },
   },
 }
 
