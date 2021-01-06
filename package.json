@@ -5,7 +5,7 @@
     "acceptance": "yarn workspace git-en-boite-acceptance-tests",
     "build:clean": "yarn workspaces run build:clean",
     "build": "tsc --build",
-    "bumbailiff": "bumbailiff 999",
+    "bumbailiff": "bumbailiff 1200",
     "lint": "yarn workspaces run lint",
     "local-clones": "yarn workspace git-en-boite-local-clones",
     "start": "yarn app start",
