@@ -65,6 +65,7 @@
 - Stop checking for RepoId being URL encoded [\#174](https://github.com/SmartBear/git-en-boite/issues/174)
 - Cucumber steps don't seem to be type checked\(or linted?\) [\#173](https://github.com/SmartBear/git-en-boite/issues/173)
 - Raise errors to client when \(manual\) fetch fails [\#172](https://github.com/SmartBear/git-en-boite/issues/172)
+- Raise errors to client when \(manual\) fetch fails [\#172](https://github.com/SmartBear/git-en-boite/issues/172)
 - More TinyTypes! [\#164](https://github.com/SmartBear/git-en-boite/issues/164)
 - Handle two concurrent commits to the same repo \(clashing index?\) [\#162](https://github.com/SmartBear/git-en-boite/issues/162)
 - Refactor code now push is "working" [\#161](https://github.com/SmartBear/git-en-boite/issues/161)
