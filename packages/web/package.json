@@ -28,7 +28,7 @@
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-log": "^2.1.1",
     "@types/koa2-cors": "^2.0.1",
-    "@types/koa__router": "^8.0.3",
+    "@types/koa__router": "^8.0.4",
     "ajv": "^7.0.3",
     "cabin": "^9.0.3",
     "git-en-boite-core": "0.0.0",
