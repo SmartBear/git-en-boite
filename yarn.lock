@@ -1117,10 +1117,10 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axe@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/axe/-/axe-7.0.2.tgz#af25476d582f07570b894d1e5a676f96578743a8"
-  integrity sha512-0/M6LLm3voYUbPJvWZ0g8ME4S5VPIblc0EVgSESsPhcPiztCij6uGlKjw9dg4+dPCNVfkxvytt/lOZtw5swx6Q==
+axe@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/axe/-/axe-8.0.0.tgz#cd1be48899ec6afb0fa21fb869b59035994885f3"
+  integrity sha512-JZGXiErVcTp6inY3xKUfYwq49XTeC2e8y3JJgfaAv5K/L+6Is2FcgnqZcBWQg39ts6tbBjDho/mP30RFy4h9Ag==
   dependencies:
     "@ladjs/format-util" "^1.0.4"
     boolean "^3.0.2"
@@ -1358,13 +1358,13 @@ bytes@3.1.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
-cabin@^9.0.3:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/cabin/-/cabin-9.0.3.tgz#09d55682f630a3424bcee7734c912a702055ed4e"
-  integrity sha512-/rZY8WeT8a/V4An4nMdkTBJF/1rXwqSA3CGXXbHEWw1WYEABWQTErpwZEe3FUlg2YlBzP0h5puYZf5wV9LrGsg==
+cabin@^9.0.4:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/cabin/-/cabin-9.0.4.tgz#2d6da2e3feb0253703a5546180e38abeed48a71b"
+  integrity sha512-Jnr3/uSWWh0NtE9VRpcZLPcJJDaP7c8hBUvgtKWHJ05rC6Qsqw+PxkoGDlbHHssaX6+/EcTN2NgvEGnaPxMwtg==
   dependencies:
     ansi-colors "^4.1.1"
-    axe "^7.0.2"
+    axe "^8.0.0"
     clf-date "^0.2.0"
     iserror "^0.0.2"
     ms "^2.1.3"
