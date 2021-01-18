@@ -59,7 +59,7 @@
     "hamjest": "^3.7.1",
     "mocha": "^8.2.1",
     "prettier": "^2.2.1",
-    "supertest": "^6.0.1",
+    "supertest": "^6.1.1",
     "tmp": "^0.2.1",
     "ts-node-dev": "^1.1.1",
     "tsconfig-paths": "^3.9.0",
