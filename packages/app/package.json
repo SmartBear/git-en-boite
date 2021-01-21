@@ -34,7 +34,7 @@
     "pg": "^8.5.1",
     "rfdc": "^1.2.0",
     "strip-ansi": "^6.0.0",
-    "tiny-types": "^1.15.0",
+    "tiny-types": "^1.16.0",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.1",
     "ts-sinon": "^2.0.1",

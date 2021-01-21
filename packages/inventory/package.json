@@ -24,7 +24,7 @@
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
     "git-en-boite-core": "0.0.0",
-    "tiny-types": "^1.15.0"
+    "tiny-types": "^1.16.0"
   },
   "devDependencies": {
     "hamjest": "^3.7.1",
