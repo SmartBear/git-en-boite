@@ -46,7 +46,7 @@
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^3.3.0",
     "hamjest": "mattwynne/hamjest#master",
-    "hamjest-sinon": "^1.0.5",
+    "hamjest-sinon": "^1.0.6",
     "mocha": "^8.2.1",
     "node-git-server": "^0.6.1",
     "prettier": "^2.2.1",
