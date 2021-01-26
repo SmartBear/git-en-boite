@@ -43,6 +43,6 @@
     "hamjest": "^3.7.1",
     "hamjest-sinon": "^1.0.6",
     "node-fetch": "^2.6.1",
-    "supertest": "^6.1.2"
+    "supertest": "^6.1.3"
   }
 }
