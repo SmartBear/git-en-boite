@@ -277,15 +277,15 @@
     unzipper "^0.10.10"
     url-join "^4.0.0"
 
-"@pact-foundation/pact@^9.14.0":
-  version "9.14.0"
-  resolved "https://registry.yarnpkg.com/@pact-foundation/pact/-/pact-9.14.0.tgz#9805d9556bc75b050b79a12b60a7aa66cff49e60"
-  integrity sha512-7wQEHCI1XRcMTJa74KueCfCEL7M+bYtk1TBkGpBSlIdvGSTvdSgiizyQTGBKXRPZhgU694yjssV7xEbUhjMdkA==
+"@pact-foundation/pact@^9.14.1":
+  version "9.14.1"
+  resolved "https://registry.yarnpkg.com/@pact-foundation/pact/-/pact-9.14.1.tgz#63d8f339ff778283a83da736f1e72551e2019d85"
+  integrity sha512-5M9colzfsBi+ZaRqAm/YrFsJC/yslmWqGhGDkt4eC6upfs3psF4g8B82fHhAl+oj68lhURhQVxBZz/Nsic2ZqQ==
   dependencies:
     "@pact-foundation/pact-node" "^10.10.1"
     "@types/bluebird" "^3.5.20"
     "@types/bunyan" "^1.8.3"
-    "@types/express" "^4.11.1"
+    "@types/express" "^4.17.11"
     bluebird "~3.5.1"
     body-parser "^1.18.2"
     bunyan "^1.8.13"
@@ -293,7 +293,7 @@
     cli-color "^1.1.0"
     es6-object-assign "^1.1.0"
     es6-promise "^4.1.1"
-    express "^4.16.3"
+    express "^4.17.1"
     graphql "^14.0.0"
     graphql-tag "^2.9.1"
     http-proxy "^1.18.1"
@@ -511,22 +511,22 @@
   resolved "https://registry.yarnpkg.com/@types/eventsource/-/eventsource-1.1.5.tgz#408e9b45efb176c8bea672ab58c81e7ab00d24bc"
   integrity sha512-BA9q9uC2PAMkUS7DunHTxWZZaVpeNzDG8lkBxcKwzKJClfDQ4Z59/Csx7HSH/SIqFN2JWh0tAKAM6k/wRR0OZg==
 
-"@types/express-serve-static-core@*":
-  version "4.17.17"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.17.tgz#6ba02465165b6c9c3d8db3a28def6b16fc9b70f5"
-  integrity sha512-YYlVaCni5dnHc+bLZfY908IG1+x5xuibKZMGv8srKkvtul3wUuanYvpIj9GXXoWkQbaAdR+kgX46IETKUALWNQ==
+"@types/express-serve-static-core@^4.17.18":
+  version "4.17.18"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.18.tgz#8371e260f40e0e1ca0c116a9afcd9426fa094c40"
+  integrity sha512-m4JTwx5RUBNZvky/JJ8swEJPKFd8si08pPF2PfizYjGZOKr/svUWPcoUmLow6MmPzhasphB7gSTINY67xn3JNA==
   dependencies:
     "@types/node" "*"
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@*", "@types/express@^4.11.1":
-  version "4.17.9"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.9.tgz#f5f2df6add703ff28428add52bdec8a1091b0a78"
-  integrity sha512-SDzEIZInC4sivGIFY4Sz1GG6J9UObPwCInYJjko2jzOf/Imx/dlpume6Xxwj1ORL82tBbmN4cPDIDkLbWHk9hw==
+"@types/express@*", "@types/express@^4.17.11":
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
+  integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
   dependencies:
     "@types/body-parser" "*"
-    "@types/express-serve-static-core" "*"
+    "@types/express-serve-static-core" "^4.17.18"
     "@types/qs" "*"
     "@types/serve-static" "*"
 
@@ -2594,7 +2594,7 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-express@^4.16.3:
+express@^4.17.1:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
   integrity sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g==
