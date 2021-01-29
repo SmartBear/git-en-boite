@@ -253,10 +253,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@pact-foundation/pact-node@^10.10.1":
-  version "10.11.1"
-  resolved "https://registry.yarnpkg.com/@pact-foundation/pact-node/-/pact-node-10.11.1.tgz#2187e359623c1d48e8d1d7de5f7cd7f73e9a2f86"
-  integrity sha512-9AShB0YZSUSXJ6EJxOPdDOTkK9v7opwSJG11/46OaA4qjN74sC1AMuZfADVqdWdMN9/GNzTxQqtQi4pUASdKfw==
+"@pact-foundation/pact-node@^10.11.4":
+  version "10.11.4"
+  resolved "https://registry.yarnpkg.com/@pact-foundation/pact-node/-/pact-node-10.11.4.tgz#5068c4902ffa25ba89ff924ba61650a0245345c4"
+  integrity sha512-On0Gk1zougfy/CSOg7aQxSPt4g81lLu5axSaaVuuMiZ3hHu133dqrcvbCGBv6VDvv2Ov5P0qvLkUu3DDBqxdVg==
   dependencies:
     "@types/q" "1.0.7"
     "@types/request" "2.48.2"
@@ -277,12 +277,12 @@
     unzipper "^0.10.10"
     url-join "^4.0.0"
 
-"@pact-foundation/pact@^9.14.1":
-  version "9.14.1"
-  resolved "https://registry.yarnpkg.com/@pact-foundation/pact/-/pact-9.14.1.tgz#63d8f339ff778283a83da736f1e72551e2019d85"
-  integrity sha512-5M9colzfsBi+ZaRqAm/YrFsJC/yslmWqGhGDkt4eC6upfs3psF4g8B82fHhAl+oj68lhURhQVxBZz/Nsic2ZqQ==
+"@pact-foundation/pact@^9.14.2":
+  version "9.14.2"
+  resolved "https://registry.yarnpkg.com/@pact-foundation/pact/-/pact-9.14.2.tgz#38d6c4f64712e46853d15cd7112e084ef2069819"
+  integrity sha512-Gw3A3FDQQQ7xmcCW10pFwEygy4FfMujgXEWW4HMXwG5E8pJGLrinhiFh+c4A4lG4fa1l0uRDepRSXYsgab+ULw==
   dependencies:
-    "@pact-foundation/pact-node" "^10.10.1"
+    "@pact-foundation/pact-node" "^10.11.4"
     "@types/bluebird" "^3.5.20"
     "@types/bunyan" "^1.8.3"
     "@types/express" "^4.17.11"
