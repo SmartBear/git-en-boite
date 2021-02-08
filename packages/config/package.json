@@ -27,7 +27,7 @@
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
     "env-var": "^7.0.0",
-    "ioredis": "^4.19.4"
+    "ioredis": "^4.22.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.0",
