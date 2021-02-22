@@ -116,3 +116,20 @@ Run using local containers (for both the smoke tests and the running server):
     docker-compose up
     smoke_tests_remote_repo_url=https://<user>:<token>@github.com/SmartBear/git-en-boite-demo \
         docker-compose run smoke-tests yarn smoke start
+   
+## Releasing
+
+Git-en-boite is automatically packaged as a new docker image each time the CI build runs succesfully on the `main` branch. The docker image is tagged with the git sha of the commit.
+
+To make a semantially-versioned release of the docker-image:
+
+1. make sure you've closed the GitHub issues that were in the release. This will trigger a [bot workflow](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/changelog.yml) to update the [changelog](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/changelog.yml).
+2. update the root `package.json` file and tag the git commit:
+
+    yarn version --major|minor|patch # choose the right switch depending on the type of changes in this release
+
+3. push the new git tag:
+
+    git push --tags
+
+The [build script](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/ci.yml#L84) should take care of the rest.
