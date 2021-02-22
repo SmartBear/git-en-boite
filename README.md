@@ -123,7 +123,7 @@ Git-en-boite is automatically packaged as a new docker image each time the CI bu
 
 To make a semantially-versioned release of the docker-image:
 
-1. Make sure you've closed the GitHub issues that were in the release. This will trigger a [bot workflow](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/changelog.yml) to update the [changelog](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/changelog.yml).
+1. Make sure you've closed the GitHub issues that were in the release. This will trigger a [bot workflow](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/changelog.yml) to update the [changelog](https://github.com/SmartBear/git-en-boite/blob/main/CHANGELOG.md).
 
 2. Update the root `package.json` file and tag the git commit:
 
