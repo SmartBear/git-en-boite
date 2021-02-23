@@ -12,7 +12,6 @@ Feature: Repo info
       | master  |
       | develop |
 
-  @wip
   Scenario: Failed to connect
     Given a consumer has failed to connect to a remote repo
     When the consumer tries to get the repo's info

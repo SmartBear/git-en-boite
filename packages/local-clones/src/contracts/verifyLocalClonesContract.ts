@@ -66,4 +66,18 @@ export const verifyLocalClonesContract = (makeLocalClones: () => LocalClones): v
       })
     })
   })
+
+  describe('removing a LocalClone', () => {
+    it('removes a repo', async () => {
+      repoPath = path.resolve(root, 'a-repo-to-remove')
+      localClones.createNew(repoPath)
+      await localClones.removeExisting(repoPath)
+      await promiseThat(localClones.openExisting(repoPath), rejected())
+    })
+
+    it('throws when a LocalClone does not exist', async () => {
+      repoPath = path.resolve(root, 'a-repo-to-remove')
+      await promiseThat(localClones.removeExisting(repoPath), rejected())
+    })
+  })
 }

@@ -23,7 +23,12 @@ export class InventoryOfReposOnDisk implements InventoryOfRepos {
     const repoPath = RepoPath.for(this.basePath, repoId).value
     const localClone = await this.localClones.createNew(repoPath)
     const repo = new Repo(repoId, localClone, this.domainEvents)
-    await transaction(repo)
+    try {
+      await transaction(repo)
+    } catch (err) {
+      await this.localClones.removeExisting(repoPath)
+      throw err
+    }
   }
 
   public async find(repoId: RepoId): Promise<Repo> {
