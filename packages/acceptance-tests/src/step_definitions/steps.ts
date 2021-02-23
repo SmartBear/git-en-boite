@@ -13,6 +13,7 @@ import {
   GitFile,
   NameOfPerson,
   RefName,
+  RemoteUrl,
   RepoId,
   RepoSnapshot,
   SubscribesToDomainEvents,
@@ -75,27 +76,30 @@ When(
 Given('a consumer has connected the remote repo', connect)
 When('a consumer connects the remote repo', connect)
 async function connect(this: World) {
-  const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteUrl(this.repoId) }
-  await this.request.post('/repos').send(repoInfo).expect(202)
+  const repoInfo = { remoteUrl: this.remoteUrl(this.repoId) }
+  await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(202)
 }
 
 Given('a consumer has failed to connect to a remote repo', async function (this: World) {
   this.repoId = RepoId.generate()
-  const repoInfo = { repoId: this.repoId, remoteUrl: 'a-bad-url' }
-  await this.request.post('/repos').send(repoInfo).expect(400)
+  const repoInfo = { remoteUrl: 'a-bad-url' }
+  await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(400)
 })
 
+const connectRepo = async function (this: World, remoteUrl: RemoteUrl) {
+  const repoInfo = { remoteUrl }
+  this.lastResponse = await this.request.put(`/repos/${this.repoId}`).send(repoInfo)
+}
+
 When('a consumer tries to connect to the remote repo', async function (this: World) {
-  const repoInfo = { repoId: this.repoId, remoteUrl: this.remoteUrl(this.repoId) }
-  this.lastResponse = await this.request.post('/repos').send(repoInfo)
+  await connectRepo.bind(this).call(this, this.remoteUrl(this.repoId))
 })
 
 When(
   'a consumer tries to connect to the remote URL {string}',
   async function (this: World, remoteUrl: string) {
     this.repoId = RepoId.generate()
-    const repoInfo = { repoId: this.repoId, remoteUrl }
-    this.lastResponse = await this.request.post('/repos').send(repoInfo)
+    await connectRepo.bind(this).call(this, RemoteUrl.of(remoteUrl))
   },
 )
 
@@ -104,7 +108,8 @@ When("a/the consumer tries to get the repo's info", async function (this: World)
 })
 
 When('a consumer tries to connect using a malformed payload', async function (this: World) {
-  this.lastResponse = await this.request.post('/repos').send('garbage')
+  this.repoId = RepoId.generate()
+  this.lastResponse = await this.request.put(`/repos/${this.repoId}`).send('garbage')
 })
 
 When('a consumer triggers a manual fetch of the repo', async function (this: World) {

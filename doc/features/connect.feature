@@ -7,7 +7,7 @@ Feature: Connect
   Scenario: Successful connection
     Given a remote repo with commits on the "main" branch
     When a consumer tries to connect to the remote repo
-    Then it should respond with 202 status
+    Then it should respond with 200 status
 
   Scenario: Connection fails due to bad URL
     When a consumer tries to connect to the remote URL "a-bad-url"
@@ -20,5 +20,5 @@ Feature: Connect
     When a consumer tries to connect using a malformed payload
     Then it should respond with an error:
       """
-      payload should have required property 'repoId', payload should have required property 'remoteUrl'
+      payload should have required property 'remoteUrl'
       """

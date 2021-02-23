@@ -45,6 +45,7 @@ export default (app: Application, router: Router): Router =>
           await app.connectToRemote(repoId, remoteUrl)
           ctx.response.status = 202
         } catch (error) {
+          // TODO: move to generic error handler
           switch (error.constructor) {
             case AccessDenied:
               ctx.throw(403, `Access denied to '${remoteUrl}': ${error.message}`)
