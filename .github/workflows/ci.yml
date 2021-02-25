@@ -8,6 +8,12 @@ on:
     branches: [main]
 
 jobs:
+  validate_smoke_test_url:
+    name: "Validate smoke tests URL"
+    runs-on: ubuntu-latest
+    steps:
+      - run: git ls-remote ${{ secrets.SMOKE_TESTS_CI_REMOTE_REPO_URL }}
+
   bumbailiff:
     name: "Bumbailiff"
     runs-on: ubuntu-latest
