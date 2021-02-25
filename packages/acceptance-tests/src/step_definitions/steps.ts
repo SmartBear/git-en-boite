@@ -77,7 +77,7 @@ Given('a consumer has connected the remote repo', connect)
 When('a consumer connects the remote repo', connect)
 async function connect(this: World) {
   const repoInfo = { remoteUrl: this.remoteUrl(this.repoId) }
-  await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(202)
+  await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(200)
 }
 
 Given('a consumer has failed to connect to a remote repo', async function (this: World) {
