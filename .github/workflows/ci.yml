@@ -46,12 +46,15 @@ jobs:
         run: yarn build
       - name: Run tests in each workspace
         run: yarn test
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: "#cucumber-gherkin-editor"
+      - name: Notify test failures
         if: failure()
+        uses: archive/github-actions-slack@v2.0.1
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
+          slack-channel: cucumberstudio
+          slack-text: |
+            [Git-en-Boite]
+            Build failed <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
 
   publish-docker-image:
     name: Build & publish Docker image
@@ -106,10 +109,12 @@ jobs:
           password: ${{ secrets.DOCKER_KEY }}
       - name: PUBLISH -- Push smartbear/git-en-boite
         run: docker push smartbear/git-en-boite
-      - name: "REPORT -- Notify #cucumber-gherkin-editor-bots channel"
-        uses: act10ns/slack@v1
+      - name: "REPORT -- Notify slack channel"
+        if: failure()
+        uses: archive/github-actions-slack@v2.0.1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: "#cucumber-gherkin-editor-bots"
-        if: always()
+          slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
+          slack-channel: cucumberstudio
+          slack-text: |
+            [Git-en-Boite]
+            Docker image build failed <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
