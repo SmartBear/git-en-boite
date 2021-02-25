@@ -9,6 +9,12 @@ Feature: Connect
     When a consumer tries to connect to the remote repo
     Then it should respond with 200 status
 
+  Scenario: Change remote URL for an existing repo
+    Given a remote repo with commits on the "main" branch
+    And a consumer has connected the remote repo
+    When a consumer changes the remote url
+    Then the repo should be linked to that remote url
+
   Scenario: Connection fails due to bad URL
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:

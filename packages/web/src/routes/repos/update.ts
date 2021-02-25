@@ -22,8 +22,12 @@ export default (app: Application): Router =>
   new Router()
     .post('/:repoId', async (ctx: Context) => {
       // TODO: move this on a different resource
-      await app.fetchFromRemote(RepoId.of(ctx.params.repoId))
-      ctx.response.status = 200
+      try {
+        await app.fetchFromRemote(RepoId.of(ctx.params.repoId))
+        ctx.response.status = 200
+      } catch (error) {
+        console.log(error)
+      }
     })
     .put(
       '/:repoId',

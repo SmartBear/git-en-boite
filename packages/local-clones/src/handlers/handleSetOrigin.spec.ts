@@ -44,4 +44,20 @@ describe('handleSetOrigin', () => {
       fulfilled(hasProperty('stdout', startsWith(repoUrl.value))),
     )
   })
+
+  context('when the remote is already set', () => {
+    it('points the remote called origin to a new URL', async () => {
+      const repoPath = path.resolve(root, 'a-repo-id')
+      const git = repo(repoPath)
+      await git(Init.bareRepo())
+      await git(SetOrigin.toUrl(RemoteUrl.of('https://token@host.com/repo')))
+
+      const newRepoUrl = RemoteUrl.of('https://new-token@host.com/repo')
+      await git(SetOrigin.toUrl(newRepoUrl))
+      await promiseThat(
+        exec('git remote get-url origin', { cwd: repoPath }),
+        fulfilled(hasProperty('stdout', startsWith(newRepoUrl.value))),
+      )
+    })
+  })
 })

@@ -177,6 +177,20 @@ After(() => {
   }
 })
 
+When('a consumer changes the remote url', async function (this: World) {
+  const updateRemote = RepoId.of(`updated-${this.repoId.value}`)
+  this.moveRemoteToPath(this.remotePath(this.repoId), this.remotePath(updateRemote))
+  const updatedRemoteUrl = this.remoteUrl(updateRemote)
+  const waitForRemoteToBeFetched = new Promise<void>(received =>
+    this.domainEvents.on('repo.fetched', event => event.repoId.equals(this.repoId) && received()),
+  )
+  await this.request
+    .put(`/repos/${this.repoId}`)
+    .send({ remoteUrl: updatedRemoteUrl })
+    .set('Accept', 'application/json')
+  await promiseThat(waitForRemoteToBeFetched, fulfilled())
+})
+
 Then(
   "the repo's branches should be:",
   async function (this: World, expectedBranchesTable: DataTable) {
@@ -255,4 +269,11 @@ Then(
 
 Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
   assertThat(this.lastResponse.status, equalTo(expectedStatus))
+})
+
+Then('the repo should be linked to that remote url', async function (this: World) {
+  const response = await this.request
+    .post(`/repos/${this.repoId}`)
+    .set('Accept', 'application/json')
+  assertThat(response, isSuccess())
 })

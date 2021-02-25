@@ -19,4 +19,5 @@ export type World = {
   app: Application
   remoteUrl: (repoId: RepoId) => RemoteUrl
   remotePath: (repoId: RepoId) => string
+  moveRemoteToPath: (oldRemotePath: string, newRemotePath: string) => void
 }
