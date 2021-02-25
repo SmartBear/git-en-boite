@@ -47,12 +47,22 @@ describe('/repos/:repoId', () => {
     it('creates a new repo', async () => {
       const repoId = RepoId.of('a-repo-id')
       const remoteUrl = RemoteUrl.of('../tmp')
-      app.connectToRemote.withArgs(repoId, remoteUrl).resolves()
+      app.connectToRemote.resolves()
       await request.put(`/repos/${repoId}`).send({ remoteUrl }).expect(200)
-      assertThat(app.connectToRemote, wasCalled())
+      assertThat(app.connectToRemote, wasCalledWith(repoId, remoteUrl))
     })
 
-    it('updates an existing repo')
+    it('updates an existing repo', async () => {
+      const repoId = RepoId.of('a-repo-id')
+      const remoteUrl = RemoteUrl.of('../tmp')
+      await app.connectToRemote(repoId, remoteUrl)
+
+      const updatedRemoteUrl = RemoteUrl.of('../updated-tmp')
+      app.connectToRemote.resolves()
+      await request.put(`/repos/${repoId}`).send({ remoteUrl: updatedRemoteUrl }).expect(200)
+
+      assertThat(app.connectToRemote, wasCalledWith(repoId, updatedRemoteUrl))
+    })
 
     it('responds with 400 if the connection attempt fails with InvalidRepoUrl', async () => {
       const repoId = RepoId.of('a-repo-id')
