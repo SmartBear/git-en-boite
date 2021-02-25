@@ -2224,10 +2224,10 @@ dtrace-provider@~0.8:
   dependencies:
     nan "^2.14.0"
 
-dugite@^1.93.0:
-  version "1.93.0"
-  resolved "https://registry.yarnpkg.com/dugite/-/dugite-1.93.0.tgz#897e9559347db383d534d274cae6d418d9dcc05e"
-  integrity sha512-2xeCD9zaJLscWX4hMQkCcq6YrUkQvj17gBIhJyBkqNRMTLwIzTuSfeu1wNUBvUvZJe9/WBeMy+YcbCkAEHqDNg==
+dugite@^1.98.0:
+  version "1.98.0"
+  resolved "https://registry.yarnpkg.com/dugite/-/dugite-1.98.0.tgz#26983df758a000dea8879b364e1596c08104f809"
+  integrity sha512-wI9cW41rVqyB8yQnaP2LP7P5eAUzz4vEMX0rPXDXRJ4pDGMoxkVcTjzWZ9ojdOIw2uF8OibplEHCIZ3FADIy/Q==
   dependencies:
     checksum "^0.1.1"
     got "^9.6.0"
