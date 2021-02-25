@@ -57,7 +57,6 @@
 - Move CI to GitHub Actions [\#241](https://github.com/SmartBear/git-en-boite/issues/241)
 - Clear feedback if you connect with a bad URL [\#218](https://github.com/SmartBear/git-en-boite/issues/218)
 - Validate push authorisation on connect [\#217](https://github.com/SmartBear/git-en-boite/issues/217)
-- Concurrent git commands on the same repo fail [\#211](https://github.com/SmartBear/git-en-boite/issues/211)
 - Manual fetch should respond with 200 not a 202 [\#209](https://github.com/SmartBear/git-en-boite/issues/209)
 - Manual fetch should respond with 200 not a 202 [\#208](https://github.com/SmartBear/git-en-boite/issues/208)
 - Use a \(configurable\) temporary queue for tests [\#207](https://github.com/SmartBear/git-en-boite/issues/207)
