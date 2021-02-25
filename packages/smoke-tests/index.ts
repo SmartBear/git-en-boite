@@ -40,9 +40,16 @@ describe(`Smoke tests on ${url}`, function () {
   })
 
   after(async () => {
-    const remoteRefs = (await localRepo.exec('ls-remote', ['origin', `refs/heads/${branchName}`]))
-      .stdout
-    if (remoteRefs === '') return
+    try {
+      const remoteRefs = (await localRepo.exec('ls-remote', ['origin', `refs/heads/${branchName}`]))
+        .stdout
+      if (remoteRefs === '') return
+    } catch (error) {
+      console.warn(
+        `Unable to even run \`ls-remote\` on the remote origin repo. Is the smoke_tests_remote_repo_url setting valid?\n\n${error}`,
+      )
+      return
+    }
     await localRepo.exec('push', ['origin', '--delete', branchName.toString()])
   })
 
