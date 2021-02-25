@@ -58,13 +58,12 @@ describe(`Smoke tests on ${url}`, function () {
   })
 
   it('Creates a repo', async () => {
-    const params = { repoId: repoId, remoteUrl: remoteUrl }
-    const response = await fetch(`${url}/repos`, {
-      method: 'POST',
-      body: JSON.stringify(params),
+    const response = await fetch(`${url}/repos/${repoId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ remoteUrl }),
       headers: { 'Content-Type': 'application/json' },
     })
-    assertThat(response.status, equalTo(202))
+    assertThat(response.status, equalTo(200))
   })
 
   it('Waits for repo to be fetched', async () => {
