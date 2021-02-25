@@ -26,6 +26,8 @@ if (!remoteUrl) throw new Error('Please define smoke_tests_remote_repo_url env v
 
 const TIMEOUT = 20000
 
+console.log(remoteUrl)
+
 describe(`Smoke tests on ${url}`, function () {
   this.timeout(TIMEOUT)
 
