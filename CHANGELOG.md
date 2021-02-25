@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.3.0](https://github.com/SmartBear/git-en-boite/tree/v0.3.0) (2021-02-25)
+
+**Closed issues:**
+
+- Allow clients to update remoteUrl for a repo [\#545](https://github.com/SmartBear/git-en-boite/issues/545)
+- Use docker build args instead of .build\_number file [\#319](https://github.com/SmartBear/git-en-boite/issues/319)
+
 ## [v0.2.0](https://github.com/SmartBear/git-en-boite/tree/v0.2.0) (2020-11-17)
 
 **Closed issues:**
