@@ -11,7 +11,7 @@ import {
 import { GitDirectory } from 'git-en-boite-local-clones'
 import { assertThat, equalTo } from 'hamjest'
 import { nanoid } from 'nanoid'
-import fetch from 'node-fetch'
+import fetch, { Response } from 'node-fetch'
 import os from 'os'
 import path from 'path'
 import supertest from 'supertest'
@@ -54,21 +54,21 @@ describe(`Smoke tests on ${url}`, function () {
   it(`Checks if the server is up: ${url}`, async () => {
     await waitOn({ resources: [url], timeout: TIMEOUT * 0.5 })
     const response = await fetch(url)
-    assertThat(response.status, equalTo(200))
+    await assertOk(response)
   })
 
-  it('Creates a repo', async () => {
+  it('Connects a repo', async () => {
     const response = await fetch(`${url}/repos/${repoId}`, {
       method: 'PUT',
       body: JSON.stringify({ remoteUrl }),
       headers: { 'Content-Type': 'application/json' },
     })
-    assertThat(response.status, equalTo(200))
+    await assertOk(response)
   })
 
   it('Waits for repo to be fetched', async () => {
     const response = await fetch(`${url}/repos/${repoId}/events?until=repo.fetched`)
-    assertThat(response.status, equalTo(200))
+    await assertOk(response)
   })
 
   it('Gets repo branches details', async () => {
@@ -89,3 +89,8 @@ describe(`Smoke tests on ${url}`, function () {
       .expect(200)
   })
 })
+
+const assertOk = async (response: Response) => {
+  if (response.status === 200) return
+  throw new Error(`Response (${response.status}) was not OK: "${await response.text()}"`)
+}
