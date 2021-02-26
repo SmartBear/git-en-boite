@@ -37,7 +37,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.0",
+    "@types/mocha": "^8.2.1",
     "@types/node": "^14.14.31",
     "@types/tmp": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
