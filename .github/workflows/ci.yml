@@ -114,7 +114,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_KEY }}
       - name: PUBLISH -- Push smartbear/git-en-boite
-        run: docker push smartbear/git-en-boite
+        run: docker push --all-tags smartbear/git-en-boite
       - name: "REPORT -- Notify slack channel"
         if: failure()
         uses: archive/github-actions-slack@v2.0.1
