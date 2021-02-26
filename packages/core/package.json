@@ -28,6 +28,6 @@
     "ts-sinon": "^2.0.1"
   },
   "dependencies": {
-    "tiny-types": "^1.16.0"
+    "tiny-types": "^1.16.1"
   }
 }

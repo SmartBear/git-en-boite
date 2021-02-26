@@ -23,7 +23,7 @@
     "git-en-boite-inventory": "0.0.0",
     "git-en-boite-web": "0.0.0",
     "pg": "^8.5.1",
-    "tiny-types": "^1.16.0",
+    "tiny-types": "^1.16.1",
     "typescript": "^4.1.3",
     "tsconfig-paths": "^3.9.0",
     "ts-node": "^9.1.1",
