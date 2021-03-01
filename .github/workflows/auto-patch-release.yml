@@ -13,14 +13,25 @@ jobs:
         with:
           fetch-depth: '0'
       - id: count-commits
+        name: Count commits
         run: |
           last_release=`git describe --abbrev=0 --tags`
           total_new_commits=`git log v0.3.1..main --pretty=oneline | wc -l`
           echo "::set-output name=by-everyone::$total_new_commits"
-          commits_by_dependabot=`g$it log v0.3.1..main --author="dependabot" --pretty=oneline | wc -l`
+          commits_by_dependabot=`git log v0.3.1..main --author="dependabot" --pretty=oneline | wc -l`
           echo "::set-output name=by-dependabot::$commits_by_dependabot"
-      - name: Make a patch release if only dependabot updates
+      - uses: oleksiyrudenko/gha-git-credentials@v2-latest
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          name: 'GitHub Actions'
+          email: 'bots@example.com'
+      - name: Make a patch release if all commits since last release were by dependabot
         if: ${{ steps.count-commits.by-everyone == steps.count-commits.by-dependabot }}
         run: |
           yarn version --patch
-          git push && git push --tags
+      - uses: ad-m/github-push-action@master
+        if: ${{ steps.count-commits.by-everyone == steps.count-commits.by-dependabot }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          tags: true
