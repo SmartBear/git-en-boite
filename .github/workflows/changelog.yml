@@ -18,7 +18,7 @@ jobs:
       - name: Generate changelog
         uses: heinrichreimer/action-github-changelog-generator@v2.1.1
         with:
-          excludeLabels: "dependencies,wontfix,no-changelog"
+          excludeLabels: "wontfix,no-changelog"
       - run: git add CHANGELOG.md
       - run: git stash
       - run: git pull --rebase origin main
