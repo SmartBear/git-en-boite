@@ -1,4 +1,3 @@
-import fs from 'fs'
 import {
   DomainEventBus,
   InventoryOfRepos,
@@ -19,16 +18,15 @@ import {
   falsey,
 } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
+import sinon from 'sinon'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
 
 import { InventoryOfReposOnDisk } from './inventory_of_repos_on_disk'
-import { RepoPath } from './repo_path'
 
-describe(InventoryOfReposOnDisk.name, () => {
+describe('@wip' + InventoryOfReposOnDisk.name, () => {
   let repoId: RepoId
   let basePath: string
-  let repoPath: RepoPath
   let localClones: LocalClones
   let domainEvents: DomainEventBus
   let inventory: InventoryOfRepos
@@ -80,8 +78,8 @@ describe(InventoryOfReposOnDisk.name, () => {
 
     context('when the repo already exists', () => {
       beforeEach(() => {
-        repoPath = RepoPath.for(basePath, repoId)
-        fs.mkdirSync(repoPath.value, { recursive: true })
+        localClones.confirmExists = () => true
+        inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       })
 
       it(`fails with ${RepoAlreadyExists.name}`, async () => {
@@ -96,8 +94,8 @@ describe(InventoryOfReposOnDisk.name, () => {
   describe('finding existing repos', () => {
     context('when a folder exists for the repo', () => {
       beforeEach(() => {
-        repoPath = RepoPath.for(basePath, repoId)
-        fs.mkdirSync(repoPath.value, { recursive: true })
+        localClones.confirmExists = () => true
+        inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       })
 
       it('returns a Repo', async () => {
@@ -120,13 +118,12 @@ describe(InventoryOfReposOnDisk.name, () => {
 
   describe('checking if a repo exists', () => {
     it('returns true if a folder exists for the repo', async () => {
-      repoPath = RepoPath.for(basePath, repoId)
-      fs.mkdirSync(repoPath.value, { recursive: true })
+      localClones.confirmExists = () => true
+      inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       assertThat(await inventory.exists(repoId), truthy())
     })
 
     it('returns false if no folder exists for the repo', async () => {
-      repoPath = RepoPath.for(basePath, repoId)
       assertThat(await inventory.exists(repoId), falsey())
     })
   })
