@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.3](https://github.com/SmartBear/git-en-boite/tree/v0.3.3) (2021-03-01)
+
+**Closed issues:**
+
+- Run smoke tests on docker container in main CI job [\#552](https://github.com/SmartBear/git-en-boite/issues/552)
+- Smoke test of new docker image fails CI [\#550](https://github.com/SmartBear/git-en-boite/issues/550)
+- Only run bumbailiff on main branch [\#546](https://github.com/SmartBear/git-en-boite/issues/546)
+
 ## [v0.3.2](https://github.com/SmartBear/git-en-boite/tree/v0.3.2) (2021-02-26)
 
 ## [v0.3.1](https://github.com/SmartBear/git-en-boite/tree/v0.3.1) (2021-02-25)
