@@ -16,9 +16,11 @@ jobs:
         name: Count commits
         run: |
           last_release=`git describe --abbrev=0 --tags`
-          total_new_commits=`git log v0.3.1..main --pretty=oneline | wc -l`
+          total_new_commits=`git log $last_release..main --pretty=oneline | wc -l`
+          echo "Commits by everyone: $total_new_commits"
           echo "::set-output name=by-everyone::$total_new_commits"
-          commits_by_dependabot=`git log v0.3.1..main --author="dependabot" --pretty=oneline | wc -l`
+          commits_by_dependabot=`git log $last_release..main --author="dependabot" --pretty=oneline | wc -l`
+          echo "Commits by dependabot: $commits_by_dependabot"
           echo "::set-output name=by-dependabot::$commits_by_dependabot"
       - uses: oleksiyrudenko/gha-git-credentials@v2-latest
         with:
@@ -26,11 +28,11 @@ jobs:
           name: 'GitHub Actions'
           email: 'bots@example.com'
       - name: Make a patch release if all commits since last release were by dependabot
-        if: ${{ steps.count-commits.by-everyone == steps.count-commits.by-dependabot }}
+        if: ${{ steps.count-commits.outputs.by-everyone == steps.count-commits.outputs.by-dependabot }}
         run: |
           yarn version --patch
       - uses: ad-m/github-push-action@master
-        if: ${{ steps.count-commits.by-everyone == steps.count-commits.by-dependabot }}
+        if: ${{ steps.count-commits.outputs.by-everyone == steps.count-commits.outputs.by-dependabot }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
