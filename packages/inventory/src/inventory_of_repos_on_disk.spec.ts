@@ -11,20 +11,19 @@ import {
   assertThat,
   defined,
   equalTo,
-  truthy,
+  falsey,
   hasProperty,
   promiseThat,
   rejected,
-  falsey,
+  truthy,
 } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
-import sinon from 'sinon'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
 
 import { InventoryOfReposOnDisk } from './inventory_of_repos_on_disk'
 
-describe('@wip' + InventoryOfReposOnDisk.name, () => {
+describe(InventoryOfReposOnDisk.name, () => {
   let repoId: RepoId
   let basePath: string
   let localClones: LocalClones
