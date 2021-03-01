@@ -24,7 +24,7 @@ import { stubInterface } from 'ts-sinon'
 
 import { InventoryOfReposOnDisk } from './inventory_of_repos_on_disk'
 
-describe(InventoryOfReposOnDisk.name, () => {
+describe('@wip' + InventoryOfReposOnDisk.name, () => {
   let repoId: RepoId
   let basePath: string
   let localClones: LocalClones
@@ -35,7 +35,6 @@ describe(InventoryOfReposOnDisk.name, () => {
     repoId = RepoId.generate()
     basePath = dirSync().name
     localClones = stubInterface<LocalClones>()
-    localClones.confirmExists = sinon.stub().returns(false)
     domainEvents = stubInterface<DomainEventBus>()
     inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
   })
@@ -79,7 +78,7 @@ describe(InventoryOfReposOnDisk.name, () => {
 
     context('when the repo already exists', () => {
       beforeEach(() => {
-        localClones.confirmExists = sinon.stub().returns(true)
+        localClones.confirmExists = () => true
         inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       })
 
@@ -95,7 +94,7 @@ describe(InventoryOfReposOnDisk.name, () => {
   describe('finding existing repos', () => {
     context('when a folder exists for the repo', () => {
       beforeEach(() => {
-        localClones.confirmExists = sinon.stub().returns(true)
+        localClones.confirmExists = () => true
         inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       })
 
@@ -119,7 +118,7 @@ describe(InventoryOfReposOnDisk.name, () => {
 
   describe('checking if a repo exists', () => {
     it('returns true if a folder exists for the repo', async () => {
-      localClones.confirmExists = sinon.stub().returns(true)
+      localClones.confirmExists = () => true
       inventory = new InventoryOfReposOnDisk(basePath, localClones, domainEvents)
       assertThat(await inventory.exists(repoId), truthy())
     })
