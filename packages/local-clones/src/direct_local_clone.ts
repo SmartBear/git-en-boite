@@ -15,18 +15,24 @@ import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operation
 //TODO: Extract a separate class for the LocalClones interface instead of using static methods
 export class DirectLocalClone implements LocalClone {
   static async openExisting(path: string): Promise<LocalClone> {
-    if (!fs.existsSync(path)) throw new Error(`Local clone does not exist at path ${path}`)
+    if (!this.confirmExists(path)) throw new Error(`Local clone does not exist at path ${path}`)
     return new DirectLocalClone(await openBareRepo(path))
   }
 
   static async createNew(path: string): Promise<LocalClone> {
-    if (fs.existsSync(path)) throw new Error(`Local clone already exists at path ${path}`)
+    if (this.confirmExists(path)) {
+      throw new Error(`Local clone already exists at path ${path}`)
+    }
     return new DirectLocalClone(await createBareRepo(path))
   }
 
   static async removeExisting(path: string): Promise<void> {
     if (!fs.existsSync(path)) throw new Error(`Local clone does not exist at path ${path}`)
     fs.rmdirSync(path, { recursive: true })
+  }
+
+  static confirmExists(path: string): boolean {
+    return fs.existsSync(path)
   }
 
   protected constructor(private readonly git: Dispatch<RepoProtocol>) {}

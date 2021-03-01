@@ -1,4 +1,3 @@
-import fs from 'fs'
 import {
   LocalClones,
   PublishesDomainEvents,
@@ -10,7 +9,6 @@ import {
   Transaction,
 } from 'git-en-boite-core'
 import { RepoPath } from './repo_path'
-
 export class InventoryOfReposOnDisk implements InventoryOfRepos {
   constructor(
     private basePath: string,
@@ -39,7 +37,6 @@ export class InventoryOfReposOnDisk implements InventoryOfRepos {
 
   public async exists(repoId: RepoId): Promise<boolean> {
     const repoPath = RepoPath.for(this.basePath, repoId).value
-    // TODO: add #exists method to the LocalClones contract and delegate to that instead of using the filesystem
-    return fs.existsSync(repoPath)
+    return this.localClones.confirmExists(repoPath)
   }
 }

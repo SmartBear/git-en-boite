@@ -12,4 +12,5 @@ export type LocalClones = {
   openExisting: (path: string) => Promise<LocalClone>
   createNew: (path: string) => Promise<LocalClone>
   removeExisting: (path: string) => Promise<void>
+  confirmExists: (path: string) => boolean
 }
