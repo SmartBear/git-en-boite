@@ -2,6 +2,7 @@ import * as pino from 'pino'
 import { LoggerOptions } from './LoggerOptions'
 export * from './logToPino'
 export * from './makeHttpLoggingMiddleware'
+export * from './LoggerOptions'
 
 // TODO: can we merge this with the logToPino function?
 export function setUpLogger(config: pino.Bindings, { readableBy }: LoggerOptions): pino.Logger {
