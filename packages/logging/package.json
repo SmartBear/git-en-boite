@@ -25,6 +25,7 @@
     "@types/node": "^14.14.31",
     "@types/pino": "^6.3.6",
     "git-en-boite-core": "0.0.0",
-    "pino": "^6.11.1"
+    "pino": "^6.11.1",
+    "pino-pretty": "^4.6.0"
   }
 }
