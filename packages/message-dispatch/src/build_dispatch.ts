@@ -27,9 +27,9 @@ export function messageDispatch<Protocol extends ValidProtocol<Protocol>>() {
       handlerDefinitions: HandlerDefinitions<Context, Protocol>,
     ): Dispatch<Protocol> => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handlers = new Map<ValidMessage<Protocol>, Handle<Context, any>>() // TODO: make a ValidHandler union type
+      const handlers = new Map<ValidMessage<Protocol>, Handle<Context, any>>()
 
-      // TODO: work out how to make handlers iterable
+      // Could we work out how to make these handlers iterable?
       for (let i = 0; i < Number(handlerDefinitions.length); i++) {
         const handler = handlerDefinitions[i]
         handlers.set(handler[0], handler[1])
