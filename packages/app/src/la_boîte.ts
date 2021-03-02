@@ -33,6 +33,7 @@ export class LaBoîte implements Application {
     message: CommitMessage,
   ): Promise<void> {
     const repo = await this.inventoryOfRepos.find(repoId)
+    await repo.fetch()
     await repo.commit(branchName, files, author, message)
   }
 

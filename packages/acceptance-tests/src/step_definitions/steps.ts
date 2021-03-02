@@ -64,14 +64,13 @@ Given(
   },
 )
 
-When(
-  'a new commit is made on {BranchName} in the remote repo',
-  async function (this: World, branchName: BranchName) {
-    const git = await openBareRepo(this.remotePath(this.repoId))
-    await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
-    this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
-  },
-)
+When('a new commit is made on {BranchName} in the remote repo', commitToRemote)
+Given('the remote has moved forward on {BranchName}', commitToRemote)
+async function commitToRemote(this: World, branchName: BranchName) {
+  const git = await openBareRepo(this.remotePath(this.repoId))
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+  this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
+}
 
 Given('a consumer has connected the remote repo', connect)
 When('a consumer connects the remote repo', connect)
@@ -127,7 +126,7 @@ Given('the repo has been fetched', async function (this: World) {
 })
 
 When(
-  'a consumer commits a new file to {BranchName}',
+  'a consumer commits a new file to {BranchName}', { timeout: 10 * 1000 },
   async function (this: World, branchName: BranchName) {
     const file = new GitFile(new FilePath('features/new.feature'), new FileContent('Feature: New!'))
     this.file = file
