@@ -9,7 +9,7 @@ import {
   RepoId,
 } from 'git-en-boite-core'
 import { GitDirectory } from 'git-en-boite-local-clones'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, contains, empty, equalTo, hasItem, hasProperties, not } from 'hamjest'
 import { nanoid } from 'nanoid'
 import fetch, { Response } from 'node-fetch'
 import os from 'os'
@@ -76,11 +76,14 @@ describe(`Smoke tests on ${url}`, function () {
   it('Waits for repo to be fetched', async () => {
     const response = await fetch(`${url}/repos/${repoId}/events?until=repo.fetched`)
     await assertOk(response)
+    await response.text()
   })
 
   it('Gets repo branches details', async () => {
     const response = await fetch(`${url}/repos/${repoId}`)
-    assertThat((await response.json()).branches, equalTo([]))
+    const { branches } = await response.json()
+    assertThat(branches, not(empty()))
+    assertThat(branches, hasItem(hasProperties({ name: 'master' })))
   })
 
   it('Commits a file', async () => {
