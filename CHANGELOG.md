@@ -1,6 +1,14 @@
 # Changelog
 
+## [v0.5.2](https://github.com/SmartBear/git-en-boite/tree/v0.5.2) (2021-03-02)
+
+## [v0.5.1](https://github.com/SmartBear/git-en-boite/tree/v0.5.1) (2021-03-02)
+
 ## [v0.5.0](https://github.com/SmartBear/git-en-boite/tree/v0.5.0) (2021-03-02)
+
+**Closed issues:**
+
+- Replace winston with pino for logging [\#570](https://github.com/SmartBear/git-en-boite/issues/570)
 
 ## [v0.4.0](https://github.com/SmartBear/git-en-boite/tree/v0.4.0) (2021-03-02)
 
@@ -48,13 +56,13 @@
 **Closed issues:**
 
 - Fix CI dockerfile for smoke testing container image [\#327](https://github.com/SmartBear/git-en-boite/issues/327)
-- Use root package version for displayed version [\#320](https://github.com/SmartBear/git-en-boite/issues/320)
 
 ## [v0.1.0](https://github.com/SmartBear/git-en-boite/tree/v0.1.0) (2020-11-11)
 
 **Closed issues:**
 
 - Generate / update CHANGELOG.md for each release version tag [\#321](https://github.com/SmartBear/git-en-boite/issues/321)
+- Use root package version for displayed version [\#320](https://github.com/SmartBear/git-en-boite/issues/320)
 - Log in production as a single line of JSON [\#287](https://github.com/SmartBear/git-en-boite/issues/287)
 
 ## [v0.0.7](https://github.com/SmartBear/git-en-boite/tree/v0.0.7) (2020-11-09)
