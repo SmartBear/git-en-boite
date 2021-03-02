@@ -1,4 +1,4 @@
-import { Application, Logger, QueryResult, RepoId, RepoSnapshot } from 'git-en-boite-core'
+import { Application, QueryResult, RepoId, RepoSnapshot } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
@@ -17,7 +17,7 @@ describe('/repos', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app), Logger.none)
+    const webApp = createWebApp(router(app), () => ({}))
     server = webApp.listen(8888)
     request = supertest(server)
   })

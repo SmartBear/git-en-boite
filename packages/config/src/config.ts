@@ -1,4 +1,5 @@
 import * as getEnv from 'env-var'
+import { LoggerOptions } from 'git-en-boite-logging'
 
 export interface Config {
   git: GitOptions
@@ -10,10 +11,6 @@ export interface Config {
 interface GitOptions {
   root: string
   queueName: string
-}
-
-export type LoggerOptions = {
-  readableBy: 'humans' | 'machines' | 'nobody'
 }
 
 const createGitConfig = (env: { get: (key: string) => getEnv.IOptionalVariable }): GitOptions => {

@@ -1,44 +1,51 @@
+import { equal } from 'assert'
 import { createConfig } from 'git-en-boite-config'
-import { Logger, RemoteUrl } from 'git-en-boite-core'
+import { RemoteUrl, WriteLogEvent } from 'git-en-boite-core'
 import {
   anything,
   assertThat,
+  contains,
   equalTo,
   fulfilled,
+  hasProperties,
   hasProperty,
   matchesPattern,
   promiseThat,
   rejected,
 } from 'hamjest'
-import { wasCalled, wasCalledWith } from 'hamjest-sinon'
+import { wasCalled, wasCalledInOrder, wasCalledWith } from 'hamjest-sinon'
 import { nanoid } from 'nanoid'
 import path from 'path'
+import sinon from 'sinon'
 import { dirSync } from 'tmp'
-import { stubInterface } from 'ts-sinon'
 
 import { BackgroundWorkerLocalClones, createBareRepo, DirectLocalClone } from '.'
-import { verifyLocalClonesContract } from './contracts/verifyLocalClonesContract'
 import { verifyLocalCloneContract } from './contracts/verifyLocalCloneContract'
+import { verifyLocalClonesContract } from './contracts/verifyLocalClonesContract'
 
 const config = createConfig()
 
 describe(BackgroundWorkerLocalClones.name, () => {
-  const logger = stubInterface<Logger>()
+  let log: WriteLogEvent
+
+  beforeEach(() => {
+    log = sinon.stub()
+  })
 
   context('when a worker is running', () => {
     let localClones: BackgroundWorkerLocalClones
 
-    before(async function () {
+    beforeEach(async function () {
       const queueName = nanoid()
       localClones = await BackgroundWorkerLocalClones.connect(
         DirectLocalClone,
         config.redis,
         queueName,
-        logger,
+        log,
       )
-      await localClones.startWorker(logger)
+      await localClones.startWorker(log)
     })
-    after(async () => await localClones.close())
+    afterEach(async () => await localClones.close())
 
     verifyLocalClonesContract(() => localClones)
     verifyLocalCloneContract(() => localClones)
@@ -50,21 +57,14 @@ describe(BackgroundWorkerLocalClones.name, () => {
       await localClones.pingWorkers()
       const git = await localClones.createNew(path.resolve(root, 'repo'))
       await git.setOriginTo(originUrl)
-      assertThat(logger.info, wasCalled())
       assertThat(
-        logger.info,
-        wasCalledWith(
-          'received: setOriginTo',
-          hasProperty('job', hasProperty('name', matchesPattern('setOrigin'))),
-        ),
-      )
-      assertThat(
-        logger.info,
-        wasCalledWith(
-          anything(),
-          hasProperty(
-            'job',
-            hasProperty('data', hasProperty('remoteUrl', equalTo(originUrl.value))),
+        log,
+        wasCalledInOrder(
+          [{ message: 'received: ping', level: 'info', job: { name: 'ping', data: {} } }],
+          contains(
+            hasProperties({
+              message: equalTo('received: setOriginTo'),
+            }),
           ),
         ),
       )
@@ -80,7 +80,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
         DirectLocalClone,
         config.redis,
         queueName,
-        logger,
+        log,
       )
     })
 
@@ -97,7 +97,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
     })
 
     it('succeeds when a worker is running', async () => {
-      await localClones.startWorker(Logger.none)
+      await localClones.startWorker(() => ({}))
       const pinging = localClones.pingWorkers(100)
       await promiseThat(pinging, fulfilled())
     })
@@ -110,7 +110,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
         DirectLocalClone,
         badRedisOptions,
         'a-queue',
-        logger,
+        log,
       )
       await promiseThat(connecting, rejected())
     })

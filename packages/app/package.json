@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
-    "test": "mocha",
-    "test:wip": "mocha -g @wip",
+    "test": "#no-op",
+    "test:wip": "#no-op",
     "start:server": "ts-node -r tsconfig-paths/register dist/server.js",
     "start:worker": "ts-node -r tsconfig-paths/register dist/worker.js",
     "start": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:worker\" -n server,worker -c green,yellow",
@@ -27,6 +27,7 @@
     "eventsource": "^1.0.7",
     "get-port": "^5.1.1",
     "git-en-boite-core": "0.0.0",
+    "git-en-boite-logging": "1.0.0",
     "git-en-boite-local-clones": "0.0.0",
     "git-en-boite-inventory": "0.0.0",
     "git-en-boite-web": "0.0.0",

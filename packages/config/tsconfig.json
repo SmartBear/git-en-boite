@@ -15,5 +15,8 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "references": [
+    { "path": "../logging" },
+  ]
 }

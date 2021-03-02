@@ -5,7 +5,6 @@ import {
   CommitMessage,
   Email,
   Files,
-  Logger,
   NameOfPerson,
   RepoId,
 } from 'git-en-boite-core'
@@ -30,7 +29,7 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app), Logger.none)
+    const webApp = createWebApp(router(app), () => ({}))
     server = webApp.listen(8888)
     request = supertest(server)
   })

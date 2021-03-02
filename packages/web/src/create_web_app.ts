@@ -1,18 +1,17 @@
 import Router from '@koa/router'
-import { Logger } from 'git-en-boite-core'
+import { WriteLogEvent } from 'git-en-boite-core'
 import Koa, { Context } from 'koa'
 import bodyParser from 'koa-bodyparser'
 import cors from 'koa2-cors'
-import { logEachResponse } from './logEachResponse'
+import { logErrorsFrom, makeHttpLoggingMiddleware } from 'git-en-boite-logging'
 
 const throwErrors = new Router()
   .get('/error', (ctx: Context) => ctx.throw('An error', { some: 'metadata' }))
   .middleware()
 
-export default function createWebApp(routes: Router = new Router(), logger: Logger): Koa {
-  const webApp = new Koa()
-  webApp.on('error', error => logger.error(error))
-  webApp.use(logEachResponse(logger))
+export default function createWebApp(routes: Router = new Router(), log: WriteLogEvent): Koa {
+  const webApp = logErrorsFrom(new Koa()).to(log)
+  webApp.use(makeHttpLoggingMiddleware(log))
   webApp.use(bodyParser())
   webApp.use(cors({ origin: '*' }))
   webApp.use(routes.middleware())

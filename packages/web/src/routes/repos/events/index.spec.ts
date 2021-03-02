@@ -3,7 +3,6 @@ import EventSource from 'eventsource'
 import {
   Application,
   DomainEventBus,
-  Logger,
   RepoConnected,
   RepoFetched,
   RepoId,
@@ -29,7 +28,7 @@ describe('GET /repos/:repoId/events', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app), Logger.none)
+    const webApp = createWebApp(router(app), () => ({}))
     server = webApp.listen(8888)
   })
 

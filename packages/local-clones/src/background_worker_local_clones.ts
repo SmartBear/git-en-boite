@@ -5,10 +5,10 @@ import {
   Files,
   LocalClone,
   LocalClones,
-  Logger,
   PendingCommitRef,
   Refs,
   RemoteUrl,
+  WriteLogEvent,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -34,17 +34,17 @@ export class BackgroundWorkerLocalClones implements LocalClones {
     localClones: LocalClones,
     redisUrl: string,
     queueName: string,
-    logger: Logger,
+    log: WriteLogEvent,
   ): Promise<BackgroundWorkerLocalClones> {
     const createRedisClient = async () => connectToRedis(redisUrl)
-    return await new this(localClones, createRedisClient, queueName, logger).connect()
+    return await new this(localClones, createRedisClient, queueName, log).connect()
   }
 
   protected constructor(
     private readonly localClones: LocalClones,
     private readonly createRedisClient: () => Promise<IORedis.Redis>,
     private readonly queueName: string,
-    private readonly logger: Logger,
+    private readonly log: WriteLogEvent,
   ) {}
 
   public async removeExisting(path: string): Promise<void> {
@@ -68,12 +68,12 @@ export class BackgroundWorkerLocalClones implements LocalClones {
 
   async openExisting(path: string): Promise<LocalClone> {
     const gitRepo = await this.localClones.openExisting(path)
-    return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.logger)
+    return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.log)
   }
 
   async createNew(path: string): Promise<LocalClone> {
     const gitRepo = await this.localClones.createNew(path)
-    return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.logger)
+    return new BackgroundGitRepoProxy(path, gitRepo, this.queue, this.queueEvents, this.log)
   }
 
   async pingWorkers(timeout = 5000): Promise<void> {
@@ -83,11 +83,11 @@ export class BackgroundWorkerLocalClones implements LocalClones {
     })
   }
 
-  async startWorker(logger: Logger): Promise<void> {
+  async startWorker(log: WriteLogEvent): Promise<void> {
     this.worker = await GitRepoWorker.start(
       DirectLocalClone,
       this.createRedisClient,
-      logger,
+      log,
       this.queueName,
     )
   }
@@ -109,7 +109,7 @@ export class BackgroundGitRepoProxy implements LocalClone {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly queue: Queue<any>,
     private readonly queueEvents: QueueEvents,
-    private readonly logger: Logger,
+    private readonly log: WriteLogEvent,
   ) {}
 
   async commit(
@@ -142,7 +142,7 @@ export class BackgroundGitRepoProxy implements LocalClone {
 
   private whenFinished(job: Job): Promise<void> {
     return job.waitUntilFinished(this.queueEvents).catch(error => {
-      throw deserialize(error, this.logger)
+      throw deserialize(error, this.log)
     })
   }
 }
@@ -154,22 +154,22 @@ class GitRepoWorker implements Closable {
   static async start(
     localClones: LocalClones,
     createRedisClient: () => Promise<IORedis.Redis>,
-    logger: Logger,
+    log: WriteLogEvent,
     queueName: string,
   ): Promise<GitRepoWorker> {
     const connection = await createRedisClient()
-    return new GitRepoWorker(localClones, connection, logger, queueName)
+    return new GitRepoWorker(localClones, connection, log, queueName)
   }
 
   protected constructor(
     gitRepos: LocalClones,
     readonly redisClient: IORedis.Redis,
-    logger: Logger,
+    log: WriteLogEvent,
     queueName: string,
   ) {
     const processJob = async (job: Job) => {
       try {
-        logger.info(`received: ${job.name}`, { job: { name: job.name, data: job.data } })
+        log({ message: `received: ${job.name}`, level: 'info', job: { name: job.name, data: job.data }})
         if (job.name === 'ping') {
           return {}
         }
@@ -187,7 +187,7 @@ class GitRepoWorker implements Closable {
           return await git.push(PendingCommitRef.fromJSON(commitRef))
         }
       } catch (error) {
-        logger.error(error)
+        log(error)
         throw asSerializedError(error)
       }
     }

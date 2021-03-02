@@ -1,5 +1,5 @@
 import { Verifier, VerifierOptions } from '@pact-foundation/pact'
-import { Application, Logger, QueryResult, RepoId } from 'git-en-boite-core'
+import { Application, QueryResult, RepoId } from 'git-en-boite-core'
 import { Server } from 'http'
 import path from 'path'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -15,7 +15,7 @@ describe('HTTP Api', () => {
 
   beforeEach(() => {
     app = stubInterface<Application>()
-    const webApp = createWebApp(router(app), Logger.none)
+    const webApp = createWebApp(router(app), () => ({}))
     server = webApp.listen(PORT)
   })
 

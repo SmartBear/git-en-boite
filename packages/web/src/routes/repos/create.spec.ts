@@ -2,7 +2,6 @@ import {
   AccessDenied,
   Application,
   InvalidRepoUrl,
-  Logger,
   QueryResult,
   RemoteUrl,
   RepoId,
@@ -29,7 +28,7 @@ describe('POST /repos', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app), Logger.none)
+    const webApp = createWebApp(router(app), () => ({}))
     server = webApp.listen(8888)
     request = supertest(server)
   })

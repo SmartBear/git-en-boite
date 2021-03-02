@@ -2,12 +2,11 @@ import {
   AccessDenied,
   Application,
   InvalidRepoUrl,
-  Logger,
   RemoteUrl,
   RepoId,
 } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
-import { wasCalled, wasCalledWith } from 'hamjest-sinon'
+import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -25,7 +24,7 @@ describe('/repos/:repoId', () => {
   })
 
   beforeEach(() => {
-    const webApp = createWebApp(router(app), Logger.none)
+    const webApp = createWebApp(router(app), () => ({}))
     server = webApp.listen(8888)
     request = supertest(server)
   })

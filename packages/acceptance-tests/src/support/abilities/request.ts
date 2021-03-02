@@ -3,14 +3,13 @@ import { Before, After } from '@cucumber/cucumber'
 import { Server } from 'http'
 import { startWebServer } from 'git-en-boite-web'
 import { World } from '../world'
-import { createLogger } from 'git-en-boite-app'
 
 let webServer: Server
 
-const logger = createLogger({ readableBy: process.env.show_logs ? 'humans' : 'nobody' })
+const log = process.env.show_logs ? console.log : () => ({})
 
 Before(function (this: World) {
-  webServer = startWebServer(this.app, 8888, logger)
+  webServer = startWebServer(this.app, 8888, log)
   this.request = request(webServer)
 })
 

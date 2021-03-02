@@ -11,7 +11,7 @@ import {
   InventoryOfRepos,
   RepoSnapshot,
   SubscribesToDomainEvents,
-  Logger,
+  WriteLogEvent,
 } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
@@ -20,9 +20,9 @@ export class LaBoîte implements Application {
     public readonly version: string,
     public readonly events: SubscribesToDomainEvents,
     rules: DomainRule[],
-    logger: Logger,
+    log: WriteLogEvent,
   ) {
-    rules.map(rule => rule(events, this, logger))
+    rules.map(rule => rule(events, this, log))
   }
 
   async commit(

@@ -1,17 +1,21 @@
-import { InvalidRepoUrl, Logger } from 'git-en-boite-core'
-import { assertThat, hasProperty, equalTo, instanceOf } from 'hamjest'
-import { wasCalled, wasCalledWith } from 'hamjest-sinon'
-import { stubInterface } from 'ts-sinon'
-import { deserialize } from './serialize_errors'
-import { asSerializedError } from './serialize_errors'
+import { InvalidRepoUrl, WriteLogEvent } from 'git-en-boite-core';
+import { assertThat, equalTo, hasProperty, instanceOf } from 'hamjest';
+import { wasCalledWith } from 'hamjest-sinon';
+import sinon from 'sinon';
+
+import { asSerializedError, deserialize } from './serialize_errors';
 
 describe('deserialize', () => {
-  const logger = stubInterface<Logger>()
+  let log: WriteLogEvent
+
+  beforeEach(() => {
+    log = sinon.stub()
+  })
 
   it('deserializes a serialized InvalidRepoUrl', () => {
     const invalidRepoUrl = new InvalidRepoUrl('Yikes')
     const serializedError = asSerializedError(invalidRepoUrl)
-    const deserializedError = deserialize(serializedError, logger)
+    const deserializedError = deserialize(serializedError, log)
     assertThat(deserializedError, hasProperty('message', equalTo('Yikes')))
     assertThat(deserializedError, instanceOf(InvalidRepoUrl))
   })
@@ -19,7 +23,7 @@ describe('deserialize', () => {
   it('deserializes a serialized Error', () => {
     const error = new Error('Yikes')
     const serializedError = asSerializedError(error)
-    const deserializedError = deserialize(serializedError, logger)
+    const deserializedError = deserialize(serializedError, log)
     assertThat(deserializedError, hasProperty('message', equalTo('Yikes')))
     assertThat(deserializedError, instanceOf(Error))
   })
@@ -34,15 +38,15 @@ describe('deserialize', () => {
     it('logs a warning', () => {
       const error = new MyCustomError('whoops', 'a-value')
       const serializedError = asSerializedError(error)
-      deserialize(serializedError, logger)
-      assertThat(logger.warn, wasCalled())
+      deserialize(serializedError, log)
+      assertThat(log, wasCalledWith(hasProperty('level', 'warn')))
     })
 
     it('return an Error with the same props', () => {
       const error = new MyCustomError('whoops', 'a-value')
       const serializedError = asSerializedError(error)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const deserializedError = deserialize(serializedError, logger) as any
+      const deserializedError = deserialize(serializedError, log) as any
       assertThat(deserializedError, instanceOf(Error))
       assertThat(deserializedError.message, equalTo(error.message))
       assertThat(deserializedError.someAttribute, equalTo(error.someAttribute))

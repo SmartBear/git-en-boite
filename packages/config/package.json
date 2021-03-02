@@ -27,6 +27,7 @@
   "homepage": "https://github.com/smartbear/git-en-boite#readme",
   "dependencies": {
     "env-var": "^7.0.0",
+    "git-en-boite-logging": "0.0.0",
     "ioredis": "^4.23.0"
   },
   "devDependencies": {

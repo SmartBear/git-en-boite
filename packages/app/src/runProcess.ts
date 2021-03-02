@@ -1,14 +1,30 @@
-import * as ErrorStackParser from 'error-stack-parser'
 import { Config, createConfig } from 'git-en-boite-config'
-import { Logger } from 'git-en-boite-core'
-import { createLogger } from './createLogger'
+import { LogEvent, WriteLogEvent } from 'git-en-boite-core'
+import { logToPino, setUpLogger } from 'git-en-boite-logging'
 
 const config = createConfig(process.env)
-const logger = createLogger(config.logger)
+const log = logToPino(
+  setUpLogger(
+    {
+      version: config.version,
+      environment: process.env.NODE_ENV,
+      service: 'git-en-boite',
+    },
+    config.logger,
+  ),
+)
+const serverFailedToStart: (error: Error) => LogEvent = error => {
+  const props: LogEvent = {
+    level: 'fatal',
+    message: error.message,
+    stack: error.stack,
+  }
+  return Object.assign(props, error)
+}
 
-export function runProcess(start: (config: Config, logger: Logger) => Promise<void>): void {
-  start(config, logger).catch(error => {
-    logger.error(error.message, { name: error.name, stack: ErrorStackParser.parse(error) })
+export function runProcess(start: (config: Config, log: WriteLogEvent) => Promise<void>): void {
+  start(config, log).catch(error => {
+    log(serverFailedToStart(error))
     process.exit(1)
   })
 }
