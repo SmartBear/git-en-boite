@@ -3,7 +3,7 @@ import { Application, RemoteUrl, RepoId, RepoSnapshot } from 'git-en-boite-core'
 import { Context } from 'koa'
 
 import validateRequestBody from '../../validate_request'
-import { handleRepoConnectionErrors } from './handleRepoConnectionErrors'
+import { handleRepoErrors } from './handleRepoErrors'
 
 const schema = {
   type: 'object',
@@ -26,7 +26,7 @@ export default (app: Application, router: Router): Router =>
   new Router().post(
     '/',
     async (ctx, next) => validateRequestBody(ctx, next, schema),
-    handleRepoConnectionErrors,
+    handleRepoErrors,
     async (ctx: Context) => {
       const parsedBody: ParsedBody = parseBody(ctx.request.body)
       const { repoId, remoteUrl } = parsedBody

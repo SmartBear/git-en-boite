@@ -1,7 +1,7 @@
 import { AccessDenied, InvalidRepoUrl } from 'git-en-boite-core'
 import { Context, Next } from 'koa'
 
-export async function handleRepoConnectionErrors(ctx: Context, next: Next): Promise<void> {
+export async function handleRepoErrors(ctx: Context, next: Next): Promise<void> {
   try {
     await next()
   } catch (error) {

@@ -2,7 +2,7 @@ import { Application, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 import Router from '@koa/router'
 import validateRequestBody from '../../validate_request'
-import { handleRepoConnectionErrors } from './handleRepoConnectionErrors'
+import { handleRepoErrors } from './handleRepoErrors'
 
 const schema = {
   type: 'object',
@@ -21,7 +21,7 @@ const parseBody: (body: any) => ParsedBody = (body: any) => ({
 
 export default (app: Application): Router =>
   new Router()
-    .post('/:repoId', async (ctx: Context) => {
+    .post('/:repoId', handleRepoErrors, async (ctx: Context) => {
       // TODO: move this on a different resource
       await app.fetchFromRemote(RepoId.of(ctx.params.repoId))
       ctx.response.status = 200
@@ -29,7 +29,7 @@ export default (app: Application): Router =>
     .put(
       '/:repoId',
       async (ctx, next) => validateRequestBody(ctx, next, schema),
-      handleRepoConnectionErrors,
+      handleRepoErrors,
       async (ctx: Context) => {
         const parsedBody: ParsedBody = parseBody(ctx.request.body)
         const { remoteUrl } = parsedBody

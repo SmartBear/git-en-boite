@@ -1,6 +1,7 @@
 import Router from '@koa/router'
 import { Application, Author, BranchName, CommitMessage, Files, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
+import { handleRepoErrors } from '../../handleRepoErrors'
 import validateRequestBody from '../../../../validate_request'
 
 const fileSchema = {
@@ -38,6 +39,7 @@ export default (app: Application): Router =>
   new Router().post(
     '/',
     async (ctx, next) => validateRequestBody(ctx, next, schema),
+    handleRepoErrors,
     async (ctx: Context) => {
       await app.commit(
         RepoId.of(ctx.params.repoId),
