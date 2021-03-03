@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.5.5](https://github.com/SmartBear/git-en-boite/tree/v0.5.5) (2021-03-03)
+
+## [v0.5.4](https://github.com/SmartBear/git-en-boite/tree/v0.5.4) (2021-03-03)
+
+**Closed issues:**
+
+- Smoke tests don't seem to wait for initial background fetch [\#571](https://github.com/SmartBear/git-en-boite/issues/571)
+
 ## [v0.5.3](https://github.com/SmartBear/git-en-boite/tree/v0.5.3) (2021-03-02)
 
 ## [v0.5.2](https://github.com/SmartBear/git-en-boite/tree/v0.5.2) (2021-03-02)
