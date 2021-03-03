@@ -12,7 +12,6 @@ import { Init, ValidateRemote } from '../operations'
 import { runGitHttpServer } from '../test/run_git_http_server'
 
 type Protocol = [AsyncCommand<Init>, AsyncCommand<ValidateRemote>]
-type GitOperationType = 'push' | 'fetch'
 
 describe('handleValidateRemote', function () {
   const root = dirSync().name
@@ -33,7 +32,7 @@ describe('handleValidateRemote', function () {
   }
 
   const remoteUrl = runGitHttpServer(() => root, {
-    authenticate: ({ type, repo }: { type: GitOperationType; repo: string }) =>
+    authenticate: ({ type, repo }) =>
       new Promise<void>((resolve, reject) => {
         if (repo.match(/private/)) return reject('Access denied')
         if (type === 'push' && repo.match(/read-only/)) return reject('Write access denied')

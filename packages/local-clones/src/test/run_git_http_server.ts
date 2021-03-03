@@ -1,14 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RemoteUrl, RepoId } from 'git-en-boite-core'
 import Server from 'node-git-server'
 
-// TODO: fix types in here, remove those eslint disablers
+type ServerOptions = {
+  autoCreate?: boolean
+  authenticate?: ({ repo, type }: { repo: string; type: GitOperationType }) => Promise<void>
+}
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const runGitHttpServer = (getRoot: () => string, options: any) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GitOperationType = 'push' | 'fetch'
+
+type StartServer = (repoId: RepoId) => RemoteUrl
+
+export const runGitHttpServer = (getRoot: () => string, options: ServerOptions): StartServer => {
   const gitPort = 4000
-  let server: any
+  let server: {
+    close: () => Promise<void>
+    listen: (port: number, callback: (value: unknown) => void) => void
+  }
   beforeEach(async () => {
     server = new Server(getRoot(), {
       autoCreate: false,
