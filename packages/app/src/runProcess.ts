@@ -1,17 +1,15 @@
 import { Config, createConfig } from 'git-en-boite-config'
 import { LogEvent, WriteLogEvent } from 'git-en-boite-core'
-import { logToPino, setUpLogger } from 'git-en-boite-logging'
+import { setUpLogger } from 'git-en-boite-logging'
 
 const config = createConfig(process.env)
-const log = logToPino(
-  setUpLogger(
-    {
-      version: config.version,
-      environment: process.env.NODE_ENV,
-      service: 'git-en-boite',
-    },
-    config.logger,
-  ),
+const logThat = setUpLogger(
+  {
+    version: config.version,
+    environment: process.env.NODE_ENV,
+    service: 'git-en-boite',
+  },
+  config.logger,
 )
 const serverFailedToStart: (error: Error) => LogEvent = error => {
   const props: LogEvent = {
@@ -22,9 +20,9 @@ const serverFailedToStart: (error: Error) => LogEvent = error => {
   return Object.assign(props, error)
 }
 
-export function runProcess(start: (config: Config, log: WriteLogEvent) => Promise<void>): void {
-  start(config, log).catch(error => {
-    log(serverFailedToStart(error))
+export function runProcess(start: (config: Config, logThat: WriteLogEvent) => Promise<void>): void {
+  start(config, logThat).catch(error => {
+    logThat(serverFailedToStart(error))
     process.exit(1)
   })
 }
