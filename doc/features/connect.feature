@@ -19,7 +19,7 @@ Feature: Connect
     When a consumer tries to connect to the remote URL "a-bad-url"
     Then it should respond with an error:
       """
-      Repository 'a-bad-url' not found.
+      No git repository found at that URL.
       """
 
   Scenario: Connection attempt using bad JSON

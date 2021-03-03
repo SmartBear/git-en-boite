@@ -1,10 +1,4 @@
-import {
-  AccessDenied,
-  Application,
-  InvalidRepoUrl,
-  RemoteUrl,
-  RepoId,
-} from 'git-en-boite-core'
+import { AccessDenied, Application, InvalidRepoUrl, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -68,7 +62,7 @@ describe('/repos/:repoId', () => {
       const remoteUrl = RemoteUrl.of('a-bad-url')
       app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new InvalidRepoUrl())
       const response = await request.put(`/repos/${repoId}`).send({ remoteUrl }).expect(400)
-      assertThat(response.text, equalTo(`Repository 'a-bad-url' not found.`))
+      assertThat(response.text, equalTo(`No git repository found at that URL.`))
     })
 
     it('responds with 403 if the connection attempt fails with AccessDenied', async () => {
@@ -76,7 +70,7 @@ describe('/repos/:repoId', () => {
       const remoteUrl = RemoteUrl.of('a-bad-url')
       app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new AccessDenied('Sorry!'))
       const response = await request.put(`/repos/${repoId}`).send({ remoteUrl }).expect(403)
-      assertThat(response.text, equalTo(`Access denied to 'a-bad-url': Sorry!`))
+      assertThat(response.text, equalTo(`Access denied: Sorry!`))
     })
 
     describe('validation', () => {

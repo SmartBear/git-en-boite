@@ -65,7 +65,7 @@ describe('POST /repos', () => {
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(400)
-    assertThat(response.text, equalTo(`Repository 'a-bad-url' not found.`))
+    assertThat(response.text, equalTo(`No git repository found at that URL.`))
   })
 
   it('responds with 403 if the connection attempt fails with AccessDenied', async () => {
@@ -77,7 +77,7 @@ describe('POST /repos', () => {
       .post('/repos')
       .send({ repoId: repoId.value, remoteUrl })
       .expect(403)
-    assertThat(response.text, equalTo(`Access denied to 'a-bad-url': Sorry!`))
+    assertThat(response.text, equalTo(`Access denied: Sorry!`))
   })
 
   it('responds with 500 for any other type of error', async () => {

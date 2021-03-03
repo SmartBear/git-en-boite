@@ -1,7 +1,8 @@
-import { AccessDenied, Application, InvalidRepoUrl, RemoteUrl, RepoId } from 'git-en-boite-core'
+import { Application, RemoteUrl, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 import Router from '@koa/router'
 import validateRequestBody from '../../validate_request'
+import { handleRepoConnectionErrors } from './handleRepoConnectionErrors'
 
 const schema = {
   type: 'object',
@@ -28,23 +29,11 @@ export default (app: Application): Router =>
     .put(
       '/:repoId',
       async (ctx, next) => validateRequestBody(ctx, next, schema),
+      handleRepoConnectionErrors,
       async (ctx: Context) => {
         const parsedBody: ParsedBody = parseBody(ctx.request.body)
         const { remoteUrl } = parsedBody
-        try {
-          await app.connectToRemote(RepoId.of(ctx.params.repoId), remoteUrl)
-          ctx.response.status = 200
-        } catch (error) {
-          // TODO: move to generic error handler
-          switch (error.constructor) {
-            case AccessDenied:
-              ctx.throw(403, `Access denied to '${remoteUrl}': ${error.message}`)
-            case InvalidRepoUrl:
-              ctx.throw(400, `Repository '${remoteUrl}' not found.`)
-
-            default:
-              ctx.throw(error)
-          }
-        }
+        await app.connectToRemote(RepoId.of(ctx.params.repoId), remoteUrl)
+        ctx.response.status = 200
       },
     )

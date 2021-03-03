@@ -1,14 +1,9 @@
 import Router from '@koa/router'
-import {
-  Application,
-  RepoSnapshot,
-  RemoteUrl,
-  RepoId,
-  AccessDenied,
-  InvalidRepoUrl,
-} from 'git-en-boite-core'
+import { Application, RemoteUrl, RepoId, RepoSnapshot } from 'git-en-boite-core'
 import { Context } from 'koa'
+
 import validateRequestBody from '../../validate_request'
+import { handleRepoConnectionErrors } from './handleRepoConnectionErrors'
 
 const schema = {
   type: 'object',
@@ -31,6 +26,7 @@ export default (app: Application, router: Router): Router =>
   new Router().post(
     '/',
     async (ctx, next) => validateRequestBody(ctx, next, schema),
+    handleRepoConnectionErrors,
     async (ctx: Context) => {
       const parsedBody: ParsedBody = parseBody(ctx.request.body)
       const { repoId, remoteUrl } = parsedBody
@@ -41,21 +37,8 @@ export default (app: Application, router: Router): Router =>
       })
 
       async function connect() {
-        try {
-          await app.connectToRemote(repoId, remoteUrl)
-          ctx.response.status = 202
-        } catch (error) {
-          // TODO: move to generic error handler
-          switch (error.constructor) {
-            case AccessDenied:
-              ctx.throw(403, `Access denied to '${remoteUrl}': ${error.message}`)
-            case InvalidRepoUrl:
-              ctx.throw(400, `Repository '${remoteUrl}' not found.`)
-
-            default:
-              ctx.throw(error)
-          }
-        }
+        await app.connectToRemote(repoId, remoteUrl)
+        ctx.response.status = 202
       }
 
       async function redirectToExisting(repoInfo: RepoSnapshot) {
