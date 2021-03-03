@@ -4,13 +4,15 @@ import { GetRefs } from '../operations'
 import { GitDirectory } from '../git_directory'
 
 export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Refs>> = async repo => {
-  let output: string
-  try {
-    output = await repo.read('show-ref')
-  } catch (error) {
-    return new Refs()
+  return new Refs(...(await showRef()).map(parse))
+  async function showRef() {
+    // An error is expected here if there are no commits in the repo yet
+    try {
+      return (await repo.read('show-ref')).split('\n')
+    } catch {
+      return []
+    }
   }
-  return new Refs(...output.split('\n').map(parse))
 }
 
 const parse = (line: string): Ref => {
