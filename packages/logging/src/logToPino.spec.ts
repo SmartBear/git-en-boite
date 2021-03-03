@@ -2,11 +2,10 @@ import { logToPino } from './logToPino'
 import * as pino from 'pino'
 import * as split from 'split2'
 import * as Koa from 'koa'
-import { assertThat, hasProperty, not } from 'hamjest'
+import { assertThat, equalTo, hasProperty, not } from 'hamjest'
 import * as supertest from 'supertest'
 
 describe(logToPino.name, () => {
-  describe('serializing objects', () => {})
   it('serializes HTTP request and response objects', async () => {
     const lines: unknown[] = []
     const stream = split((data) => {
@@ -24,5 +23,15 @@ describe(logToPino.name, () => {
     server.close()
     assertThat(lines[0], hasProperty('req', not(hasProperty('_events'))))
     assertThat(lines[0], hasProperty('res', not(hasProperty('_events'))))
+  })
+
+  it('logs an Error as warning', () => {
+    const lines: unknown[] = []
+    const stream = split((data) => {
+      lines.push(JSON.parse(data))
+    })
+    const log = logToPino(pino(stream))
+    log(new Error("Yikes!"))
+    assertThat(lines[0], hasProperty('msg', equalTo('Yikes!')))
   })
 })

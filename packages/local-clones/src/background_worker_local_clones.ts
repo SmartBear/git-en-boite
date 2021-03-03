@@ -187,7 +187,7 @@ class GitRepoWorker implements Closable {
           return await git.push(PendingCommitRef.fromJSON(commitRef))
         }
       } catch (error) {
-        log({ level: 'warn', ...error })
+        log(error)
         throw asSerializedError(error)
       }
     }

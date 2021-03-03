@@ -1,3 +1,3 @@
 import { LogEvent } from './LogEvent'
 
-export type WriteLogEvent = (event: LogEvent) => void
+export type WriteLogEvent = (event: LogEvent | Error) => void
