@@ -12,7 +12,7 @@ import {
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
-import { DirectLocalClone } from '.'
+import { DirectLocalClones } from './direct_local_clone'
 import { asSerializedError, deserialize } from './serialize_errors'
 
 interface Closable {
@@ -84,7 +84,7 @@ export class BackgroundWorkerLocalClones implements LocalClones {
 
   async startWorker(log: WriteLogEvent): Promise<void> {
     this.worker = await GitRepoWorker.start(
-      DirectLocalClone,
+      new DirectLocalClones(),
       this.createRedisClient,
       log,
       this.queueName,

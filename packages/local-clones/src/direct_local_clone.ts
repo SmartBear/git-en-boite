@@ -4,6 +4,7 @@ import {
   CommitMessage,
   Files,
   LocalClone,
+  LocalClones,
   PendingCommitRef,
   Refs,
   RemoteUrl,
@@ -12,30 +13,32 @@ import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { createBareRepo, openBareRepo } from './bare_repo'
 import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
-//TODO: Extract a separate class for the LocalClones interface instead of using static methods
-export class DirectLocalClone implements LocalClone {
-  static async openExisting(path: string): Promise<LocalClone> {
+
+export class DirectLocalClones implements LocalClones {
+  async openExisting(path: string): Promise<LocalClone> {
     if (!this.confirmExists(path)) throw new Error(`Local clone does not exist at path ${path}`)
     return new DirectLocalClone(await openBareRepo(path))
   }
 
-  static async createNew(path: string): Promise<LocalClone> {
+  async createNew(path: string): Promise<LocalClone> {
     if (this.confirmExists(path)) {
       throw new Error(`Local clone already exists at path ${path}`)
     }
     return new DirectLocalClone(await createBareRepo(path))
   }
 
-  static async removeExisting(path: string): Promise<void> {
+  async removeExisting(path: string): Promise<void> {
     if (!fs.existsSync(path)) throw new Error(`Local clone does not exist at path ${path}`)
     fs.rmdirSync(path, { recursive: true })
   }
 
-  static confirmExists(path: string): boolean {
+  confirmExists(path: string): boolean {
     return fs.existsSync(path)
   }
+}
 
-  protected constructor(private readonly git: Dispatch<RepoProtocol>) {}
+class DirectLocalClone implements LocalClone {
+  public constructor(private readonly git: Dispatch<RepoProtocol>) {}
 
   commit(
     commitRef: PendingCommitRef,

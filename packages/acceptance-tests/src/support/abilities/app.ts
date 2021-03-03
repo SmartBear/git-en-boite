@@ -2,7 +2,7 @@ import { Before } from '@cucumber/cucumber'
 import { EventEmitter } from 'events'
 import { createConfig } from 'git-en-boite-config'
 import { fetchRepoAfterConnected } from 'git-en-boite-core'
-import { DirectLocalClone } from 'git-en-boite-local-clones'
+import { DirectLocalClones } from 'git-en-boite-local-clones'
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { dirSync } from 'tmp'
 
@@ -13,7 +13,11 @@ Before(async function (this: World) {
   this.domainEvents = new EventEmitter()
   const config = createConfig()
   const gitReposPath = dirSync().name
-  const repoIndex = new InventoryOfReposOnDisk(gitReposPath, DirectLocalClone, this.domainEvents)
+  const repoIndex = new InventoryOfReposOnDisk(
+    gitReposPath,
+    new DirectLocalClones(),
+    this.domainEvents,
+  )
   const log = () => ({})
   this.app = new LaBoîte(
     repoIndex,

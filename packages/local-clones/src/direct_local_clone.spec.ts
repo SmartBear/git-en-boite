@@ -2,11 +2,11 @@ import { dirSync } from 'tmp'
 
 import { verifyLocalCloneContract } from './contracts/verifyLocalCloneContract'
 import { verifyLocalClonesContract } from './contracts/verifyLocalClonesContract'
-import { DirectLocalClone } from '.'
+import { DirectLocalClones } from '.'
 
-describe(DirectLocalClone.name, () => {
-  verifyLocalClonesContract(() => DirectLocalClone)
-  verifyLocalCloneContract(() => DirectLocalClone)
+describe(DirectLocalClones.name, () => {
+  verifyLocalClonesContract(() => new DirectLocalClones())
+  verifyLocalCloneContract(() => new DirectLocalClones())
 
   let root: string
 

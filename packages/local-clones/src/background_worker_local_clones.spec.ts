@@ -1,8 +1,6 @@
-import { equal } from 'assert'
 import { createConfig } from 'git-en-boite-config'
 import { RemoteUrl, WriteLogEvent } from 'git-en-boite-core'
 import {
-  anything,
   assertThat,
   contains,
   equalTo,
@@ -19,7 +17,7 @@ import path from 'path'
 import sinon from 'sinon'
 import { dirSync } from 'tmp'
 
-import { BackgroundWorkerLocalClones, createBareRepo, DirectLocalClone } from '.'
+import { BackgroundWorkerLocalClones, createBareRepo, DirectLocalClones } from '.'
 import { verifyLocalCloneContract } from './contracts/verifyLocalCloneContract'
 import { verifyLocalClonesContract } from './contracts/verifyLocalClonesContract'
 
@@ -38,7 +36,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
     beforeEach(async function () {
       const queueName = nanoid()
       localClones = await BackgroundWorkerLocalClones.connect(
-        DirectLocalClone,
+        new DirectLocalClones(),
         config.redis,
         queueName,
         log,
@@ -77,7 +75,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
     beforeEach(async function () {
       const queueName = nanoid()
       localClones = await BackgroundWorkerLocalClones.connect(
-        DirectLocalClone,
+        new DirectLocalClones(),
         config.redis,
         queueName,
         log,
@@ -107,7 +105,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
     it('throws an error if the redis connection cannot be established', async () => {
       const badRedisOptions = 'redis://localhost:1234'
       const connecting = BackgroundWorkerLocalClones.connect(
-        DirectLocalClone,
+        new DirectLocalClones(),
         badRedisOptions,
         'a-queue',
         log,
