@@ -13,7 +13,7 @@ import {
   promiseThat,
   rejected,
 } from 'hamjest'
-import { wasCalled, wasCalledInOrder, wasCalledWith } from 'hamjest-sinon'
+import { wasCalledInOrder } from 'hamjest-sinon'
 import { nanoid } from 'nanoid'
 import path from 'path'
 import sinon from 'sinon'
