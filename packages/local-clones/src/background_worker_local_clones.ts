@@ -23,7 +23,7 @@ export class BackgroundWorkerLocalClones implements LocalClones {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private queue: Queue<any>
   private queueEvents: QueueEvents
-  private queueClient: IORedis.Redis
+  private connection: IORedis.Redis
   private worker: Closable = {
     close: async () => {
       //no-op
@@ -56,10 +56,9 @@ export class BackgroundWorkerLocalClones implements LocalClones {
   }
 
   protected async connect(): Promise<BackgroundWorkerLocalClones> {
-    this.queueClient = await this.createRedisClient()
-    // TODO: pass redisOptions once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.queue = new Queue(this.queueName, { connection: this.queueClient })
-    // according to the docs, the QueueEvents needs its own connection
+    this.connection = await this.createRedisClient()
+    this.queue = new Queue(this.queueName, { connection: this.connection })
+    // The QueueEvents needs its own connection
     this.queueEvents = new QueueEvents(this.queueName, {
       connection: await this.createRedisClient(),
     })
@@ -96,8 +95,8 @@ export class BackgroundWorkerLocalClones implements LocalClones {
     await this.worker.close()
     await this.queueEvents.close()
     await new Promise(resolve => {
-      this.queueClient.on('end', resolve)
-      this.queueClient.disconnect()
+      this.connection.on('end', resolve)
+      this.connection.disconnect()
     })
   }
 }
@@ -163,13 +162,17 @@ class GitRepoWorker implements Closable {
 
   protected constructor(
     gitRepos: LocalClones,
-    readonly redisClient: IORedis.Redis,
+    readonly connection: IORedis.Redis,
     log: WriteLogEvent,
     queueName: string,
   ) {
     const processJob = async (job: Job) => {
       try {
-        log({ message: `received: ${job.name}`, level: 'info', job: { name: job.name, data: job.data }})
+        log({
+          message: `received: ${job.name}`,
+          level: 'info',
+          job: { name: job.name, data: job.data },
+        })
         if (job.name === 'ping') {
           return {}
         }
@@ -191,14 +194,13 @@ class GitRepoWorker implements Closable {
         throw asSerializedError(error)
       }
     }
-    // TODO: pass redisUrl to Worker once https://github.com/taskforcesh/bullmq/issues/171 fixed
-    this.worker = new Worker(queueName, processJob, { connection: this.redisClient })
+    this.worker = new Worker(queueName, processJob, { connection: this.connection })
   }
 
   async close(): Promise<void> {
     await this.worker.close(true)
     await this.worker.disconnect()
-    await this.redisClient.disconnect()
+    await this.connection.disconnect()
   }
 }
 
