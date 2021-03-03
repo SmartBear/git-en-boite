@@ -4,16 +4,16 @@ import { GetRefs } from '../operations'
 import { GitDirectory } from '../git_directory'
 
 export const handleGetRefs: Handle<GitDirectory, AsyncQuery<GetRefs, Refs>> = async repo => {
+  let output: string
   try {
-    const output = await repo.read('show-ref')
-    return new Refs(
-      ...output
-        .split('\n')
-        .map(line => line.trim().split(' '))
-        .map(([revision, name]) => new Ref(CommitName.of(revision), RefName.parse(name))),
-    )
+    output = await repo.read('show-ref')
   } catch (error) {
-    // TODO: only wrap the git call in the error handler so we don't swallow errors parsing the git output
     return new Refs()
   }
+  return new Refs(...output.split('\n').map(parse))
+}
+
+const parse = (line: string): Ref => {
+  const [revision, name] = line.trim().split(' ')
+  return new Ref(CommitName.of(revision), RefName.parse(name))
 }
