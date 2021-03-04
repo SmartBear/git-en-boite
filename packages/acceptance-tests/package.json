@@ -4,9 +4,10 @@
   "description": "Acceptance tests automation cod",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
-    "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features",
+    "lint:fix": "eslint '*/**/*.ts' --quiet --fix",
+    "lint": "eslint '*/**/*.ts'",
     "test:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features -p wip",
-    "lint": "eslint '*/**/*.ts' --quiet --fix"
+    "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features"
   },
   "author": "",
   "license": "ISC",

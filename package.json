@@ -7,6 +7,7 @@
     "build": "tsc --build",
     "bumbailiff": "bumbailiff 21",
     "lint": "yarn workspaces run lint",
+    "lint:fix": "yarn workspaces run lint:fix",
     "local-clones": "yarn workspace git-en-boite-local-clones",
     "start": "yarn app start",
     "start:server": "node packages/app/dist/server.js",

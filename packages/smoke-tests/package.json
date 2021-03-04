@@ -4,9 +4,10 @@
   "description": "Smoke tests for Git-en-Boîte",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
+    "lint:fix": "eslint '**/*.ts' --quiet --fix",
+    "lint": "eslint '**/*.ts'",
     "start": "TS_NODE_TRANSPILE_ONLY=1 mocha --bail",
-    "test": "#noop",
-    "lint": "eslint '**/*.ts' --quiet --fix"
+    "test": "#noop"
   },
   "author": "",
   "license": "ISC",

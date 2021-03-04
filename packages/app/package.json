@@ -6,12 +6,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
-    "test": "#no-op",
-    "test:wip": "#no-op",
+    "lint:fix": "eslint '*/**/*.ts' --quiet --fix",
+    "lint": "eslint '*/**/*.ts'",
     "start:server": "ts-node -r tsconfig-paths/register dist/server.js",
     "start:worker": "ts-node -r tsconfig-paths/register dist/worker.js",
     "start": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:worker\" -n server,worker -c green,yellow",
-    "lint": "eslint '*/**/*.ts' --quiet --fix"
+    "test:wip": "#no-op",
+    "test": "#no-op"
   },
   "author": "",
   "license": "ISC",

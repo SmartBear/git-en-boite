@@ -8,7 +8,8 @@
   "scripts": {
     "build:clean": "rm -rf dist *.tsbuildinfo",
     "build": "tsc --build",
-    "lint": "eslint src/**/*.ts --fix",
+    "lint:fix": "eslint src/**/*.ts --quiet --fix",
+    "lint": "eslint src/**/*.ts",
     "test:wip": "mocha -g @wip",
     "test": "mocha -g @wip -i"
   },
