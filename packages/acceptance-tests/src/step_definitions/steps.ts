@@ -235,6 +235,19 @@ Then('the events received by the consumer should be:', function (this: World, ex
   assertThat(this.events, equalTo(expectedEvents.split('\n')))
 })
 
+Then('the repo should have been fetched {int} times', async function (this: World, expectedTimes: number) {
+  for (const _ of new Array(expectedTimes))
+    await promiseThat(
+      new Promise<void>((received) =>
+        this.domainEvents.on('repo.fetched', (event) => event.repoId.equals(this.repoId) && received())
+      ),
+      fulfilled()
+    )
+})
+
+Then('the events received by the consumer should be:', function (this: World, expectedEvents: string) {
+  assertThat(this.events, equalTo(expectedEvents.split('\n')))
+})
 Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
   assertThat(this.lastResponse.status, equalTo(expectedStatus))
 })
