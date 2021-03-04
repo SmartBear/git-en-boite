@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { Author, BranchName, CommitName, Email, Files, NameOfPerson, RepoId } from 'git-en-boite-core'
 import { GitDirectory } from 'git-en-boite-local-clones'
-import { assertThat, contains, empty, equalTo, hasItem, hasProperties, not } from 'hamjest'
+import { assertThat, empty, hasItem, hasProperties, not } from 'hamjest'
 import { nanoid } from 'nanoid'
 import fetch, { Response } from 'node-fetch'
 import os from 'os'

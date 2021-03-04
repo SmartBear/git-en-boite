@@ -7,7 +7,7 @@ import { createBareRepo } from '../bare_repo'
 import { dirSync } from 'tmp'
 
 import { handleCommit, handleFetch, handleGetRefs, handleInit, handlePush, handleSetOrigin } from '.'
-import { openBareRepo, LocalCommitRef } from '..'
+import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, Push, SetOrigin } from '../operations'
 

@@ -1,4 +1,4 @@
-import { assertThat, containsString, equalTo, hasProperty, matchesPattern, throws } from 'hamjest'
+import { assertThat, containsString, equalTo, hasProperty, throws } from 'hamjest'
 
 import { createConfig } from './config'
 
