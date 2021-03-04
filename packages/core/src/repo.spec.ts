@@ -1,13 +1,5 @@
 import { EventEmitter } from 'events'
-import {
-  assertThat,
-  containsInAnyOrder,
-  fulfilled,
-  isRejectedWith,
-  promiseThat,
-  rejected,
-  equalTo,
-} from 'hamjest'
+import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat, rejected, equalTo } from 'hamjest'
 import { stubInterface, StubbedInstance } from 'ts-sinon'
 
 import { BranchName, BranchSnapshot, LocalClone, Ref, RefName, Refs, Repo, RepoId } from '.'
@@ -23,9 +15,9 @@ describe(Repo.name, () => {
       let finishGitConnect: () => void
       const localClone = stubInterface<LocalClone>()
       localClone.setOriginTo.returns(
-        new Promise(resolve => {
+        new Promise((resolve) => {
           finishGitConnect = resolve
-        }),
+        })
       )
       const repo = new Repo(RepoId.of('a-repo-id'), localClone, domainEvents)
       const connecting = repo.setOriginTo(RemoteUrl.of('a-remote-url'))
@@ -37,10 +29,7 @@ describe(Repo.name, () => {
       const localClone = stubInterface<LocalClone>()
       localClone.setOriginTo.rejects(new Error('Unable to connect'))
       const repo = new Repo(RepoId.of('a-repo-id'), localClone, domainEvents)
-      await promiseThat(
-        repo.setOriginTo(RemoteUrl.of('a-bad-url')),
-        isRejectedWith(new Error('Unable to connect')),
-      )
+      await promiseThat(repo.setOriginTo(RemoteUrl.of('a-bad-url')), isRejectedWith(new Error('Unable to connect')))
     })
 
     it('emits a `repo.conected event', async () => {
@@ -49,8 +38,8 @@ describe(Repo.name, () => {
       const localClone = stubInterface<LocalClone>()
       localClone.setOriginTo.resolves()
       const repo = new Repo(repoId, localClone, domainEvents)
-      const waitingForEvent = new Promise<void>(received =>
-        domainEvents.on('repo.connected', event => event.repoId.equals(repoId) && received()),
+      const waitingForEvent = new Promise<void>((received) =>
+        domainEvents.on('repo.connected', (event) => event.repoId.equals(repoId) && received())
       )
       repo.setOriginTo(remoteUrl)
       await promiseThat(waitingForEvent, fulfilled())
@@ -71,8 +60,8 @@ describe(Repo.name, () => {
       const localClone = stubInterface<LocalClone>()
       localClone.fetch.resolves()
       const repo = new Repo(repoId, localClone, domainEvents)
-      const waitingForEvent = new Promise<void>(received =>
-        domainEvents.on('repo.fetched', event => event.repoId.equals(repoId) && received()),
+      const waitingForEvent = new Promise<void>((received) =>
+        domainEvents.on('repo.fetched', (event) => event.repoId.equals(repoId) && received())
       )
       repo.fetch()
       await promiseThat(waitingForEvent, fulfilled())
@@ -96,11 +85,11 @@ describe(Repo.name, () => {
       it('emits a `repo.fetch-failed` event', async () => {
         const repo = new Repo(repoId, localClone, domainEvents)
         await promiseThat(repo.fetch(), rejected(equalTo(error)))
-        const waitingForEvent = new Promise<void>(received =>
+        const waitingForEvent = new Promise<void>((received) =>
           domainEvents.on(
             'repo.fetch-failed',
-            event => event.repoId.equals(repoId) && event.error === error && received(),
-          ),
+            (event) => event.repoId.equals(repoId) && event.error === error && received()
+          )
         )
         repo.fetch().catch(() => {
           // expected
@@ -118,11 +107,8 @@ describe(Repo.name, () => {
           new Ref(CommitName.of('1'), RefName.fetchedFromOrigin(BranchName.of('main'))),
           new Ref(CommitName.of('2'), RefName.fetchedFromOrigin(BranchName.of('develop'))),
           new Ref(CommitName.of('3'), RefName.forPendingCommit(BranchName.of('develop'))),
-          new Ref(
-            CommitName.of('unlikely-this-would-happen'),
-            RefName.localBranch(BranchName.of('test')),
-          ),
-        ),
+          new Ref(CommitName.of('unlikely-this-would-happen'), RefName.localBranch(BranchName.of('test')))
+        )
       )
       const expectedBranches: BranchSnapshot[] = [
         new BranchSnapshot(BranchName.of('main'), CommitName.of('1')),

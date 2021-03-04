@@ -17,7 +17,7 @@ export class Commit {
     public readonly commitRef: CommitRef,
     public readonly files: Files,
     public readonly message: CommitMessage,
-    public readonly author: Author,
+    public readonly author: Author
   ) {}
 
   static toCommitRef(commitRef: CommitRef): Commit {
@@ -25,7 +25,7 @@ export class Commit {
       commitRef,
       [],
       CommitMessage.of('A commit message'),
-      new Author(new NameOfPerson('A user'), new Email('unknown@unknown.com')),
+      new Author(new NameOfPerson('A user'), new Email('unknown@unknown.com'))
     )
   }
 
@@ -126,5 +126,5 @@ export type RepoProtocol = [
   AsyncCommand<ValidateRemote>,
   AsyncQuery<GetFiles, Files>,
   AsyncQuery<GetRefs, Refs>,
-  AsyncQuery<GetConfig, Config>,
+  AsyncQuery<GetConfig, Config>
 ]

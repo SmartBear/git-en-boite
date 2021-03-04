@@ -8,7 +8,7 @@ export default (app: Application): Router =>
     const repoId = RepoId.of(ctx.params.repoId)
     const result = await app.getInfo(repoId)
     result.respond({
-      foundOne: async repoInfo => {
+      foundOne: async (repoInfo) => {
         ctx.body = repoInfo
       },
       foundNone: async () => {

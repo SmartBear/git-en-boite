@@ -13,7 +13,7 @@ export class InventoryOfReposOnDisk implements InventoryOfRepos {
   constructor(
     private basePath: string,
     private localClones: LocalClones,
-    private domainEvents: PublishesDomainEvents,
+    private domainEvents: PublishesDomainEvents
   ) {}
 
   public async create(repoId: RepoId, transaction: Transaction<Repo>): Promise<void> {

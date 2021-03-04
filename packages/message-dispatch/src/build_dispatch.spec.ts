@@ -48,7 +48,7 @@ describe('dispatch', () => {
     const party = new Party()
     const dispatch = messageDispatch<Protocol>().withHandlers(party, [
       [Sing, (party, { songName }) => (party.sounds = songName.toLocaleLowerCase())],
-      [EatCake, party => (party.cake = 'gone')],
+      [EatCake, (party) => (party.cake = 'gone')],
     ])
     dispatch(singHappyBirthday)
     dispatch(eatCake)
@@ -65,7 +65,7 @@ describe('dispatch', () => {
     const party = new Party()
     const dispatch = messageDispatch<Protocol>().withHandlers(party, [
       [GetGift, () => pony],
-      [EatCake, party => (party.cake = 'gone')],
+      [EatCake, (party) => (party.cake = 'gone')],
     ])
     const result = dispatch(new GetGift())
     assertThat(result, instanceOf(Gift))
@@ -85,12 +85,8 @@ describe('dispatch', () => {
       type Protocol = [Command<Sing>, Command<EatCake>, Command<ThrowParty>]
       const handleSing: Handle<Party, Command<Sing>> = (party, { songName }) =>
         (party.sounds = songName.toLocaleLowerCase())
-      const handleEatCake: Handle<Party, Command<EatCake>> = party => (party.cake = 'gone')
-      const handleThrowParty: Handle<Party, Command<ThrowParty>> = (
-        _,
-        { songName }: ThrowParty,
-        dispatch,
-      ) => {
+      const handleEatCake: Handle<Party, Command<EatCake>> = (party) => (party.cake = 'gone')
+      const handleThrowParty: Handle<Party, Command<ThrowParty>> = (_, { songName }: ThrowParty, dispatch) => {
         dispatch(Sing.theSong(songName))
         dispatch(new EatCake())
       }
@@ -108,23 +104,23 @@ describe('dispatch', () => {
     it('works when the low-level commands are asynchronous', async () => {
       type Protocol = [AsyncCommand<Sing>, AsyncCommand<EatCake>, AsyncCommand<ThrowParty>]
       const handleSingSlowly: Handle<Party, AsyncCommand<Sing>> = async (party, { songName }) =>
-        new Promise(resolve =>
+        new Promise((resolve) =>
           setTimeout(() => {
             party.sounds = songName.toLocaleLowerCase()
             resolve()
-          }, 0),
+          }, 0)
         )
-      const handleEatCakeSlowly: Handle<Party, AsyncCommand<EatCake>> = party =>
-        new Promise(resolve =>
+      const handleEatCakeSlowly: Handle<Party, AsyncCommand<EatCake>> = (party) =>
+        new Promise((resolve) =>
           setTimeout(() => {
             party.cake = 'gone'
             resolve()
-          }, 0),
+          }, 0)
         )
       const handleThrowParty: Handle<Party, AsyncCommand<ThrowParty>> = async (
         _,
         { songName }: ThrowParty,
-        dispatch,
+        dispatch
       ) => {
         await dispatch(Sing.theSong(songName))
         await dispatch(new EatCake())

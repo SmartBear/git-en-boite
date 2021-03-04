@@ -9,7 +9,7 @@ export abstract class QueryResult<ResultType> {
   abstract respond(responder: Responder<ResultType>): unknown
 
   static from<ResultType>(...results: ResultType[]): FailureResult<ResultType> {
-    const cleanResults = results.filter(result => !!result)
+    const cleanResults = results.filter((result) => !!result)
     if (cleanResults.length === 1) return new SingleSuccessResult<ResultType>(cleanResults[0])
     if (cleanResults.length > 1) return new ManySuccessResult<ResultType>(...cleanResults)
     return new FailureResult<ResultType>()

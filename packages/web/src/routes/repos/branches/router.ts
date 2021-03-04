@@ -7,5 +7,5 @@ export default (app: Application, parentRouter: Router): Router =>
   new Router().use(
     '/:branchName/commits',
     commits(app, parentRouter).routes(),
-    commits(app, parentRouter).allowedMethods(),
+    commits(app, parentRouter).allowedMethods()
   )

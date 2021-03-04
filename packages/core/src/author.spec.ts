@@ -16,13 +16,13 @@ describe(Author.name, () => {
     it('fails when the name is missing', () => {
       assertThat(
         () => Author.fromJSON({ email }),
-        throws(hasProperty('message', matchesPattern('should have a property "name"'))),
+        throws(hasProperty('message', matchesPattern('should have a property "name"')))
       )
     })
     it('fails when the email is missing', () => {
       assertThat(
         () => Author.fromJSON({ name }),
-        throws(hasProperty('message', matchesPattern('should have a property "email"'))),
+        throws(hasProperty('message', matchesPattern('should have a property "email"')))
       )
     })
   })

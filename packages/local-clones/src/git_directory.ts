@@ -18,11 +18,7 @@ export class GitDirectory {
     return (await this.exec(cmd, args, options)).stdout.trim()
   }
 
-  async exec(
-    cmd: string,
-    args: string[] = [],
-    options?: IGitExecutionOptions,
-  ): Promise<IGitResult> {
+  async exec(cmd: string, args: string[] = [], options?: IGitExecutionOptions): Promise<IGitResult> {
     const result = await GitProcess.exec([cmd, ...args], this.path, this.buildOptions(options))
     if (result.exitCode === 0) return result
     throw GitCommandError.for(cmd, args, result)
@@ -37,7 +33,7 @@ export class GitDirectory {
     const result = await operateOnIndex(
       new GitDirectory(this.path, {
         env: { GIT_INDEX_FILE: indexFile },
-      }),
+      })
     )
     if (await exists(indexFile)) await unlink(indexFile)
     return result

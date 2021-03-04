@@ -57,10 +57,7 @@ describe('handleGetRefs', () => {
 
       it('returns the revision of the latest commit', async () => {
         const revision = CommitName.of(await repo.read('rev-parse', [commitRef.local.value]))
-        await promiseThat(
-          git(GetRefs.all()),
-          fulfilled(equalTo([new Ref(revision, commitRef.local)])),
-        )
+        await promiseThat(git(GetRefs.all()), fulfilled(equalTo([new Ref(revision, commitRef.local)])))
       })
     })
   })

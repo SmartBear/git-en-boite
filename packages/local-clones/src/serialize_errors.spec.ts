@@ -1,9 +1,9 @@
-import { InvalidRepoUrl, WriteLogEvent } from 'git-en-boite-core';
-import { assertThat, equalTo, hasProperty, instanceOf } from 'hamjest';
-import { wasCalledWith } from 'hamjest-sinon';
-import sinon from 'sinon';
+import { InvalidRepoUrl, WriteLogEvent } from 'git-en-boite-core'
+import { assertThat, equalTo, hasProperty, instanceOf } from 'hamjest'
+import { wasCalledWith } from 'hamjest-sinon'
+import sinon from 'sinon'
 
-import { asSerializedError, deserialize } from './serialize_errors';
+import { asSerializedError, deserialize } from './serialize_errors'
 
 describe('deserialize', () => {
   let log: WriteLogEvent

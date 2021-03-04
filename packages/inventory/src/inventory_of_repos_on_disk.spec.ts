@@ -7,16 +7,7 @@ import {
   RepoAlreadyExists,
   RepoId,
 } from 'git-en-boite-core'
-import {
-  assertThat,
-  defined,
-  equalTo,
-  falsey,
-  hasProperty,
-  promiseThat,
-  rejected,
-  truthy,
-} from 'hamjest'
+import { assertThat, defined, equalTo, falsey, hasProperty, promiseThat, rejected, truthy } from 'hamjest'
 import { wasCalled } from 'hamjest-sinon'
 import { dirSync } from 'tmp'
 import { stubInterface } from 'ts-sinon'
@@ -46,7 +37,7 @@ describe(InventoryOfReposOnDisk.name, () => {
 
     it('yields a Repo to the transaction', async () => {
       let foundRepo: Repo
-      await inventory.create(repoId, async repo => {
+      await inventory.create(repoId, async (repo) => {
         foundRepo = repo
       })
       assertThat(foundRepo, defined())
@@ -61,7 +52,7 @@ describe(InventoryOfReposOnDisk.name, () => {
           inventory.create(repoId, async () => {
             throw error
           }),
-          rejected(error),
+          rejected(error)
         )
       })
 
@@ -84,7 +75,7 @@ describe(InventoryOfReposOnDisk.name, () => {
       it(`fails with ${RepoAlreadyExists.name}`, async () => {
         await promiseThat(
           inventory.create(repoId, async () => {}),
-          rejected(RepoAlreadyExists.forRepoId(repoId)),
+          rejected(RepoAlreadyExists.forRepoId(repoId))
         )
       })
     })

@@ -44,5 +44,5 @@ export default (app: Application, router: Router): Router =>
       async function redirectToExisting(repoInfo: RepoSnapshot) {
         ctx.response.redirect(router.url('get-repo', { repoId: repoInfo.repoId.urlEncode() }))
       }
-    },
+    }
   )

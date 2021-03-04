@@ -41,7 +41,7 @@ describe('handleSetOrigin', () => {
     await git(SetOrigin.toUrl(repoUrl))
     await promiseThat(
       exec('git remote get-url origin', { cwd: repoPath }),
-      fulfilled(hasProperty('stdout', startsWith(repoUrl.value))),
+      fulfilled(hasProperty('stdout', startsWith(repoUrl.value)))
     )
   })
 
@@ -56,7 +56,7 @@ describe('handleSetOrigin', () => {
       await git(SetOrigin.toUrl(newRepoUrl))
       await promiseThat(
         exec('git remote get-url origin', { cwd: repoPath }),
-        fulfilled(hasProperty('stdout', startsWith(newRepoUrl.value))),
+        fulfilled(hasProperty('stdout', startsWith(newRepoUrl.value)))
       )
     })
   })

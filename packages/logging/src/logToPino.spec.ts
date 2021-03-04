@@ -31,7 +31,7 @@ describe(logToPino.name, () => {
       lines.push(JSON.parse(data))
     })
     const log = logToPino(pino(stream))
-    log(new Error("Yikes!"))
+    log(new Error('Yikes!'))
     assertThat(lines[0], hasProperty('msg', equalTo('Yikes!')))
   })
 })

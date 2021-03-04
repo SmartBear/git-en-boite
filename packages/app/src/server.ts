@@ -1,11 +1,6 @@
 import { EventEmitter } from 'events'
 import { Config } from 'git-en-boite-config'
-import {
-  Application,
-  DomainEventBus,
-  fetchRepoAfterConnected,
-  WriteLogEvent,
-} from 'git-en-boite-core'
+import { Application, DomainEventBus, fetchRepoAfterConnected, WriteLogEvent } from 'git-en-boite-core'
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { BackgroundWorkerLocalClones, DirectLocalClones } from 'git-en-boite-local-clones'
 import { startWebServer } from 'git-en-boite-web'
@@ -20,17 +15,11 @@ runProcess(async (config: Config, log: WriteLogEvent) => {
     new DirectLocalClones(),
     config.redis,
     config.git.queueName,
-    log,
+    log
   )
   await localClones.pingWorkers()
   const inventoryOfRepos = new InventoryOfReposOnDisk(config.git.root, localClones, domainEvents)
-  const app: Application = new LaBoîte(
-    inventoryOfRepos,
-    config.version,
-    domainEvents,
-    [fetchRepoAfterConnected],
-    log,
-  )
+  const app: Application = new LaBoîte(inventoryOfRepos, config.version, domainEvents, [fetchRepoAfterConnected], log)
 
   const port = 3001
   startWebServer(app, port, log)

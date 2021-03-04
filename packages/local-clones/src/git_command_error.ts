@@ -16,7 +16,7 @@ export class GitCommandError extends Error {
     message: string,
     public readonly cmd?: string,
     public readonly args?: string[],
-    public readonly result?: IGitResult,
+    public readonly result?: IGitResult
   ) {
     super(message)
   }

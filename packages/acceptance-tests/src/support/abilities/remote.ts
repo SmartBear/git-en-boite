@@ -18,7 +18,7 @@ Before(async function (this: World) {
   server = new Server(root, {
     autoCreate: false,
   })
-  await new Promise(started => server.listen(port, started))
+  await new Promise((started) => server.listen(port, started))
   this.remoteUrl = (repoId: RepoId) => RemoteUrl.of(`http://localhost:${port}/${repoId}`)
   this.remotePath = (repoId: RepoId) => path.resolve(root, repoId.value)
   this.moveRemoteToPath = (oldRemotePath: string, newRemotePath: string) =>

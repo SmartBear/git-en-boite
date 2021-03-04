@@ -5,7 +5,7 @@ export const isSuccess: () => Matcher = () => ({
   matches: (response: Response) => {
     return response.status === 200
   },
-  describeTo: description => {
+  describeTo: (description) => {
     description.append('A response with status code 200')
   },
   describeMismatch: (resp, description) => {

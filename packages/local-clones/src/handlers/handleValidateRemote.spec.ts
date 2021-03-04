@@ -58,7 +58,7 @@ describe('handleValidateRemote', function () {
     await git(Init.bareRepo())
     await promiseThat(
       git(ValidateRemote.url(remoteUrl(RepoId.of('no-such-repo')))),
-      rejected(instanceOf(InvalidRepoUrl)),
+      rejected(instanceOf(InvalidRepoUrl))
     )
   })
 
@@ -68,7 +68,7 @@ describe('handleValidateRemote', function () {
     await git(Init.bareRepo())
     await promiseThat(
       git(ValidateRemote.url(remoteUrl(RepoId.of('a-private-repo')))),
-      rejected(instanceOf(AccessDenied)),
+      rejected(instanceOf(AccessDenied))
     )
   })
 
@@ -77,10 +77,7 @@ describe('handleValidateRemote', function () {
     const repoPath = path.resolve(root, repoId.value)
     const git = repo(repoPath)
     await git(Init.bareRepo())
-    await promiseThat(
-      git(ValidateRemote.url(remoteUrl(repoId))),
-      rejected(instanceOf(AccessDenied)),
-    )
+    await promiseThat(git(ValidateRemote.url(remoteUrl(repoId))), rejected(instanceOf(AccessDenied)))
   })
 
   it('cleans up after committing a test branch to check write permission', async () => {
@@ -98,10 +95,7 @@ describe('handleValidateRemote', function () {
     const repoPath = path.resolve(root, 'a-repo-id')
     const git = repo(repoPath)
     await git(Init.bareRepo())
-    await promiseThat(
-      git(ValidateRemote.url(RemoteUrl.of('a-bad-url'))),
-      rejected(instanceOf(InvalidRepoUrl)),
-    )
+    await promiseThat(git(ValidateRemote.url(RemoteUrl.of('a-bad-url'))), rejected(instanceOf(InvalidRepoUrl)))
   })
 
   xcontext('for real provider URLs @slow', function (this: Suite) {
@@ -116,28 +110,20 @@ describe('handleValidateRemote', function () {
     context('gitlab.com', () => {
       it('works for a public repo URL', () =>
         promiseThat(
-          git(
-            ValidateRemote.url(
-              RemoteUrl.of('https://gitlab.com/mattwynne/git-en-boite-public.git'),
-            ),
-          ),
-          fulfilled(),
+          git(ValidateRemote.url(RemoteUrl.of('https://gitlab.com/mattwynne/git-en-boite-public.git'))),
+          fulfilled()
         ))
 
       it('throws AccessDenied for a non-existent but valid-looking repo URL', () =>
         promiseThat(
-          git(
-            ValidateRemote.url(
-              RemoteUrl.of('https://gitlab.com/mattwynne/git-en-boite-private.git'),
-            ),
-          ),
-          rejected(instanceOf(AccessDenied)),
+          git(ValidateRemote.url(RemoteUrl.of('https://gitlab.com/mattwynne/git-en-boite-private.git'))),
+          rejected(instanceOf(AccessDenied))
         ))
 
       it('throws NotFound for a nonsense URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://gitlab.com/mattwynne.git'))),
-          rejected(instanceOf(InvalidRepoUrl)),
+          rejected(instanceOf(InvalidRepoUrl))
         ))
     })
 
@@ -145,19 +131,19 @@ describe('handleValidateRemote', function () {
       it('works for a public repo URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://bitbucket.org/git-en-boite/public.git'))),
-          fulfilled(),
+          fulfilled()
         ))
 
       it('throws AccessDenied for a private repo URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://bitbucket.org/git-en-boite/private.git'))),
-          rejected(instanceOf(AccessDenied)),
+          rejected(instanceOf(AccessDenied))
         ))
 
       it('throws NotFound for a nonsense URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://bitbucket.org/not-a-repo.git'))),
-          rejected(instanceOf(InvalidRepoUrl)),
+          rejected(instanceOf(InvalidRepoUrl))
         ))
     })
 
@@ -165,23 +151,19 @@ describe('handleValidateRemote', function () {
       it('throws NotFound for a nonsense URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://github.com/not-a-repo.git'))),
-          rejected(instanceOf(InvalidRepoUrl)),
+          rejected(instanceOf(InvalidRepoUrl))
         ))
 
       it('throws AccessDenied for a non-existent but valid-looking repo URL', () =>
         promiseThat(
           git(ValidateRemote.url(RemoteUrl.of('https://github.com/smartbear/not-a-repo.git'))),
-          rejected(instanceOf(AccessDenied)),
+          rejected(instanceOf(AccessDenied))
         ))
 
       it('throws AccessDenied for a private repo', () =>
         promiseThat(
-          git(
-            ValidateRemote.url(
-              RemoteUrl.of('https://github.com/smartbear/git-en-boite-test-private.git'),
-            ),
-          ),
-          rejected(instanceOf(AccessDenied)),
+          git(ValidateRemote.url(RemoteUrl.of('https://github.com/smartbear/git-en-boite-test-private.git'))),
+          rejected(instanceOf(AccessDenied))
         ))
     })
   })

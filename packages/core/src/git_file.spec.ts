@@ -14,7 +14,7 @@ describe(GitFile.name, () => {
       const content = 'file content'
       assertThat(
         () => GitFile.fromJSON({ content }),
-        throws(hasProperty('message', containsString('should have a property "path"'))),
+        throws(hasProperty('message', containsString('should have a property "path"')))
       )
     })
 
@@ -22,15 +22,12 @@ describe(GitFile.name, () => {
       const path = 'file content'
       assertThat(
         () => GitFile.fromJSON({ path }),
-        throws(hasProperty('message', containsString('should have a property "content"'))),
+        throws(hasProperty('message', containsString('should have a property "content"')))
       )
     })
 
     it('throws when file does not include content', () => {
-      assertThat(
-        () => GitFile.fromJSON(undefined),
-        throws(hasProperty('message', containsString('should be defined'))),
-      )
+      assertThat(() => GitFile.fromJSON(undefined), throws(hasProperty('message', containsString('should be defined'))))
     })
   })
 })

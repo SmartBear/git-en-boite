@@ -9,9 +9,9 @@ const logThat = setUpLogger(
     environment: process.env.NODE_ENV,
     service: 'git-en-boite',
   },
-  config.logger,
+  config.logger
 )
-const serverFailedToStart: (error: Error) => LogEvent = error => {
+const serverFailedToStart: (error: Error) => LogEvent = (error) => {
   const props: LogEvent = {
     level: 'fatal',
     message: error.message,
@@ -21,7 +21,7 @@ const serverFailedToStart: (error: Error) => LogEvent = error => {
 }
 
 export function runProcess(start: (config: Config, logThat: WriteLogEvent) => Promise<void>): void {
-  start(config, logThat).catch(error => {
+  start(config, logThat).catch((error) => {
     logThat(serverFailedToStart(error))
     process.exit(1)
   })

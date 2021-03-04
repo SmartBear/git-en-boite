@@ -3,7 +3,7 @@ import { AsyncCommand, Handle } from 'git-en-boite-message-dispatch'
 import { GitDirectory } from '../git_directory'
 import { Init } from '../operations'
 
-export const handleInit: Handle<GitDirectory, AsyncCommand<Init>> = async repo => {
+export const handleInit: Handle<GitDirectory, AsyncCommand<Init>> = async (repo) => {
   await repo.exec('init', ['--bare'])
   await repo.exec('config', ['gc.auto', '0'])
   await repo.exec('config', ['gc.pruneExpire', 'never']) // don't prune objects if GC runs

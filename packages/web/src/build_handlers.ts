@@ -7,11 +7,11 @@ type BuildHandler = (app: Application, parentRouter: Router) => Router
 export const buildHandlers = (
   buildHandlers: BuildHandler[],
   app: Application,
-  parentRouter: Router,
+  parentRouter: Router
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Middleware<any, any>[] =>
   buildHandlers
-    .map(buildHandler => {
+    .map((buildHandler) => {
       const handler = buildHandler(app, parentRouter)
       return [handler.routes(), handler.allowedMethods()]
     })

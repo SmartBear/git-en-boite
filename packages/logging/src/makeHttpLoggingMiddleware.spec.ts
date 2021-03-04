@@ -18,12 +18,12 @@ describe(makeHttpLoggingMiddleware.name, () => {
 
   it('logs a 200 request', async () => {
     const lines: unknown[] = []
-    const stream = split(data => {
+    const stream = split((data) => {
       lines.push(JSON.parse(data))
     })
     const app = new Koa()
     app.use(makeHttpLoggingMiddleware(logToPino(pino(stream))))
-    app.use(ctx => (ctx.status = 200))
+    app.use((ctx) => (ctx.status = 200))
     await request(app).get('/').expect(200)
     assertThat(lines[0], hasProperty('req', not(hasProperty('_events'))))
     assertThat(lines[0], hasProperty('req', hasProperty('url', equalTo('/'))))
@@ -33,12 +33,12 @@ describe(makeHttpLoggingMiddleware.name, () => {
 
   it('logs a 200 response', async () => {
     const lines: unknown[] = []
-    const stream = split(data => {
+    const stream = split((data) => {
       lines.push(JSON.parse(data))
     })
     const app = new Koa()
     app.use(makeHttpLoggingMiddleware(logToPino(pino(stream))))
-    app.use(ctx => (ctx.status = 200))
+    app.use((ctx) => (ctx.status = 200))
     await request(app).get('/').expect(200)
     assertThat(lines[1], hasProperty('req', hasProperty('url', equalTo('/'))))
     assertThat(lines[1], hasProperty('res', hasProperty('statusCode', equalTo(200))))
@@ -48,12 +48,12 @@ describe(makeHttpLoggingMiddleware.name, () => {
 
   it('logs a 400 response at level "info"', async () => {
     const lines: unknown[] = []
-    const stream = split(data => {
+    const stream = split((data) => {
       lines.push(JSON.parse(data))
     })
     const app = new Koa()
     app.use(makeHttpLoggingMiddleware(logToPino(pino(stream))))
-    app.use(ctx => ctx.throw(400))
+    app.use((ctx) => ctx.throw(400))
     await request(app).get('/').expect(400)
     assertThat(lines.length, equalTo(2))
     assertThat(lines[1], hasProperty('res', hasProperty('statusCode', equalTo(400))))
@@ -63,7 +63,7 @@ describe(makeHttpLoggingMiddleware.name, () => {
 
   it('logs a 500 response at level "warn"', async () => {
     const lines: unknown[] = []
-    const stream = split(data => {
+    const stream = split((data) => {
       lines.push(JSON.parse(data))
     })
     const app = new Koa()
@@ -82,7 +82,7 @@ describe(makeHttpLoggingMiddleware.name, () => {
   describe(logErrorsFrom.name, () => {
     it('logs an Error at level "error"', async () => {
       const lines: unknown[] = []
-      const stream = split(data => {
+      const stream = split((data) => {
         lines.push(JSON.parse(data))
       })
       const app = new Koa()
@@ -104,7 +104,7 @@ describe(makeHttpLoggingMiddleware.name, () => {
         }
       }
       const lines: unknown[] = []
-      const stream = split(data => {
+      const stream = split((data) => {
         lines.push(JSON.parse(data))
       })
       const app = new Koa()

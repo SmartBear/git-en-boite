@@ -35,15 +35,15 @@ describe('handleInit', () => {
     await git(Init.bareRepo())
     await promiseThat(
       exec('git config --get core.bare', { cwd: repopath }),
-      fulfilled(hasProperty('stdout', startsWith('true'))),
+      fulfilled(hasProperty('stdout', startsWith('true')))
     )
     await promiseThat(
       exec('git config --get gc.auto', { cwd: repopath }),
-      fulfilled(hasProperty('stdout', startsWith('0'))),
+      fulfilled(hasProperty('stdout', startsWith('0')))
     )
     await promiseThat(
       exec('git config --get gc.pruneexpire', { cwd: repopath }),
-      fulfilled(hasProperty('stdout', startsWith('never'))),
+      fulfilled(hasProperty('stdout', startsWith('never')))
     )
   })
 
@@ -53,11 +53,11 @@ describe('handleInit', () => {
     await git(Init.bareRepo())
     await promiseThat(
       exec('git config --get user.name', { cwd: repopath }),
-      fulfilled(hasProperty('stdout', startsWith('Git en boîte'))),
+      fulfilled(hasProperty('stdout', startsWith('Git en boîte')))
     )
     await promiseThat(
       exec('git config --get user.email', { cwd: repopath }),
-      fulfilled(hasProperty('stdout', startsWith('git-en-boite-devs@smartbear.com'))),
+      fulfilled(hasProperty('stdout', startsWith('git-en-boite-devs@smartbear.com')))
     )
   })
 })

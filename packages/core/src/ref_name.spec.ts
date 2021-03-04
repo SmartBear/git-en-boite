@@ -8,37 +8,34 @@ describe(RefName.name, () => {
     it('parses a local branch', () => {
       assertThat(
         RefName.parse(RefName.localBranch(BranchName.of('main')).value).branchName,
-        equalTo(BranchName.of('main')),
+        equalTo(BranchName.of('main'))
       )
     })
 
     it('parses a pending commit ref', () => {
       assertThat(
         RefName.parse(RefName.forPendingCommit(BranchName.of('main')).value).branchName,
-        equalTo(BranchName.of('main')),
+        equalTo(BranchName.of('main'))
       )
     })
 
     it('parses a fetched remote branch', () => {
       assertThat(
         RefName.parse(RefName.fetchedFromOrigin(BranchName.of('main')).value).branchName,
-        equalTo(BranchName.of('main')),
+        equalTo(BranchName.of('main'))
       )
     })
 
     it('throws for an unrecognised string', () => {
       assertThat(
         () => RefName.parse('refs/blah/blah'),
-        throws(hasProperty('message', matchesPattern('Unable to parse'))),
+        throws(hasProperty('message', matchesPattern('Unable to parse')))
       )
     })
   })
 
   it('returns the branchName', () => {
-    assertThat(
-      RefName.fetchedFromOrigin(BranchName.of('main')).branchName,
-      equalTo(BranchName.of('main')),
-    )
+    assertThat(RefName.fetchedFromOrigin(BranchName.of('main')).branchName, equalTo(BranchName.of('main')))
   })
 
   it('can be serialized/deserialized', () => {

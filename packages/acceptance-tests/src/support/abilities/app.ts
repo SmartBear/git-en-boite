@@ -13,17 +13,7 @@ Before(async function (this: World) {
   this.domainEvents = new EventEmitter()
   const config = createConfig()
   const gitReposPath = dirSync().name
-  const repoIndex = new InventoryOfReposOnDisk(
-    gitReposPath,
-    new DirectLocalClones(),
-    this.domainEvents,
-  )
+  const repoIndex = new InventoryOfReposOnDisk(gitReposPath, new DirectLocalClones(), this.domainEvents)
   const log = () => ({})
-  this.app = new LaBoîte(
-    repoIndex,
-    config.version,
-    this.domainEvents,
-    [fetchRepoAfterConnected],
-    log,
-  )
+  this.app = new LaBoîte(repoIndex, config.version, this.domainEvents, [fetchRepoAfterConnected], log)
 })

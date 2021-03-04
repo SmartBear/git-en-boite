@@ -8,7 +8,9 @@ const schema = {
   type: 'object',
   title: 'request-payload',
   properties: {
-    remoteUrl: { type: 'string' },
+    remoteUrl: {
+      type: 'string',
+    },
   },
   required: ['remoteUrl'],
 }
@@ -35,5 +37,5 @@ export default (app: Application): Router =>
         const { remoteUrl } = parsedBody
         await app.connectToRemote(RepoId.of(ctx.params.repoId), remoteUrl)
         ctx.response.status = 200
-      },
+      }
     )

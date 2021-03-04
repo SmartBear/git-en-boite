@@ -44,23 +44,21 @@ describe(GitDirectory.name, () => {
       const repo = new GitDirectory(repoPath)
       await promiseThat(
         repo.exec('not-a-command'),
-        rejected(hasProperty('message', matchesPattern('is not a git command'))),
+        rejected(hasProperty('message', matchesPattern('is not a git command')))
       )
     })
 
     context('for a private repo', () => {
       const remoteUrl = runGitHttpServer(() => root, {
         authenticate: ({ repo }) =>
-          new Promise<void>((resolve, reject) =>
-            repo.match(/private/) ? reject('Access denied') : resolve(),
-          ),
+          new Promise<void>((resolve, reject) => (repo.match(/private/) ? reject('Access denied') : resolve())),
       })
 
       it('never normally asks for a prompt', async () => {
         const repo = new GitDirectory(repoPath)
         await promiseThat(
           repo.exec('ls-remote', [remoteUrl(RepoId.of('a-private-repo')).value]),
-          rejected(instanceOf(AccessDenied)),
+          rejected(instanceOf(AccessDenied))
         )
       })
 
@@ -70,7 +68,7 @@ describe(GitDirectory.name, () => {
           repo.exec('ls-remote', [remoteUrl(RepoId.of('a-private-repo')).value], {
             env: { GIT_TERMINAL_PROMPT: 1 },
           }),
-          rejected(),
+          rejected()
         )
       })
     })
@@ -120,12 +118,12 @@ describe(GitDirectory.name, () => {
       const objectId = await repo.read('hash-object', ['-w', '--stdin'], {
         stdin: 'My file content',
       })
-      await repo.withUniqueIndex(async repoWithIndex => {
+      await repo.withUniqueIndex(async (repoWithIndex) => {
         const file = 'a-file'
         await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
         assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
       })
-      await repo.withUniqueIndex(async repoWithIndex => {
+      await repo.withUniqueIndex(async (repoWithIndex) => {
         const file = 'another-file'
         await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
         assertThat((await repoWithIndex.read('ls-files')).split('\n'), equalTo([file]))
@@ -135,7 +133,7 @@ describe(GitDirectory.name, () => {
 
     it('returns the result of the block', async () => {
       const repo = new GitDirectory(repoPath)
-      const result = await repo.withUniqueIndex(async () => new Promise(resolve => resolve(5)))
+      const result = await repo.withUniqueIndex(async () => new Promise((resolve) => resolve(5)))
       assertThat(result, equalTo(5))
     })
 
@@ -147,9 +145,9 @@ describe(GitDirectory.name, () => {
       })
       const file = 'a-file'
       let done: (value?: unknown) => void
-      const untilDone = new Promise(_done => (done = _done))
+      const untilDone = new Promise((_done) => (done = _done))
       let repoWithIndex: GitDirectory
-      const writingAFile = repo.withUniqueIndex(async _repoWithIndex => {
+      const writingAFile = repo.withUniqueIndex(async (_repoWithIndex) => {
         repoWithIndex = _repoWithIndex
         await repoWithIndex.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, file])
         await untilDone

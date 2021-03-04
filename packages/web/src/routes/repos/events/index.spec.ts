@@ -1,12 +1,6 @@
 import { EventEmitter } from 'events'
 import EventSource from 'eventsource'
-import {
-  Application,
-  DomainEventBus,
-  RepoConnected,
-  RepoFetched,
-  RepoId,
-} from 'git-en-boite-core'
+import { Application, DomainEventBus, RepoConnected, RepoFetched, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo, fulfilled, promiseThat } from 'hamjest'
 import { Server } from 'http'
 import fetch from 'node-fetch'
@@ -51,23 +45,16 @@ describe('GET /repos/:repoId/events', () => {
         domainEvents.emit('repo.connected', new RepoConnected(repoId))
       }
 
-      const receivedEvent = await new Promise(resolve =>
-        eventSource.addEventListener('repo.connected', resolve),
-      )
-      assertThat(
-        RepoId.fromJSON(JSON.parse((receivedEvent as MessageEvent).data).repoId),
-        equalTo(repoId),
-      )
+      const receivedEvent = await new Promise((resolve) => eventSource.addEventListener('repo.connected', resolve))
+      assertThat(RepoId.fromJSON(JSON.parse((receivedEvent as MessageEvent).data).repoId), equalTo(repoId))
     })
   })
 
   describe('waiting for a particular event', () => {
     it('ends the request when that event occurs', async () => {
-      const response = await fetch(
-        `http://localhost:8888/repos/${repoId}/events?until=repo.fetched`,
-      )
+      const response = await fetch(`http://localhost:8888/repos/${repoId}/events?until=repo.fetched`)
       const body = response.body as PassThrough
-      const waitingForRequestToEnd = new Promise(ended => body.on('finish', ended))
+      const waitingForRequestToEnd = new Promise((ended) => body.on('finish', ended))
       domainEvents.emit('repo.connected', new RepoConnected(repoId))
       domainEvents.emit('repo.fetched', new RepoFetched(repoId))
       await promiseThat(waitingForRequestToEnd, fulfilled())

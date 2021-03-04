@@ -10,13 +10,5 @@ import events from './events/router'
 export default (app: Application, parentRouter: Router): Router =>
   new Router()
     .use(...buildHandlers([get, create, update], app, parentRouter))
-    .use(
-      '/:repoId/branches',
-      branches(app, parentRouter).routes(),
-      branches(app, parentRouter).allowedMethods(),
-    )
-    .use(
-      '/:repoId/events',
-      events(app, parentRouter).routes(),
-      events(app, parentRouter).allowedMethods(),
-    )
+    .use('/:repoId/branches', branches(app, parentRouter).routes(), branches(app, parentRouter).allowedMethods())
+    .use('/:repoId/events', events(app, parentRouter).routes(), events(app, parentRouter).allowedMethods())

@@ -61,10 +61,7 @@ describe('POST /repos', () => {
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
     app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new InvalidRepoUrl())
-    const response = await request
-      .post('/repos')
-      .send({ repoId: repoId.value, remoteUrl })
-      .expect(400)
+    const response = await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(400)
     assertThat(response.text, equalTo(`No git repository found at that URL.`))
   })
 
@@ -73,10 +70,7 @@ describe('POST /repos', () => {
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
     app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new AccessDenied('Sorry!'))
-    const response = await request
-      .post('/repos')
-      .send({ repoId: repoId.value, remoteUrl })
-      .expect(403)
+    const response = await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(403)
     assertThat(response.text, equalTo(`Access denied: Sorry!`))
   })
 
@@ -85,10 +79,7 @@ describe('POST /repos', () => {
     const remoteUrl = RemoteUrl.of('a-bad-url')
     app.getInfo.resolves(QueryResult.from())
     app.connectToRemote.withArgs(repoId, remoteUrl).rejects(new Error('unexpected'))
-    const response = await request
-      .post('/repos')
-      .send({ repoId: repoId.value, remoteUrl })
-      .expect(500)
+    const response = await request.post('/repos').send({ repoId: repoId.value, remoteUrl }).expect(500)
     assertThat(response.text, equalTo('Internal Server Error'))
   })
 
@@ -98,9 +89,7 @@ describe('POST /repos', () => {
       const response = await request.post('/repos').send(connectRepoRequest).expect(400)
       assertThat(
         response.text,
-        equalTo(
-          "payload should have required property 'remoteUrl', payload/repoId should be string",
-        ),
+        equalTo("payload should have required property 'remoteUrl', payload/repoId should be string")
       )
     })
   })

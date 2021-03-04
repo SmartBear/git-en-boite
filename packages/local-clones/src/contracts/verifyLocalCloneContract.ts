@@ -17,15 +17,7 @@ import {
   RepoId,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
-import {
-  assertThat,
-  equalTo,
-  fulfilled,
-  instanceOf,
-  matchesPattern,
-  promiseThat,
-  rejected,
-} from 'hamjest'
+import { assertThat, equalTo, fulfilled, instanceOf, matchesPattern, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -62,9 +54,7 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
 
     const remoteUrl = runGitHttpServer(() => root, {
       authenticate: ({ repo }) =>
-        new Promise<void>((resolve, reject) =>
-          repo.match(/private/) ? reject('Access denied') : resolve(),
-        ),
+        new Promise<void>((resolve, reject) => (repo.match(/private/) ? reject('Access denied') : resolve())),
     })
 
     it('succeeds for a valid remoteUrl', async () => {
@@ -74,15 +64,12 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     it("fails for a repo that doesn't exist", async () => {
       await promiseThat(
         localClone.setOriginTo(remoteUrl(RepoId.of('does-not-exist'))),
-        rejected(instanceOf(InvalidRepoUrl)),
+        rejected(instanceOf(InvalidRepoUrl))
       )
     })
 
     it('fails for invalid credentials', async () => {
-      await promiseThat(
-        localClone.setOriginTo(remoteUrl(RepoId.of('private'))),
-        rejected(instanceOf(AccessDenied)),
-      )
+      await promiseThat(localClone.setOriginTo(remoteUrl(RepoId.of('private'))), rejected(instanceOf(AccessDenied)))
     })
   })
 
@@ -99,16 +86,14 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
 
       const remoteUrl = runGitHttpServer(() => root, {
         authenticate: ({ repo }) =>
-          new Promise<void>((resolve, reject) =>
-            repo.match(/private/) ? reject('Access denied') : resolve(),
-          ),
+          new Promise<void>((resolve, reject) => (repo.match(/private/) ? reject('Access denied') : resolve())),
       })
 
       it('fetches commits from the origin repo', async () => {
         await localClone.setOriginTo(remoteUrl(repoId))
         await localClone.fetch()
         const refs = await localClone.getRefs()
-        const ref = refs.find(ref => ref.isRemote)
+        const ref = refs.find((ref) => ref.isRemote)
         await assertThat(ref.revision, equalTo(latestCommit))
       })
     })

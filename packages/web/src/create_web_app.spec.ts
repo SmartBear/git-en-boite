@@ -10,7 +10,7 @@ describe(createWebApp.name, () => {
       const log = () => ({})
       const app = createWebApp(
         new Router().get('/', (ctx: Context) => (ctx.status = 200)),
-        log,
+        log
       )
       const server = app.listen()
       const request = supertest(server)

@@ -46,9 +46,9 @@ export default (app: Application): Router =>
         BranchName.of(ctx.params.branchName),
         Files.fromJSON(ctx.request.body.files),
         Author.fromJSON(ctx.request.body.author),
-        CommitMessage.of(ctx.request.body.message),
+        CommitMessage.of(ctx.request.body.message)
       )
       ctx.body = {}
       ctx.status = 200
-    },
+    }
   )

@@ -18,7 +18,7 @@ export interface CommandsApplication {
     branchName: BranchName,
     files: Files,
     author: Author,
-    message: CommitMessage,
+    message: CommitMessage
   ) => Promise<void>
   connectToRemote: (repoId: RepoId, remoteUrl: RemoteUrl) => Promise<void>
   fetchFromRemote: (repoId: RepoId) => Promise<void>

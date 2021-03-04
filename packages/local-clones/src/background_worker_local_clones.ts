@@ -34,7 +34,7 @@ export class BackgroundWorkerLocalClones implements LocalClones {
     localClones: LocalClones,
     redisUrl: string,
     queueName: string,
-    log: WriteLogEvent,
+    log: WriteLogEvent
   ): Promise<BackgroundWorkerLocalClones> {
     const createRedisClient = async () => connectToRedis(redisUrl)
     return await new this(localClones, createRedisClient, queueName, log).connect()
@@ -44,7 +44,7 @@ export class BackgroundWorkerLocalClones implements LocalClones {
     private readonly localClones: LocalClones,
     private readonly createRedisClient: () => Promise<IORedis.Redis>,
     private readonly queueName: string,
-    private readonly log: WriteLogEvent,
+    private readonly log: WriteLogEvent
   ) {}
 
   public async removeExisting(path: string): Promise<void> {
@@ -83,18 +83,13 @@ export class BackgroundWorkerLocalClones implements LocalClones {
   }
 
   async startWorker(log: WriteLogEvent): Promise<void> {
-    this.worker = await GitRepoWorker.start(
-      new DirectLocalClones(),
-      this.createRedisClient,
-      log,
-      this.queueName,
-    )
+    this.worker = await GitRepoWorker.start(new DirectLocalClones(), this.createRedisClient, log, this.queueName)
   }
 
   async close(): Promise<void> {
     await this.worker.close()
     await this.queueEvents.close()
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       this.connection.on('end', resolve)
       this.connection.disconnect()
     })
@@ -108,15 +103,10 @@ export class BackgroundGitRepoProxy implements LocalClone {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly queue: Queue<any>,
     private readonly queueEvents: QueueEvents,
-    private readonly log: WriteLogEvent,
+    private readonly log: WriteLogEvent
   ) {}
 
-  async commit(
-    commitRef: PendingCommitRef,
-    files: Files,
-    author: Author,
-    message: CommitMessage,
-  ): Promise<void> {
+  async commit(commitRef: PendingCommitRef, files: Files, author: Author, message: CommitMessage): Promise<void> {
     await this.gitRepo.commit(commitRef, files, author, message)
   }
 
@@ -140,7 +130,7 @@ export class BackgroundGitRepoProxy implements LocalClone {
   }
 
   private whenFinished(job: Job): Promise<void> {
-    return job.waitUntilFinished(this.queueEvents).catch(error => {
+    return job.waitUntilFinished(this.queueEvents).catch((error) => {
       throw deserialize(error, this.log)
     })
   }
@@ -154,7 +144,7 @@ class GitRepoWorker implements Closable {
     localClones: LocalClones,
     createRedisClient: () => Promise<IORedis.Redis>,
     log: WriteLogEvent,
-    queueName: string,
+    queueName: string
   ): Promise<GitRepoWorker> {
     const connection = await createRedisClient()
     return new GitRepoWorker(localClones, connection, log, queueName)
@@ -164,7 +154,7 @@ class GitRepoWorker implements Closable {
     gitRepos: LocalClones,
     readonly connection: IORedis.Redis,
     log: WriteLogEvent,
-    queueName: string,
+    queueName: string
   ) {
     const processJob = async (job: Job) => {
       try {
@@ -209,9 +199,9 @@ async function connectToRedis(url: string): Promise<IORedis.Redis> {
   return new Promise((resolve, reject) =>
     connection
       .on('connect', () => resolve(connection))
-      .on('error', error => {
+      .on('error', (error) => {
         connection.disconnect()
         reject(new Error(`Unable to connect to Redis: ${error.message}`))
-      }),
+      })
   )
 }

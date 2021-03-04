@@ -16,7 +16,7 @@ describe('createConfig', () => {
     const badEnv = Object.assign({}, defaultEnv, { NODE_ENV: undefined })
     assertThat(
       () => createConfig(badEnv),
-      throws(hasProperty('message', containsString('"NODE_ENV" is a required variable'))),
+      throws(hasProperty('message', containsString('"NODE_ENV" is a required variable')))
     )
   })
 

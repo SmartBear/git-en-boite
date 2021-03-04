@@ -13,10 +13,7 @@ export class PendingCommitRef extends TinyType implements PushableCommitRef {
   }
 
   static fromJSON(o: JSONObject): PendingCommitRef {
-    return new PendingCommitRef(
-      BranchName.of(o.branchName as string),
-      RefName.fromJSON(o.local as JSONObject),
-    )
+    return new PendingCommitRef(BranchName.of(o.branchName as string), RefName.fromJSON(o.local as JSONObject))
   }
 
   get remote(): RefName {

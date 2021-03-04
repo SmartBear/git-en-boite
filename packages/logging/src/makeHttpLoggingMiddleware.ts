@@ -42,7 +42,7 @@ interface HttpServerError extends Error {
 }
 
 export const logErrorsFrom = (app: Koa): { to: (log: WriteLogEvent) => Koa } => ({
-  to: log => {
+  to: (log) => {
     app.on('error', (anError: HttpServerError) => anError.expose || log(httpError(anError)))
     app.silent = true
     return app

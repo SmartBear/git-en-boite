@@ -20,9 +20,9 @@ export class LaBoîte implements Application {
     public readonly version: string,
     public readonly events: SubscribesToDomainEvents,
     rules: DomainRule[],
-    log: WriteLogEvent,
+    log: WriteLogEvent
   ) {
-    rules.map(rule => rule(events, this, log))
+    rules.map((rule) => rule(events, this, log))
   }
 
   async commit(
@@ -30,7 +30,7 @@ export class LaBoîte implements Application {
     branchName: BranchName,
     files: Files,
     author: Author,
-    message: CommitMessage,
+    message: CommitMessage
   ): Promise<void> {
     const repo = await this.inventoryOfRepos.find(repoId)
     await repo.fetch()
@@ -42,7 +42,7 @@ export class LaBoîte implements Application {
       const repo = await this.inventoryOfRepos.find(repoId)
       await repo.setOriginTo(remoteUrl)
     } else {
-      await this.inventoryOfRepos.create(repoId, repo => repo.setOriginTo(remoteUrl))
+      await this.inventoryOfRepos.create(repoId, (repo) => repo.setOriginTo(remoteUrl))
     }
   }
 

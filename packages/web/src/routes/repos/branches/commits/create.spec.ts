@@ -1,13 +1,4 @@
-import {
-  Application,
-  Author,
-  BranchName,
-  CommitMessage,
-  Email,
-  Files,
-  NameOfPerson,
-  RepoId,
-} from 'git-en-boite-core'
+import { Application, Author, BranchName, CommitMessage, Email, Files, NameOfPerson, RepoId } from 'git-en-boite-core'
 import { assertThat, equalTo } from 'hamjest'
 import { wasCalledWith } from 'hamjest-sinon'
 import { Server } from 'http'
@@ -54,15 +45,12 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
   })
 
   it('responds with 400 if the payload has missing params', async () => {
-    const response = await request
-      .post(`/repos/${repoId}/branches/${branchName}/commits`)
-      .send({})
-      .expect(400)
+    const response = await request.post(`/repos/${repoId}/branches/${branchName}/commits`).send({}).expect(400)
     assertThat(
       response.text,
       equalTo(
-        "payload should have required property 'files', payload should have required property 'author', payload should have required property 'message'",
-      ),
+        "payload should have required property 'files', payload should have required property 'author', payload should have required property 'message'"
+      )
     )
   })
 
@@ -78,8 +66,8 @@ describe('POST /repos/:repoId/branches/:branchName/commits', () => {
     assertThat(
       response.text,
       equalTo(
-        "payload/files/0 should be object, payload/author should have required property 'name', payload/message should be string",
-      ),
+        "payload/files/0 should be object, payload/author should have required property 'name', payload/message should be string"
+      )
     )
   })
 })

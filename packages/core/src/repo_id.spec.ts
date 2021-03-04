@@ -10,10 +10,7 @@ describe(RepoId.name, () => {
     })
 
     it('fails when the value is not a string', () => {
-      assertThat(
-        () => RepoId.fromJSON(5),
-        throws(hasProperty('message', matchesPattern('should be a string'))),
-      )
+      assertThat(() => RepoId.fromJSON(5), throws(hasProperty('message', matchesPattern('should be a string'))))
     })
   })
 

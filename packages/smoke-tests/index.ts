@@ -1,13 +1,5 @@
 import fs from 'fs'
-import {
-  Author,
-  BranchName,
-  CommitName,
-  Email,
-  Files,
-  NameOfPerson,
-  RepoId,
-} from 'git-en-boite-core'
+import { Author, BranchName, CommitName, Email, Files, NameOfPerson, RepoId } from 'git-en-boite-core'
 import { GitDirectory } from 'git-en-boite-local-clones'
 import { assertThat, contains, empty, equalTo, hasItem, hasProperties, not } from 'hamjest'
 import { nanoid } from 'nanoid'
@@ -41,12 +33,11 @@ describe(`Smoke tests on ${url}`, function () {
 
   after(async () => {
     try {
-      const remoteRefs = (await localRepo.exec('ls-remote', ['origin', `refs/heads/${branchName}`]))
-        .stdout
+      const remoteRefs = (await localRepo.exec('ls-remote', ['origin', `refs/heads/${branchName}`])).stdout
       if (remoteRefs === '') return
     } catch (error) {
       console.warn(
-        `Unable to even run \`ls-remote\` on the remote origin repo. Is the smoke_tests_remote_repo_url setting valid?\n\n${error}`,
+        `Unable to even run \`ls-remote\` on the remote origin repo. Is the smoke_tests_remote_repo_url setting valid?\n\n${error}`
       )
       return
     }
@@ -93,10 +84,7 @@ describe(`Smoke tests on ${url}`, function () {
 
     const request = supertest(url)
 
-    await request
-      .post(`/repos/${repoId}/branches/${branchName}/commits`)
-      .send({ files, author, message })
-      .expect(200)
+    await request.post(`/repos/${repoId}/branches/${branchName}/commits`).send({ files, author, message }).expect(200)
   })
 })
 

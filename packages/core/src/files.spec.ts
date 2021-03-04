@@ -14,7 +14,7 @@ describe(Files.name, () => {
     it('fails when the value is not an array', () => {
       assertThat(
         () => Files.fromJSON('not an array'),
-        throws(hasProperty('message', matchesPattern('should be an array'))),
+        throws(hasProperty('message', matchesPattern('should be an array')))
       )
     })
 

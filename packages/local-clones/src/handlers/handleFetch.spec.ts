@@ -1,15 +1,7 @@
 import fs from 'fs'
 import { BranchName, CommitName, RemoteUrl } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import {
-  equalTo,
-  fulfilled,
-  hasProperty,
-  isRejectedWith,
-  matchesPattern,
-  promiseThat,
-  startsWith,
-} from 'hamjest'
+import { equalTo, fulfilled, hasProperty, isRejectedWith, matchesPattern, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -58,7 +50,7 @@ describe('handleFetch', () => {
     await git(Fetch.fromOrigin())
     await promiseThat(
       repo.read('rev-parse', [`refs/remotes/origin/${branchName.value}`]),
-      fulfilled(startsWith(latestCommit.value)),
+      fulfilled(startsWith(latestCommit.value))
     )
   })
 
@@ -67,7 +59,7 @@ describe('handleFetch', () => {
     await git(Fetch.fromOrigin())
     await promiseThat(
       repo.read('rev-list', ['--count', `refs/remotes/origin/${branchName.value}`]),
-      fulfilled(equalTo('1')),
+      fulfilled(equalTo('1'))
     )
   })
 
@@ -75,9 +67,7 @@ describe('handleFetch', () => {
     await git(SetOrigin.toUrl(RemoteUrl.of('invalid-remote-url')))
     await promiseThat(
       git(Fetch.fromOrigin()),
-      isRejectedWith(
-        hasProperty('message', matchesPattern('does not appear to be a git repository')),
-      ),
+      isRejectedWith(hasProperty('message', matchesPattern('does not appear to be a git repository')))
     )
   })
 })

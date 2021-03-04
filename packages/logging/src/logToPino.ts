@@ -1,7 +1,7 @@
 import * as pino from 'pino'
 import { LogEvent, WriteLogEvent } from 'git-en-boite-core'
 
-const isLogEvent = (event: LogEvent | Error ): event is LogEvent => !!(event as LogEvent).level
+const isLogEvent = (event: LogEvent | Error): event is LogEvent => !!(event as LogEvent).level
 
 export const logToPino = (mainLogger: pino.Logger): WriteLogEvent => {
   const thePinoLogger = mainLogger.child({

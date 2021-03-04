@@ -17,10 +17,7 @@ const streamToArray = (readableStream: Readable) => {
   })
 }
 
-export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> = async (
-  repo,
-  { branchName },
-) => {
+export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> = async (repo, { branchName }) => {
   const result = new PassThrough({ objectMode: true })
   const splitter = new Split(new Buffer('\u0000'))
 
@@ -34,7 +31,7 @@ export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> =
   let lssignal: string = null
 
   const error = new Error(
-    `Failed to list files for ${branchName}. Repo path: ${repo.path}. Status: ${lscode}. Signal: ${lssignal}`,
+    `Failed to list files for ${branchName}. Repo path: ${repo.path}. Status: ${lscode}. Signal: ${lssignal}`
   )
 
   const endOrError = () => {
@@ -52,7 +49,7 @@ export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> =
     lssignal = signal
     endOrError()
   })
-  ls.on('error', err => result.emit('error', err))
+  ls.on('error', (err) => result.emit('error', err))
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stream.on('data', (data: any) => {
@@ -62,7 +59,7 @@ export const handleGetFiles: Handle<GitDirectory, AsyncQuery<GetFiles, Files>> =
     result.write(
       repo
         .exec('show', [gitBlobSha])
-        .then(content => new GitFile(new FilePath(path), new FileContent(content.stdout))),
+        .then((content) => new GitFile(new FilePath(path), new FileContent(content.stdout)))
     )
   })
 

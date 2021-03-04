@@ -1,27 +1,12 @@
 import fs from 'fs'
-import {
-  BranchName,
-  FileContent,
-  FilePath,
-  GitFile,
-  PendingCommitRef,
-  Refs,
-  RemoteUrl,
-} from 'git-en-boite-core'
+import { BranchName, FileContent, FilePath, GitFile, PendingCommitRef, Refs, RemoteUrl } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, not } from 'hamjest'
 import path from 'path'
 import { createBareRepo } from '../bare_repo'
 import { dirSync } from 'tmp'
 
-import {
-  handleCommit,
-  handleFetch,
-  handleGetRefs,
-  handleInit,
-  handlePush,
-  handleSetOrigin,
-} from '.'
+import { handleCommit, handleFetch, handleGetRefs, handleInit, handlePush, handleSetOrigin } from '.'
 import { openBareRepo, LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, Push, SetOrigin } from '../operations'
@@ -32,7 +17,7 @@ type Protocol = [
   AsyncCommand<Fetch>,
   AsyncCommand<Push>,
   AsyncCommand<SetOrigin>,
-  AsyncQuery<GetRefs, Refs>,
+  AsyncQuery<GetRefs, Refs>
 ]
 
 describe('handlePush', () => {

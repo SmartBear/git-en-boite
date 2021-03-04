@@ -40,15 +40,8 @@ export class DirectLocalClones implements LocalClones {
 class DirectLocalClone implements LocalClone {
   public constructor(private readonly git: Dispatch<RepoProtocol>) {}
 
-  commit(
-    commitRef: PendingCommitRef,
-    files: Files,
-    author: Author,
-    message: CommitMessage,
-  ): Promise<void> {
-    return this.git(
-      Commit.toCommitRef(commitRef).withFiles(files).byAuthor(author).withMessage(message),
-    )
+  commit(commitRef: PendingCommitRef, files: Files, author: Author, message: CommitMessage): Promise<void> {
+    return this.git(Commit.toCommitRef(commitRef).withFiles(files).byAuthor(author).withMessage(message))
   }
 
   async push(commitRef: PendingCommitRef): Promise<void> {

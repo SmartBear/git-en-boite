@@ -21,7 +21,7 @@ export const runGitHttpServer = (getRoot: () => string, options: ServerOptions):
       autoCreate: false,
       ...options,
     })
-    await new Promise(started => server.listen(gitPort, started))
+    await new Promise((started) => server.listen(gitPort, started))
   })
   afterEach(async () => {
     await server.close().catch(() => {

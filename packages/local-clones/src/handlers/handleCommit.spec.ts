@@ -12,14 +12,7 @@ import {
   FileContent,
 } from 'git-en-boite-core'
 import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import {
-  assertThat,
-  containsInAnyOrder,
-  containsString,
-  containsStrings,
-  equalTo,
-  not,
-} from 'hamjest'
+import { assertThat, containsInAnyOrder, containsString, containsStrings, equalTo, not } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
 
@@ -28,12 +21,7 @@ import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, Init, SetOrigin } from '../operations'
 
-type Protocol = [
-  AsyncCommand<Commit>,
-  AsyncCommand<Init>,
-  AsyncCommand<Fetch>,
-  AsyncCommand<SetOrigin>,
-]
+type Protocol = [AsyncCommand<Commit>, AsyncCommand<Init>, AsyncCommand<Fetch>, AsyncCommand<SetOrigin>]
 
 describe('handleCommit', () => {
   const branchName = BranchName.of('a-branch')
@@ -68,25 +56,17 @@ describe('handleCommit', () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
 
     await git(Commit.toCommitRef(localCommitRef).withMessage(commitMessage))
-    assertThat(
-      await repo.read('log', [localCommitRef.local.value, '--oneline']),
-      containsString(commitMessage.value),
-    )
+    assertThat(await repo.read('log', [localCommitRef.local.value, '--oneline']), containsString(commitMessage.value))
   })
 
   it('creates a commit with the given author', async () => {
     const localCommitRef = LocalCommitRef.forBranch(branchName)
 
     await git(
-      Commit.toCommitRef(localCommitRef).byAuthor(
-        new Author(new NameOfPerson('Bob'), new Email('bob@smartbear.com')),
-      ),
+      Commit.toCommitRef(localCommitRef).byAuthor(new Author(new NameOfPerson('Bob'), new Email('bob@smartbear.com')))
     )
 
-    assertThat(
-      await repo.read('log', [localCommitRef.local.value]),
-      containsString('Bob <bob@smartbear.com>'),
-    )
+    assertThat(await repo.read('log', [localCommitRef.local.value]), containsString('Bob <bob@smartbear.com>'))
   })
 
   it('creates a commit containing the given files', async () => {
@@ -95,7 +75,7 @@ describe('handleCommit', () => {
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
     assertThat(
       await repo.read('ls-tree', [localCommitRef.local.value, '-r', '--name-only']),
-      containsString(file.path.value),
+      containsString(file.path.value)
     )
   })
 
@@ -106,10 +86,7 @@ describe('handleCommit', () => {
     await repo.exec('update-index', ['--add', '--cacheinfo', '100644', objectId, 'junk.file'])
     await git(Commit.toCommitRef(localCommitRef).withFiles([file]))
 
-    assertThat(
-      await filePathsAtHeadOf(repo, localCommitRef.local),
-      not(containsString('junk.file')),
-    )
+    assertThat(await filePathsAtHeadOf(repo, localCommitRef.local), not(containsString('junk.file')))
   })
 
   describe('to a local branch', () => {
@@ -120,7 +97,7 @@ describe('handleCommit', () => {
       await git(Commit.toCommitRef(commitRef).withMessage(commitMessage))
       assertThat(
         await repo.read('log', [commitRef.local.value, '--oneline']),
-        containsStrings(initialCommitMessage.value, commitMessage.value),
+        containsStrings(initialCommitMessage.value, commitMessage.value)
       )
     })
   })
@@ -133,17 +110,14 @@ describe('handleCommit', () => {
           local: RefName.fetchedFromOrigin(branchName),
           branchName,
           parent: RefName.fetchedFromOrigin(branchName),
-        }).withFiles([existingFile]),
+        }).withFiles([existingFile])
       )
 
       const otherFile = new GitFile(new FilePath('b.file'), new FileContent('Feature: A'))
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git(Commit.toCommitRef(commitRef).withFiles([otherFile]))
 
-      assertThat(
-        await filePathsAtHeadOf(repo, commitRef.local),
-        containsInAnyOrder(existingFile.path, otherFile.path),
-      )
+      assertThat(await filePathsAtHeadOf(repo, commitRef.local), containsInAnyOrder(existingFile.path, otherFile.path))
     })
 
     it('creates a commit with a parent', async () => {
@@ -152,13 +126,13 @@ describe('handleCommit', () => {
           local: RefName.fetchedFromOrigin(branchName),
           branchName,
           parent: RefName.fetchedFromOrigin(branchName),
-        }).withMessage(initialCommitMessage),
+        }).withMessage(initialCommitMessage)
       )
       const commitRef = PendingCommitRef.forBranch(branchName)
       await git(Commit.toCommitRef(commitRef).withMessage(commitMessage))
       assertThat(
         await repo.read('log', [commitRef.local.value, '--oneline']),
-        containsStrings(initialCommitMessage.value, commitMessage.value),
+        containsStrings(initialCommitMessage.value, commitMessage.value)
       )
     })
   })
@@ -177,10 +151,7 @@ describe('handleCommit', () => {
 
     it('does not commit unexpected files', async () => {
       assertThat(await filePathsAtHeadOf(repo, mainRef.local), equalTo([mainFile.path]))
-      assertThat(
-        await filePathsAtHeadOf(repo, experimentalRef.local),
-        equalTo([experimentalFile.path]),
-      )
+      assertThat(await filePathsAtHeadOf(repo, experimentalRef.local), equalTo([experimentalFile.path]))
     })
   })
 
@@ -201,7 +172,7 @@ describe('handleCommit', () => {
           parent: RefName.fetchedFromOrigin(branchMain),
         })
           .withMessage(commitMessage)
-          .withFiles([existingFile]),
+          .withFiles([existingFile])
       )
 
       await git(
@@ -211,7 +182,7 @@ describe('handleCommit', () => {
           parent: RefName.fetchedFromOrigin(branchExperimental),
         })
           .withMessage(commitMessage)
-          .withFiles([existingFile]),
+          .withFiles([existingFile])
       )
 
       const committing = git(Commit.toCommitRef(mainRef).withFiles([mainFile]))
@@ -220,19 +191,14 @@ describe('handleCommit', () => {
     })
 
     it('does not commit unexpected files', async () => {
-      assertThat(
-        await filePathsAtHeadOf(repo, mainRef.local),
-        containsInAnyOrder(existingFile.path, mainFile.path),
-      )
+      assertThat(await filePathsAtHeadOf(repo, mainRef.local), containsInAnyOrder(existingFile.path, mainFile.path))
       assertThat(
         await filePathsAtHeadOf(repo, experimentalRef.local),
-        containsInAnyOrder(existingFile.path, experimentalFile.path),
+        containsInAnyOrder(existingFile.path, experimentalFile.path)
       )
     })
   })
 })
 
 const filePathsAtHeadOf = async (repo: GitDirectory, branchRef: RefName) =>
-  (await repo.read('ls-tree', [branchRef.value, '-r', '--name-only']))
-    .split('\n')
-    .map(v => new FilePath(v))
+  (await repo.read('ls-tree', [branchRef.value, '-r', '--name-only'])).split('\n').map((v) => new FilePath(v))

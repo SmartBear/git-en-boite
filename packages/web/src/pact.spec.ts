@@ -33,7 +33,7 @@ describe('HTTP Api', () => {
           QueryResult.from({
             repoId: RepoId.of('an-existing-repo-id'),
             branches: [],
-          }),
+          })
         )
       },
       'a new repo': async () => {

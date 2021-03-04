@@ -35,12 +35,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
 
     beforeEach(async function () {
       const queueName = nanoid()
-      localClones = await BackgroundWorkerLocalClones.connect(
-        new DirectLocalClones(),
-        config.redis,
-        queueName,
-        log,
-      )
+      localClones = await BackgroundWorkerLocalClones.connect(new DirectLocalClones(), config.redis, queueName, log)
       await localClones.startWorker(log)
     })
     afterEach(async () => await localClones.close())
@@ -62,9 +57,9 @@ describe(BackgroundWorkerLocalClones.name, () => {
           contains(
             hasProperties({
               message: equalTo('received: setOriginTo'),
-            }),
-          ),
-        ),
+            })
+          )
+        )
       )
     })
   })
@@ -74,12 +69,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
 
     beforeEach(async function () {
       const queueName = nanoid()
-      localClones = await BackgroundWorkerLocalClones.connect(
-        new DirectLocalClones(),
-        config.redis,
-        queueName,
-        log,
-      )
+      localClones = await BackgroundWorkerLocalClones.connect(new DirectLocalClones(), config.redis, queueName, log)
     })
 
     afterEach(async () => {
@@ -88,10 +78,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
 
     it('throws an error when no workers are running', async () => {
       const pinging = localClones.pingWorkers(1)
-      await promiseThat(
-        pinging,
-        rejected(hasProperty('message', matchesPattern('No workers responded'))),
-      )
+      await promiseThat(pinging, rejected(hasProperty('message', matchesPattern('No workers responded'))))
     })
 
     it('succeeds when a worker is running', async () => {
@@ -104,12 +91,7 @@ describe(BackgroundWorkerLocalClones.name, () => {
   context('connecting', () => {
     it('throws an error if the redis connection cannot be established', async () => {
       const badRedisOptions = 'redis://localhost:1234'
-      const connecting = BackgroundWorkerLocalClones.connect(
-        new DirectLocalClones(),
-        badRedisOptions,
-        'a-queue',
-        log,
-      )
+      const connecting = BackgroundWorkerLocalClones.connect(new DirectLocalClones(), badRedisOptions, 'a-queue', log)
       await promiseThat(connecting, rejected())
     })
   })
