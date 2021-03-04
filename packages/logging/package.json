@@ -13,7 +13,7 @@
     "test": "mocha -g @wip -i"
   },
   "devDependencies": {
-    "@types/koa": "^2.13.0",
+    "@types/koa": "^2.13.1",
     "@types/mocha": "^8.2.1",
     "hamjest": "^3.7.1",
     "koa": "^2.13.1",
