@@ -7,6 +7,10 @@ export * from './makeHttpLoggingMiddleware'
 export * from './LoggerOptions'
 
 export function setUpLogger(config: pino.Bindings, { readableBy }: LoggerOptions): WriteLogEvent {
-  const logger = readableBy === 'humans' ? pino({ prettyPrint: { colorize: true } }) : pino()
+  const logger = {
+    machine: pino(),
+    humans: pino({ prettyPrint: { colorize: true } }),
+    nobody: pino({ level: 'silent' }),
+  }[readableBy]
   return logToPino(logger.child(config))
 }

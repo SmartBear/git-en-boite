@@ -8,12 +8,14 @@ import { dirSync } from 'tmp'
 
 import { LaBoîte } from 'git-en-boite-app'
 import { World } from '../world'
+import { setUpLogger } from 'git-en-boite-logging'
+const config = createConfig()
+console.log('Starting acceptance tests with config:\n', JSON.stringify(config, null, 2))
 
 Before(async function (this: World) {
   this.domainEvents = new EventEmitter()
-  const config = createConfig()
+  this.log = setUpLogger({}, config.logger)
   const gitReposPath = dirSync().name
   const repoIndex = new InventoryOfReposOnDisk(gitReposPath, new DirectLocalClones(), this.domainEvents)
-  const log = () => ({})
-  this.app = new LaBoîte(repoIndex, config.version, this.domainEvents, [fetchRepoAfterConnected], log)
+  this.app = new LaBoîte(repoIndex, config.version, this.domainEvents, [fetchRepoAfterConnected], this.log)
 })

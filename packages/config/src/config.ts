@@ -36,7 +36,12 @@ const createRedisConfig = (env: ReadableEnvironment): string => {
 
 const createLoggerConfig = (env: ReadableEnvironment): LoggerOptions => {
   return {
-    readableBy: env.get('NODE_ENV').required().asString() === 'production' ? 'machines' : 'humans',
+    readableBy:
+      env.get('NODE_ENV').required().asString() === 'production'
+        ? 'machines'
+        : env.get('show_logs').asBool()
+        ? 'humans'
+        : 'nobody',
   }
 }
 

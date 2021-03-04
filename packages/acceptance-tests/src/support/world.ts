@@ -1,8 +1,9 @@
-import { Application, CommitName, DomainEventBus, GitFile, RemoteUrl, RepoId } from 'git-en-boite-core'
+import { Application, CommitName, DomainEventBus, GitFile, RemoteUrl, RepoId, WriteLogEvent } from 'git-en-boite-core'
 import { Response, SuperTest, Test } from 'supertest'
 
 export type World = {
   domainEvents: DomainEventBus
+  log: WriteLogEvent
   repoId: RepoId
   lastCommitRevision: CommitName
   lastResponse: Response

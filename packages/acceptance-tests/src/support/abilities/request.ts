@@ -6,10 +6,8 @@ import { World } from '../world'
 
 let webServer: Server
 
-const log = process.env.show_logs ? console.log : () => ({})
-
 Before(function (this: World) {
-  webServer = startWebServer(this.app, 8888, log)
+  webServer = startWebServer(this.app, 8888, this.log)
   this.request = request(webServer)
 })
 
