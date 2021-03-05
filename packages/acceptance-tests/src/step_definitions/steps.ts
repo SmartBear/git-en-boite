@@ -32,6 +32,7 @@ import { assertThat, contains, containsInAnyOrder, containsString, equalTo, fulf
 
 import { isSuccess } from '../support/matchers/is_success'
 import { World } from '../support/world'
+import { isEqualTo } from 'tiny-types'
 
 Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
   this.repoId = RepoId.generate()
@@ -73,9 +74,12 @@ Given('a consumer has failed to connect to a remote repo', async function (this:
   await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(400)
 })
 
-Given('a remote repo with a file commited to {BranchName}', function (this: World, branchName: BranchName) {
-  // Write code here that turns the phrase above into concrete actions
-  return 'pending'
+Given('a remote repo with a file commited to {BranchName}', async function (this: World, branchName: BranchName) {
+  this.repoId = RepoId.generate()
+  this.file = GitFile.fromJSON({ path: 'my/feature.feature', content: 'Feature: My feature' })
+  const repoPath = this.remotePath(this.repoId)
+  await createBareRepo(repoPath)
+  // TODO: await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
 const connectRepo = async function (this: World, remoteUrl: RemoteUrl) {
@@ -262,8 +266,9 @@ Then('the repo should be linked to that remote url', async function (this: World
 
 Then(
   'the consumer can read the contents of the file on {BranchName} of the local clone',
-  function (this: World, branchName: BranchName) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending'
+  async function (this: World, branchName: BranchName) {
+    // TODO: use URI/template
+    const response = await this.request.get(`/repos/${this.repoId}/commits/${branchName}/files/${this.file.path}`)
+    assertThat(response.text, equalTo(this.file.content))
   }
 )
