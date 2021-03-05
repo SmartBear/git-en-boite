@@ -32,7 +32,6 @@ import { assertThat, contains, containsInAnyOrder, containsString, equalTo, fulf
 
 import { isSuccess } from '../support/matchers/is_success'
 import { World } from '../support/world'
-import { isEqualTo } from 'tiny-types'
 
 Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
   this.repoId = RepoId.generate()
@@ -111,9 +110,6 @@ When('a consumer triggers a manual fetch of the repo', async function (this: Wor
 
 When('a consumer tries to trigger a manual fetch of the repo', async function (this: World) {
   this.lastResponse = await this.request.post(`/repos/${this.repoId}`)
-  // TODO: remove
-  console.log(this.lastResponse.status)
-  console.log(this.lastResponse.text)
 })
 
 Given('the repo has been fetched', async function (this: World) {
@@ -213,6 +209,10 @@ Then(
   }
 )
 
+Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
+  assertThat(this.lastResponse.status, equalTo(expectedStatus))
+})
+
 Then('it should respond with an error:', function (this: World, expectedMessage: string) {
   assertThat(this.lastResponse, not(isSuccess()))
   assertThat(this.lastResponse.text, equalTo(expectedMessage))
@@ -250,20 +250,6 @@ Then('the repo should have been fetched', async function (this: World) {
 
 Then('the events received by the consumer should be:', function (this: World, expectedEvents: string) {
   assertThat(this.events, equalTo(expectedEvents.split('\n')))
-})
-
-Then('the repo should have been fetched {int} times', async function (this: World, expectedTimes: number) {
-  for (const _ of new Array(expectedTimes))
-    await promiseThat(
-      new Promise<void>((received) =>
-        this.domainEvents.on('repo.fetched', (event) => event.repoId.equals(this.repoId) && received())
-      ),
-      fulfilled()
-    )
-})
-
-Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
-  assertThat(this.lastResponse.status, equalTo(expectedStatus))
 })
 
 Then('the repo should be linked to that remote url', async function (this: World) {

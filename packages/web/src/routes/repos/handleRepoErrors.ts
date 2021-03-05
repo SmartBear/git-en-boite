@@ -11,7 +11,10 @@ export async function handleRepoErrors(ctx: Context, next: Next): Promise<void> 
       case InvalidRepoUrl:
         ctx.throw(400, `No git repository found at that URL.`)
       case LockedByAnotherProcess:
-        ctx.throw(503)
+        ctx.status = 503
+        ctx.body = error.message
+        ctx.header['retry-after'] = '60'
+        return
 
       default:
         ctx.throw(error)
