@@ -73,6 +73,11 @@ Given('a consumer has failed to connect to a remote repo', async function (this:
   await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(400)
 })
 
+Given('a remote repo with a file commited to {BranchName}', function (this: World, branchName: BranchName) {
+  // Write code here that turns the phrase above into concrete actions
+  return 'pending'
+})
+
 const connectRepo = async function (this: World, remoteUrl: RemoteUrl) {
   const repoInfo = { remoteUrl }
   this.lastResponse = await this.request.put(`/repos/${this.repoId}`).send(repoInfo)
@@ -254,3 +259,11 @@ Then('the repo should be linked to that remote url', async function (this: World
   const response = await this.request.post(`/repos/${this.repoId}`).set('Accept', 'application/json')
   assertThat(response, isSuccess())
 })
+
+Then(
+  'the consumer can read the contents of the file on {BranchName} of the local clone',
+  function (this: World, branchName: BranchName) {
+    // Write code here that turns the phrase above into concrete actions
+    return 'pending'
+  }
+)

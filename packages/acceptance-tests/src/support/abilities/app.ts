@@ -10,7 +10,7 @@ import { LaBoîte } from 'git-en-boite-app'
 import { World } from '../world'
 import { setUpLogger } from 'git-en-boite-logging'
 const config = createConfig()
-console.log('Starting acceptance tests with config:\n', JSON.stringify(config, null, 2))
+console.log(`Starting acceptance tests with config: 🥁\n${JSON.stringify(config, null, 2)}\n`)
 
 Before(async function (this: World) {
   this.domainEvents = new EventEmitter()
