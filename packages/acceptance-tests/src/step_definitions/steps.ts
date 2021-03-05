@@ -246,9 +246,6 @@ Then('the repo should have been fetched {int} times', async function (this: Worl
     )
 })
 
-Then('the events received by the consumer should be:', function (this: World, expectedEvents: string) {
-  assertThat(this.events, equalTo(expectedEvents.split('\n')))
-})
 Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
   assertThat(this.lastResponse.status, equalTo(expectedStatus))
 })
