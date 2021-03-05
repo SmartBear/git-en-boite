@@ -11,7 +11,6 @@ import {
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { BackgroundWorkerLocalClones, DirectLocalClones } from 'git-en-boite-local-clones'
 import { startWebServer } from 'git-en-boite-web'
-import { info } from 'winston'
 
 import { LaBoîte } from './la_boîte'
 import { runProcess } from './runProcess'
