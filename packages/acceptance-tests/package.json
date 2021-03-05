@@ -7,6 +7,7 @@
     "lint:fix": "eslint '*/**/*.ts' --quiet --fix",
     "lint": "eslint '*/**/*.ts'",
     "test:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features -p wip",
+    "test:only": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js",
     "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 cucumber-js ../../doc/features"
   },
   "author": "",
