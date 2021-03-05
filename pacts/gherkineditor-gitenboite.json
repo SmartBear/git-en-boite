@@ -7,40 +7,60 @@
   },
   "interactions": [
     {
-      "description": "a request at the root",
-      "providerState": "blank",
+      "description": "a request for the file at path path/to/features/ServeCoffee.feature at ref GitBranch(value=a/branch)",
+      "providerState": "a repo with a commit with a file",
       "request": {
-        "method": "HEAD",
-        "path": "/"
+        "method": "GET",
+        "path": "/repos/a-repo-id/commits/a%2Fbranch/files/path/to/features/ServeCoffee.feature",
+        "headers": {
+          "Accept": "application/octet-stream"
+        }
       },
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "text/plain; charset=utf-8"
+          "Content-Type": "application/octet-stream"
+        },
+        "body": "Feature: Serve Coffee"
+      }
+    },
+    {
+      "description": "a request for a file that does not exist",
+      "providerState": "a repo with a commit",
+      "request": {
+        "method": "GET",
+        "path": "/repos/a-repo-id/commits/a%2Fbranch/files//path/to/inexisting.feature",
+        "headers": {
+          "Accept": "application/octet-stream"
+        }
+      },
+      "response": {
+        "status": 404,
+        "headers": {
         }
       }
     },
     {
-      "description": "a new file to commit",
-      "providerState": "blank",
+      "description": "a new file to commit to the branch",
+      "providerState": "a repo with a branch",
       "request": {
         "method": "POST",
-        "path": "/repos/a-repo-id/branches/a-branch-name/commits",
+        "path": "/repos/a-repo-id/branches/a%2Fbranch/commits",
         "headers": {
           "Content-Type": "application/json"
         },
         "body": {
           "files": [
             {
-              "path": "features/test.feature",
-              "content": "Feature: Test"
+              "path": "path/to/features/ServeCoffee.feature",
+              "content": "Feature: Serve Coffee"
             }
           ],
           "author": {
-            "name": "Bob",
-            "email": "bob@smartbear.com"
+            "name": "An Author",
+            "email": "author@example.com"
           },
-          "message": "a message"
+          "message": "Create serve coffee feature"
         }
       },
       "response": {
@@ -53,56 +73,34 @@
       }
     },
     {
-      "description": "a request to connect a valid repo for the first time",
-      "providerState": "a new repo",
+      "description": "a new file to commit to the branch",
+      "providerState": "a repo with expired credentials, with a branch",
       "request": {
         "method": "POST",
-        "path": "/repos",
+        "path": "/repos/a-repo-id/branches/a%2Fbranch/commits",
         "headers": {
           "Content-Type": "application/json"
         },
         "body": {
-          "repoId": "a-repo-id",
-          "remoteUrl": "https://github.com/a-repo.git"
+          "files": [
+            {
+              "path": "path/to/features/ServeCoffee.feature",
+              "content": "Feature: Serve Coffee"
+            }
+          ],
+          "author": {
+            "name": "An Author",
+            "email": "author@example.com"
+          },
+          "message": "Create serve coffee feature"
         }
       },
       "response": {
-        "status": 202,
+        "status": 401,
         "headers": {
-        }
-      }
-    },
-    {
-      "description": "a request to connect the same repo again",
-      "providerState": "a repo exists",
-      "request": {
-        "method": "POST",
-        "path": "/repos",
-        "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "text/plain; charset=utf-8"
         },
-        "body": {
-          "repoId": "a-repo-id",
-          "remoteUrl": "https://github.com/a-repo.git"
-        }
-      },
-      "response": {
-        "status": 302,
-        "headers": {
-        }
-      }
-    },
-    {
-      "description": "a request to fetch the repo",
-      "providerState": "a repo has been connected",
-      "request": {
-        "method": "POST",
-        "path": "/repos/a-repo-id"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-        }
+        "body": "Unauthorized"
       }
     }
   ],
