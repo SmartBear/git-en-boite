@@ -32,6 +32,7 @@ import { assertThat, contains, containsInAnyOrder, containsString, equalTo, fulf
 
 import { isSuccess } from '../support/matchers/is_success'
 import { World } from '../support/world'
+import { isEqualTo } from 'tiny-types'
 
 Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
   this.repoId = RepoId.generate()
@@ -71,6 +72,14 @@ Given('a consumer has failed to connect to a remote repo', async function (this:
   this.repoId = RepoId.generate()
   const repoInfo = { remoteUrl: 'a-bad-url' }
   await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(400)
+})
+
+Given('a remote repo with a file commited to {BranchName}', async function (this: World, branchName: BranchName) {
+  this.repoId = RepoId.generate()
+  this.file = GitFile.fromJSON({ path: 'my/feature.feature', content: 'Feature: My feature' })
+  const repoPath = this.remotePath(this.repoId)
+  await createBareRepo(repoPath)
+  // TODO: await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
 const connectRepo = async function (this: World, remoteUrl: RemoteUrl) {
@@ -246,9 +255,6 @@ Then('the repo should have been fetched {int} times', async function (this: Worl
     )
 })
 
-Then('the events received by the consumer should be:', function (this: World, expectedEvents: string) {
-  assertThat(this.events, equalTo(expectedEvents.split('\n')))
-})
 Then('it should respond with {int} status', function (this: World, expectedStatus: number) {
   assertThat(this.lastResponse.status, equalTo(expectedStatus))
 })
@@ -257,3 +263,12 @@ Then('the repo should be linked to that remote url', async function (this: World
   const response = await this.request.post(`/repos/${this.repoId}`).set('Accept', 'application/json')
   assertThat(response, isSuccess())
 })
+
+Then(
+  'the consumer can read the contents of the file on {BranchName} of the local clone',
+  async function (this: World, branchName: BranchName) {
+    // TODO: use URI/template
+    const response = await this.request.get(`/repos/${this.repoId}/commits/${branchName}/files/${this.file.path}`)
+    assertThat(response.text, equalTo(this.file.content))
+  }
+)
