@@ -7,10 +7,3 @@ Feature: Fetch automatically after connection
     Given a remote repo with commits on the "main" branch
     When a consumer connects the remote repo
     Then the repo should have been fetched
-
-  @wip
-  Scenario: Succesful manual fetch concurrent with automatic background fetch
-    Given a remote repo with commits on the "main" branch
-    When a consumer connects the remote repo
-    And a consumer triggers a manual fetch of the repo
-    Then the repo should have been fetched 2 times
