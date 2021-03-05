@@ -265,3 +265,7 @@ Then(
     assertThat(response.text, equalTo(this.file.content))
   }
 )
+
+Then('the consumer should be told to retry in {int} seconds', function (this: World, expectedRetrySeconds: number) {
+  assertThat(this.lastResponse.headers['retry-after'], equalTo(expectedRetrySeconds.toString()))
+})

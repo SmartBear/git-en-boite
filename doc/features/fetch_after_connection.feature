@@ -17,3 +17,4 @@ Feature: Fetch automatically after connection
       """
       The local repo is currently in use by another process. Please try again in a moment.
       """
+    And the consumer should be told to retry in 60 seconds
