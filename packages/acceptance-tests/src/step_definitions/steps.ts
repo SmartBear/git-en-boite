@@ -109,6 +109,13 @@ When('a consumer triggers a manual fetch of the repo', async function (this: Wor
   assertThat(await this.request.post(`/repos/${this.repoId}`), isSuccess())
 })
 
+When('a consumer tries to trigger a manual fetch of the repo', async function (this: World) {
+  this.lastResponse = await this.request.post(`/repos/${this.repoId}`)
+  // TODO: remove
+  console.log(this.lastResponse.status)
+  console.log(this.lastResponse.text)
+})
+
 Given('the repo has been fetched', async function (this: World) {
   const domainEvents = this.domainEvents as SubscribesToDomainEvents
   await promiseThat(

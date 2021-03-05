@@ -12,4 +12,10 @@ export class AccessDenied extends DomainError {
   }
 }
 
+export class LockedByAnotherProcess extends DomainError {
+  constructor(message = 'The local repo is currently in use by another process. Please try again in a moment.') {
+    super(message)
+  }
+}
+
 export class InvalidRepoUrl extends DomainError {}
