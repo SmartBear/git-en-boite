@@ -42,7 +42,7 @@ describe('HTTP Api', () => {
     },
   }
 
-  it('fulfills the needs of the gherkin editor', async function () {
+  it('@wip fulfills the needs of the gherkin editor', async function () {
     this.timeout(5000)
     await new Verifier(opts).verifyProvider()
   })
