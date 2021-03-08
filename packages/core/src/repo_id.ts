@@ -1,4 +1,4 @@
-import { ensure, isString, JSONPrimitive } from 'tiny-types'
+import { ensure, isString, JSONValue } from 'tiny-types'
 import { v4 as uuid } from 'uuid'
 
 import { EntityId } from './entity_id'
@@ -8,7 +8,7 @@ export class RepoId extends EntityId {
     return new RepoId(value)
   }
 
-  static fromJSON(json: JSONPrimitive): RepoId {
+  static fromJSON(json: JSONValue): RepoId {
     ensure('RepoId', json, isString())
     return new RepoId(json as string)
   }

@@ -1,19 +1,25 @@
 import { Job, Queue, QueueEvents, Worker } from 'bullmq'
 import {
+  AccessDenied,
   Author,
   CommitMessage,
   Files,
+  InvalidRepoUrl,
   LocalClone,
   LocalClones,
   PendingCommitRef,
   Refs,
   RemoteUrl,
   WriteLogEvent,
+  asSerializedError,
+  buildDeserializeError,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DirectLocalClones } from './direct_local_clone'
-import { asSerializedError, deserialize } from './serialize_errors'
+import { GitCommandError } from './git_command_error'
+
+export const deserialize = buildDeserializeError(InvalidRepoUrl, AccessDenied, Error, GitCommandError)
 
 interface Closable {
   close(): Promise<void>

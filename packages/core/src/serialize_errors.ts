@@ -1,5 +1,4 @@
-import { AccessDenied, InvalidRepoUrl, WriteLogEvent } from 'git-en-boite-core'
-import { GitCommandError } from './git_command_error'
+import { WriteLogEvent } from '.'
 
 type ErrorEnvelope = {
   type: string
@@ -20,7 +19,7 @@ type ErrorConstructor = {
   new (message?: string): Error
 }
 
-const buildDeserializeError = (...constructors: Array<ErrorConstructor>) => (
+export const buildDeserializeError = (...constructors: Array<ErrorConstructor>) => (
   anError: Error,
   log: WriteLogEvent
 ): Error => {
@@ -44,5 +43,3 @@ const buildDeserializeError = (...constructors: Array<ErrorConstructor>) => (
     }
   }
 }
-
-export const deserialize = buildDeserializeError(InvalidRepoUrl, AccessDenied, Error, GitCommandError)

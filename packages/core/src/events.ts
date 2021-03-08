@@ -1,5 +1,9 @@
+import { ensure, isString, JSONObject, JSONValue, TinyType, TinyTypeOf } from 'tiny-types'
+
 import { RepoId } from '.'
 import { EntityId } from './entity_id'
+import { AccessDenied } from './errors'
+import { asSerializedError, buildDeserializeError } from './serialize_errors'
 
 type HasTypeProperty<Map> = { [Key in keyof Map]: { type: Key } }
 type DomainEventMap = EventMap<DomainEvent> & HasTypeProperty<EventMap<DomainEvent>>
@@ -16,42 +20,93 @@ interface SubscribesToEvents<Map extends DomainEventMap> {
   off<Key extends EventKey<Map>>(eventName: Key, fn: EventHandler<Map[Key]>): void
 }
 
-type DomainEvent = {
-  readonly entityId: EntityId
-  readonly occuredAt: Date
-  readonly type: EventKey<DomainEventMap>
+const isEventKey = (candidate: unknown): candidate is EventKey<DomainEvents> =>
+  !!DomainEvents.keys.find((key) => key === candidate)
+
+export abstract class DomainEvent extends TinyType {
+  constructor(public readonly entityId: EntityId, public readonly occurredAt: Timestamp = Timestamp.now()) {
+    super()
+  }
+  abstract get type(): EventKey<DomainEvents>
 }
 
-export abstract class DomainEventBase implements DomainEvent {
-  public readonly occuredAt: Date
+export const fromJSON = (payload: JSONObject): DomainEvent => {
+  const eventKey = payload.type
+  if (!isEventKey(eventKey)) {
+    throw new CannotDeserializeEvent(payload)
+  }
+  // TODO: figure out how to use the type system to check we're covering all the types correctly here
+  if (eventKey === 'repo.fetched') return RepoFetched.fromJSON(payload)
+  if (eventKey === 'repo.connected') return RepoConnected.fromJSON(payload)
+  if (eventKey === 'repo.fetch-failed') return RepoFetchFailed.fromJSON(payload)
+}
 
-  constructor(public readonly entityId: EntityId) {
-    this.occuredAt = new Date()
+export class Timestamp extends TinyTypeOf<Date>() {
+  static fromJSON(json: JSONValue): Timestamp {
+    ensure('Timestamp', json, isString())
+    return new Timestamp(new Date(Date.parse(json as string)))
   }
 
-  abstract get type(): EventKey<DomainEventMap>
+  static now(): Timestamp {
+    return new Timestamp(new Date())
+  }
 }
 
-export abstract class RepoEvent extends DomainEventBase {
-  constructor(public readonly repoId: RepoId) {
-    super(repoId)
+export class CannotDeserializeEvent extends Error {
+  constructor(payload: JSONValue) {
+    super(`Cannot deserialize event from payload: ${JSON.stringify(payload)}`)
+  }
+}
+export abstract class RepoEvent extends DomainEvent {
+  constructor(public readonly repoId: RepoId, occuredAt?: Timestamp) {
+    super(repoId, occuredAt)
   }
 }
 
 export class RepoFetched extends RepoEvent {
   public readonly type = 'repo.fetched'
+
+  static fromJSON(payload: JSONObject): RepoFetched {
+    const repoId = RepoId.fromJSON(payload.repoId)
+    const occurredAt = Timestamp.fromJSON(payload.occurredAt)
+    return new RepoFetched(repoId, occurredAt)
+  }
 }
+
+const deserialize = buildDeserializeError(Error, AccessDenied)
 
 export class RepoFetchFailed extends RepoEvent {
   public readonly type = 'repo.fetch-failed'
 
-  constructor(public readonly error: Error, repoId: RepoId) {
-    super(repoId)
+  constructor(public readonly error: Error, repoId: RepoId, occuredAt?: Timestamp) {
+    super(repoId, occuredAt)
+  }
+
+  static fromJSON(payload: JSONObject): RepoFetchFailed {
+    const repoId = RepoId.fromJSON(payload.repoId)
+    const occurredAt = Timestamp.fromJSON(payload.occurredAt)
+    const error = deserialize(new Error(payload.errorMessage as string), console.error)
+    return new RepoFetchFailed(error, repoId, occurredAt)
+  }
+
+  public toJSON(): JSONObject {
+    return {
+      type: this.type,
+      occurredAt: this.occurredAt.toJSON(),
+      repoId: this.repoId.toJSON(),
+      errorMessage: asSerializedError(this.error).message,
+    }
   }
 }
 
 export class RepoConnected extends RepoEvent {
   public readonly type = 'repo.connected'
+
+  static fromJSON(payload: JSONObject): RepoConnected {
+    const repoId = RepoId.fromJSON(payload.repoId)
+    const occurredAt = Timestamp.fromJSON(payload.occurredAt)
+    return new RepoConnected(repoId, occurredAt)
+  }
 }
 
 // Utility types for creating a type-checked exhaustive list of the keys in a type at runtime
