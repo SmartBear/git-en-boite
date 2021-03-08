@@ -27,15 +27,6 @@ describe('/repos/:repoId', () => {
     server.close()
   })
 
-  describe('POST', () => {
-    it('fetches the Repo', async () => {
-      const repoId = RepoId.of('a-repo-id')
-      app.fetchFromRemote.resolves()
-      await request.post(`/repos/${repoId}`).send().expect(200)
-      assertThat(app.fetchFromRemote, wasCalledWith(repoId))
-    })
-  })
-
   describe('PUT', () => {
     it('creates a new repo', async () => {
       const repoId = RepoId.of('a-repo-id')

@@ -11,7 +11,7 @@ Feature: Fetch automatically after connection
   Scenario: Error attempting manual fetch concurrent with automatic background fetch
     Given a remote repo with commits on the "main" branch
     When a consumer connects the remote repo
-    And a consumer tries to trigger a manual fetch of the repo
+    And a consumer tries to fetch the repo
     Then it should respond with 503 status
     And it should respond with an error:
       """

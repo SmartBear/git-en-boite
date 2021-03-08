@@ -22,20 +22,14 @@ const parseBody: (body: any) => ParsedBody = (body: any) => ({
 })
 
 export default (app: Application): Router =>
-  new Router()
-    .post('/:repoId', handleRepoErrors, async (ctx: Context) => {
-      // TODO: move this on a different resource
-      await app.fetchFromRemote(RepoId.of(ctx.params.repoId))
+  new Router().put(
+    '/:repoId',
+    async (ctx, next) => validateRequestBody(ctx, next, schema),
+    handleRepoErrors,
+    async (ctx: Context) => {
+      const parsedBody: ParsedBody = parseBody(ctx.request.body)
+      const { remoteUrl } = parsedBody
+      await app.connectToRemote(RepoId.of(ctx.params.repoId), remoteUrl)
       ctx.response.status = 200
-    })
-    .put(
-      '/:repoId',
-      async (ctx, next) => validateRequestBody(ctx, next, schema),
-      handleRepoErrors,
-      async (ctx: Context) => {
-        const parsedBody: ParsedBody = parseBody(ctx.request.body)
-        const { remoteUrl } = parsedBody
-        await app.connectToRemote(RepoId.of(ctx.params.repoId), remoteUrl)
-        ctx.response.status = 200
-      }
-    )
+    }
+  )

@@ -12,5 +12,5 @@ Feature: Manual Fetch
     And a consumer has connected the remote repo
     And the repo has been fetched
     When a new commit is made on the "main" branch in the remote repo
-    And a consumer triggers a manual fetch of the repo
+    And a consumer fetches the repo
     Then the repo should have the new commit at the head of the "main" branch

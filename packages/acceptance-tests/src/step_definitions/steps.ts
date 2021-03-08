@@ -1,7 +1,7 @@
 /* tslint:disable: only-arrow-functions */
-import fs from 'fs'
 import { After, DataTable, Given, Then, When } from '@cucumber/cucumber'
 import EventSource from 'eventsource'
+import fs from 'fs'
 import {
   Author,
   BranchName,
@@ -20,13 +20,13 @@ import {
 } from 'git-en-boite-core'
 import {
   Commit,
-  openBareRepo,
+  createBareRepo,
   GetFiles,
   GetRefs,
   GitDirectory,
   Init,
   LocalCommitRef,
-  createBareRepo,
+  openBareRepo,
 } from 'git-en-boite-local-clones'
 import { assertThat, contains, containsInAnyOrder, containsString, equalTo, fulfilled, not, promiseThat } from 'hamjest'
 
@@ -81,18 +81,17 @@ Given('a remote repo with a file commited to {BranchName}', async function (this
   // TODO: await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
-const connectRepo = async function (this: World, remoteUrl: RemoteUrl) {
-  const repoInfo = { remoteUrl }
-  this.lastResponse = await this.request.put(`/repos/${this.repoId}`).send(repoInfo)
+const connectRepo = (world: World) => async (repoInfo: { remoteUrl: RemoteUrl }) => {
+  world.lastResponse = await world.request.put(`/repos/${world.repoId}`).send(repoInfo)
 }
 
 When('a consumer tries to connect to the remote repo', async function (this: World) {
-  await connectRepo.bind(this).call(this, this.remoteUrl(this.repoId))
+  await connectRepo(this)({ remoteUrl: this.remoteUrl(this.repoId) })
 })
 
 When('a consumer tries to connect to the remote URL {string}', async function (this: World, remoteUrl: string) {
   this.repoId = RepoId.generate()
-  await connectRepo.bind(this).call(this, RemoteUrl.of(remoteUrl))
+  await connectRepo(this)({ remoteUrl: RemoteUrl.of(remoteUrl) })
 })
 
 When("a/the consumer tries to get the repo's info", async function (this: World) {
@@ -104,13 +103,17 @@ When('a consumer tries to connect using a malformed payload', async function (th
   this.lastResponse = await this.request.put(`/repos/${this.repoId}`).send('garbage')
 })
 
-When('a consumer triggers a manual fetch of the repo', async function (this: World) {
-  assertThat(await this.request.post(`/repos/${this.repoId}`), isSuccess())
+When('a consumer fetches the repo', async function (this: World) {
+  await fetchRepo(this)({ repoId: this.repoId })
+  assertThat(this.lastResponse, isSuccess())
 })
 
-When('a consumer tries to trigger a manual fetch of the repo', async function (this: World) {
-  this.lastResponse = await this.request.post(`/repos/${this.repoId}`)
+When('a consumer tries to fetch the repo', async function (this: World) {
+  await fetchRepo(this)({ repoId: this.repoId })
 })
+
+const fetchRepo = (world: World) => async ({ repoId }: { repoId: RepoId }) =>
+  (world.lastResponse = await world.request.post(`/repos/${repoId}/fetches`))
 
 Given('the repo has been fetched', async function (this: World) {
   const domainEvents = this.domainEvents as SubscribesToDomainEvents
@@ -253,8 +256,8 @@ Then('the events received by the consumer should be:', function (this: World, ex
 })
 
 Then('the repo should be linked to that remote url', async function (this: World) {
-  const response = await this.request.post(`/repos/${this.repoId}`).set('Accept', 'application/json')
-  assertThat(response, isSuccess())
+  await fetchRepo(this)({ repoId: this.repoId })
+  assertThat(this.lastResponse, isSuccess())
 })
 
 Then(
