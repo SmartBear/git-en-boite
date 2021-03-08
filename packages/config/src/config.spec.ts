@@ -4,9 +4,10 @@ import { createConfig } from './config'
 
 describe('createConfig', () => {
   const defaultEnv = {
-    GIT_ROOT: 'some/git-root',
     NODE_ENV: 'any',
+    GIT_ROOT: 'some/git-root',
     REDIS_URL: 'redis://someredis',
+    LOGGING_READABLE_BY: 'nobody',
     npm_package_version: '1.2.3',
     build_number: '456',
     git_ref: 'abc',

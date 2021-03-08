@@ -20,7 +20,6 @@ const createGitConfig = (env: { get: (key: string) => getEnv.IOptionalVariable }
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createVersionConfig = (env: ReadableEnvironment): string => {
   const packageVersion = env.get('npm_package_version').required().asString()
   const gitRef = env.get('git_ref').default('dev').asString()
@@ -44,12 +43,13 @@ type Environment = {
   NODE_ENV?: string
   GIT_ROOT?: string
   REDIS_URL?: string
+  LOGGING_READABLE_BY?: string
   npm_package_version?: string
 }
 
 export const createConfig = (rawEnv: Environment = process.env): Config => {
   const env = getEnv.from(rawEnv)
-  env.get('NODE_ENV').required()
+  env.get('NODE_ENV').required().asString()
   return {
     git: createGitConfig(env),
     version: createVersionConfig(env),
