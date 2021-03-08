@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.6.1](https://github.com/SmartBear/git-en-boite/tree/v0.6.1) (2021-03-08)
+
 ## [v0.6.0](https://github.com/SmartBear/git-en-boite/tree/v0.6.0) (2021-03-08)
 
 **Closed issues:**
