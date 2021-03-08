@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.6.0](https://github.com/SmartBear/git-en-boite/tree/v0.6.0) (2021-03-08)
+
+**Closed issues:**
+
+- What's the right HTTP semantics to trigger a fetch? [\#573](https://github.com/SmartBear/git-en-boite/issues/573)
+- Failed to save a feature when the local repo is not up to date [\#566](https://github.com/SmartBear/git-en-boite/issues/566)
+
 ## [v0.5.5](https://github.com/SmartBear/git-en-boite/tree/v0.5.5) (2021-03-03)
 
 ## [v0.5.4](https://github.com/SmartBear/git-en-boite/tree/v0.5.4) (2021-03-03)
