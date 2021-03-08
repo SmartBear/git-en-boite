@@ -36,6 +36,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       GIT_ROOT: /git-repos
       REDIS_URL: redis://localhost:6379
+      LOGGING_READABLE_BY: humans
       ACTIONS_STEP_DEBUG: true
       CUCUMBER_PUBLISH_TOKEN: ${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
     steps:
