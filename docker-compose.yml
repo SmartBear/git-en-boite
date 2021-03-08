@@ -13,6 +13,7 @@ services:
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
+      - LOGGING_READABLE_BY=humans
     depends_on:
       - postgres
       - redis
@@ -32,6 +33,7 @@ services:
       - GIT_ROOT=/git-repos
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
+      - LOGGING_READABLE_BY=humans
     depends_on:
       - postgres
       - redis

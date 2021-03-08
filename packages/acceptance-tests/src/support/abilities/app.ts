@@ -14,7 +14,7 @@ console.log(`Starting acceptance tests with config: 🥁\n${JSON.stringify(confi
 
 Before(async function (this: World) {
   this.domainEvents = new EventEmitter()
-  this.log = setUpLogger({}, config.logger)
+  this.log = setUpLogger({}, config.logging)
   const gitReposPath = dirSync().name
   const repoIndex = new InventoryOfReposOnDisk(gitReposPath, new DirectLocalClones(), this.domainEvents)
   this.app = new LaBoîte(repoIndex, config.version, this.domainEvents, [fetchRepoAfterConnected], this.log)

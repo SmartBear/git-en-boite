@@ -1,3 +1,3 @@
-export type LoggerOptions = {
+export type LoggingOptions = {
   readableBy: 'humans' | 'machines' | 'nobody'
 }

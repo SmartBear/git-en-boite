@@ -1,12 +1,12 @@
 import { WriteLogEvent } from 'git-en-boite-core'
 import * as pino from 'pino'
-import { LoggerOptions } from './LoggerOptions'
+import { LoggingOptions } from './LoggingOptions'
 import { logToPino } from './logToPino'
 export * from './logToPino'
 export * from './makeHttpLoggingMiddleware'
-export * from './LoggerOptions'
+export * from './LoggingOptions'
 
-export function setUpLogger(config: pino.Bindings, { readableBy }: LoggerOptions): WriteLogEvent {
+export function setUpLogger(config: pino.Bindings, { readableBy }: LoggingOptions): WriteLogEvent {
   const logger =
     {
       humans: pino({ prettyPrint: { colorize: true } }),

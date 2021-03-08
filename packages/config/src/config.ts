@@ -1,11 +1,11 @@
 import * as getEnv from 'env-var'
-import { LoggerOptions } from 'git-en-boite-logging'
+import { LoggingOptions } from 'git-en-boite-logging'
 
 export interface Config {
   git: GitOptions
   version: string
   redis: string
-  logger: LoggerOptions
+  logging: LoggingOptions
 }
 
 interface GitOptions {
@@ -34,15 +34,9 @@ const createRedisConfig = (env: ReadableEnvironment): string => {
   return env.get('REDIS_URL').required().asString()
 }
 
-const createLoggerConfig = (env: ReadableEnvironment): LoggerOptions => {
-  const nodeEnv = env.get('NODE_ENV').required().asString()
+const createLoggerConfig = (env: ReadableEnvironment): LoggingOptions => {
   return {
-    readableBy:
-      nodeEnv == 'production'
-        ? 'machines'
-        : env.get('show_logs').asBool() || nodeEnv === 'development'
-        ? 'humans'
-        : 'nobody',
+    readableBy: env.get('LOGGING_READABLE_BY').required().asEnum(['humans', 'machines', 'nobody']),
   }
 }
 
@@ -60,6 +54,6 @@ export const createConfig = (rawEnv: Environment = process.env): Config => {
     git: createGitConfig(env),
     version: createVersionConfig(env),
     redis: createRedisConfig(env),
-    logger: createLoggerConfig(env),
+    logging: createLoggerConfig(env),
   }
 }

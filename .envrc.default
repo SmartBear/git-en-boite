@@ -2,5 +2,6 @@ export NODE_ENV=development
 export GIT_ROOT=$(pwd)/git-repos
 export REDIS_URL=redis://localhost:6380
 export DATABASE_URL=postgres://postgres:postgres@localhost:5433/git-en-boite-test
+export LOGGING_READABLE_BY=humans
 export build_number=dev
 export git_ref=dev

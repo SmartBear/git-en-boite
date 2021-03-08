@@ -9,7 +9,7 @@ const logThat = setUpLogger(
     environment: process.env.NODE_ENV,
     service: 'git-en-boite',
   },
-  config.logger
+  config.logging
 )
 const serverFailedToStart: (error: Error) => LogEvent = (error) => {
   const props: LogEvent = {
