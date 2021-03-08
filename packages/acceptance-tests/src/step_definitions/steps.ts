@@ -242,7 +242,6 @@ Then(
 )
 
 Then('the repo should have been fetched', async function (this: World) {
-  // TODO: resolve duplication with the "fetched n times" step below
   await promiseThat(
     new Promise<void>((received) =>
       this.domainEvents.on('repo.fetched', (event) => event.repoId.equals(this.repoId) && received())
