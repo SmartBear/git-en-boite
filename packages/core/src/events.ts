@@ -2,7 +2,7 @@ import { ensure, isString, JSONObject, JSONValue, TinyType, TinyTypeOf } from 't
 
 import { RepoId } from '.'
 import { EntityId } from './entity_id'
-import { AccessDenied } from './errors'
+import { AccessDenied, InvalidRepoUrl, LockedByAnotherProcess } from './errors'
 import { asSerializedError, buildDeserializeError } from './serialize_errors'
 
 type HasTypeProperty<Map> = { [Key in keyof Map]: { type: Key } }
@@ -73,7 +73,7 @@ export class RepoFetched extends RepoEvent {
   }
 }
 
-const deserialize = buildDeserializeError(Error, AccessDenied)
+const deserializeError = buildDeserializeError(AccessDenied, Error, InvalidRepoUrl, LockedByAnotherProcess)
 
 export class RepoFetchFailed extends RepoEvent {
   public readonly type = 'repo.fetch-failed'
@@ -85,7 +85,7 @@ export class RepoFetchFailed extends RepoEvent {
   static fromJSON(payload: JSONObject): RepoFetchFailed {
     const repoId = RepoId.fromJSON(payload.repoId)
     const occurredAt = Timestamp.fromJSON(payload.occurredAt)
-    const error = deserialize(new Error(payload.errorMessage as string), console.error)
+    const error = deserializeError(new Error(payload.errorMessage as string), console.error)
     return new RepoFetchFailed(error, repoId, occurredAt)
   }
 

@@ -13,13 +13,20 @@ import {
   WriteLogEvent,
   asSerializedError,
   buildDeserializeError,
+  LockedByAnotherProcess,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
 import { DirectLocalClones } from './direct_local_clone'
 import { GitCommandError } from './git_command_error'
 
-export const deserialize = buildDeserializeError(InvalidRepoUrl, AccessDenied, Error, GitCommandError)
+export const deserialize = buildDeserializeError(
+  AccessDenied,
+  Error,
+  GitCommandError,
+  InvalidRepoUrl,
+  LockedByAnotherProcess
+)
 
 interface Closable {
   close(): Promise<void>
