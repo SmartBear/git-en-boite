@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.6.2](https://github.com/SmartBear/git-en-boite/tree/v0.6.2) (2021-03-08)
+
+**Closed issues:**
+
+- Simplify logger config [\#584](https://github.com/SmartBear/git-en-boite/issues/584)
+- 404 if you try to interact with a repo that doesn't exist [\#423](https://github.com/SmartBear/git-en-boite/issues/423)
+
 ## [v0.6.1](https://github.com/SmartBear/git-en-boite/tree/v0.6.1) (2021-03-08)
 
 ## [v0.6.0](https://github.com/SmartBear/git-en-boite/tree/v0.6.0) (2021-03-08)
