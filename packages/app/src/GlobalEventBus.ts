@@ -3,6 +3,13 @@ import IORedis, { Redis } from 'ioredis'
 import EventEmitter from 'events'
 
 export class GlobalEventBus implements DomainEventBus {
+  listenTo(localEventBus: DomainEventBus): GlobalEventBus {
+    for (const eventKey of DomainEvents.keys) {
+      localEventBus.on(eventKey, (event) => this.emit(eventKey, event))
+    }
+    return this
+  }
+
   static async connect(config: string): Promise<GlobalEventBus> {
     const sub = await connectToRedis(config)
     const listeners = new EventEmitter()
