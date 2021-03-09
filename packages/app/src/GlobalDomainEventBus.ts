@@ -2,15 +2,15 @@ import { DomainEventBus, DomainEvents, fromJSON } from 'git-en-boite-core'
 import IORedis, { Redis } from 'ioredis'
 import EventEmitter from 'events'
 
-export class GlobalEventBus implements DomainEventBus {
-  listenTo(localEventBus: DomainEventBus): GlobalEventBus {
+export class GlobalDomainEventBus implements DomainEventBus {
+  listenTo(localEventBus: DomainEventBus): GlobalDomainEventBus {
     for (const eventKey of DomainEvents.keys) {
       localEventBus.on(eventKey, (event) => this.emit(eventKey, event))
     }
     return this
   }
 
-  static async connect(config: string): Promise<GlobalEventBus> {
+  static async connect(config: string): Promise<GlobalDomainEventBus> {
     const sub = await connectToRedis(config)
     const listeners = new EventEmitter()
     await new Promise<void>((resolve) => {
@@ -22,7 +22,7 @@ export class GlobalEventBus implements DomainEventBus {
       })
     })
     const pub = await connectToRedis(config)
-    return new GlobalEventBus(pub, sub, listeners)
+    return new GlobalDomainEventBus(pub, sub, listeners)
   }
 
   constructor(private readonly pub: Redis, private readonly sub: Redis, private readonly listeners: EventEmitter) {}

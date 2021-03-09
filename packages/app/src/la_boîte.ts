@@ -3,27 +3,21 @@ import {
   Author,
   BranchName,
   CommitMessage,
-  DomainRule,
   Files,
+  InventoryOfRepos,
   QueryResult,
   RemoteUrl,
   RepoId,
-  InventoryOfRepos,
   RepoSnapshot,
   SubscribesToDomainEvents,
-  WriteLogEvent,
 } from 'git-en-boite-core'
 
 export class LaBoîte implements Application {
   constructor(
     private readonly inventoryOfRepos: InventoryOfRepos,
     public readonly version: string,
-    public readonly events: SubscribesToDomainEvents,
-    rules: DomainRule[],
-    log: WriteLogEvent
-  ) {
-    rules.map((rule) => rule(events, this, log))
-  }
+    public readonly events: SubscribesToDomainEvents
+  ) {}
 
   async commit(
     repoId: RepoId,

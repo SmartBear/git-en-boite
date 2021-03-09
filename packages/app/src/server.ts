@@ -11,6 +11,7 @@ import {
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { BackgroundWorkerLocalClones, DirectLocalClones } from 'git-en-boite-local-clones'
 import { startWebServer } from 'git-en-boite-web'
+import { GlobalDomainEventBus } from './GlobalDomainEventBus'
 
 import { LaBoîte } from './la_boîte'
 import { runProcess } from './runProcess'
@@ -22,7 +23,6 @@ runProcess(async (config: Config, log: WriteLogEvent) => {
       events.on(eventKey, (event) => log({ level: 'info', message: eventKey, event }))
     }
   }
-  const domainEvents: DomainEventBus = new EventEmitter()
   const localClones = await BackgroundWorkerLocalClones.connect(
     new DirectLocalClones(),
     config.redis,
@@ -30,14 +30,12 @@ runProcess(async (config: Config, log: WriteLogEvent) => {
     log
   )
   await localClones.pingWorkers()
-  const inventoryOfRepos = new InventoryOfReposOnDisk(config.git.root, localClones, domainEvents)
-  const app: Application = new LaBoîte(
-    inventoryOfRepos,
-    config.version,
-    domainEvents,
-    [logDomainEvents, fetchRepoAfterConnected],
-    log
-  )
+  const localDomainEventBus: DomainEventBus = new EventEmitter()
+  const inventoryOfRepos = new InventoryOfReposOnDisk(config.git.root, localClones, localDomainEventBus)
+  const globalDomainEventBus = await (await GlobalDomainEventBus.connect(config.redis)).listenTo(localDomainEventBus)
+  const app: Application = new LaBoîte(inventoryOfRepos, config.version, globalDomainEventBus)
+  const domainRules = [logDomainEvents, fetchRepoAfterConnected]
+  domainRules.map((rule) => rule(localDomainEventBus, app, log))
 
   const port = 3001
   startWebServer(app, port, log)

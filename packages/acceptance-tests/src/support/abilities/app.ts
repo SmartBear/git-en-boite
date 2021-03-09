@@ -17,5 +17,7 @@ Before(async function (this: World) {
   this.log = setUpLogger({}, config.logging)
   const gitReposPath = dirSync().name
   const repoIndex = new InventoryOfReposOnDisk(gitReposPath, new DirectLocalClones(), this.domainEvents)
-  this.app = new LaBoîte(repoIndex, config.version, this.domainEvents, [fetchRepoAfterConnected], this.log)
+  this.app = new LaBoîte(repoIndex, config.version, this.domainEvents)
+  const domainRules = [fetchRepoAfterConnected]
+  domainRules.map((rule) => rule(this.domainEvents, this.app, this.log))
 })

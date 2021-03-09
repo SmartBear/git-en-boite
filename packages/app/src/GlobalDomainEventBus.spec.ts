@@ -3,15 +3,15 @@ import { DomainEventBus, RepoConnected, RepoFetched, RepoId } from 'git-en-boite
 import { assertThat, equalTo } from 'hamjest'
 import EventEmitter from 'events'
 
-import { GlobalEventBus } from './GlobalEventBus'
+import { GlobalDomainEventBus } from './GlobalDomainEventBus'
 
 const config = createConfig()
 
-describe(GlobalEventBus.name, () => {
+describe(GlobalDomainEventBus.name, () => {
   describe('transmitting events', () => {
-    it('transmits an event to a single receiver', async () => {
-      const sender = await GlobalEventBus.connect(config.redis)
-      const receiver = await GlobalEventBus.connect(config.redis)
+    it(`transmits an event to another instance of the ${GlobalDomainEventBus.name}`, async () => {
+      const sender = await GlobalDomainEventBus.connect(config.redis)
+      const receiver = await GlobalDomainEventBus.connect(config.redis)
       const receiving = new Promise((resolve) => receiver.on('repo.connected', resolve))
       const event = new RepoConnected(RepoId.generate())
       sender.emit('repo.connected', event)
@@ -22,8 +22,8 @@ describe(GlobalEventBus.name, () => {
     })
 
     it('transmits the same event to a multiple listeners on the same receiver', async () => {
-      const sender = await GlobalEventBus.connect(config.redis)
-      const receiver = await GlobalEventBus.connect(config.redis)
+      const sender = await GlobalDomainEventBus.connect(config.redis)
+      const receiver = await GlobalDomainEventBus.connect(config.redis)
       const receivingOne = new Promise((resolve) => receiver.on('repo.connected', resolve))
       const receivingTwo = new Promise((resolve) => receiver.on('repo.connected', resolve))
       const event = new RepoConnected(RepoId.generate())
@@ -37,9 +37,9 @@ describe(GlobalEventBus.name, () => {
     })
 
     it('transmits the same event to a multiple receivers', async () => {
-      const sender = await GlobalEventBus.connect(config.redis)
-      const receiverOne = await GlobalEventBus.connect(config.redis)
-      const receiverTwo = await GlobalEventBus.connect(config.redis)
+      const sender = await GlobalDomainEventBus.connect(config.redis)
+      const receiverOne = await GlobalDomainEventBus.connect(config.redis)
+      const receiverTwo = await GlobalDomainEventBus.connect(config.redis)
       const receivingOne = new Promise((resolve) => receiverOne.on('repo.connected', resolve))
       const receivingTwo = new Promise((resolve) => receiverTwo.on('repo.connected', resolve))
       const event = new RepoConnected(RepoId.generate())
@@ -54,9 +54,9 @@ describe(GlobalEventBus.name, () => {
     })
 
     it('transmits different events to different receivers', async () => {
-      const sender = await GlobalEventBus.connect(config.redis)
-      const receiverOne = await GlobalEventBus.connect(config.redis)
-      const receiverTwo = await GlobalEventBus.connect(config.redis)
+      const sender = await GlobalDomainEventBus.connect(config.redis)
+      const receiverOne = await GlobalDomainEventBus.connect(config.redis)
+      const receiverTwo = await GlobalDomainEventBus.connect(config.redis)
       const receivingOne = new Promise((resolve) => receiverOne.on('repo.connected', resolve))
       const receivingTwo = new Promise((resolve) => receiverTwo.on('repo.fetched', resolve))
       const repoConnected = new RepoConnected(RepoId.generate())
@@ -76,7 +76,7 @@ describe(GlobalEventBus.name, () => {
   describe('connecting to another EventBus', () => {
     it('emits an event sent to the other EventBus', async () => {
       const localEventBus: DomainEventBus = new EventEmitter()
-      const globalEventBus = (await GlobalEventBus.connect(config.redis)).listenTo(localEventBus)
+      const globalEventBus = (await GlobalDomainEventBus.connect(config.redis)).listenTo(localEventBus)
       const receiving = new Promise((resolve) => globalEventBus.on('repo.connected', resolve))
       const event = new RepoConnected(RepoId.generate())
       localEventBus.emit('repo.connected', event)
