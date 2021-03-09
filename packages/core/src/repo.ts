@@ -6,10 +6,13 @@ import {
   Files,
   LocalClone,
   PendingCommitRef,
+  PublishesDomainEvents,
   RemoteUrl,
+  RepoConnected,
+  RepoFetched,
+  RepoFetchFailed,
   RepoId,
 } from '.'
-import { PublishesDomainEvents, RepoConnected, RepoFetched, RepoFetchFailed } from './events'
 
 export class Repo {
   constructor(

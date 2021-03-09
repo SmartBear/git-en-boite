@@ -1,11 +1,20 @@
 import { EventEmitter } from 'events'
-import { assertThat, containsInAnyOrder, fulfilled, isRejectedWith, promiseThat, rejected, equalTo } from 'hamjest'
-import { stubInterface, StubbedInstance } from 'ts-sinon'
+import { assertThat, containsInAnyOrder, equalTo, fulfilled, isRejectedWith, promiseThat, rejected } from 'hamjest'
+import { StubbedInstance, stubInterface } from 'ts-sinon'
 
-import { BranchName, BranchSnapshot, LocalClone, Ref, RefName, Refs, Repo, RepoId } from '.'
-import { CommitName } from './commit_name'
-import { DomainEventBus } from './events'
-import { RemoteUrl } from './remote_url'
+import {
+  BranchName,
+  BranchSnapshot,
+  CommitName,
+  DomainEventBus,
+  LocalClone,
+  Ref,
+  RefName,
+  Refs,
+  RemoteUrl,
+  Repo,
+  RepoId,
+} from '.'
 
 describe(Repo.name, () => {
   const domainEvents: DomainEventBus = new EventEmitter()

@@ -1,10 +1,11 @@
 import { assertThat, equalTo, hasProperty, instanceOf, throws } from 'hamjest'
 import { JSONObject } from 'tiny-types'
 
-import { AccessDenied, RepoId } from '.'
-import { CannotDeserializeEvent, fromJSON, RepoConnected, RepoFetched, RepoFetchFailed, Timestamp } from './events'
+import { AccessDenied, RepoId } from '..'
+import { CannotDeserializeEvent, fromJSON, RepoConnected, RepoFetched, RepoFetchFailed } from '.'
+import { Timestamp } from './Timestamp'
 
-describe('@wip DomainEvents', () => {
+describe('DomainEvents', () => {
   describe('Converting from JSON', () => {
     context('with a bad payload', () => {
       it(`throws a ${CannotDeserializeEvent.name} error when there is no type`, () => {
