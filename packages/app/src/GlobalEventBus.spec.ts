@@ -15,6 +15,8 @@ describe(GlobalEventBus.name, () => {
     sender.emit('repo.connected', event)
     const actual = await receiving
     assertThat(actual, equalTo(event))
+    sender.close()
+    receiver.close()
   })
 
   it('transmits the same event to a multiple listeners on the same receiver', async () => {
@@ -28,6 +30,8 @@ describe(GlobalEventBus.name, () => {
     const actualTwo = await receivingTwo
     assertThat(actualOne, equalTo(event))
     assertThat(actualTwo, equalTo(event))
+    sender.close()
+    receiver.close()
   })
 
   it('transmits the same event to a multiple receivers', async () => {
@@ -42,6 +46,9 @@ describe(GlobalEventBus.name, () => {
     const actualTwo = await receivingTwo
     assertThat(actualOne, equalTo(event))
     assertThat(actualTwo, equalTo(event))
+    sender.close()
+    receiverOne.close()
+    receiverTwo.close()
   })
 
   it('transmits different events to different receivers', async () => {
@@ -58,5 +65,8 @@ describe(GlobalEventBus.name, () => {
     const actualTwo = await receivingTwo
     assertThat(actualOne, equalTo(repoConnected))
     assertThat(actualTwo, equalTo(repoFetched))
+    sender.close()
+    receiverOne.close()
+    receiverTwo.close()
   })
 })

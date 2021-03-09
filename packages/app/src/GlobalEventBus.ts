@@ -15,10 +15,15 @@ export class GlobalEventBus implements DomainEventBus {
       })
     })
     const pub = await connectToRedis(config)
-    return new GlobalEventBus(pub, listeners)
+    return new GlobalEventBus(pub, sub, listeners)
   }
 
-  constructor(private readonly pub: Redis, private readonly listeners: EventEmitter) {}
+  constructor(private readonly pub: Redis, private readonly sub: Redis, private readonly listeners: EventEmitter) {}
+
+  close(): void {
+    this.pub.disconnect()
+    this.sub.disconnect()
+  }
 
   emit<Key extends keyof DomainEvents>(eventName: Key, event: DomainEvents[Key]): void {
     this.pub.publish(eventName, JSON.stringify(event.toJSON()))
