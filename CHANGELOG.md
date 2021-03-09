@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.7.0](https://github.com/SmartBear/git-en-boite/tree/v0.7.0) (2021-03-09)
+
+**Closed issues:**
+
+- DomainEventBus needs to work in multi-node environment [\#242](https://github.com/SmartBear/git-en-boite/issues/242)
+
 ## [v0.6.2](https://github.com/SmartBear/git-en-boite/tree/v0.6.2) (2021-03-08)
 
 **Closed issues:**
