@@ -11,8 +11,8 @@
     "start:server": "ts-node -r tsconfig-paths/register dist/server.js",
     "start:worker": "ts-node -r tsconfig-paths/register dist/worker.js",
     "start": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:worker\" -n server,worker -c green,yellow",
-    "test:wip": "NODE_ENV=test LOGGING_READABLE_BY=humans TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip",
-    "test": "NODE_ENV=test LOGGING_READABLE_BY=humans TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i"
+    "test:wip": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip",
+    "test": "NODE_ENV=test TS_NODE_TRANSPILE_ONLY=1 mocha -g @wip -i"
   },
   "author": "",
   "license": "ISC",
