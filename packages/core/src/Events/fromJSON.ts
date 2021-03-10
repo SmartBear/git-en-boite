@@ -1,6 +1,7 @@
 import { JSONObject, JSONValue } from 'tiny-types'
 
-import { DomainEvent, DomainEvents, RepoConnected, RepoFetched, RepoFetchFailed } from '.'
+import { DomainEvent, DomainEvents } from '.'
+import { DomainEventConstructor } from './DomainEventConstructor'
 
 export class CannotDeserializeEvent extends Error {
   constructor(payload: JSONValue) {
@@ -17,16 +18,5 @@ export function fromJSON(payload: JSONObject): DomainEvent {
     throw new CannotDeserializeEvent(payload)
   }
 
-  interface DomainEventConstructor<T extends DomainEvent> {
-    new (...args: never[]): T
-    fromJSON(payload: JSONObject): T
-  }
-
-  const eventConstructor: { [Key in keyof DomainEvents]: DomainEventConstructor<DomainEvents[Key]> } = {
-    'repo.fetched': RepoFetched,
-    'repo.connected': RepoConnected,
-    'repo.fetch-failed': RepoFetchFailed,
-  }
-
-  return eventConstructor[eventName].fromJSON(payload)
+  return DomainEventConstructor[eventName].fromJSON(payload)
 }

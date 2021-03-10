@@ -8,9 +8,6 @@ import { PublishesEvents, SubscribesToEvents } from './EventMap'
 import { Timestamp } from './Timestamp'
 export * from './fromJSON'
 
-export interface DomainEventConstructor<T extends DomainEvent> {
-  new (...args: any[]): T
-}
 export abstract class DomainEvent extends TinyType {
   constructor(public readonly entityId: EntityId, public readonly occurredAt: Timestamp = Timestamp.now()) {
     super()
@@ -72,7 +69,6 @@ export type DomainEvents = {
 export const DomainEvents = {
   keys: enumerate<keyof DomainEvents>()('repo.fetched', 'repo.fetch-failed', 'repo.connected'),
 }
-
 export type PublishesDomainEvents = PublishesEvents<DomainEvent, DomainEvents>
 export type SubscribesToDomainEvents = SubscribesToEvents<DomainEvent, DomainEvents>
 export type DomainEventBus = PublishesDomainEvents & SubscribesToDomainEvents
