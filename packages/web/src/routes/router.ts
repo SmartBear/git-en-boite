@@ -3,6 +3,7 @@ import { Context } from 'koa'
 import Router from '@koa/router'
 
 import repos from './repos/router'
+import events from './events/router'
 
 export default (app: Application): Router => {
   const router = new Router()
@@ -12,4 +13,5 @@ export default (app: Application): Router => {
     })
 
     .use('/repos', repos(app, router).routes(), repos(app, router).allowedMethods())
+    .use('/events', events(app, router).routes(), repos(app, router).allowedMethods())
 }

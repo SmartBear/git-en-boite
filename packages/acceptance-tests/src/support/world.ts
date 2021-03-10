@@ -5,6 +5,7 @@ export type World = {
   domainEvents: DomainEventBus
   log: WriteLogEvent
   repoId: RepoId
+  anotherRepoId: RepoId
   lastCommitRevision: CommitName
   lastResponse: Response
   request: SuperTest<Test>

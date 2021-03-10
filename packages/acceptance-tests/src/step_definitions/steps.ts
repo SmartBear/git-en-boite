@@ -33,6 +33,27 @@ import { assertThat, contains, containsInAnyOrder, containsString, equalTo, fulf
 import { isSuccess } from '../support/matchers/is_success'
 import { World } from '../support/world'
 
+const createRemoteRepo = (repoId: RepoId) => async (world: World) => {
+  const branchName = BranchName.of('main')
+  const repoPath = world.remotePath(repoId)
+  const git = await createBareRepo(repoPath)
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+}
+
+const connectLocalRepoToRemote = (repoId: RepoId, remoteUrl?: RemoteUrl) => async (world: World) => {
+  const repoInfo = { remoteUrl: remoteUrl || world.remoteUrl(repoId) }
+  world.lastResponse = await world.request.put(`/repos/${repoId}`).send(repoInfo)
+}
+
+const waitUntilRepoEvent = (eventKey: keyof DomainEvents, repoId: RepoId) => async (world: World) => {
+  await promiseThat(
+    new Promise<void>((received) =>
+      world.domainEvents.on(eventKey, (event) => event.repoId.equals(repoId) && received())
+    ),
+    fulfilled()
+  )
+}
+
 Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
   this.repoId = RepoId.generate()
   const branches = branchesTable.raw().map((row: string[]) => BranchName.of(row[0]))
@@ -60,12 +81,25 @@ async function commitToRemote(this: World, branchName: BranchName) {
   this.lastCommitRevision = (await git(GetRefs.all())).forBranch(branchName).revision
 }
 
-Given('a consumer has connected the remote repo', connect)
-When('a consumer connects the remote repo', connect)
-async function connect(this: World) {
-  const repoInfo = { remoteUrl: this.remoteUrl(this.repoId) }
-  await this.request.put(`/repos/${this.repoId}`).send(repoInfo).expect(200)
-}
+Given('a consumer has connected the remote repo', async function (this: World) {
+  await connectLocalRepoToRemote(this.repoId)(this)
+})
+
+When('a consumer connects the remote repo', async function (this: World) {
+  await connectLocalRepoToRemote(this.repoId)(this)
+})
+
+When('a consumer connects to a remote repo', async function (this: World) {
+  this.repoId = RepoId.generate()
+  await createRemoteRepo(this.repoId)(this)
+  await connectLocalRepoToRemote(this.repoId)(this)
+})
+
+When('a consumer connects to another remote repo', async function (this: World) {
+  const repoId = (this.anotherRepoId = RepoId.generate())
+  await createRemoteRepo(repoId)(this)
+  await connectLocalRepoToRemote(repoId)(this)
+})
 
 Given('a consumer has failed to connect to a remote repo', async function (this: World) {
   this.repoId = RepoId.generate()
@@ -81,17 +115,13 @@ Given('a remote repo with a file commited to {BranchName}', async function (this
   // TODO: await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
 })
 
-const connectRepo = (world: World) => async (repoInfo: { remoteUrl: RemoteUrl }) => {
-  world.lastResponse = await world.request.put(`/repos/${world.repoId}`).send(repoInfo)
-}
-
 When('a consumer tries to connect to the remote repo', async function (this: World) {
-  await connectRepo(this)({ remoteUrl: this.remoteUrl(this.repoId) })
+  await connectLocalRepoToRemote(this.repoId)(this)
 })
 
 When('a consumer tries to connect to the remote URL {string}', async function (this: World, remoteUrl: string) {
   this.repoId = RepoId.generate()
-  await connectRepo(this)({ remoteUrl: RemoteUrl.of(remoteUrl) })
+  await connectLocalRepoToRemote(this.repoId, RemoteUrl.of(remoteUrl))(this)
 })
 
 When("a/the consumer tries to get the repo's info", async function (this: World) {
@@ -116,13 +146,11 @@ const fetchRepo = (world: World) => async ({ repoId }: { repoId: RepoId }) =>
   (world.lastResponse = await world.request.post(`/repos/${repoId}/fetches`))
 
 Given('the repo has been fetched', async function (this: World) {
-  const domainEvents = this.domainEvents as SubscribesToDomainEvents
-  await promiseThat(
-    new Promise<void>((received) =>
-      domainEvents.on('repo.fetched', (event) => event.repoId.equals(this.repoId) && received())
-    ),
-    fulfilled()
-  )
+  await waitUntilRepoEvent('repo.fetched', this.repoId)(this)
+})
+
+When('the other repo has been fetched', async function (this: World) {
+  await waitUntilRepoEvent('repo.fetched', this.anotherRepoId)(this)
 })
 
 When(
@@ -172,6 +200,17 @@ After(() => {
   for (const closable of closables) {
     closable.close()
   }
+})
+
+Given('a consumer is listening to the main event stream', function (this: World) {
+  this.events = []
+  const events = new EventSource(`http://localhost:8888/events`)
+  for (const eventKey of DomainEvents.keys) {
+    events.addEventListener(eventKey, (event: Event) => {
+      this.events.push(event.type)
+    })
+  }
+  closables.push(events)
 })
 
 When('a consumer changes the remote url', async function (this: World) {

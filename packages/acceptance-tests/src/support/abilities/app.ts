@@ -6,7 +6,7 @@ import { DirectLocalClones } from 'git-en-boite-local-clones'
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { dirSync } from 'tmp'
 
-import { LaBoîte } from 'git-en-boite-app'
+import { LaBoîte, logDomainEvents } from 'git-en-boite-app'
 import { World } from '../world'
 import { setUpLogger } from 'git-en-boite-logging'
 const config = createConfig()
@@ -18,6 +18,6 @@ Before(async function (this: World) {
   const gitReposPath = dirSync().name
   const repoIndex = new InventoryOfReposOnDisk(gitReposPath, new DirectLocalClones(), this.domainEvents)
   this.app = new LaBoîte(repoIndex, config.version, this.domainEvents)
-  const domainRules = [fetchRepoAfterConnected]
+  const domainRules = [logDomainEvents(this.log), fetchRepoAfterConnected]
   domainRules.map((rule) => rule(this.domainEvents, this.app, this.log))
 })
