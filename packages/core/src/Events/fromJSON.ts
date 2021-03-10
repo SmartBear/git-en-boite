@@ -12,12 +12,21 @@ export const isEventKey = (candidate: unknown): candidate is keyof DomainEvents 
   !!DomainEvents.keys.find((key) => key === candidate)
 
 export function fromJSON(payload: JSONObject): DomainEvent {
-  const eventKey = payload.type
-  if (!isEventKey(eventKey)) {
+  const eventName = payload.type
+  if (!isEventKey(eventName)) {
     throw new CannotDeserializeEvent(payload)
   }
-  // TODO: figure out how to use the type system to check we're covering all the types correctly here
-  if (eventKey === 'repo.fetched') return RepoFetched.fromJSON(payload)
-  if (eventKey === 'repo.connected') return RepoConnected.fromJSON(payload)
-  if (eventKey === 'repo.fetch-failed') return RepoFetchFailed.fromJSON(payload)
+
+  interface DomainEventConstructor<T extends DomainEvent> {
+    new (...args: never[]): T
+    fromJSON(payload: JSONObject): T
+  }
+
+  const eventConstructor: { [Key in keyof DomainEvents]: DomainEventConstructor<DomainEvents[Key]> } = {
+    'repo.fetched': RepoFetched,
+    'repo.connected': RepoConnected,
+    'repo.fetch-failed': RepoFetchFailed,
+  }
+
+  return eventConstructor[eventName].fromJSON(payload)
 }

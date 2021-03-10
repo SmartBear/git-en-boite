@@ -8,6 +8,9 @@ import { PublishesEvents, SubscribesToEvents } from './EventMap'
 import { Timestamp } from './Timestamp'
 export * from './fromJSON'
 
+export interface DomainEventConstructor<T extends DomainEvent> {
+  new (...args: any[]): T
+}
 export abstract class DomainEvent extends TinyType {
   constructor(public readonly entityId: EntityId, public readonly occurredAt: Timestamp = Timestamp.now()) {
     super()
