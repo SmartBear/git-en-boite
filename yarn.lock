@@ -4586,10 +4586,9 @@ node-fetch@^2.6.1:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-git-server@^0.6.1:
+node-git-server@SmartBear/node-git-server#master:
   version "0.6.1"
-  resolved "https://registry.yarnpkg.com/node-git-server/-/node-git-server-0.6.1.tgz#c69c82fe92335002442b92fb11d314911c3523b9"
-  integrity sha512-dCWUlzD4j1p2SEp/Lm08a0YJgm9W3KFQbyZXPKmI4tY/TAPii5KT0dQmuLDbNAJFW4OJ4KrvRDdunt/D8zi9ew==
+  resolved "https://codeload.github.com/SmartBear/node-git-server/tar.gz/2dceb3bbac9a40cbfdaacf65b3d807731cd7e85e"
   dependencies:
     through "^2.3.8"
 
