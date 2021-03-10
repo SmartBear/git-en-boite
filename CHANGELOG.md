@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.8.1](https://github.com/SmartBear/git-en-boite/tree/v0.8.1) (2021-03-10)
+
+## [v0.8.0](https://github.com/SmartBear/git-en-boite/tree/v0.8.0) (2021-03-10)
+
+**Closed issues:**
+
+- Endpoint to stream all events [\#588](https://github.com/SmartBear/git-en-boite/issues/588)
+
 ## [v0.7.2](https://github.com/SmartBear/git-en-boite/tree/v0.7.2) (2021-03-10)
 
 ## [v0.7.1](https://github.com/SmartBear/git-en-boite/tree/v0.7.1) (2021-03-10)
