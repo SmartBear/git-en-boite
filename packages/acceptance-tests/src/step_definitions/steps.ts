@@ -111,8 +111,8 @@ Given('a remote repo with a file commited to {BranchName}', async function (this
   this.repoId = RepoId.generate()
   this.file = GitFile.fromJSON({ path: 'my/feature.feature', content: 'Feature: My feature' })
   const repoPath = this.remotePath(this.repoId)
-  await createBareRepo(repoPath)
-  // TODO: await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+  const git = await createBareRepo(repoPath)
+  await git(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)).withFiles([this.file]))
 })
 
 When('a consumer tries to connect to the remote repo', async function (this: World) {
@@ -301,7 +301,6 @@ Then('the repo should be linked to that remote url', async function (this: World
 Then(
   'the consumer can read the contents of the file on {BranchName} of the local clone',
   async function (this: World, branchName: BranchName) {
-    // TODO: use URI/template
     const response = await this.request.get(`/repos/${this.repoId}/commits/${branchName}/files/${this.file.path}`)
     assertThat(response.text, equalTo(this.file.content))
   }
