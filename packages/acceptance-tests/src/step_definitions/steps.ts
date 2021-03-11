@@ -302,7 +302,7 @@ Then(
   'the consumer can read the contents of the file on {BranchName} of the local clone',
   async function (this: World, branchName: BranchName) {
     const response = await this.request.get(`/repos/${this.repoId}/commits/${branchName}/files/${this.file.path}`)
-    assertThat(response.text, equalTo(this.file.content))
+    assertThat(response.text, equalTo(this.file.content.value))
   }
 )
 
