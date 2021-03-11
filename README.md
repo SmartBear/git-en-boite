@@ -10,7 +10,7 @@ Put git in a box to make it easy to work with in your apps.
 - ✅ Fetch updates from origin on demand
 - ✅ Create new commits on a branch and push to the origin
 - Set up webhooks to automatically fetch when origin is updated (TODO)
-- Emit events about changes in the repo (TODO)
+- ✅ Emit events about changes in the repo
 - Query the repo for:
   - ✅ branch head revisions
   - file lists (TODO)
