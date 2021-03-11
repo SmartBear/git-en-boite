@@ -16,7 +16,6 @@ import {
   RemoteUrl,
   RepoId,
   RepoSnapshot,
-  SubscribesToDomainEvents,
 } from 'git-en-boite-core'
 import {
   Commit,
