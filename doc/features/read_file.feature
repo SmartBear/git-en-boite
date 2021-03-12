@@ -4,7 +4,6 @@ Feature: Read file
 
   This is effectively the same as running `git show <ref>:<path>`
 
-  @wip
   Scenario: Read a single file that exists
     Given a remote repo with a file commited to "main" branch
     And a consumer has connected the remote repo

@@ -300,7 +300,9 @@ Then('the repo should be linked to that remote url', async function (this: World
 Then(
   'the consumer can read the contents of the file on {BranchName} of the local clone',
   async function (this: World, branchName: BranchName) {
-    const response = await this.request.get(`/repos/${this.repoId}/commits/${branchName}/files/${this.file.path}`)
+    const repo = new GitDirectory(this.remotePath(this.repoId))
+    const ref = await repo.read('rev-parse', [branchName.value])
+    const response = await this.request.get(`/repos/${this.repoId}/commits/${ref}/files/${this.file.path}`)
     assertThat(response.body.toString(), equalTo(this.file.content.value))
   }
 )
