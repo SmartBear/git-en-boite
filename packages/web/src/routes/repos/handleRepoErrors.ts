@@ -1,4 +1,4 @@
-import { AccessDenied, InvalidRepoUrl, LockedByAnotherProcess } from 'git-en-boite-core'
+import { AccessDenied, InvalidRepoUrl, LockedByAnotherProcess, Unauthorized } from 'git-en-boite-core'
 import { Context, Next } from 'koa'
 
 export async function handleRepoErrors(ctx: Context, next: Next): Promise<void> {
@@ -6,6 +6,8 @@ export async function handleRepoErrors(ctx: Context, next: Next): Promise<void> 
     await next()
   } catch (error) {
     switch (error.constructor) {
+      case Unauthorized:
+        ctx.throw(401, 'Unauthorized')
       case AccessDenied:
         ctx.throw(403, `Access denied: ${error.message}`)
       case InvalidRepoUrl:

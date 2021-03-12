@@ -1,5 +1,5 @@
 import { Verifier, VerifierOptions } from '@pact-foundation/pact'
-import { Application, QueryResult, RepoId } from 'git-en-boite-core'
+import { Application, QueryResult, RepoId, Unauthorized } from 'git-en-boite-core'
 import { Server } from 'http'
 import path from 'path'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -38,6 +38,9 @@ describe('HTTP Api', () => {
       },
       'a new repo': async () => {
         app.getInfo.resolves(QueryResult.from())
+      },
+      'a repo with expired credentials, with a branch': async () => {
+        app.commit.rejects(new Unauthorized())
       },
     },
   }

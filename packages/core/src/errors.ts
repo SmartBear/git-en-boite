@@ -19,3 +19,10 @@ export class LockedByAnotherProcess extends DomainError {
 }
 
 export class InvalidRepoUrl extends DomainError {}
+
+//TODO: throw this accordingly
+export class Unauthorized extends DomainError {
+  constructor(message = 'Unauthorized') {
+    super(message)
+  }
+}
