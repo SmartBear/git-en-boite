@@ -137,6 +137,28 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     })
   })
 
+  describe('@wip showing file content', () => {
+    let originUrl: RemoteUrl
+    let origin: Dispatch<RepoProtocol>
+
+    const fileContent = new FileContent('Feature: A')
+    const location = new FilePath('a.feature')
+    const file = new GitFile(location, fileContent)
+
+    beforeEach(async () => {
+      originUrl = RemoteUrl.of(path.resolve(root, 'remote', 'a-repo-id'))
+      origin = await createOriginRepo(originUrl.value)
+      const commitRef = LocalCommitRef.forBranch(branchName)
+      await origin(Commit.toCommitRef(commitRef).withFiles([file]))
+      await localClone.setOriginTo(originUrl)
+      await localClone.fetch()
+    })
+
+    it('returns a FileContent for a ref and a location', async () => {
+      await assertThat(await localClone.showFile(branchName.value, location), equalTo(fileContent))
+    })
+  })
+
   // describe(GetRefs.name, () => {
   //   context('with an origin repo with commits on master', () => {
   //     let originUrl: string

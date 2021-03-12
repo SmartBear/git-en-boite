@@ -13,6 +13,7 @@ import {
   handlePush,
   handleSetOrigin,
   handleValidateRemote,
+  handleShowFile,
 } from './handlers'
 import {
   RepoProtocol,
@@ -26,6 +27,7 @@ import {
   Push,
   SetOrigin,
   ValidateRemote,
+  ShowFile,
 } from './operations'
 
 export type BareRepo = Dispatch<RepoProtocol>
@@ -43,6 +45,7 @@ export const openBareRepo = async (repoPath: string): Promise<BareRepo> => {
     [GetFiles, handleGetFiles],
     [GetRefs, handleGetRefs],
     [GetConfig, handleGetConfig],
+    [ShowFile, handleShowFile],
   ])
 }
 

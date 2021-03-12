@@ -4,6 +4,8 @@ import {
   CommitMessage,
   CommitRef,
   Email,
+  FileContent,
+  FilePath,
   Files,
   NameOfPerson,
   PendingCommitRef,
@@ -74,6 +76,18 @@ export class GetRefs {
   }
 }
 
+export class ShowFile {
+  protected constructor(public readonly ref: string, public readonly location: FilePath) {}
+
+  static for(ref: string): ShowFile {
+    return new ShowFile(ref, new FilePath('Unknown file path'))
+  }
+
+  at(location: FilePath): ShowFile {
+    return new ShowFile(this.ref, location)
+  }
+}
+
 export class Init {
   static bareRepo(): Init {
     return new Init()
@@ -126,5 +140,6 @@ export type RepoProtocol = [
   AsyncCommand<ValidateRemote>,
   AsyncQuery<GetFiles, Files>,
   AsyncQuery<GetRefs, Refs>,
-  AsyncQuery<GetConfig, Config>
+  AsyncQuery<GetConfig, Config>,
+  AsyncQuery<ShowFile, FileContent>
 ]

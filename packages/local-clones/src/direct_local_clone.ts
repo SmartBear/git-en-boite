@@ -14,7 +14,7 @@ import {
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { createBareRepo, openBareRepo } from './bare_repo'
-import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol } from './operations'
+import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol, ShowFile } from './operations'
 
 export class DirectLocalClones implements LocalClones {
   async openExisting(path: string): Promise<LocalClone> {
@@ -63,7 +63,7 @@ class DirectLocalClone implements LocalClone {
   }
 
   showFile(ref: string, location: FilePath): Promise<FileContent> {
-    return Promise.resolve(new FileContent(''))
+    return this.git(ShowFile.for(ref).at(location))
   }
 
   close(): Promise<void> {
