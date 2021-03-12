@@ -137,7 +137,7 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     })
   })
 
-  describe('@wip showing file content', () => {
+  describe('showing file content', () => {
     let originUrl: RemoteUrl
     let origin: Dispatch<RepoProtocol>
 
@@ -155,7 +155,9 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     })
 
     it('returns a FileContent for a ref and a location', async () => {
-      await assertThat(await localClone.showFile(branchName.value, location), equalTo(fileContent))
+      const backDoor = new GitDirectory(repoPath)
+      const ref = await backDoor.read('rev-parse', [`refs/remotes/origin/${branchName.value}`])
+      await assertThat(await localClone.showFile(ref, location), equalTo(fileContent))
     })
   })
 

@@ -7,5 +7,9 @@ export const handleShowFile: Handle<GitDirectory, AsyncQuery<ShowFile, FileConte
   repo: GitDirectory,
   { ref, location }
 ) => {
-  return new FileContent('Feature: FINISH THIS')
+  // TODO: Do we want to handle branch as well as commit shas?
+  // If yes, we need to remember to check the remote refs because
+  // fetch does not update the local ones.
+  const content = await repo.read('show', [`${ref}:${location}`])
+  return new FileContent(content)
 }

@@ -130,7 +130,7 @@ export class BackgroundGitRepoProxy implements LocalClone {
   }
 
   async showFile(ref: string, location: FilePath): Promise<FileContent> {
-    return new FileContent('')
+    return this.gitRepo.showFile(ref, location)
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
