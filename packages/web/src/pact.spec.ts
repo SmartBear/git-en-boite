@@ -1,5 +1,5 @@
 import { Verifier, VerifierOptions } from '@pact-foundation/pact'
-import { Application, QueryResult, RepoId, Unauthorized } from 'git-en-boite-core'
+import { Application, FileContent, QueryResult, RepoId, Unauthorized } from 'git-en-boite-core'
 import { Server } from 'http'
 import path from 'path'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
@@ -41,6 +41,10 @@ describe('HTTP Api', () => {
       },
       'a repo with expired credentials, with a branch': async () => {
         app.commit.rejects(new Unauthorized())
+      },
+      'a repo with a commit with a file': async () => {
+        const content = new FileContent('Feature: Serve Coffee')
+        app.getFileContent.resolves(QueryResult.from(content))
       },
     },
   }
