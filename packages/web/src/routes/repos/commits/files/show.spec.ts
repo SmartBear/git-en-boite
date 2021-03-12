@@ -1,4 +1,4 @@
-import { Application, RepoId } from 'git-en-boite-core'
+import { Application, FileContent, QueryResult, RepoId } from 'git-en-boite-core'
 import supertest, { SuperTest, Test } from 'supertest'
 import { StubbedInstance, stubInterface } from 'ts-sinon'
 import { Server } from 'http'
@@ -31,6 +31,7 @@ describe('POST /repos/:repoId/commits/:ref/files/*location', () => {
   it('gets the file content', async () => {
     const revision = 'abcdef123456'
     const location = 'features/MyFeature.feature'
+    app.getFileContent.resolves(QueryResult.from(new FileContent('')))
     await request.get(`/repos/${repoId}/commits/${revision}/files/${location}`).expect(200)
     assertThat(app.getFileContent, wasCalledWith(repoId, revision, location))
   })
