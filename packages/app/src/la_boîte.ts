@@ -3,6 +3,8 @@ import {
   Author,
   BranchName,
   CommitMessage,
+  FileContent,
+  FilePath,
   Files,
   InventoryOfRepos,
   QueryResult,
@@ -50,5 +52,9 @@ export class LaBoîte implements Application {
     const repo = await this.inventoryOfRepos.find(repoId)
     const branches = await repo.branches()
     return QueryResult.from(new RepoSnapshot(repoId, branches))
+  }
+
+  async getFileContent(repoId: RepoId, revision: string, location: FilePath): Promise<QueryResult<FileContent>> {
+    return QueryResult.from(new FileContent(''))
   }
 }

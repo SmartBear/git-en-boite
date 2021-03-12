@@ -9,6 +9,7 @@ import {
   Files,
   SubscribesToDomainEvents,
 } from '.'
+import { FileContent, FilePath } from './git_file'
 
 export type Application = CommandsApplication & QueriesApplication & ExposesDomainEvents & Versioned
 
@@ -26,6 +27,7 @@ export interface CommandsApplication {
 
 export interface QueriesApplication {
   getInfo: (repoId: RepoId) => Promise<QueryResult<RepoSnapshot>>
+  getFileContent: (repoId: RepoId, revision: string, location: FilePath) => Promise<QueryResult<FileContent>>
 }
 
 export interface ExposesDomainEvents {
