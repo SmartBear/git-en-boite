@@ -1,4 +1,4 @@
-import { Author, CommitMessage, CommitRef, Files, PushableCommitRef, Refs, RemoteUrl } from '.'
+import { Author, CommitMessage, CommitRef, FileContent, FilePath, Files, PushableCommitRef, Refs, RemoteUrl } from '.'
 
 export interface LocalClone {
   commit(commitRef: CommitRef, files: Files, author: Author, message: CommitMessage): Promise<void>
@@ -6,6 +6,7 @@ export interface LocalClone {
   setOriginTo(remoteUrl: RemoteUrl): Promise<void>
   fetch(): Promise<void>
   getRefs(): Promise<Refs>
+  showFile(ref: string, location: FilePath): Promise<FileContent>
 }
 
 export type LocalClones = {

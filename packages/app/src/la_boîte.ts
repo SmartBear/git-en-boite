@@ -55,6 +55,8 @@ export class LaBoîte implements Application {
   }
 
   async getFileContent(repoId: RepoId, revision: string, location: FilePath): Promise<QueryResult<FileContent>> {
-    return QueryResult.from(new FileContent(''))
+    const repo = await this.inventoryOfRepos.find(repoId)
+    const fileContent = await repo.fileContent(revision, location)
+    return QueryResult.from(fileContent)
   }
 }

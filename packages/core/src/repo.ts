@@ -4,6 +4,7 @@ import {
   BranchSnapshot,
   CommitMessage,
   Files,
+  FilePath,
   LocalClone,
   PendingCommitRef,
   PublishesDomainEvents,
@@ -13,6 +14,7 @@ import {
   RepoFetchFailed,
   RepoId,
 } from '.'
+import { FileContent } from './git_file'
 
 export class Repo {
   constructor(
@@ -45,5 +47,10 @@ export class Repo {
     const commitRef = PendingCommitRef.forBranch(branchName)
     await this.localClone.commit(commitRef, files, author, message)
     await this.localClone.push(commitRef)
+  }
+
+  async fileContent(ref: string, location: FilePath): Promise<FileContent> {
+    const fileContent = await this.localClone.showFile(ref, location)
+    return fileContent
   }
 }

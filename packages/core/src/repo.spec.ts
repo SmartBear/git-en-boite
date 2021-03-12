@@ -7,6 +7,7 @@ import {
   BranchSnapshot,
   CommitName,
   DomainEventBus,
+  FilePath,
   LocalClone,
   Ref,
   RefName,
@@ -15,6 +16,7 @@ import {
   Repo,
   RepoId,
 } from '.'
+import { FileContent } from './git_file'
 
 describe(Repo.name, () => {
   const domainEvents: DomainEventBus = new EventEmitter()
@@ -125,6 +127,21 @@ describe(Repo.name, () => {
       ]
       const repo = new Repo(RepoId.of('a-repo-id'), localClone, domainEvents)
       assertThat(await repo.branches(), containsInAnyOrder(...expectedBranches))
+    })
+  })
+
+  context('showing file content', () => {
+    it('returns the content of a file for a specific ref at the defined location', async () => {
+      const localClone = stubInterface<LocalClone>()
+      const revision = 'abcd123'
+      const location = new FilePath('features/ServeCoffee.feature')
+      const expectedFileContent = new FileContent('Feature: Serve Coffee')
+
+      localClone.showFile.withArgs(revision, location).resolves(expectedFileContent)
+
+      const repo = new Repo(RepoId.of('a-repo-id'), localClone, domainEvents)
+
+      assertThat(await repo.fileContent(revision, location), equalTo(expectedFileContent))
     })
   })
 })
