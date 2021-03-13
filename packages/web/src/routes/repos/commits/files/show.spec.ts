@@ -8,7 +8,7 @@ import { wasCalledWith } from 'hamjest-sinon'
 import createWebApp from '../../../../create_web_app'
 import router from '../../../router'
 
-describe('POST /repos/:repoId/commits/:ref/files/*location', () => {
+describe('GET /repos/:repoId/commits/:ref/files/*location', () => {
   let request: SuperTest<Test>
   let server: Server
   let app: StubbedInstance<Application>
@@ -35,4 +35,8 @@ describe('POST /repos/:repoId/commits/:ref/files/*location', () => {
     await request.get(`/repos/${repoId}/commits/${revision}/files/${location}`).expect(200)
     assertThat(app.getFileContent, wasCalledWith(repoId, revision, location))
   })
+
+  // TODO: handle edge cases
+  it("responds 404 for a commit ref that doesn't exist")
+  it("responds 404 for a file location that doesn't exist")
 })
