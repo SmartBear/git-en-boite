@@ -13,6 +13,7 @@ import {
   RepoFetched,
   RepoFetchFailed,
   RepoId,
+  CommitName,
 } from '.'
 import { FileContent } from './git_file'
 
@@ -49,8 +50,8 @@ export class Repo {
     await this.localClone.push(commitRef)
   }
 
-  async fileContent(ref: string, location: FilePath): Promise<FileContent> {
-    const fileContent = await this.localClone.showFile(ref, location)
+  async fileContent(revision: CommitName, location: FilePath): Promise<FileContent> {
+    const fileContent = await this.localClone.showFile(revision, location)
     return fileContent
   }
 }

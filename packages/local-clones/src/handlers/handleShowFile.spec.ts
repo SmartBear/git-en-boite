@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BranchName, FileContent, FilePath, GitFile } from 'git-en-boite-core'
+import { BranchName, FileContent, FilePath, GitFile, Refs } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo } from 'hamjest'
 import path from 'path'
@@ -8,9 +8,10 @@ import { dirSync } from 'tmp'
 import { LocalCommitRef } from '..'
 import { GitDirectory } from '../git_directory'
 import { handleCommit, handleInit, handleShowFile } from '../handlers'
-import { Commit, Init, ShowFile } from '../operations'
+import { Commit, GetRefs, Init, ShowFile } from '../operations'
+import { handleGetRefs } from './handleGetRefs'
 
-type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<ShowFile, FileContent>]
+type Protocol = [AsyncCommand<Init>, AsyncCommand<Commit>, AsyncQuery<ShowFile, FileContent>, AsyncQuery<GetRefs, Refs>]
 
 describe('handleShowFile', () => {
   let root: string
@@ -28,6 +29,7 @@ describe('handleShowFile', () => {
       [Init, handleInit],
       [Commit, handleCommit],
       [ShowFile, handleShowFile],
+      [GetRefs, handleGetRefs],
     ])
     await git(Init.bareRepo())
   })
@@ -48,8 +50,17 @@ describe('handleShowFile', () => {
       await git(Commit.toCommitRef(commitRef).withFiles([file]))
     })
 
-    it('returns the file content', async () => {
-      const fileContent = await git(ShowFile.for(branchName.value).at(filePath))
+    it('returns the file content for a revision', async () => {
+      const refs: Refs = await git(GetRefs.all())
+      const revision = refs.forBranch(branchName).revision
+      const fileContent = await git(ShowFile.for(revision).at(filePath))
+      assertThat(fileContent, equalTo(expectedFileContent))
+    })
+
+    it('returns the file content for a ref', async () => {
+      const refs = await git(GetRefs.all())
+      const ref = refs.forBranch(branchName).refName
+      const fileContent = await git(ShowFile.for(ref).at(filePath))
       assertThat(fileContent, equalTo(expectedFileContent))
     })
   })

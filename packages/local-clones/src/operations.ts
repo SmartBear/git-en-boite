@@ -2,6 +2,7 @@ import {
   Author,
   BranchName,
   CommitMessage,
+  CommitName,
   CommitRef,
   Email,
   FileContent,
@@ -9,6 +10,7 @@ import {
   Files,
   NameOfPerson,
   PendingCommitRef,
+  RefName,
   Refs,
   RemoteUrl,
 } from 'git-en-boite-core'
@@ -77,9 +79,9 @@ export class GetRefs {
 }
 
 export class ShowFile {
-  protected constructor(public readonly ref: string, public readonly location: FilePath) {}
+  protected constructor(public readonly ref: CommitName | RefName, public readonly location: FilePath) {}
 
-  static for(ref: string): ShowFile {
+  static for(ref: CommitName | RefName): ShowFile {
     return new ShowFile(ref, new FilePath('Unknown file path'))
   }
 

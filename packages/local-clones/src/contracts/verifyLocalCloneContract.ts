@@ -155,9 +155,8 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     })
 
     it('returns a FileContent for a ref and a location', async () => {
-      const backDoor = new GitDirectory(repoPath)
-      const ref = await backDoor.read('rev-parse', [`refs/remotes/origin/${branchName.value}`])
-      await assertThat(await localClone.showFile(ref, location), equalTo(fileContent))
+      const revision = (await localClone.getRefs()).forBranch(branchName).revision
+      await assertThat(await localClone.showFile(revision, location), equalTo(fileContent))
     })
   })
 

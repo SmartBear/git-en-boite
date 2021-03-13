@@ -133,7 +133,7 @@ describe(Repo.name, () => {
   context('showing file content', () => {
     it('returns the content of a file for a specific ref at the defined location', async () => {
       const localClone = stubInterface<LocalClone>()
-      const revision = 'abcd123'
+      const revision = CommitName.of('abcd123')
       const location = new FilePath('features/ServeCoffee.feature')
       const expectedFileContent = new FileContent('Feature: Serve Coffee')
 

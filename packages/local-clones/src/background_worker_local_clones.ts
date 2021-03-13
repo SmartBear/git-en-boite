@@ -16,6 +16,7 @@ import {
   LockedByAnotherProcess,
   FileContent,
   FilePath,
+  CommitName,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -129,8 +130,8 @@ export class BackgroundGitRepoProxy implements LocalClone {
     return this.gitRepo.getRefs()
   }
 
-  async showFile(ref: string, location: FilePath): Promise<FileContent> {
-    return this.gitRepo.showFile(ref, location)
+  async showFile(revision: CommitName, location: FilePath): Promise<FileContent> {
+    return this.gitRepo.showFile(revision, location)
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {

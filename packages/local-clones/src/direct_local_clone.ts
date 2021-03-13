@@ -2,6 +2,7 @@ import fs from 'fs'
 import {
   Author,
   CommitMessage,
+  CommitName,
   FileContent,
   FilePath,
   Files,
@@ -62,8 +63,8 @@ class DirectLocalClone implements LocalClone {
     return this.git(GetRefs.all())
   }
 
-  showFile(ref: string, location: FilePath): Promise<FileContent> {
-    return this.git(ShowFile.for(ref).at(location))
+  showFile(revision: CommitName, location: FilePath): Promise<FileContent> {
+    return this.git(ShowFile.for(revision).at(location))
   }
 
   close(): Promise<void> {
