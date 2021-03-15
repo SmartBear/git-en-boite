@@ -4,19 +4,18 @@ import * as pino from 'pino'
 import { LoggingOptions } from './LoggingOptions'
 
 export function setUpLogger(config: pino.Bindings, { readableBy }: LoggingOptions): WriteLogEvent {
-  const logger =
-    {
-      humans: pino({ prettyPrint: { colorize: true } }),
-      nobody: pino({ level: 'silent' }),
-    }[readableBy] ||
-    pino({
+  const options: pino.LoggerOptions = {
+    nobody: { level: 'silent' },
+    humans: { prettyPrint: { colorize: true } },
+    machines: {
       formatters: {
         level(level) {
           return { level }
         },
       },
-    })
-  return logToPino(logger.child(config))
+    },
+  }[readableBy]
+  return logToPino(pino(Object.assign(config, options)))
 }
 
 const isLogEvent = (event: LogEvent | Error): event is LogEvent => !!(event as LogEvent).level
