@@ -56,7 +56,6 @@ export class LaBoîte implements Application {
   }
 
   async getFileContent(repoId: RepoId, revision: CommitName, location: FilePath): Promise<QueryResult<FileContent>> {
-    // TODO: handle the case where the repo does not exist
     const repo = await this.inventoryOfRepos.find(repoId)
     const fileContent = await repo.fileContent(revision, location)
     return QueryResult.from(fileContent.isKnown ? fileContent : null)
