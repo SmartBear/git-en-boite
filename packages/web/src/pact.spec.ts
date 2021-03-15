@@ -49,6 +49,9 @@ describe('HTTP Api', () => {
       'a repo with a commit with a different file': async () => {
         app.getFileContent.resolves(QueryResult.from())
       },
+      'an unknown repo': async () => {
+        app.getFileContent.resolves(QueryResult.from())
+      },
     },
   }
 

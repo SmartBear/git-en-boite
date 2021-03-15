@@ -16,3 +16,8 @@ Feature: Read file
     And the repo has been fetched
     When the consumer tries to read the contents of an inexisting file on the "main" branch
     Then it should respond with 404 status
+
+  @wip
+  Scenario: Try to read a file in a repo that does not exist
+    When the consumer tries to read the contents of a file in an unknown repo
+    Then it should respond with 404 status
