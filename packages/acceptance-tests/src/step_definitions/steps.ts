@@ -307,6 +307,15 @@ Then(
   }
 )
 
+When(
+  'the consumer tries to read the contents of an inexisting file on {BranchName}',
+  async function (this: World, branchName: BranchName) {
+    const repo = new GitDirectory(this.remotePath(this.repoId))
+    const ref = await repo.read('rev-parse', [branchName.value])
+    this.lastResponse = await this.request.get(`/repos/${this.repoId}/commits/${ref}/files/UnknownFile`)
+  }
+)
+
 Then('the consumer should be told to retry in {int} seconds', function (this: World, expectedRetrySeconds: number) {
   assertThat(this.lastResponse.headers['retry-after'], equalTo(expectedRetrySeconds.toString()))
 })

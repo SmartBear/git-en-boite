@@ -1,4 +1,4 @@
-import { AccessDenied, LockedByAnotherProcess } from 'git-en-boite-core'
+import { AccessDenied, FileNotFound, LockedByAnotherProcess } from 'git-en-boite-core'
 import { assertThat, equalTo, instanceOf, is } from 'hamjest'
 
 import { GitCommandError } from './git_command_error'
@@ -50,6 +50,15 @@ fatal: unable to access 'https://github.com/smartbear/git-en-boite-test-private.
         stderr: `fatal: shallow file has changed since we read it\n`,
       })
       assertThat(error, is(instanceOf(LockedByAnotherProcess)))
+    })
+
+    it('returns FileNotFound when the file is inexisting', () => {
+      const error = GitCommandError.for('show', ['abcd123:Unknown.feature'], {
+        exitCode: 128,
+        stdout: '',
+        stderr: "fatal: path 'Unknown.feature' does not exist in 'abcd123'\n",
+      })
+      assertThat(error, is(instanceOf(FileNotFound)))
     })
   })
 })

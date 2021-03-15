@@ -26,3 +26,9 @@ export class Unauthorized extends DomainError {
     super(message)
   }
 }
+
+export class FileNotFound extends DomainError {
+  constructor(message = 'File not found') {
+    super(message)
+  }
+}

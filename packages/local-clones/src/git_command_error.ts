@@ -1,5 +1,5 @@
 import { IGitResult } from 'dugite'
-import { AccessDenied, LockedByAnotherProcess } from 'git-en-boite-core'
+import { AccessDenied, FileNotFound, LockedByAnotherProcess } from 'git-en-boite-core'
 
 export class GitCommandError extends Error {
   static for(cmd: string, args: string[], result: IGitResult): AccessDenied | GitCommandError {
@@ -16,6 +16,10 @@ export class GitCommandError extends Error {
     ) {
       return new LockedByAnotherProcess()
     }
+    if (result.stderr.match(/path (.*) does not exist/)) {
+      return new FileNotFound(`Could not find file`)
+    }
+
     return new this(result.stderr, cmd, args, result)
   }
 

@@ -6,7 +6,16 @@ export class FilePath extends TinyTypeOf<string>() {
   }
 }
 
-export class FileContent extends TinyTypeOf<string>() {}
+export class FileContent extends TinyTypeOf<string>() {
+  get isKnown(): boolean {
+    return true
+  }
+}
+export class UnknownFileContent extends TinyTypeOf<string>() {
+  get isKnown(): boolean {
+    return false
+  }
+}
 
 export class GitFile {
   static fromJSON(json: JSONObject): GitFile {

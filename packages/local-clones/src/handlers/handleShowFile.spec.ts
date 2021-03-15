@@ -1,8 +1,9 @@
 import fs from 'fs'
-import { BranchName, FileContent, FilePath, GitFile, Refs } from 'git-en-boite-core'
+import { BranchName, FileContent, FilePath, GitFile, RefName, Refs, UnknownFileContent } from 'git-en-boite-core'
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
-import { assertThat, equalTo } from 'hamjest'
+import { assertThat, equalTo, instanceOf, is, isRejectedWith, promiseThat } from 'hamjest'
 import path from 'path'
+import sinon from 'sinon'
 import { dirSync } from 'tmp'
 
 import { LocalCommitRef } from '..'
@@ -18,6 +19,9 @@ describe('handleShowFile', () => {
   let git: Dispatch<Protocol>
   let repo: GitDirectory
   let repoPath: string
+
+  const branchName = BranchName.of('a-branch')
+  const commitRef = LocalCommitRef.forBranch(branchName)
 
   beforeEach(async () => {
     root = dirSync().name
@@ -40,8 +44,6 @@ describe('handleShowFile', () => {
   })
 
   context('with a commit containing the right file', () => {
-    const branchName = BranchName.of('a-branch')
-    const commitRef = LocalCommitRef.forBranch(branchName)
     const filePath = new FilePath('a.feature')
     const expectedFileContent = new FileContent('Feature: A')
     const file = new GitFile(filePath, expectedFileContent)
@@ -63,5 +65,27 @@ describe('handleShowFile', () => {
       const fileContent = await git(ShowFile.for(ref).at(filePath))
       assertThat(fileContent, equalTo(expectedFileContent))
     })
+  })
+
+  context('when the file does not exist', () => {
+    beforeEach(async () => {
+      await git(Commit.toCommitRef(commitRef))
+    })
+
+    it('returns UnknownFileContent', async () => {
+      const filePath = new FilePath('UnknownFile')
+      const refs = await git(GetRefs.all())
+      const ref = refs.forBranch(branchName).refName
+      const fileContent = await git(ShowFile.for(ref).at(filePath))
+      assertThat(fileContent, is(instanceOf(UnknownFileContent)))
+    })
+  })
+
+  it('rethrows any error unrelated to showing the contents of a file', async () => {
+    const error = new Error('Unrelated git error')
+    sinon.stub(repo, 'read').rejects(error)
+    const filePath = new FilePath('UnknownFile')
+    const ref = RefName.localBranch(branchName)
+    await promiseThat(git(ShowFile.for(ref).at(filePath)), isRejectedWith(error))
   })
 })

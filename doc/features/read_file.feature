@@ -9,3 +9,10 @@ Feature: Read file
     And a consumer has connected the remote repo
     And the repo has been fetched
     Then the consumer can read the contents of the file on the "main" branch of the local clone
+
+  Scenario: Try to read a file that does not exist
+    Given a remote repo with commits on the "main" branch
+    And a consumer has connected the remote repo
+    And the repo has been fetched
+    When the consumer tries to read the contents of an inexisting file on the "main" branch
+    Then it should respond with 404 status
