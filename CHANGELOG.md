@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.9.1](https://github.com/SmartBear/git-en-boite/tree/v0.9.1) (2021-03-15)
+
+**Closed issues:**
+
+- Use proper 2xx HTTP codes on connect [\#334](https://github.com/SmartBear/git-en-boite/issues/334)
+
 ## [v0.9.0](https://github.com/SmartBear/git-en-boite/tree/v0.9.0) (2021-03-10)
 
 ## [v0.8.1](https://github.com/SmartBear/git-en-boite/tree/v0.8.1) (2021-03-10)
