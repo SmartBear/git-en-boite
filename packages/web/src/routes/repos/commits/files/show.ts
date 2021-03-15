@@ -13,5 +13,8 @@ export default (app: Application): Router =>
         ctx.body = fileContent.value
         ctx.response.set('content-type', 'application/octet-stream')
       },
+      foundNone: async () => {
+        ctx.response.status = 404
+      },
     })
   })
