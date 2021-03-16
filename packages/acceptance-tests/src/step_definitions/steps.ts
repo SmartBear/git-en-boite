@@ -316,6 +316,11 @@ When(
   }
 )
 
+When('the consumer tries to read the contents of a file in an unknown repo', async function (this: World) {
+  const repoId = 'unknownRepoID'
+  this.lastResponse = await this.request.get(`/repos/${repoId}/commits/a-branch/files/a-file`)
+})
+
 Then('the consumer should be told to retry in {int} seconds', function (this: World, expectedRetrySeconds: number) {
   assertThat(this.lastResponse.headers['retry-after'], equalTo(expectedRetrySeconds.toString()))
 })
