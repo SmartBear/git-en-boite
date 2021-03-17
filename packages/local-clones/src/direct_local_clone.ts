@@ -56,11 +56,11 @@ class DirectLocalClone implements LocalClone {
     return this.git(Connect.toUrl(remoteUrl))
   }
 
-  //TODO: write a test
   async getOrigin(): Promise<RemoteUrl | UnknownValue> {
     const config = await this.git(GetConfig.forRepo())
-    if (!config['remote.origin.url']) return new UnknownValue()
-    return RemoteUrl.of(config['remote.origin.url'])
+    const origin = config['remote.origin.url']
+    if (!origin) return new UnknownValue()
+    return RemoteUrl.of(origin)
   }
 
   fetch(): Promise<void> {
