@@ -4,8 +4,8 @@ import EventEmitter from 'events'
 
 export class GlobalDomainEventBus implements DomainEventBus {
   listenTo(localEventBus: DomainEventBus): GlobalDomainEventBus {
-    for (const eventKey of DomainEvents.keys) {
-      localEventBus.on(eventKey, (event) => this.emit(eventKey, event))
+    for (const eventName of DomainEvents.names) {
+      localEventBus.on(eventName, (event) => this.emit(eventName, event))
     }
     return this
   }
@@ -14,7 +14,7 @@ export class GlobalDomainEventBus implements DomainEventBus {
     const sub = await connectToRedis(config)
     const listeners = new EventEmitter()
     await new Promise<void>((resolve) => {
-      sub.subscribe(...DomainEvents.keys, () => {
+      sub.subscribe(...DomainEvents.names, () => {
         sub.on('message', (channel, message) => {
           listeners.emit(channel, fromJSON(JSON.parse(message)))
         })

@@ -3,6 +3,6 @@ import { DomainEvents, EventName } from 'git-en-boite-core'
 
 defineParameterType({
   name: 'EventName',
-  regexp: new RegExp(`"(${DomainEvents.keys.join('|')})" event`),
+  regexp: new RegExp(`"(${DomainEvents.names.join('|')})" event`),
   transformer: (value) => value as EventName,
 })

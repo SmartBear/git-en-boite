@@ -65,7 +65,7 @@ describe(Repo.name, () => {
       beforeEach(() => {
         receivedDomainEvents = []
         localClone.getOrigin.resolves(remoteUrl)
-        for (const eventName of DomainEvents.keys) {
+        for (const eventName of DomainEvents.names) {
           domainEvents.on(eventName, (event) => {
             receivedDomainEvents.push(event)
           })

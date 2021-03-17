@@ -15,11 +15,11 @@ export default (app: ExposesDomainEvents): Router =>
     ctx.status = 200
     ctx.body = response
 
-    for (const eventKey of DomainEvents.keys) {
-      const listener = buildListener(eventKey)
-      app.events.on(eventKey, listener)
+    for (const eventName of DomainEvents.names) {
+      const listener = buildListener(eventName)
+      app.events.on(eventName, listener)
       ctx.req.on('close', () => {
-        app.events.off(eventKey, listener)
+        app.events.off(eventName, listener)
       })
     }
     response.write('\n')

@@ -10,7 +10,7 @@ const closables: Array<{ close: () => void }> = []
 When('a consumer is listening to the events on the repo', async function (this: World) {
   this.events = []
   const events = new EventSource(`http://localhost:8888/repos/${this.repoId}/events`)
-  for (const eventName of DomainEvents.keys) {
+  for (const eventName of DomainEvents.names) {
     events.addEventListener(eventName, (event: Event) => {
       this.events.push(event.type)
     })
@@ -27,7 +27,7 @@ After(() => {
 Given('a consumer is listening to the main event stream', function (this: World) {
   this.events = []
   const events = new EventSource(`http://localhost:8888/events`)
-  for (const eventName of DomainEvents.keys) {
+  for (const eventName of DomainEvents.names) {
     events.addEventListener(eventName, (event: Event) => {
       this.events.push(event.type)
     })
@@ -60,10 +60,10 @@ Then('the events received by the consumer should be:', function (this: World, ex
   assertThat(this.events, equalTo(expectedEvents.split('\n')))
 })
 
-const waitUntilRepoEvent = (eventKey: EventName, repoId: RepoId) => async (world: World) => {
+const waitUntilRepoEvent = (eventName: EventName, repoId: RepoId) => async (world: World) => {
   await promiseThat(
     new Promise<void>((received) =>
-      world.domainEvents.on(eventKey, (event) => event.repoId.equals(repoId) && received())
+      world.domainEvents.on(eventName, (event) => event.repoId.equals(repoId) && received())
     ),
     fulfilled()
   )

@@ -8,7 +8,8 @@ export class CannotDeserializeEvent extends Error {
   }
 }
 
-const isEventName = (candidate: unknown): candidate is EventName => !!DomainEvents.keys.find((key) => key === candidate)
+const isEventName = (candidate: unknown): candidate is EventName =>
+  !!DomainEvents.names.find((key) => key === candidate)
 
 export function fromJSON(payload: JSONObject): DomainEvent {
   const eventName = payload.type

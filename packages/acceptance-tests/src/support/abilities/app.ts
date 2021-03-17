@@ -24,7 +24,7 @@ Before(async function (this: World) {
 
 Before(function (this: World) {
   this.receivedDomainEvents = []
-  for (const eventName of DomainEvents.keys) {
+  for (const eventName of DomainEvents.names) {
     this.domainEvents.on(eventName, (event) => {
       this.receivedDomainEvents.push(event)
     })

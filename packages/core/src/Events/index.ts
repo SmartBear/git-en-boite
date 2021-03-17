@@ -78,8 +78,7 @@ export type DomainEvents = {
 }
 export type EventName = keyof DomainEvents
 export const DomainEvents = {
-  // TODO: rename to names
-  keys: enumerate<EventName>()('repo.fetched', 'repo.fetch-failed', 'repo.connected', 'repo.reconnected'),
+  names: enumerate<EventName>()('repo.fetched', 'repo.fetch-failed', 'repo.connected', 'repo.reconnected'),
 }
 export type PublishesDomainEvents = PublishesEvents<DomainEvent, DomainEvents>
 export type SubscribesToDomainEvents = SubscribesToEvents<DomainEvent, DomainEvents>
