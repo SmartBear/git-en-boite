@@ -61,15 +61,25 @@ export class RepoConnected extends RepoEvent {
   }
 }
 
+export class RepoReconnected extends RepoEvent {
+  public readonly type = 'repo.reconnected'
+
+  // TODO: Can we write a general fromJSON on the base class
+  static fromJSON(payload: JSONObject): RepoReconnected {
+    return new RepoReconnected(RepoId.fromJSON(payload.repoId), Timestamp.fromJSON(payload.occurredAt))
+  }
+}
+
 export type DomainEvents = {
   'repo.fetched': RepoFetched
   'repo.fetch-failed': RepoFetchFailed
   'repo.connected': RepoConnected
+  'repo.reconnected': RepoReconnected
 }
 export type EventName = keyof DomainEvents
 export const DomainEvents = {
   // TODO: rename to names
-  keys: enumerate<EventName>()('repo.fetched', 'repo.fetch-failed', 'repo.connected'),
+  keys: enumerate<EventName>()('repo.fetched', 'repo.fetch-failed', 'repo.connected', 'repo.reconnected'),
 }
 export type PublishesDomainEvents = PublishesEvents<DomainEvent, DomainEvents>
 export type SubscribesToDomainEvents = SubscribesToEvents<DomainEvent, DomainEvents>

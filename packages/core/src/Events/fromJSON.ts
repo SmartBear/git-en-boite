@@ -1,6 +1,6 @@
 import { JSONObject, JSONValue } from 'tiny-types'
 
-import { DomainEvent, DomainEvents, EventName, RepoConnected, RepoFetched, RepoFetchFailed } from '.'
+import { DomainEvent, DomainEvents, EventName, RepoConnected, RepoFetched, RepoFetchFailed, RepoReconnected } from '.'
 
 export class CannotDeserializeEvent extends Error {
   constructor(payload: JSONValue) {
@@ -24,6 +24,7 @@ export function fromJSON(payload: JSONObject): DomainEvent {
   const constructor: { [Key in EventName]: DomainEventConstructor<DomainEvents[Key]> } = {
     'repo.fetched': RepoFetched,
     'repo.connected': RepoConnected,
+    'repo.reconnected': RepoReconnected,
     'repo.fetch-failed': RepoFetchFailed,
   }
   return constructor[eventName].fromJSON(payload)

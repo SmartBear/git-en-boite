@@ -77,6 +77,10 @@ When('a consumer connects the remote repo', async function (this: World) {
   await connectLocalRepoToRemote(this.repoId)(this)
 })
 
+When('a consumer reconnects using the same remote url', async function (this: World) {
+  await connectLocalRepoToRemote(this.repoId)(this)
+})
+
 When('a consumer connects to a remote repo', async function (this: World) {
   this.repoId = RepoId.generate()
   await createRemoteRepo(this.repoId)(this)
