@@ -16,7 +16,6 @@ Feature: Connect
     Then the repo should be linked to that remote url
     And a "repo.connected" event should have been emitted
 
-  @wip
   Scenario: Reconnect an existing repo
     Given a remote repo with commits on the "main" branch
     And a consumer has connected the remote repo
