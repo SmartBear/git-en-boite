@@ -1,6 +1,14 @@
 # Changelog
 
-## [v0.10.0](https://github.com/SmartBear/git-en-boite/tree/v0.10.0) (2021-03-16)
+## [v0.11.0](https://github.com/SmartBear/git-en-boite/tree/v0.11.0) (2021-03-17)
+
+## [v0.10.0](https://github.com/SmartBear/git-en-boite/tree/v0.10.0) (2021-03-17)
+
+**Closed issues:**
+
+- All logs are written as "info" [\#599](https://github.com/SmartBear/git-en-boite/issues/599)
+- Read a file [\#577](https://github.com/SmartBear/git-en-boite/issues/577)
+- Only emit repo.connected when the repo is connected for the first time [\#572](https://github.com/SmartBear/git-en-boite/issues/572)
 
 ## [v0.9.1](https://github.com/SmartBear/git-en-boite/tree/v0.9.1) (2021-03-15)
 
