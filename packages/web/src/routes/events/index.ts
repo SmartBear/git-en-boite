@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { DomainEvent, DomainEvents, ExposesDomainEvents } from 'git-en-boite-core'
+import { DomainEvent, DomainEvents, EventName, ExposesDomainEvents } from 'git-en-boite-core'
 import { Context } from 'koa'
 import { PassThrough } from 'stream'
 
@@ -24,12 +24,12 @@ export default (app: ExposesDomainEvents): Router =>
     }
     response.write('\n')
 
-    function buildListener(eventKey: keyof DomainEvents) {
+    function buildListener(eventName: EventName) {
       return (event: DomainEvent) => {
-        response.write(`event: ${eventKey}\n`)
+        response.write(`event: ${eventName}\n`)
         response.write(`data: ${JSON.stringify(event)}\n`)
         response.write(`\n`)
-        if (ctx.query.until === eventKey && (!ctx.query.entityId || ctx.query.entityId === event.entityId.value)) {
+        if (ctx.query.until === eventName && (!ctx.query.entityId || ctx.query.entityId === event.entityId.value)) {
           response.end()
         }
       }

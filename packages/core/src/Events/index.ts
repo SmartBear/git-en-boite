@@ -12,7 +12,7 @@ export abstract class DomainEvent extends TinyType {
   constructor(public readonly entityId: EntityId, public readonly occurredAt: Timestamp = Timestamp.now()) {
     super()
   }
-  abstract get type(): keyof DomainEvents
+  abstract get type(): EventName
 }
 
 export abstract class RepoEvent extends DomainEvent {
@@ -66,8 +66,10 @@ export type DomainEvents = {
   'repo.fetch-failed': RepoFetchFailed
   'repo.connected': RepoConnected
 }
+export type EventName = keyof DomainEvents
 export const DomainEvents = {
-  keys: enumerate<keyof DomainEvents>()('repo.fetched', 'repo.fetch-failed', 'repo.connected'),
+  // TODO: rename to names
+  keys: enumerate<EventName>()('repo.fetched', 'repo.fetch-failed', 'repo.connected'),
 }
 export type PublishesDomainEvents = PublishesEvents<DomainEvent, DomainEvents>
 export type SubscribesToDomainEvents = SubscribesToEvents<DomainEvent, DomainEvents>

@@ -1,5 +1,5 @@
 import Router from '@koa/router'
-import { DomainEvent, DomainEvents, ExposesDomainEvents, RepoId } from 'git-en-boite-core'
+import { DomainEvent, DomainEvents, EventName, ExposesDomainEvents, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
 import { PassThrough } from 'stream'
 
@@ -24,13 +24,13 @@ export default (app: ExposesDomainEvents): Router =>
     }
     response.write('\n')
 
-    function buildListener(eventKey: keyof DomainEvents) {
+    function buildListener(eventName: EventName) {
       return (event: DomainEvent) => {
         if (!event.entityId.equals(repoId)) return
-        response.write(`event: ${eventKey}\n`)
+        response.write(`event: ${eventName}\n`)
         response.write(`data: ${JSON.stringify(event)}\n`)
         response.write(`\n`)
-        if (ctx.query.until === eventKey) {
+        if (ctx.query.until === eventName) {
           response.end()
         }
       }

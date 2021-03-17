@@ -1,12 +1,10 @@
 /* tslint:disable: only-arrow-functions */
-import { After, DataTable, Given, Then, When } from '@cucumber/cucumber'
-import EventSource from 'eventsource'
+import { DataTable, Given, Then, When } from '@cucumber/cucumber'
 import fs from 'fs'
 import {
   Author,
   BranchName,
   CommitMessage,
-  DomainEvents,
   Email,
   FileContent,
   FilePath,
@@ -42,15 +40,6 @@ const createRemoteRepo = (repoId: RepoId) => async (world: World) => {
 const connectLocalRepoToRemote = (repoId: RepoId, remoteUrl?: RemoteUrl) => async (world: World) => {
   const repoInfo = { remoteUrl: remoteUrl || world.remoteUrl(repoId) }
   world.lastResponse = await world.request.put(`/repos/${repoId}`).send(repoInfo)
-}
-
-const waitUntilRepoEvent = (eventKey: keyof DomainEvents, repoId: RepoId) => async (world: World) => {
-  await promiseThat(
-    new Promise<void>((received) =>
-      world.domainEvents.on(eventKey, (event) => event.repoId.equals(repoId) && received())
-    ),
-    fulfilled()
-  )
 }
 
 Given('a remote repo with branches:', async function (this: World, branchesTable: DataTable) {
@@ -144,14 +133,6 @@ When('a consumer tries to fetch the repo', async function (this: World) {
 const fetchRepo = (world: World) => async ({ repoId }: { repoId: RepoId }) =>
   (world.lastResponse = await world.request.post(`/repos/${repoId}/fetches`))
 
-Given('the repo has been fetched', async function (this: World) {
-  await waitUntilRepoEvent('repo.fetched', this.repoId)(this)
-})
-
-When('the other repo has been fetched', async function (this: World) {
-  await waitUntilRepoEvent('repo.fetched', this.anotherRepoId)(this)
-})
-
 When(
   'a consumer commits a new file to {BranchName}',
   { timeout: 10 * 1000 },
@@ -184,38 +165,11 @@ When(
   }
 )
 
-const closables: Array<{ close: () => void }> = []
-When('a consumer is listening to the events on the repo', async function (this: World) {
-  this.events = []
-  const events = new EventSource(`http://localhost:8888/repos/${this.repoId}/events`)
-  for (const eventKey of DomainEvents.keys) {
-    events.addEventListener(eventKey, (event: Event) => {
-      this.events.push(event.type)
-    })
-  }
-  closables.push(events)
-})
-After(() => {
-  for (const closable of closables) {
-    closable.close()
-  }
-})
-
-Given('a consumer is listening to the main event stream', function (this: World) {
-  this.events = []
-  const events = new EventSource(`http://localhost:8888/events`)
-  for (const eventKey of DomainEvents.keys) {
-    events.addEventListener(eventKey, (event: Event) => {
-      this.events.push(event.type)
-    })
-  }
-  closables.push(events)
-})
-
 When('a consumer changes the remote url', async function (this: World) {
   const updateRemote = RepoId.of(`updated-${this.repoId.value}`)
   this.moveRemoteToPath(this.remotePath(this.repoId), this.remotePath(updateRemote))
   const updatedRemoteUrl = this.remoteUrl(updateRemote)
+  // TODO: Extract this helper
   const waitForRemoteToBeFetched = new Promise<void>((received) =>
     this.domainEvents.on('repo.fetched', (event) => event.repoId.equals(this.repoId) && received())
   )
@@ -278,19 +232,6 @@ Then(
     assertThat(lastCommit, containsString(message.toString()))
   }
 )
-
-Then('the repo should have been fetched', async function (this: World) {
-  await promiseThat(
-    new Promise<void>((received) =>
-      this.domainEvents.on('repo.fetched', (event) => event.repoId.equals(this.repoId) && received())
-    ),
-    fulfilled()
-  )
-})
-
-Then('the events received by the consumer should be:', function (this: World, expectedEvents: string) {
-  assertThat(this.events, equalTo(expectedEvents.split('\n')))
-})
 
 Then('the repo should be linked to that remote url', async function (this: World) {
   await fetchRepo(this)({ repoId: this.repoId })

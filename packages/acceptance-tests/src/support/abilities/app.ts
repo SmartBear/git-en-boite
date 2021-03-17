@@ -1,7 +1,7 @@
 import { Before } from '@cucumber/cucumber'
 import { EventEmitter } from 'events'
 import { createConfig } from 'git-en-boite-config'
-import { fetchRepoAfterConnected } from 'git-en-boite-core'
+import { DomainEvents, fetchRepoAfterConnected } from 'git-en-boite-core'
 import { DirectLocalClones } from 'git-en-boite-local-clones'
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { dirSync } from 'tmp'
@@ -20,4 +20,13 @@ Before(async function (this: World) {
   this.app = new LaBoîte(repoIndex, config.version, this.domainEvents)
   const domainRules = [logDomainEvents(this.log), fetchRepoAfterConnected]
   domainRules.map((rule) => rule(this.domainEvents, this.app, this.log))
+})
+
+Before(function (this: World) {
+  this.receivedDomainEvents = []
+  for (const eventName of DomainEvents.keys) {
+    this.domainEvents.on(eventName, (event) => {
+      this.receivedDomainEvents.push(event)
+    })
+  }
 })

@@ -1,4 +1,4 @@
-import { DomainEventBus, DomainEvents, fromJSON } from 'git-en-boite-core'
+import { DomainEventBus, DomainEvents, EventName, fromJSON } from 'git-en-boite-core'
 import IORedis, { Redis } from 'ioredis'
 import EventEmitter from 'events'
 
@@ -32,13 +32,13 @@ export class GlobalDomainEventBus implements DomainEventBus {
     this.sub.disconnect()
   }
 
-  emit<Key extends keyof DomainEvents>(eventName: Key, event: DomainEvents[Key]): void {
+  emit<Name extends EventName>(eventName: Name, event: DomainEvents[Name]): void {
     this.pub.publish(eventName, JSON.stringify(event.toJSON()))
   }
-  on<Key extends keyof DomainEvents>(eventName: Key, fn: (params: DomainEvents[Key]) => void): void {
+  on<Name extends EventName>(eventName: Name, fn: (params: DomainEvents[Name]) => void): void {
     this.listeners.on(eventName, fn)
   }
-  off<Key extends keyof DomainEvents>(eventName: Key, fn: (params: DomainEvents[Key]) => void): void {
+  off<Name extends EventName>(eventName: Name, fn: (params: DomainEvents[Name]) => void): void {
     this.listeners.off(eventName, fn)
   }
 }
