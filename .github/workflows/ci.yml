@@ -44,13 +44,13 @@ jobs:
       - name: Run tests in each workspace
         run: yarn test
       - name: Notify test failures
-        if: failure()
+        if: ${{ failure() }}
         uses: archive/github-actions-slack@v2.0.1
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
           slack-channel: cucumberstudio
           slack-text: |
-            [Git-en-Boite]
+            # git-en-boite
             :red_circle: Tests failed on main branch: <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
 
   publish-docker-image:
