@@ -1,22 +1,17 @@
 import Router from '@koa/router'
 import { DomainEvent, DomainEvents, EventName, ExposesDomainEvents, RepoId } from 'git-en-boite-core'
 import { Context } from 'koa'
-import { PassThrough } from 'stream'
+import { ServerSentEventsResponse } from '../../../ServerSentEventsResponse'
 
 export default (app: ExposesDomainEvents): Router =>
   new Router().get('/', async (ctx: Context) => {
-    const response = new PassThrough({ objectMode: true })
-    ctx.set({
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-    })
-    ctx.status = 200
-    ctx.body = response
+    const response = new ServerSentEventsResponse(ctx)
 
     const repoId = RepoId.fromJSON(ctx.params.repoId)
+
+    // TODO: resolve duplication with /events route
     for (const eventName of DomainEvents.names) {
-      const listener = buildListener(eventName)
+      const listener = buildListener()
       app.events.on(eventName, listener)
       ctx.req.on('close', () => {
         app.events.off(eventName, listener)
@@ -24,13 +19,11 @@ export default (app: ExposesDomainEvents): Router =>
     }
     response.write('\n')
 
-    function buildListener(eventName: EventName) {
+    function buildListener() {
       return (event: DomainEvent) => {
         if (!event.entityId.equals(repoId)) return
-        response.write(`event: ${eventName}\n`)
-        response.write(`data: ${JSON.stringify(event)}\n`)
-        response.write(`\n`)
-        if (ctx.query.until === eventName) {
+        response.writeEvent(event.type, event)
+        if (ctx.query.until === event.type) {
           response.end()
         }
       }
