@@ -9,7 +9,7 @@
     "lint": "yarn workspaces run lint",
     "lint:fix": "yarn workspaces run lint:fix",
     "local-clones": "yarn workspace git-en-boite-local-clones",
-    "start": "yarn app start",
+    "start": "if [ $NODE_ENV != 'development' ];then echo 'This command is only intended to be used in a development environment. Please choose one of:\n\n  yarn start:server\n  yarn start:worker\n' && exit 1;else yarn app start;fi",
     "start:server": "node packages/app/dist/server.js",
     "start:worker": "node packages/app/dist/worker.js",
     "test": "yarn workspaces run test",
