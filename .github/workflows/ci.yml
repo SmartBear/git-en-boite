@@ -125,7 +125,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SWAG_BOT_TOKEN }}
           repository: smartbear/git-en-boite-infra
           event-type: container-image-published
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
