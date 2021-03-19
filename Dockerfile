@@ -20,4 +20,4 @@ RUN rm -rf packages/**/src
 
 EXPOSE 3001
 
-CMD yarn app start
+CMD yarn start
