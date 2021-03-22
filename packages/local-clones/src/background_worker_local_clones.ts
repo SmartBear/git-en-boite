@@ -17,6 +17,7 @@ import {
   FileContent,
   FilePath,
   CommitName,
+  UnknownValue,
 } from 'git-en-boite-core'
 import IORedis from 'ioredis'
 
@@ -137,6 +138,10 @@ export class BackgroundGitRepoProxy implements LocalClone {
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     const job = await this.queue.add('setOriginTo', { path: this.path, remoteUrl })
     return this.whenFinished(job)
+  }
+
+  async getOrigin(): Promise<RemoteUrl | UnknownValue> {
+    return this.gitRepo.getOrigin()
   }
 
   async fetch(): Promise<void> {

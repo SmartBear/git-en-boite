@@ -7,7 +7,7 @@
   },
   "interactions": [
     {
-      "description": "a request for the file at path path/to/features/ServeCoffee.feature at ref GitBranch(value=a/branch)",
+      "description": "a request for the file at path path/to/features/ServeCoffee.feature at ref a/branch",
       "providerState": "a repo with a commit with a file",
       "request": {
         "method": "GET",
@@ -25,8 +25,23 @@
       }
     },
     {
+      "description": "a request for a file in an unknown repo",
+      "providerState": "an unknown repo",
+      "request": {
+        "method": "GET",
+        "path": "/repos/a-repo-id/commits/a%2Fbranch/files/path/to/inexisting.feature",
+        "headers": {
+          "Accept": "application/octet-stream"
+        }
+      },
+      "response": {
+        "status": 404,
+        "headers": {}
+      }
+    },
+    {
       "description": "a request for a file that does not exist",
-      "providerState": "a repo with a commit",
+      "providerState": "a repo with a commit with a different file",
       "request": {
         "method": "GET",
         "path": "/repos/a-repo-id/commits/a%2Fbranch/files/path/to/inexisting.feature",

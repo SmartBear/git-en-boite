@@ -46,10 +46,16 @@ describe('HTTP Api', () => {
         const content = new FileContent('Feature: Serve Coffee')
         app.getFileContent.resolves(QueryResult.from(content))
       },
+      'a repo with a commit with a different file': async () => {
+        app.getFileContent.resolves(QueryResult.from())
+      },
+      'an unknown repo': async () => {
+        app.getFileContent.resolves(QueryResult.from())
+      },
     },
   }
 
-  it('@wip fulfills the needs of the gherkin editor', async function () {
+  it('fulfills the needs of the gherkin editor', async function () {
     this.timeout(5000)
     await new Verifier(opts).verifyProvider()
   })

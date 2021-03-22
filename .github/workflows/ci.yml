@@ -44,14 +44,14 @@ jobs:
       - name: Run tests in each workspace
         run: yarn test
       - name: Notify test failures
-        if: failure()
+        if: ${{ failure() }}
         uses: archive/github-actions-slack@v2.0.1
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
           slack-channel: cucumberstudio
           slack-text: |
-            [Git-en-Boite]
-            Tests failed on main branch: <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
+            # git-en-boite
+            :red_circle: Tests failed on main branch: <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
 
   publish-docker-image:
     name: Build & publish Docker image
@@ -78,13 +78,16 @@ jobs:
             --tag smartbear/git-en-boite:latest \
             --tag smartbear/git-en-boite:${{ github.sha }} \
             .
+      - name: BUILD -- Docker image tag - git-sha (unstable) or release?
+        id: docker-image-tag
+        run: echo ::set-output name=tag::smartbear/git-en-boite:${{ startsWith(github.ref, 'refs/tags/v') && steps.tag.outputs.tag || github.sha }}
       - name: BUILD -- Add release tag to docker image
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: docker tag smartbear/git-en-boite:${{ github.sha }} smartbear/git-en-boite:${{ steps.tag.outputs.tag }}
+        run: docker tag smartbear/git-en-boite:${{ github.sha }} ${{ steps.docker-image-tag.outputs.tag }}
       - name: BUILD -- Set up qemu
         uses: docker/setup-qemu-action@v1
       - name: BUILD -- Set up buildx
         uses: docker/setup-buildx-action@v1
+
       - name: SMOKE TESTS -- Start services
         run: docker-compose up --no-build --detach
       - name: SMOKE TESTS -- Services start logs
@@ -97,6 +100,7 @@ jobs:
           verbose: true
       - name: SMOKE TESTS -- Run smoke tests
         run: docker-compose run smoke-tests yarn smoke start || (docker-compose log && exit 1)
+
       - name: PUBLISH -- Authenticate with DockerHub
         uses: docker/login-action@v1
         with:
@@ -105,7 +109,8 @@ jobs:
       - name: PUBLISH -- Push smartbear/git-en-boite
         if: github.event_name == 'push'
         run: docker push --all-tags smartbear/git-en-boite
-      - name: "REPORT -- Notify slack channel"
+
+      - name: "REPORT -- Notify slack channel of build failure"
         if: failure()
         uses: archive/github-actions-slack@v2.0.1
         with:
@@ -113,4 +118,23 @@ jobs:
           slack-channel: cucumberstudio
           slack-text: |
             [Git-en-Boite]
-            Docker image build failed <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
+            :fire_engine: Docker image build failed <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
+
+      - name: "REPORT -- Notify Slack channel of build success for a release"
+        if: success() && startsWith(github.ref, 'refs/tags/v') 
+        uses: archive/github-actions-slack@v2.0.1
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
+          slack-channel: cucumberstudio
+          slack-text: |
+            [Git-en-Boite]
+            :truck: New release image published: "${{ steps.docker-image-tag.outputs.tag }}"
+
+      - name: "REPORT -- Nofify SmartBear infrastructure of new container image"
+        if: success()
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.SWAG_BOT_TOKEN }}
+          repository: smartbear/git-en-boite-infra
+          event-type: container-image-published
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "image_tag": "${{ steps.docker-image-tag.outputs.tag }}"}'

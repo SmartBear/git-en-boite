@@ -14,6 +14,7 @@ import {
   RepoFetchFailed,
   RepoId,
   CommitName,
+  RepoReconnected,
 } from '.'
 import { FileContent } from './git_file'
 
@@ -35,6 +36,8 @@ export class Repo {
   }
 
   async setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
+    if (remoteUrl.equals(await this.localClone.getOrigin()))
+      return this.domainEvents.emit('repo.reconnected', new RepoReconnected(this.repoId))
     await this.localClone.setOriginTo(remoteUrl)
     this.domainEvents.emit('repo.connected', new RepoConnected(this.repoId))
   }
