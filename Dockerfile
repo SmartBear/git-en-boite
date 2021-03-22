@@ -1,4 +1,4 @@
-FROM node:14.14.0
+FROM node:15.12.0
 
 WORKDIR /app
 
@@ -20,4 +20,4 @@ RUN rm -rf packages/**/src
 
 EXPOSE 3001
 
-CMD yarn app start
+CMD yarn start

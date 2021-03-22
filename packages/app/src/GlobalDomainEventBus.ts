@@ -1,11 +1,11 @@
-import { DomainEventBus, DomainEvents, fromJSON } from 'git-en-boite-core'
+import { DomainEventBus, DomainEvents, EventName, fromJSON } from 'git-en-boite-core'
 import IORedis, { Redis } from 'ioredis'
 import EventEmitter from 'events'
 
 export class GlobalDomainEventBus implements DomainEventBus {
   listenTo(localEventBus: DomainEventBus): GlobalDomainEventBus {
-    for (const eventKey of DomainEvents.keys) {
-      localEventBus.on(eventKey, (event) => this.emit(eventKey, event))
+    for (const eventName of DomainEvents.names) {
+      localEventBus.on(eventName, (event) => this.emit(eventName, event))
     }
     return this
   }
@@ -14,7 +14,7 @@ export class GlobalDomainEventBus implements DomainEventBus {
     const sub = await connectToRedis(config)
     const listeners = new EventEmitter()
     await new Promise<void>((resolve) => {
-      sub.subscribe(...DomainEvents.keys, () => {
+      sub.subscribe(...DomainEvents.names, () => {
         sub.on('message', (channel, message) => {
           listeners.emit(channel, fromJSON(JSON.parse(message)))
         })
@@ -32,13 +32,13 @@ export class GlobalDomainEventBus implements DomainEventBus {
     this.sub.disconnect()
   }
 
-  emit<Key extends keyof DomainEvents>(eventName: Key, event: DomainEvents[Key]): void {
+  emit<Name extends EventName>(eventName: Name, event: DomainEvents[Name]): void {
     this.pub.publish(eventName, JSON.stringify(event.toJSON()))
   }
-  on<Key extends keyof DomainEvents>(eventName: Key, fn: (params: DomainEvents[Key]) => void): void {
+  on<Name extends EventName>(eventName: Name, fn: (params: DomainEvents[Name]) => void): void {
     this.listeners.on(eventName, fn)
   }
-  off<Key extends keyof DomainEvents>(eventName: Key, fn: (params: DomainEvents[Key]) => void): void {
+  off<Name extends EventName>(eventName: Name, fn: (params: DomainEvents[Name]) => void): void {
     this.listeners.off(eventName, fn)
   }
 }

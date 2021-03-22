@@ -16,6 +16,7 @@ import {
   Repo,
   RepoId,
 } from '.'
+import { DomainEvent, DomainEvents } from './Events'
 import { FileContent } from './git_file'
 
 describe(Repo.name, () => {
@@ -43,7 +44,7 @@ describe(Repo.name, () => {
       await promiseThat(repo.setOriginTo(RemoteUrl.of('a-bad-url')), isRejectedWith(new Error('Unable to connect')))
     })
 
-    it('emits a `repo.conected event', async () => {
+    it('emits a repo.connected event', async () => {
       const repoId = RepoId.of('a-repo-id')
       const remoteUrl = RemoteUrl.of('a-remote-url')
       const localClone = stubInterface<LocalClone>()
@@ -54,6 +55,32 @@ describe(Repo.name, () => {
       )
       repo.setOriginTo(remoteUrl)
       await promiseThat(waitingForEvent, fulfilled())
+    })
+
+    context('when the origin has already been set', () => {
+      const localClone = stubInterface<LocalClone>()
+      const remoteUrl = RemoteUrl.of('an-existing-remote-url')
+      let receivedDomainEvents: DomainEvent[]
+
+      beforeEach(() => {
+        receivedDomainEvents = []
+        localClone.getOrigin.resolves(remoteUrl)
+        for (const eventName of DomainEvents.names) {
+          domainEvents.on(eventName, (event) => {
+            receivedDomainEvents.push(event)
+          })
+        }
+      })
+
+      it('emits a repo.reconnected event if the new url is the same', async () => {
+        const repoId = RepoId.of('a-repo-id')
+        const repo = new Repo(repoId, localClone, domainEvents)
+        await repo.setOriginTo(RemoteUrl.of('an-existing-remote-url'))
+        assertThat(
+          receivedDomainEvents.map((event) => event.type),
+          equalTo(['repo.reconnected'])
+        )
+      })
     })
   })
 
