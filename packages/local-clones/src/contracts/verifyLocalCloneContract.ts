@@ -15,6 +15,7 @@ import {
   PendingCommitRef,
   RemoteUrl,
   RepoId,
+  UnknownValue,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, fulfilled, instanceOf, matchesPattern, promiseThat, rejected } from 'hamjest'
@@ -70,6 +71,27 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
 
     it('fails for invalid credentials', async () => {
       await promiseThat(localClone.setOriginTo(remoteUrl(RepoId.of('private'))), rejected(instanceOf(AccessDenied)))
+    })
+  })
+
+  describe('getting origin', () => {
+    const originId = RepoId.of('origin')
+
+    beforeEach(async () => {
+      const origin = await createOriginRepo(path.resolve(root, originId.value))
+      await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
+    })
+
+    const remoteUrl = runGitHttpServer(() => root, {
+      authenticate: () => Promise.resolve(),
+    })
+
+    it('returns an UnknownValue for a repo that has not yet been connected', async () => {
+      await promiseThat(localClone.getOrigin(), fulfilled(new UnknownValue()))
+    })
+    it('returns a the RemoteUrl for a repo that has been connected', async () => {
+      await localClone.setOriginTo(remoteUrl(originId))
+      await promiseThat(localClone.getOrigin(), fulfilled(RemoteUrl.of(remoteUrl(originId).value)))
     })
   })
 

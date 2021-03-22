@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.11.0](https://github.com/SmartBear/git-en-boite/tree/v0.11.0) (2021-03-17)
+
+## [v0.10.0](https://github.com/SmartBear/git-en-boite/tree/v0.10.0) (2021-03-17)
+
+**Closed issues:**
+
+- All logs are written as "info" [\#599](https://github.com/SmartBear/git-en-boite/issues/599)
+- Read a file [\#577](https://github.com/SmartBear/git-en-boite/issues/577)
+- Only emit repo.connected when the repo is connected for the first time [\#572](https://github.com/SmartBear/git-en-boite/issues/572)
+
 ## [v0.9.1](https://github.com/SmartBear/git-en-boite/tree/v0.9.1) (2021-03-15)
 
 **Closed issues:**
@@ -164,6 +174,11 @@
 - Server won't start: Fails to load additional type declarations from local-git package [\#151](https://github.com/SmartBear/git-en-boite/issues/151)
 - Use hamjest-sinon [\#149](https://github.com/SmartBear/git-en-boite/issues/149)
 - Handle errors when connecting a repo [\#109](https://github.com/SmartBear/git-en-boite/issues/109)
+
+## [flux](https://github.com/SmartBear/git-en-boite/tree/flux) (2020-07-09)
+
+**Closed issues:**
+
 - Use tmp library for creating temp directories in all tests [\#43](https://github.com/SmartBear/git-en-boite/issues/43)
 - Shallow fetch [\#33](https://github.com/SmartBear/git-en-boite/issues/33)
 - rename `GIT\_EN\_BOITE\_PG\_URL` to `DATABASE\_URL` [\#20](https://github.com/SmartBear/git-en-boite/issues/20)

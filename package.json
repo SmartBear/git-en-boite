@@ -5,11 +5,11 @@
     "acceptance": "yarn workspace git-en-boite-acceptance-tests",
     "build:clean": "yarn workspaces run build:clean",
     "build": "tsc --build",
-    "bumbailiff": "bumbailiff 21",
+    "bumbailiff": "bumbailiff 30",
     "lint": "yarn workspaces run lint",
     "lint:fix": "yarn workspaces run lint:fix",
     "local-clones": "yarn workspace git-en-boite-local-clones",
-    "start": "yarn app start",
+    "start": "if [ $NODE_ENV != 'development' ];then echo 'This command is only intended to be used in a development environment. Please choose one of:\n\n  yarn start:server\n  yarn start:worker\n' && exit 1;else yarn app start;fi",
     "start:server": "node packages/app/dist/server.js",
     "start:worker": "node packages/app/dist/worker.js",
     "test": "yarn workspaces run test",
@@ -25,10 +25,10 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.18.0",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
     "bumbailiff": "^0.3.0",
-    "eslint": "^7.21.0",
+    "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "husky": "^5.1.3",
@@ -37,5 +37,5 @@
   "dependencies": {
     "typescript": "^4.2.3"
   },
-  "version": "0.9.1"
+  "version": "0.11.2"
 }

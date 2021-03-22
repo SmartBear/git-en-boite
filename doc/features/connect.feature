@@ -14,6 +14,13 @@ Feature: Connect
     And a consumer has connected the remote repo
     When a consumer changes the remote url
     Then the repo should be linked to that remote url
+    And a "repo.connected" event should have been emitted
+
+  Scenario: Reconnect an existing repo
+    Given a remote repo with commits on the "main" branch
+    And a consumer has connected the remote repo
+    When a consumer reconnects using the same remote url
+    Then a "repo.reconnected" event should have been emitted
 
   Scenario: Connection fails due to bad URL
     When a consumer tries to connect to the remote URL "a-bad-url"

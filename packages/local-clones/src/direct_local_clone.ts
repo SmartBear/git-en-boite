@@ -11,11 +11,12 @@ import {
   PendingCommitRef,
   Refs,
   RemoteUrl,
+  UnknownValue,
 } from 'git-en-boite-core'
 import { Dispatch } from 'git-en-boite-message-dispatch'
 
 import { createBareRepo, openBareRepo } from './bare_repo'
-import { Commit, Connect, Fetch, GetRefs, Push, RepoProtocol, ShowFile } from './operations'
+import { Commit, Connect, Fetch, GetConfig, GetRefs, Push, RepoProtocol, ShowFile } from './operations'
 
 export class DirectLocalClones implements LocalClones {
   async openExisting(path: string): Promise<LocalClone> {
@@ -53,6 +54,13 @@ class DirectLocalClone implements LocalClone {
 
   setOriginTo(remoteUrl: RemoteUrl): Promise<void> {
     return this.git(Connect.toUrl(remoteUrl))
+  }
+
+  async getOrigin(): Promise<RemoteUrl | UnknownValue> {
+    const config = await this.git(GetConfig.forRepo())
+    const origin = config['remote.origin.url']
+    if (!origin) return new UnknownValue()
+    return RemoteUrl.of(origin)
   }
 
   fetch(): Promise<void> {
