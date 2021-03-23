@@ -50,7 +50,7 @@ export const openBareRepo = async (repoPath: string): Promise<BareRepo> => {
 }
 
 export const createBareRepo = async (repoPath: string): Promise<BareRepo> => {
-  fs.mkdirSync(repoPath, { recursive: true })
+  fs.mkdirSync(repoPath)
   const git = await openBareRepo(repoPath)
   await git(Init.bareRepo())
   return git
