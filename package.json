@@ -26,7 +26,7 @@
   ],
   "devDependencies": {
     "@typescript-eslint/parser": "^4.18.0",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
     "bumbailiff": "^0.3.0",
     "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",
