@@ -1,3 +1,4 @@
+import fs from 'fs'
 import {
   AccessDenied,
   Author,
@@ -21,6 +22,7 @@ import { Dispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, fulfilled, instanceOf, matchesPattern, promiseThat, rejected } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
+import { v4 as uuid } from 'uuid'
 
 import { Commit, GetRefs, LocalCommitRef, RepoProtocol } from '..'
 import { createBareRepo as createOriginRepo } from '../bare_repo'
@@ -34,7 +36,8 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
   let localClone: LocalClone
 
   beforeEach(async () => {
-    root = dirSync().name
+    root = path.resolve(dirSync().name, uuid())
+    fs.mkdirSync(root)
     repoPath = path.resolve(root, 'a-repo-id')
     const localClones = makeLocalClones()
     localClone = await localClones.createNew(repoPath)
@@ -138,7 +141,7 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     let originUrl: RemoteUrl
     let origin: Dispatch<RepoProtocol>
     beforeEach(async () => {
-      originUrl = RemoteUrl.of(path.resolve(root, 'remote', 'a-repo-id'))
+      originUrl = RemoteUrl.of(path.resolve(root, 'a-remote-repo-id'))
       origin = await createOriginRepo(originUrl.value)
       const commitRef = LocalCommitRef.forBranch(branchName)
       await origin(Commit.toCommitRef(commitRef))
@@ -168,7 +171,7 @@ export const verifyLocalCloneContract = (makeLocalClones: () => LocalClones): vo
     const file = new GitFile(location, fileContent)
 
     beforeEach(async () => {
-      originUrl = RemoteUrl.of(path.resolve(root, 'remote', 'a-repo-id'))
+      originUrl = RemoteUrl.of(path.resolve(root, 'a-remote-repo-id'))
       origin = await createOriginRepo(originUrl.value)
       const commitRef = LocalCommitRef.forBranch(branchName)
       await origin(Commit.toCommitRef(commitRef).withFiles([file]))

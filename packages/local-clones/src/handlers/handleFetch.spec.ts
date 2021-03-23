@@ -4,6 +4,7 @@ import { AsyncCommand, Dispatch, messageDispatch } from 'git-en-boite-message-di
 import { equalTo, fulfilled, hasProperty, isRejectedWith, matchesPattern, promiseThat, startsWith } from 'hamjest'
 import path from 'path'
 import { dirSync } from 'tmp'
+import { v4 as uuid } from 'uuid'
 
 import { handleFetch, handleInit } from '.'
 import { createBareRepo, LocalCommitRef } from '..'
@@ -23,14 +24,15 @@ describe('handleFetch', () => {
   let repoPath: string
 
   beforeEach(async () => {
-    root = dirSync().name
+    root = path.resolve(dirSync().name, uuid())
+    fs.mkdirSync(root, { recursive: true })
     repoPath = path.resolve(root, 'a-repo-id')
-    originPath = path.resolve(root, 'remote', 'a-repo-id')
+    originPath = path.resolve(root, 'a-remote-repo-id')
 
     const origin = await createBareRepo(originPath)
     await origin(Commit.toCommitRef(LocalCommitRef.forBranch(branchName)))
     latestCommit = (await origin(GetRefs.all())).forBranch(branchName).revision
-    fs.mkdirSync(repoPath, { recursive: true })
+    fs.mkdirSync(repoPath)
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [
       [Init, handleInit],

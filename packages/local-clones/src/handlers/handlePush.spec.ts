@@ -3,11 +3,12 @@ import { BranchName, FileContent, FilePath, GitFile, PendingCommitRef, Refs, Rem
 import { AsyncCommand, AsyncQuery, Dispatch, messageDispatch } from 'git-en-boite-message-dispatch'
 import { assertThat, equalTo, not } from 'hamjest'
 import path from 'path'
-import { createBareRepo } from '../bare_repo'
 import { dirSync } from 'tmp'
+import { v4 as uuid } from 'uuid'
 
 import { handleCommit, handleFetch, handleGetRefs, handleInit, handlePush, handleSetOrigin } from '.'
 import { LocalCommitRef } from '..'
+import { createBareRepo } from '../bare_repo'
 import { GitDirectory } from '../git_directory'
 import { Commit, Fetch, GetRefs, Init, Push, SetOrigin } from '../operations'
 
@@ -29,10 +30,12 @@ describe('handlePush', () => {
   let repo: GitDirectory
 
   beforeEach(async () => {
-    root = dirSync().name
+    root = path.resolve(dirSync().name, uuid())
+    fs.mkdirSync(root, { recursive: true })
     repoPath = path.resolve(root, 'a-repo-id')
-    originPath = path.resolve(root, 'remote', 'a-repo-id')
-    fs.mkdirSync(repoPath, { recursive: true })
+    originPath = path.resolve(root, 'a-remote-repo-id')
+
+    fs.mkdirSync(repoPath)
     repo = new GitDirectory(repoPath)
     git = messageDispatch<Protocol>().withHandlers(repo, [
       [Commit, handleCommit],
