@@ -13,14 +13,15 @@ Put git in a box to make it easy to work with in your apps.
 - ✅ Emit events about changes in the repo
 - Query the repo for:
   - ✅ branch head revisions
-  - file lists (TODO)
-  - file contents (TODO)
+  - file/directory listings (TODO)
+  - ✅ file contents
+- Authenticate all requests (TODO)
 - Create pull requests on 3rd party providers from a local branch (TODO)
 - Read user info (orgs, repos) from 3rd party providers (TODO)
 
-## Architecture
+## Tech stack
 
-git-en-boite is written in typescript, and produces a [Docker image](https://hub.docker.com/repository/docker/smartbear/git-en-boite) every time the tests pass on the master branch.
+git-en-boite is written in Typescript, and produces a [Docker image](https://hub.docker.com/repository/docker/smartbear/git-en-boite) every time the tests pass on the master branch.
 
 It's separated into multiple NPM packages which are all contained inside this repo under `./packages`.
 
@@ -71,17 +72,11 @@ Run the tests in each of the packages:
 
     yarn test
 
-Start the app locally:
-
-    yarn start
-
 ### Debugging the acceptance tests
 
 When the acceptance tests fail, it's often useful to debug them by logging. You can turn on logging to console like this:
 
-    show_logs=1 yarn acceptance test
-
-See `packages/acceptance-tests/serc/support/abilities/request` for details.
+    LOGGING_READABLE_BY=humans yarn acceptance test
 
 ## Smoke tests
 
@@ -131,10 +126,10 @@ To make a semantially-versioned release of the docker-image:
 yarn version --major|minor|patch # choose the right switch depending on the type of changes in this release
 ````
 
-3. Push the new git tag:
+3. Push the new git tag and the commit updating the version:
 
 ````
-git push --tags
+git push && git push --tags
 ````
 
 The [build script](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/ci.yml#L84) should take care of the rest.
