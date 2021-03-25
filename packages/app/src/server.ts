@@ -1,13 +1,6 @@
 import { EventEmitter } from 'events'
 import { Config } from 'git-en-boite-config'
-import {
-  Application,
-  DomainEventBus,
-  DomainEvents,
-  DomainRule,
-  fetchRepoAfterConnected,
-  WriteLogEvent,
-} from 'git-en-boite-core'
+import { Application, DomainEventBus, fetchRepoAfterConnected, WriteLogEvent } from 'git-en-boite-core'
 import { InventoryOfReposOnDisk } from 'git-en-boite-inventory'
 import { BackgroundWorkerLocalClones, DirectLocalClones } from 'git-en-boite-local-clones'
 import { startWebServer } from 'git-en-boite-web'
