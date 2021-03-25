@@ -32,4 +32,20 @@ describe(setUpLogger.name, () => {
     assertThat(JSON.parse(lines[0]), hasProperty('msg', equalTo('Yikes!')))
     assertThat(JSON.parse(lines[0]), hasProperty('level', equalTo('warn')))
   })
+
+  it('redacts sensitive data : remoteUrl', async () => {
+    const lines = await captureStdOut(async () => {
+      const log = setUpLogger({}, { readableBy: 'machines' })
+      log({
+        message: `received: setOriginTo`,
+        level: 'info',
+        job: { data: { path: 'somewhere/a_repo', remoteUrl: 'a_remote_url_with_a_token' }, name: 'setOriginTo' },
+      })
+    })
+
+    assertThat(
+      JSON.parse(lines[0]),
+      hasProperty('job', hasProperty('data', hasProperty('remoteUrl', equalTo('[Redacted]'))))
+    )
+  })
 })

@@ -15,7 +15,10 @@ export function setUpLogger(config: pino.Bindings, { readableBy }: LoggingOption
       },
     },
   }[readableBy]
-  return logToPino(pino(Object.assign(config, options)))
+  const redactOptions: pino.LoggerOptions = {
+    redact: { paths: ['job.data.remoteUrl'] },
+  }
+  return logToPino(pino(Object.assign(config, options, redactOptions)))
 }
 
 const isLogEvent = (event: LogEvent | Error): event is LogEvent => !!(event as LogEvent).level
