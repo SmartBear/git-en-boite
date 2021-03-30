@@ -68,7 +68,7 @@ describe('/repos/:repoId', () => {
       it('responds with 400 (invalid request) when the request body is malformed', async () => {
         const connectRepoRequest = { something: 'bad' }
         const response = await request.put(`/repos/1`).send(connectRepoRequest).expect(400)
-        assertThat(response.text, equalTo("payload should have required property 'remoteUrl'"))
+        assertThat(response.text, equalTo("payload must have required property 'remoteUrl'"))
       })
     })
   })
