@@ -33,5 +33,5 @@ Feature: Connect
     When a consumer tries to connect using a malformed payload
     Then it should respond with an error:
       """
-      payload should have required property 'remoteUrl'
+      payload must have required property 'remoteUrl'
       """
