@@ -29,7 +29,7 @@
   "dependencies": {
     "env-var": "^7.0.0",
     "git-en-boite-logging": "0.0.0",
-    "ioredis": "^4.25.0"
+    "ioredis": "^4.26.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.2",
