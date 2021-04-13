@@ -500,10 +500,10 @@
   resolved "https://registry.yarnpkg.com/@types/intercept-stdout/-/intercept-stdout-0.1.0.tgz#4a1bfa59227fbb316c4c942d0c23537db7528a64"
   integrity sha512-b4+N4+pHcUWaK75k4GDavB5ZS6aHdlsyxKaU82JEq7mzY0+kziTiT6nKm+OCkMlGvL6RNk2rera2InJKVP5OiQ==
 
-"@types/ioredis@^4.16.3":
-  version "4.17.10"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.17.10.tgz#63a99d9655b4f41682e627812ac1cbb2c0668ffa"
-  integrity sha512-1K6BE5oAuu+j8g0mMGDxFvEpbveI3w6aGtcaG3MgszofIGb5ms5xx7m+pgKiXb80c9kuwIaJMiNEeVOWZV3UiQ==
+"@types/ioredis@^4.22.2":
+  version "4.22.3"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.22.3.tgz#72762efa0374c4a2e879ef697c6c3e4a47f9d641"
+  integrity sha512-V23g0XZUmkm0Hp/GsQYV5Wz12ynm6h6lyi5v/o63iyqFV7+8t3k5YxCnFWVWFEjO6mvRI7V6f7YxNVxIjPsSUw==
   dependencies:
     "@types/node" "*"
 
@@ -1292,15 +1292,15 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
-bullmq@^1.15.1:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.15.1.tgz#7c809ce5732e56db3ba778980d3d93127ee680fd"
-  integrity sha512-vj41rPysNw7Y2vfivZ7NzJALhUnab3W5U1sAtIu1IZyo0TCcqk9PIC/MQfeTl1U771DGfm1I1/uLwX1cNi2MzQ==
+bullmq@^1.16.1:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.16.1.tgz#976cce7abfb63922ca7d56993a315c554beed208"
+  integrity sha512-onqS1Oa9sadr+oCFeVlUUVdPZ7NxuCkDUPhHPZNu2XmKxz8A4xSNydTUSgTvVnjGs2EHCacZTBVAsB04WLvuKw==
   dependencies:
-    "@types/ioredis" "^4.16.3"
+    "@types/ioredis" "^4.22.2"
     cron-parser "^2.7.3"
     get-port "^5.0.0"
-    ioredis "^4.17.3"
+    ioredis "^4.25.0"
     lodash "^4.17.11"
     semver "^6.3.0"
     tslib "^1.10.0"
@@ -3224,7 +3224,7 @@ invariant@^2.2.0:
   dependencies:
     loose-envify "^1.0.0"
 
-ioredis@^4.17.3, ioredis@^4.26.0:
+ioredis@^4.25.0, ioredis@^4.26.0:
   version "4.26.0"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.26.0.tgz#dbbfb5e5da085fc2b1de8174db50fa42f9fed66a"
   integrity sha512-nh39okWezWWZ35/RxXXzHksMFt4WCaev8SNO2kozRDeVdEAJj16EarqPP3JeHz8IEjEXN5CiVtbWMk62Z0eveQ==
