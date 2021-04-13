@@ -137,4 +137,4 @@ jobs:
           token: ${{ secrets.SWAG_BOT_TOKEN }}
           repository: smartbear/git-en-boite-infra
           event-type: container-image-published
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "image_tag": "${{ steps.docker-image-tag.outputs.tag }}"}'
+          client-payload: '{"image_tag": "${{ steps.docker-image-tag.outputs.tag }}"}'
