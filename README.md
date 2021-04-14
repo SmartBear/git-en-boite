@@ -48,9 +48,9 @@ Set up default environment variables (assumes you're using [direnv](https://dire
     cp .envrc.default .envrc
     direnv allow .
 
-The integration tests need redis and postgres to be running somewhere. If you don't have or want to have them installed on your dev machine, you can spin them up in Docker:
+The integration tests need redis to be running somewhere. If you don't have or want to have it installed on your dev machine, you can spin it up in Docker:
 
-    docker-compose up --detach redis postgres
+    docker-compose up --detach redis
 
 ### Note for Ubuntu 20 users
 
@@ -111,7 +111,7 @@ Run using local containers (for both the smoke tests and the running server):
     docker-compose up
     smoke_tests_remote_repo_url=https://<user>:<token>@github.com/SmartBear/git-en-boite-demo \
         docker-compose run smoke-tests yarn smoke start
-   
+
 ## Releasing
 
 Git-en-boite is automatically packaged as a new docker image each time the CI build runs succesfully on the `main` branch. The docker image is tagged with the git sha of the commit.
@@ -122,14 +122,14 @@ To make a semantially-versioned release of the docker-image:
 
 2. Update the root `package.json` file and tag the git commit:
 
-````
+```
 yarn version --major|minor|patch # choose the right switch depending on the type of changes in this release
-````
+```
 
 3. Push the new git tag and the commit updating the version:
 
-````
+```
 git push && git push --tags
-````
+```
 
 The [build script](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/ci.yml#L84) should take care of the rest.

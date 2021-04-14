@@ -8,7 +8,7 @@ yarn
 
 ## Run the app in development mode
 
-Start redis and postgres and set `REDIS_URL` and `DATABASE_URL` (see root project README.md)
+Start redis and set `REDIS_URL` (see root project README.md)
 
 ```
 yarn start
@@ -23,5 +23,5 @@ yarn test
 ### Run the current WIP acceptance test
 
 ```
-yarn test:acceptance -p wip
+yarn test:acceptance:wip
 ```

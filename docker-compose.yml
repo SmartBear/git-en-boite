@@ -1,7 +1,7 @@
-version: "3"
+version: '3'
 services:
   server:
-    build: 
+    build:
       context: .
       args:
         git_ref: 'git-ref'
@@ -11,11 +11,9 @@ services:
     environment:
       - NODE_ENV=development
       - GIT_ROOT=/git-repos
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
       - LOGGING_READABLE_BY=humans
     depends_on:
-      - postgres
       - redis
       - worker
     command: yarn start:server
@@ -31,11 +29,9 @@ services:
     environment:
       - NODE_ENV=development
       - GIT_ROOT=/git-repos
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/git-en-boite-development
       - REDIS_URL=redis://redis:6379
       - LOGGING_READABLE_BY=humans
     depends_on:
-      - postgres
       - redis
     command: yarn start:worker
     volumes:
@@ -46,16 +42,7 @@ services:
     environment:
       - smoke_tests_web_server_url=http://server:3001
       - smoke_tests_remote_repo_url
-    command: "echo \"NO OP: please run `yarn smoke start`\""
-
-  postgres:
-    image: postgres:12.2-alpine
-    environment:
-      - POSTGRES_DB=git-en-boite-development
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - target: 5432
-        published: 5433
+    command: 'echo "NO OP: please run `yarn smoke start`"'
 
   redis:
     image: redis:latest
