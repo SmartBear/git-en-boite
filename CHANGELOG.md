@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.13.2](https://github.com/SmartBear/git-en-boite/tree/v0.13.2) (2021-04-16)
+
+## [v0.13.1](https://github.com/SmartBear/git-en-boite/tree/v0.13.1) (2021-04-15)
+
 ## [v0.13.0](https://github.com/SmartBear/git-en-boite/tree/v0.13.0) (2021-04-14)
 
 ## [v0.12.4](https://github.com/SmartBear/git-en-boite/tree/v0.12.4) (2021-03-29)
