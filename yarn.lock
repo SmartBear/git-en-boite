@@ -37,10 +37,10 @@
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
 
-"@cucumber/cucumber@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.1.0.tgz#d79fe8c1282f5b7f7413600bd766174f59cc14d1"
-  integrity sha512-ZeXXHzpcDULZMd+Og/Le9t+pt/FEepNoEDx66rbfFAiVGDQieljF5/Ag8qifRqKLLT3EE/Mu5HQ3oT1Rk8V5Gw==
+"@cucumber/cucumber@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.2.0.tgz#0abd5eea4c01980ca3821e4088fa0d9af1d10e61"
+  integrity sha512-M4giL02zPmnftCqu8nPdxi3IFtmLIGrB/DAKxVJZJ8BbTqEgH691IEQqSIUcB2QVD2gItM0ft8NcEXyyPrA5KQ==
   dependencies:
     "@cucumber/create-meta" "4.0.0"
     "@cucumber/cucumber-expressions" "12.0.1"
@@ -56,7 +56,6 @@
     cli-table3 "^0.6.0"
     colors "^1.4.0"
     commander "^7.0.0"
-    create-require "^1.1.1"
     duration "^0.2.2"
     durations "^3.4.2"
     figures "^3.2.0"
@@ -1791,7 +1790,7 @@ create-error-class@^3.0.0:
   dependencies:
     capture-stack-trace "^1.0.0"
 
-create-require@^1.1.0, create-require@^1.1.1:
+create-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
