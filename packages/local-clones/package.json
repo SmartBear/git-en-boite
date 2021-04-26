@@ -26,7 +26,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.168",
     "@types/uuid": "^8.3.0",
-    "bullmq": "^1.20.2",
+    "bullmq": "^1.20.6",
     "dugite": "1.93.0",
     "git-en-boite-config": "0.0.0",
     "git-en-boite-core": "0.0.0",
