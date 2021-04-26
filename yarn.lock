@@ -1292,6 +1292,20 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
+bullmq@^1.20.0:
+  version "1.20.6"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.20.6.tgz#882376fa232e9a3a3452630046c090778718bf2f"
+  integrity sha512-0lOe0gJiVwi1+6qdcF/xKr5uV00A2TvaIy1wAeqRmHc/l29tte/fgpTQ1vYFofBLS9FMqpD5jBT6HlseDzIG6A==
+  dependencies:
+    "@types/ioredis" "^4.22.2"
+    cron-parser "^2.7.3"
+    get-port "^5.0.0"
+    ioredis "^4.25.0"
+    lodash "^4.17.11"
+    semver "^6.3.0"
+    tslib "^1.10.0"
+    uuid "^8.2.0"
+
 bullmq@^1.20.2:
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.20.2.tgz#3c4a785bafb3ddda97d6dac885ad9a8d752a13eb"
@@ -2266,10 +2280,10 @@ eslint-visitor-keys@^2.0.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.0.0.tgz#21fdc8fbcd9c795cc0321f0563702095751511a8"
   integrity sha512-QudtT6av5WXels9WjIM7qz1XD1cWGvX4gGXvp/zBn9nXG02D0utdU3Em2m/QjTnrsk6bBjmCygl3rmj118msQQ==
 
-eslint@^7.24.0:
-  version "7.24.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.24.0.tgz#2e44fa62d93892bfdb100521f17345ba54b8513a"
-  integrity sha512-k9gaHeHiFmGCDQ2rEfvULlSLruz6tgfA8DEn+rY9/oYPFFTlz55mM/Q/Rij1b2Y42jwZiK3lXvNTw6w6TXzcKQ==
+eslint@^7.25.0:
+  version "7.25.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.25.0.tgz#1309e4404d94e676e3e831b3a3ad2b050031eb67"
+  integrity sha512-TVpSovpvCNpLURIScDRB6g5CYu/ZFq9GfX2hLNIV4dSBKxIWojeDODvYl3t0k0VtMxYeR8OXPCFE5+oHMlGfhw==
   dependencies:
     "@babel/code-frame" "7.12.11"
     "@eslint/eslintrc" "^0.4.0"
