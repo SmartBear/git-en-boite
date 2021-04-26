@@ -37,10 +37,10 @@
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
 
-"@cucumber/cucumber@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.1.0.tgz#d79fe8c1282f5b7f7413600bd766174f59cc14d1"
-  integrity sha512-ZeXXHzpcDULZMd+Og/Le9t+pt/FEepNoEDx66rbfFAiVGDQieljF5/Ag8qifRqKLLT3EE/Mu5HQ3oT1Rk8V5Gw==
+"@cucumber/cucumber@^7.2.1":
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.2.1.tgz#a532160bfe2fed5466be4a1fb0b2c350e363ed30"
+  integrity sha512-kL16ATY1jPAzsIZuXDu2jwUcSfT4jUGJybaVyaadb69L6FZlytGVAZEerxgeblmXUuYvpFckVxWtIEXOIOp0JQ==
   dependencies:
     "@cucumber/create-meta" "4.0.0"
     "@cucumber/cucumber-expressions" "12.0.1"
@@ -1292,10 +1292,10 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
-bullmq@^1.17.0:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.17.0.tgz#530fe57408fc0827d9210af547fd865f65a55a17"
-  integrity sha512-l+Z7HSJ5r5pIQtXY9dEC9uPb97/f4gXPkxjoytSHKEIPxM2wTFNq60R5tH8icIsGRWbM7u4n5HaiKILx6Rf2Ig==
+bullmq@^1.20.2:
+  version "1.20.2"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.20.2.tgz#3c4a785bafb3ddda97d6dac885ad9a8d752a13eb"
+  integrity sha512-0SLnIjpv0IF7IA0QeZvXirUWMJBiRwEhpKEh7ervcWMU5uoJcJ/rFGiS5fKZlvP/pqfRqYd+jL8NsT3cDjfExQ==
   dependencies:
     "@types/ioredis" "^4.22.2"
     cron-parser "^2.7.3"
