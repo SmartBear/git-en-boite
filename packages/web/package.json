@@ -41,7 +41,7 @@
     "validator": "^13.6.0"
   },
   "devDependencies": {
-    "@pact-foundation/pact": "^9.15.4",
+    "@pact-foundation/pact": "^9.15.5",
     "@types/node-fetch": "^2.5.10",
     "@types/split2": "^2.1.6",
     "hamjest": "^3.7.1",
