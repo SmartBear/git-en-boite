@@ -633,10 +633,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/pino@*", "@types/pino@^6.3.5", "@types/pino@^6.3.7":
-  version "6.3.7"
-  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.7.tgz#0ccef98a159230cb3fa2589c7e8b00a7550a69f6"
-  integrity sha512-v7FdDXVEL0Zx1zcCf0cJZMojChnF+O0ujDKV1UdocsLuUhENjdtNIaanCZK1zRELp35x//bI2/IHtYUK0vmRvw==
+"@types/pino@*", "@types/pino@^6.3.5", "@types/pino@^6.3.8":
+  version "6.3.8"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.8.tgz#ec589318c2798216a0f39882845c5e40b7151b56"
+  integrity sha512-E47CmRy1FNMaCN8r0d8ECQOjXen9O0p6GGsUjLfmawlxRKosZ82WP1oWVKj+ikTkMDHxWzN5BuKmplo44ynrIg==
   dependencies:
     "@types/node" "*"
     "@types/pino-pretty" "*"
@@ -1297,10 +1297,10 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
-bullmq@^1.20.6:
-  version "1.20.6"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.20.6.tgz#882376fa232e9a3a3452630046c090778718bf2f"
-  integrity sha512-0lOe0gJiVwi1+6qdcF/xKr5uV00A2TvaIy1wAeqRmHc/l29tte/fgpTQ1vYFofBLS9FMqpD5jBT6HlseDzIG6A==
+bullmq@^1.21.0:
+  version "1.21.0"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.21.0.tgz#fac7a8a7a141094f6936443bd050aa1078e801c2"
+  integrity sha512-27Mu+aO+5B1bpWhUnu0qMrwhUrWsn1PpPzm2Mq4qx2DEWqMOx00uPcX1sSv9ZTE4b2jqqeIBb5fXr+OzTGnsIg==
   dependencies:
     "@types/ioredis" "^4.22.2"
     cron-parser "^2.7.3"
