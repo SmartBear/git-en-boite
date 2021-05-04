@@ -1,0 +1,22 @@
+# 16. Handle concurrent git operations
+
+Date: 2021-05-04
+
+## Status
+
+Accepted
+
+## Context
+
+Concurrent git operations can fail because git is locking the repo. The current implementation is waiting for jobs to finish, but multiple workers in different containers can still take jobs in the queue and proccess them in parallel.
+
+## Decision
+
+Reduce worker concurrency to 1 by using a single container (for now).
+
+## Consequences
+
+1. The system cannot process multiple jobs in parallel which could make depending services slower.
+2. We'll have to consider a better way of handling queues and workers in the future:
+  - We'll need workers handling jobs in parallel but in sequence for each repositories. i.e. jobs cannot be run in parallel for a single repo.
+  - Ideas to do that: Mutex, one queue per repo, allocate jobs for a repo to a dedicated worker using some sort of supervisor.
