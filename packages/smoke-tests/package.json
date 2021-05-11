@@ -16,7 +16,7 @@
     "git-en-boite-core": "0.0.0",
     "git-en-boite-local-clones": "0.0.0",
     "hamjest": "^3.7.1",
-    "mocha": "^8.3.1",
+    "mocha": "^8.4.0",
     "nanoid": "^3.1.23",
     "node-fetch": "^2.6.1",
     "supertest": "6.1.3",
