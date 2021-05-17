@@ -31,7 +31,7 @@
     "@types/koa-log": "^2.1.1",
     "@types/koa2-cors": "^2.0.1",
     "@types/koa__router": "^8.0.4",
-    "ajv": "^8.3.0",
+    "ajv": "^8.4.0",
     "cabin": "^9.0.4",
     "git-en-boite-core": "0.0.0",
     "http-link-header": "^1.0.3",
