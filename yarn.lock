@@ -1297,10 +1297,10 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
-bullmq@^1.25.1:
-  version "1.25.1"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.25.1.tgz#c9f07d435e088a8c627ffadd7b5f037719148b37"
-  integrity sha512-eWPe2j9hmcKaWHPArqVihYwF96gD0NEA88nqHcr+KrVZpG26k3oab+Hv6Tpits0rCgjzFIsyfQ06XTla9sAtLQ==
+bullmq@^1.26.1:
+  version "1.26.1"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.26.1.tgz#cd4b61b75d5625a82cac7980a43ab8496b25f774"
+  integrity sha512-VGJ3gnNQUj04f58PGcXvVn2ODgA98y7NjCuKHIfhIprlPOJ7JdD729IdJ24EGQUWMKbVtHwiefrCsOs8QBYcJQ==
   dependencies:
     "@types/ioredis" "^4.22.2"
     cron-parser "^2.7.3"
