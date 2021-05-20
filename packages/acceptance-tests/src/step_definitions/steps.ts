@@ -134,8 +134,10 @@ When('a consumer tries to fetch the repo', async function (this: World) {
   await fetchRepo(this)({ repoId: this.repoId })
 })
 
-const fetchRepo = (world: World) => async ({ repoId }: { repoId: RepoId }) =>
-  (world.lastResponse = await world.request.post(`/repos/${repoId}/fetches`))
+const fetchRepo =
+  (world: World) =>
+  async ({ repoId }: { repoId: RepoId }) =>
+    (world.lastResponse = await world.request.post(`/repos/${repoId}/fetches`))
 
 When(
   'a consumer commits a new file to {BranchName}',
