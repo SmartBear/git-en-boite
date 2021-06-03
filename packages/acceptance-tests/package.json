@@ -15,6 +15,7 @@
   "dependencies": {
     "@types/eventsource": "^1.1.5",
     "@types/supertest": "^2.0.11",
+    "concurrently": "^6.2.0",
     "bullmq": "^1.28.0",
     "concurrently": "^6.1.0",
     "eventsource": "^1.1.0",
