@@ -5,6 +5,7 @@
   },
   "checkRunSettings": {
     "vulnerableCheckRunConclusionLevel": "success",
+    "licenseCheckRunConclusionLevel": "success",
     "displayMode": "diff"
   },
   "issueSettings": {
