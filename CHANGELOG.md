@@ -155,6 +155,10 @@
 
 ## [v0.0.4](https://github.com/SmartBear/git-en-boite/tree/v0.0.4) (2020-11-09)
 
+**Closed issues:**
+
+- Tagging releases [\#240](https://github.com/SmartBear/git-en-boite/issues/240)
+
 ## [v0.0.2](https://github.com/SmartBear/git-en-boite/tree/v0.0.2) (2020-11-09)
 
 ## [v0.0.1](https://github.com/SmartBear/git-en-boite/tree/v0.0.1) (2020-11-09)
@@ -168,7 +172,6 @@
 - Docker image should be clean with only `dist` folders [\#250](https://github.com/SmartBear/git-en-boite/issues/250)
 - Add some smoke test [\#249](https://github.com/SmartBear/git-en-boite/issues/249)
 - Move CI to GitHub Actions [\#241](https://github.com/SmartBear/git-en-boite/issues/241)
-- Tagging releases [\#240](https://github.com/SmartBear/git-en-boite/issues/240)
 - Clear feedback if you connect with a bad URL [\#218](https://github.com/SmartBear/git-en-boite/issues/218)
 - Validate push authorisation on connect [\#217](https://github.com/SmartBear/git-en-boite/issues/217)
 - Manual fetch should respond with 200 not a 202 [\#209](https://github.com/SmartBear/git-en-boite/issues/209)
