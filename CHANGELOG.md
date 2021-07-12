@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.14.0](https://github.com/SmartBear/git-en-boite/tree/v0.14.0) (2021-07-12)
+
+**Closed issues:**
+
+- WS-2021-0154 \(Medium\) detected in glob-parent-5.1.1.tgz - autoclosed [\#754](https://github.com/SmartBear/git-en-boite/issues/754)
+- CVE-2020-28469 \(High\) detected in glob-parent-5.1.1.tgz - autoclosed [\#752](https://github.com/SmartBear/git-en-boite/issues/752)
+- CVE-2021-33502 \(High\) detected in normalize-url-4.5.0.tgz - autoclosed [\#750](https://github.com/SmartBear/git-en-boite/issues/750)
+- CVE-2021-33623 \(High\) detected in trim-newlines-1.0.0.tgz - autoclosed [\#749](https://github.com/SmartBear/git-en-boite/issues/749)
+- License Policy Violation detected in gitv2.29.3 \(Multiple Licenses\) - autoclosed [\#748](https://github.com/SmartBear/git-en-boite/issues/748)
+- License Policy Violation detected in gitv2.27.1 \(Multiple Licenses\) - autoclosed [\#747](https://github.com/SmartBear/git-en-boite/issues/747)
+- License Policy Violation detected in diff-lcsv1.4.4 \(Multiple Licenses\) - autoclosed [\#746](https://github.com/SmartBear/git-en-boite/issues/746)
+- GPL 2.0 License Policy Violation detected in Git0.42 - autoclosed [\#745](https://github.com/SmartBear/git-en-boite/issues/745)
+- License Policy Violation detected in rubyv2\_6\_7 \(Multiple Licenses\) - autoclosed [\#744](https://github.com/SmartBear/git-en-boite/issues/744)
+- GPL 2.0 License Policy Violation detected in dradisdradis-3.0.0.rc3-osx - autoclosed [\#743](https://github.com/SmartBear/git-en-boite/issues/743)
+- GPL 2.0 License Policy Violation detected in dradisdradis-3.1.0.rc2-linux-x86\_64 - autoclosed [\#742](https://github.com/SmartBear/git-en-boite/issues/742)
+- License Policy Violation detected in ruby69fa2fe929c2e339d73c8d0dc05d0d9c1fb57f55 \(Multiple Licenses\) - autoclosed [\#741](https://github.com/SmartBear/git-en-boite/issues/741)
+- License Policy Violation detected in rubyv2\_2\_2 \(Multiple Licenses\) - autoclosed [\#740](https://github.com/SmartBear/git-en-boite/issues/740)
+- License Policy Violation detected in pmdpmd-src-6.16.0 \(Multiple Licenses\) - autoclosed [\#739](https://github.com/SmartBear/git-en-boite/issues/739)
+- CVE-2021-23343 \(High\) detected in path-parse-1.0.6.tgz [\#738](https://github.com/SmartBear/git-en-boite/issues/738)
+
 ## [v0.13.2](https://github.com/SmartBear/git-en-boite/tree/v0.13.2) (2021-04-16)
 
 ## [v0.13.1](https://github.com/SmartBear/git-en-boite/tree/v0.13.1) (2021-04-15)
