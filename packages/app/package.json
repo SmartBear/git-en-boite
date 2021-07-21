@@ -67,6 +67,6 @@
     "typescript": "^4.2.4"
   },
   "resolutions": {
-    "ts-node-dev/chokidar/glob-parent": "^5.1.2"
+    "ts-node-dev/chokidar/glob-parent": "^6.0.0"
   }
 }
