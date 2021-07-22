@@ -39,7 +39,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.2",
+    "@types/mocha": "^9.0.0",
     "@types/node": "^15.6.1",
     "@types/tmp": "^0.2.0",
     "@typescript-eslint/parser": "^4.25.0",
