@@ -41,5 +41,5 @@
     "**/fast-glob/glob-parent": "^5.1.2",
     "**/normalize-url": "^4.5.1"
   },
-  "version": "0.14.9"
+  "version": "0.14.10"
 }
