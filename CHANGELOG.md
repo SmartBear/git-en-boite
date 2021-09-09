@@ -1,5 +1,49 @@
 # Changelog
 
+## [v0.14.22](https://github.com/SmartBear/git-en-boite/tree/v0.14.22) (2021-08-03)
+
+## [v0.14.21](https://github.com/SmartBear/git-en-boite/tree/v0.14.21) (2021-08-02)
+
+## [v0.14.20](https://github.com/SmartBear/git-en-boite/tree/v0.14.20) (2021-08-01)
+
+## [v0.14.19](https://github.com/SmartBear/git-en-boite/tree/v0.14.19) (2021-07-31)
+
+## [v0.14.18](https://github.com/SmartBear/git-en-boite/tree/v0.14.18) (2021-07-30)
+
+## [v0.14.17](https://github.com/SmartBear/git-en-boite/tree/v0.14.17) (2021-07-29)
+
+## [v0.14.16](https://github.com/SmartBear/git-en-boite/tree/v0.14.16) (2021-07-28)
+
+## [v0.14.15](https://github.com/SmartBear/git-en-boite/tree/v0.14.15) (2021-07-27)
+
+## [v0.14.14](https://github.com/SmartBear/git-en-boite/tree/v0.14.14) (2021-07-26)
+
+## [v0.14.13](https://github.com/SmartBear/git-en-boite/tree/v0.14.13) (2021-07-25)
+
+## [v0.14.12](https://github.com/SmartBear/git-en-boite/tree/v0.14.12) (2021-07-24)
+
+## [v0.14.11](https://github.com/SmartBear/git-en-boite/tree/v0.14.11) (2021-07-23)
+
+## [v0.14.10](https://github.com/SmartBear/git-en-boite/tree/v0.14.10) (2021-07-22)
+
+## [v0.14.9](https://github.com/SmartBear/git-en-boite/tree/v0.14.9) (2021-07-21)
+
+## [v0.14.8](https://github.com/SmartBear/git-en-boite/tree/v0.14.8) (2021-07-20)
+
+## [v0.14.7](https://github.com/SmartBear/git-en-boite/tree/v0.14.7) (2021-07-19)
+
+## [v0.14.6](https://github.com/SmartBear/git-en-boite/tree/v0.14.6) (2021-07-18)
+
+## [v0.14.5](https://github.com/SmartBear/git-en-boite/tree/v0.14.5) (2021-07-17)
+
+## [v0.14.4](https://github.com/SmartBear/git-en-boite/tree/v0.14.4) (2021-07-16)
+
+## [v0.14.3](https://github.com/SmartBear/git-en-boite/tree/v0.14.3) (2021-07-15)
+
+## [v0.14.2](https://github.com/SmartBear/git-en-boite/tree/v0.14.2) (2021-07-14)
+
+## [v0.14.1](https://github.com/SmartBear/git-en-boite/tree/v0.14.1) (2021-07-13)
+
 ## [v0.14.0](https://github.com/SmartBear/git-en-boite/tree/v0.14.0) (2021-07-12)
 
 **Closed issues:**
