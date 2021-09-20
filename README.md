@@ -133,3 +133,11 @@ git push && git push --tags
 ```
 
 The [build script](https://github.com/SmartBear/git-en-boite/blob/main/.github/workflows/ci.yml#L84) should take care of the rest.
+
+# How to resolve "fatal: Not a git repository (or any of the parent directories): .git" issue
+
+Remove the git-repos directory:
+
+```
+sudo rm -rf git-repos
+```
