@@ -27,7 +27,7 @@
     "@types/lodash": "^4.14.170",
     "@types/uuid": "^8.3.0",
     "bullmq": "^1.28.0",
-    "dugite": "1.103.0",
+    "dugite": "1.104.0",
     "git-en-boite-config": "0.0.0",
     "git-en-boite-core": "0.0.0",
     "git-en-boite-message-dispatch": "0.0.0",
