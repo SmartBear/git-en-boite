@@ -39,7 +39,7 @@
   },
   "resolutions": {
     "**/fast-glob/glob-parent": "^6.0.0",
-    "**/normalize-url": "^4.5.1"
+    "**/normalize-url": "^7.0.0"
   },
   "version": "0.14.22"
 }
