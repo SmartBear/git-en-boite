@@ -26,6 +26,6 @@
     "@types/pino": "^6.3.8",
     "git-en-boite-core": "0.0.0",
     "pino": "^6.11.3",
-    "pino-pretty": "^7.0.0"
+    "pino-pretty": "^5.0.0"
   }
 }
