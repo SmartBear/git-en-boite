@@ -39,7 +39,7 @@
     "eslint-plugin-prettier": "3.4.1",
     "hamjest": "mattwynne/hamjest#master",
     "mocha": "9.2.0",
-    "prettier": "2.3.0",
+    "prettier": "2.5.1",
     "ts-node": "10.4.0"
   }
 }
