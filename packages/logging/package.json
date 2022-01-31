@@ -14,18 +14,18 @@
     "test": "mocha -g @wip -i"
   },
   "devDependencies": {
-    "@types/koa": "^2.13.1",
+    "@types/koa": "2.13.1",
     "@types/mocha": "9.1.0",
-    "hamjest": "^3.7.1",
-    "koa": "^2.13.1",
+    "hamjest": "3.7.1",
+    "koa": "2.13.1",
     "mocha": "9.2.0",
-    "supertest": "^6.1.3"
+    "supertest": "6.1.3"
   },
   "dependencies": {
-    "@types/node": "^15.6.1",
-    "@types/pino": "^6.3.8",
+    "@types/node": "15.6.1",
+    "@types/pino": "6.3.8",
     "git-en-boite-core": "0.0.0",
-    "pino": "^6.11.3",
-    "pino-pretty": "^5.0.0"
+    "pino": "6.11.3",
+    "pino-pretty": "5.0.2"
   }
 }
