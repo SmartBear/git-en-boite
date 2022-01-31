@@ -138,3 +138,12 @@ jobs:
           repository: smartbear/git-en-boite-infra
           event-type: container-image-published
           client-payload: '{"image_tag": "${{ steps.docker-image-tag.outputs.tag }}"}'
+
+      - name: "REPORT -- Nofify SmartBear infrastructure of new production container image"
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.SWAG_BOT_TOKEN }}
+          repository: smartbear/git-en-boite-infra
+          event-type: production-container-image-published
+          client-payload: '{"image_tag": "${{ steps.docker-image-tag.outputs.tag }}"}'
