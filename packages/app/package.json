@@ -17,12 +17,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/chalk": "^2.2.0",
     "@types/eventsource": "^1.1.5",
     "@types/intercept-stdout": "^0.1.0",
     "@types/rfdc": "^1.2.0",
     "bullmq": "^1.28.0",
-    "chalk": "^4.1.1",
     "concurrently": "^7.0.0",
     "error-stack-parser": "^2.0.6",
     "eventsource": "^1.1.0",
