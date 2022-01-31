@@ -3071,10 +3071,10 @@ hamjest-sinon@1.0.6:
   resolved "https://registry.yarnpkg.com/hamjest-sinon/-/hamjest-sinon-1.0.6.tgz#60b0733772612f2002701c346a0afa6045041ae2"
   integrity sha512-vxEX5gDefES4stKPcwp1I7itfXyOh4l+XQ4ZCNTcKf5o2sqBullTTvGqf1F9e1w7RfO5QnB97CW/zksJih5guw==
 
-hamjest@3.7.1:
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/hamjest/-/hamjest-3.7.1.tgz#e0041c81b0ab654510cac6dd5f751490db361205"
-  integrity sha512-NCbGAPNJaheANpyHRuMnlZoQk5MFvN91LJwO5RVZ34b5AA8Gg9p/b7iBfF2yABTLqNzQRn9GQvyqnZb4xyxKkg==
+hamjest@3.7.3:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/hamjest/-/hamjest-3.7.3.tgz#7e133c1ce7ebb1f26c52251992c6416dc8ba19df"
+  integrity sha512-HOEutQrkZsARJKavuh8auAfilz3sR9IFeDvzaa4EKUu8Pf05MIMbyy26wRO0MHLd7kJ9gUxLMZlelg4nX7sVEA==
   dependencies:
     assertion-error "^1.1.0"
     bluebird "^3.3.4"
