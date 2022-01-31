@@ -116,10 +116,6 @@
 
 ## [v0.7.0](https://github.com/SmartBear/git-en-boite/tree/v0.7.0) (2021-03-09)
 
-**Closed issues:**
-
-- DomainEventBus needs to work in multi-node environment [\#242](https://github.com/SmartBear/git-en-boite/issues/242)
-
 ## [v0.6.2](https://github.com/SmartBear/git-en-boite/tree/v0.6.2) (2021-03-08)
 
 **Closed issues:**
@@ -235,6 +231,7 @@
 - Rename "GitRepo" to "LocalClone" [\#254](https://github.com/SmartBear/git-en-boite/issues/254)
 - Docker image should be clean with only `dist` folders [\#250](https://github.com/SmartBear/git-en-boite/issues/250)
 - Add some smoke test [\#249](https://github.com/SmartBear/git-en-boite/issues/249)
+- DomainEventBus needs to work in multi-node environment [\#242](https://github.com/SmartBear/git-en-boite/issues/242)
 - Move CI to GitHub Actions [\#241](https://github.com/SmartBear/git-en-boite/issues/241)
 - Clear feedback if you connect with a bad URL [\#218](https://github.com/SmartBear/git-en-boite/issues/218)
 - Validate push authorisation on connect [\#217](https://github.com/SmartBear/git-en-boite/issues/217)
