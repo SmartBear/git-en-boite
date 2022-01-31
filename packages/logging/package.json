@@ -19,7 +19,7 @@
     "hamjest": "3.7.3",
     "koa": "2.13.1",
     "mocha": "9.2.0",
-    "supertest": "6.1.3"
+    "supertest": "6.2.2"
   },
   "dependencies": {
     "@types/node": "15.6.1",
