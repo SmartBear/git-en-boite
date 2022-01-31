@@ -6036,7 +6036,12 @@ timers-ext@^0.1.5:
     es5-ext "~0.10.46"
     next-tick "1"
 
-tiny-types@1.16.1, tiny-types@^1.16.1:
+tiny-types@1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/tiny-types/-/tiny-types-1.17.0.tgz#436eaa6723c50ef44b756bc9a4d5f87fcb594ea3"
+  integrity sha512-7/shUEpt89npYPrKa4pl+PCBCbd3/moVv0tFgnm6TrETMK3WpHJQaAxNMMi5T834Nm6mKfzQNPRkpnIML53bkA==
+
+tiny-types@^1.16.1:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/tiny-types/-/tiny-types-1.16.1.tgz#5ea18637ac47678f820249c22f871ebc66d83ad9"
   integrity sha512-CLNYYZF6Q0VyDhJ5c5u75Y2SHWhHZBvdLm/P23RLyYzB/yBIWG52lLAomObC3IOlufA1ubl4eLfp9PZU/1U6Jg==

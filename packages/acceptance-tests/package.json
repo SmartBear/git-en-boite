@@ -24,7 +24,7 @@
     "git-en-boite-inventory": "0.0.0",
     "git-en-boite-local-clones": "0.0.0",
     "git-en-boite-web": "0.0.0",
-    "tiny-types": "1.16.1",
+    "tiny-types": "1.17.0",
     "ts-node": "10.4.0",
     "ts-node-dev": "1.1.8",
     "ts-sinon": "2.0.2",
