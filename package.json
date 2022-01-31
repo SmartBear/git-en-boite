@@ -37,8 +37,5 @@
   "dependencies": {
     "typescript": "4.2.4"
   },
-  "resolutions": {
-    "**/fast-glob/glob-parent": "^6.0.0"
-  },
   "version": "0.14.22"
 }

@@ -61,8 +61,5 @@
     "tmp": "0.2.1",
     "ts-node-dev": "1.1.8",
     "tsconfig-paths": "3.12.0"
-  },
-  "resolutions": {
-    "ts-node-dev/chokidar/glob-parent": "^6.0.0"
   }
 }
