@@ -30,6 +30,6 @@
   "devDependencies": {
     "hamjest": "3.7.1",
     "hamjest-sinon": "1.0.6",
-    "ts-sinon": "2.0.1"
+    "ts-sinon": "2.0.2"
   }
 }
