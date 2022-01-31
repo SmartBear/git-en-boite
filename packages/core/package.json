@@ -26,7 +26,7 @@
   "devDependencies": {
     "hamjest": "3.7.3",
     "ts-eventually": "1.0.5",
-    "ts-sinon": "2.0.1"
+    "ts-sinon": "2.0.2"
   },
   "dependencies": {
     "tiny-types": "^1.16.1"
