@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.14.23](https://github.com/SmartBear/git-en-boite/tree/v0.14.23) (2022-02-01)
+
+**Closed issues:**
+
+- CVE-2022-0235 \(Medium\) detected in node-fetch-2.6.1.tgz - autoclosed [\#811](https://github.com/SmartBear/git-en-boite/issues/811)
+- CVE-2021-23566 \(Medium\) detected in nanoid-3.1.23.tgz - autoclosed [\#810](https://github.com/SmartBear/git-en-boite/issues/810)
+- CVE-2021-35065 \(Medium\) detected in glob-parent-5.1.2.tgz - autoclosed [\#805](https://github.com/SmartBear/git-en-boite/issues/805)
+- Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#790](https://github.com/SmartBear/git-en-boite/issues/790)
+- Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#788](https://github.com/SmartBear/git-en-boite/issues/788)
+- Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#787](https://github.com/SmartBear/git-en-boite/issues/787)
+- Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#784](https://github.com/SmartBear/git-en-boite/issues/784)
+
 ## [v0.14.22](https://github.com/SmartBear/git-en-boite/tree/v0.14.22) (2021-08-03)
 
 ## [v0.14.21](https://github.com/SmartBear/git-en-boite/tree/v0.14.21) (2021-08-02)
@@ -116,6 +128,10 @@
 
 ## [v0.7.0](https://github.com/SmartBear/git-en-boite/tree/v0.7.0) (2021-03-09)
 
+**Closed issues:**
+
+- DomainEventBus needs to work in multi-node environment [\#242](https://github.com/SmartBear/git-en-boite/issues/242)
+
 ## [v0.6.2](https://github.com/SmartBear/git-en-boite/tree/v0.6.2) (2021-03-08)
 
 **Closed issues:**
@@ -231,7 +247,6 @@
 - Rename "GitRepo" to "LocalClone" [\#254](https://github.com/SmartBear/git-en-boite/issues/254)
 - Docker image should be clean with only `dist` folders [\#250](https://github.com/SmartBear/git-en-boite/issues/250)
 - Add some smoke test [\#249](https://github.com/SmartBear/git-en-boite/issues/249)
-- DomainEventBus needs to work in multi-node environment [\#242](https://github.com/SmartBear/git-en-boite/issues/242)
 - Move CI to GitHub Actions [\#241](https://github.com/SmartBear/git-en-boite/issues/241)
 - Clear feedback if you connect with a bad URL [\#218](https://github.com/SmartBear/git-en-boite/issues/218)
 - Validate push authorisation on connect [\#217](https://github.com/SmartBear/git-en-boite/issues/217)
