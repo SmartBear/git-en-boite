@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.14.33](https://github.com/SmartBear/git-en-boite/tree/v0.14.33) (2022-02-11)
+
+## [v0.14.32](https://github.com/SmartBear/git-en-boite/tree/v0.14.32) (2022-02-10)
+
+## [v0.14.31](https://github.com/SmartBear/git-en-boite/tree/v0.14.31) (2022-02-09)
+
+## [v0.14.30](https://github.com/SmartBear/git-en-boite/tree/v0.14.30) (2022-02-08)
+
+## [v0.14.29](https://github.com/SmartBear/git-en-boite/tree/v0.14.29) (2022-02-07)
+
+## [v0.14.28](https://github.com/SmartBear/git-en-boite/tree/v0.14.28) (2022-02-06)
+
+## [v0.14.27](https://github.com/SmartBear/git-en-boite/tree/v0.14.27) (2022-02-05)
+
+## [v0.14.26](https://github.com/SmartBear/git-en-boite/tree/v0.14.26) (2022-02-04)
+
+## [v0.14.25](https://github.com/SmartBear/git-en-boite/tree/v0.14.25) (2022-02-03)
+
+## [v0.14.24](https://github.com/SmartBear/git-en-boite/tree/v0.14.24) (2022-02-02)
+
 ## [v0.14.23](https://github.com/SmartBear/git-en-boite/tree/v0.14.23) (2022-02-01)
 
 **Closed issues:**
