@@ -29,7 +29,7 @@ jobs:
       LOGGING_READABLE_BY: humans
       ACTIONS_STEP_DEBUG: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
@@ -63,7 +63,7 @@ jobs:
       GIT_EN_BOITE_IMAGE_VERSION: ${{ github.sha }}
       COMPOSE_FILE: docker-compose.yml:docker-compose.ci.yml
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Get git tag name
         id: tag
         run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
