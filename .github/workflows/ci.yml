@@ -45,7 +45,7 @@ jobs:
         run: yarn test
       - name: Notify test failures
         if: ${{ failure() }}
-        uses: archive/github-actions-slack@v2.3.2
+        uses: archive/github-actions-slack@v2.4.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
           slack-channel: cucumberstudio-ci
@@ -112,7 +112,7 @@ jobs:
 
       - name: "REPORT -- Notify slack channel of build failure"
         if: failure()
-        uses: archive/github-actions-slack@v2.3.2
+        uses: archive/github-actions-slack@v2.4.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
           slack-channel: cucumberstudio-ci
@@ -122,7 +122,7 @@ jobs:
 
       - name: "REPORT -- Notify Slack channel of build success for a release"
         if: success() && startsWith(github.ref, 'refs/tags/v')
-        uses: archive/github-actions-slack@v2.3.2
+        uses: archive/github-actions-slack@v2.4.0
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
           slack-channel: cucumberstudio-ci
