@@ -1204,10 +1204,10 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
-bullmq@1.76.3:
-  version "1.76.3"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.76.3.tgz#653df9d2086089bced9cbea00ee09ed137a0b642"
-  integrity sha512-M6smNUjTz/F1Wp70oVJ7ptEjYp19gLoRsz2RWq6RYIFBWM7uV9ehamPO7NFPAe6upVfRis9eeLAjtbS2N4BydA==
+bullmq@1.76.6:
+  version "1.76.6"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.76.6.tgz#1b39cae9f86aaaa28e63d16ed03dae89bd89ea21"
+  integrity sha512-IfOcaYFm1RLOGRRNsOibVJL5kSvWZ6/Zyu1rSrRr2Pe4UqGES6HoJwCqtWsdIXf/LcT6JCKnY9fR+zzvfm9quw==
   dependencies:
     cron-parser "^2.18.0"
     get-port "^5.1.1"
