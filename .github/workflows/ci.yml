@@ -132,7 +132,7 @@ jobs:
 
       - name: "REPORT -- Nofify SmartBear infrastructure of new container image"
         if: success()
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.SWAG_BOT_TOKEN }}
           repository: smartbear/git-en-boite-infra
@@ -141,7 +141,7 @@ jobs:
 
       - name: "REPORT -- Nofify SmartBear infrastructure of new production container image"
         if: success() && startsWith(github.ref, 'refs/tags/v')
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.SWAG_BOT_TOKEN }}
           repository: smartbear/git-en-boite-infra
