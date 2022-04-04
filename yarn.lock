@@ -184,6 +184,11 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@ioredis/commands@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.1.1.tgz#2ba4299ea624a6bfac15b35f6df90b0015691ec3"
+  integrity sha512-fsR4P/ROllzf/7lXYyElUJCheWdTJVJvOTps8v9IWKFATxR61ANOlnoPqhH099xYLrJGpc2ZQ28B3rMeUt5VQg==
+
 "@koa/router@^10.0.0":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@koa/router/-/router-10.0.0.tgz#699115561afbd2740e2848ba299fc76b9e058ad6"
@@ -1791,6 +1796,13 @@ debug@^4.1.1, debug@^4.3.1:
   dependencies:
     ms "2.1.2"
 
+debug@^4.3.4:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
+  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
+  dependencies:
+    ms "2.1.2"
+
 debug@~3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -1858,6 +1870,11 @@ denque@^1.1.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/denque/-/denque-1.5.0.tgz#773de0686ff2d8ec2ff92914316a47b73b1c73de"
   integrity sha512-CYiCSgIF1p6EUByQPlGkKnP1M9g0ZV3qMIrqMqZqdwazygIA/YP2vrbcyl1h/WppKJTdl1F85cXIle+394iDAQ==
+
+denque@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/denque/-/denque-2.0.1.tgz#bcef4c1b80dc32efe97515744f21a4229ab8934a"
+  integrity sha512-tfiWc6BQLXNLpNiR5iGd0Ocu3P3VpxfzFiqubLgMfhfOw9WyvgJBd46CClNn9k3qfbjvT//0cf7AlYRX/OslMQ==
 
 depd@^2.0.0, depd@~2.0.0:
   version "2.0.0"
@@ -2970,7 +2987,7 @@ invariant@^2.2.0:
   dependencies:
     loose-envify "^1.0.0"
 
-ioredis@^4.25.0, ioredis@^4.27.3:
+ioredis@^4.25.0:
   version "4.27.3"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.27.3.tgz#4a020c9056bf4e016c476910fb59620a0d899654"
   integrity sha512-eAirtUIljFkHJwuKQhbGajVrdCUMNKRuOrhzRFeYZRvXnLs4757Oss1S8aiheB4NSO1RsLeG+2RUjY/0/XiSig==
@@ -2999,6 +3016,21 @@ ioredis@^4.28.2:
     lodash.isarguments "^3.1.0"
     p-map "^2.1.0"
     redis-commands "1.7.0"
+    redis-errors "^1.2.0"
+    redis-parser "^3.0.0"
+    standard-as-callback "^2.1.0"
+
+ioredis@^5.0.0:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.0.3.tgz#5a742a03128a9924f98b957c8721720b4165b3ab"
+  integrity sha512-hKxywVypoGGUJDyfnMufO0VNkuIaQufo2/PJ5SOYBKWgf4+gCnZEPaBPle615k08euY9/B9DKytVtwZROF7HaA==
+  dependencies:
+    "@ioredis/commands" "^1.1.1"
+    cluster-key-slot "^1.1.0"
+    debug "^4.3.4"
+    denque "^2.0.1"
+    lodash.defaults "^4.2.0"
+    lodash.isarguments "^3.1.0"
     redis-errors "^1.2.0"
     redis-parser "^3.0.0"
     standard-as-callback "^2.1.0"
