@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/eventsource": "1.1.8",
     "@types/supertest": "2.0.12",
-    "concurrently": "7.0.0",
+    "concurrently": "7.1.0",
     "bullmq": "1.77.1",
     "eventsource": "2.0.0",
     "get-port": "5.1.1",
