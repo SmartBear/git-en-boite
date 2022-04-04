@@ -1204,12 +1204,12 @@ buffers@~0.1.1:
   resolved "https://registry.yarnpkg.com/buffers/-/buffers-0.1.1.tgz#b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb"
   integrity sha1-skV5w77U1tOWru5tmorn9Ugqt7s=
 
-bullmq@1.77.1:
-  version "1.77.1"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.77.1.tgz#ae09907299c7b2bb1bd5bba99f4c892d2440b50c"
-  integrity sha512-W2vQYMd2ilABe8EkPMzbCQXTVBnhP/KpylRK7pb5tqREQCEy95G2Wssz7Yj+HS4wSzoP5TbRCqW4Ojod4MU7TQ==
+bullmq@1.78.2:
+  version "1.78.2"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.78.2.tgz#f298c19aea71dd5d50ac1edbc040000151328d2a"
+  integrity sha512-VdrZWx2XELrCC0vSgLHamvXpyDulULymZz5lkDMzpEexZXU/NxI+mf/Vw7c88j7WstM2e5Zlzqx/3MKJq0LHAQ==
   dependencies:
-    cron-parser "^2.18.0"
+    cron-parser "^4.2.1"
     get-port "^5.1.1"
     glob "^7.2.0"
     ioredis "^4.28.2"
@@ -1714,13 +1714,20 @@ credit-card-type@^8.3.0:
   resolved "https://registry.yarnpkg.com/credit-card-type/-/credit-card-type-8.3.0.tgz#f93c187c9362411544158c91d552efcc443aa87a"
   integrity sha512-czfZUpQ7W9CDxZL4yFLb1kFtM/q2lTOY975hL2aO+DC8+GRNDVSXVCHXhVFZPxiUKmQCZbFP8vIhxx5TBQaThw==
 
-cron-parser@^2.18.0, cron-parser@^2.7.3:
+cron-parser@^2.7.3:
   version "2.18.0"
   resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-2.18.0.tgz#de1bb0ad528c815548371993f81a54e5a089edcf"
   integrity sha512-s4odpheTyydAbTBQepsqd2rNWGa2iV3cyo8g7zbI2QQYGLVsfbhmwukayS1XHppe02Oy1fg7mg6xoaraVJeEcg==
   dependencies:
     is-nan "^1.3.0"
     moment-timezone "^0.5.31"
+
+cron-parser@^4.2.1:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-4.3.0.tgz#16c3932fa62d0c30708d4200f510d6ca26bf35a2"
+  integrity sha512-mK6qJ6k9Kn0/U7Cv6LKQnReUW3GqAW4exgwmHJGb3tPgcy0LrS+PeqxPPiwL8uW/4IJsMsCZrCc4vf1nnXMjzA==
+  dependencies:
+    luxon "^1.28.0"
 
 cross-spawn@^5.0.1:
   version "5.1.0"
@@ -3649,6 +3656,11 @@ lru-queue@0.1:
   integrity sha1-Jzi9nw089PhEkMVzbEhpmsYyzaM=
   dependencies:
     es5-ext "~0.10.2"
+
+luxon@^1.28.0:
+  version "1.28.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
+  integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
 
 make-dir@^1.0.0:
   version "1.3.0"
