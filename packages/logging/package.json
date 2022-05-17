@@ -22,7 +22,7 @@
     "supertest": "6.2.2"
   },
   "dependencies": {
-    "@types/node": "15.6.1",
+    "@types/node": "16.11.36",
     "@types/pino": "6.3.12",
     "git-en-boite-core": "0.0.0",
     "pino": "6.14.0",
