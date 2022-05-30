@@ -18,7 +18,7 @@
     "concurrently": "7.1.0",
     "bullmq": "1.78.2",
     "eventsource": "2.0.0",
-    "get-port": "5.1.1",
+    "get-port": "6.1.2",
     "git-en-boite-app": "0.0.0",
     "git-en-boite-core": "0.0.0",
     "git-en-boite-inventory": "0.0.0",
