@@ -14,10 +14,10 @@
     "test": "mocha -g @wip -i"
   },
   "devDependencies": {
-    "@types/koa": "2.13.1",
+    "@types/koa": "2.13.4",
     "@types/mocha": "9.1.0",
     "hamjest": "3.7.3",
-    "koa": "2.13.1",
+    "koa": "2.13.4",
     "mocha": "9.2.2",
     "supertest": "6.2.2"
   },
