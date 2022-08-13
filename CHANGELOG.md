@@ -26,7 +26,6 @@
 
 - CVE-2022-0235 \(Medium\) detected in node-fetch-2.6.1.tgz - autoclosed [\#811](https://github.com/SmartBear/git-en-boite/issues/811)
 - CVE-2021-23566 \(Medium\) detected in nanoid-3.1.23.tgz - autoclosed [\#810](https://github.com/SmartBear/git-en-boite/issues/810)
-- CVE-2021-35065 \(Medium\) detected in glob-parent-5.1.2.tgz - autoclosed [\#805](https://github.com/SmartBear/git-en-boite/issues/805)
 - Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#790](https://github.com/SmartBear/git-en-boite/issues/790)
 - Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#788](https://github.com/SmartBear/git-en-boite/issues/788)
 - Dockerfile - Ensure that HEALTHCHECK instructions have been added to container images  - autoclosed [\#787](https://github.com/SmartBear/git-en-boite/issues/787)
