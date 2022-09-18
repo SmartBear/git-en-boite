@@ -16,7 +16,7 @@
     "@types/eventsource": "1.1.8",
     "@types/supertest": "2.0.12",
     "concurrently": "7.1.0",
-    "bullmq": "1.78.2",
+    "bullmq": "1.91.1",
     "eventsource": "2.0.2",
     "get-port": "5.1.1",
     "git-en-boite-app": "0.0.0",
