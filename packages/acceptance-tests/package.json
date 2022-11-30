@@ -26,7 +26,7 @@
     "git-en-boite-web": "0.0.0",
     "tiny-types": "1.17.0",
     "ts-node": "10.8.0",
-    "ts-node-dev": "1.1.8",
+    "ts-node-dev": "2.0.0",
     "ts-sinon": "2.0.2",
     "tsconfig-paths": "3.14.1",
     "uuid": "8.3.2"
@@ -41,7 +41,7 @@
     "prettier": "2.6.2",
     "supertest": "6.2.2",
     "tmp": "0.2.1",
-    "ts-node-dev": "1.1.8",
+    "ts-node-dev": "2.0.0",
     "tsconfig-paths": "3.14.1"
   }
 }
