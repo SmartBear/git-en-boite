@@ -19,7 +19,7 @@
     "mocha": "10.0.0",
     "nanoid": "3.3.2",
     "node-fetch": "2.6.7",
-    "supertest": "6.2.2",
+    "supertest": "6.3.3",
     "wait-on": "6.0.1"
   },
   "devDependencies": {}
