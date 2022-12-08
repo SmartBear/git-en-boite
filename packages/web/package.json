@@ -48,6 +48,6 @@
     "hamjest-sinon": "1.0.6",
     "node-fetch": "2.6.7",
     "split2": "4.1.0",
-    "supertest": "6.2.2"
+    "supertest": "6.3.3"
   }
 }
