@@ -94,7 +94,6 @@
 - License Policy Violation detected in rubyv2\_2\_2 \(Multiple Licenses\) - autoclosed [\#740](https://github.com/SmartBear/git-en-boite/issues/740)
 - License Policy Violation detected in pmdpmd-src-6.16.0 \(Multiple Licenses\) - autoclosed [\#739](https://github.com/SmartBear/git-en-boite/issues/739)
 - CVE-2021-23343 \(High\) detected in path-parse-1.0.6.tgz [\#738](https://github.com/SmartBear/git-en-boite/issues/738)
-- What's the right HTTP semantics to trigger a fetch? [\#573](https://github.com/SmartBear/git-en-boite/issues/573)
 
 ## [v0.13.2](https://github.com/SmartBear/git-en-boite/tree/v0.13.2) (2021-04-16)
 
@@ -165,6 +164,7 @@
 
 **Closed issues:**
 
+- What's the right HTTP semantics to trigger a fetch? [\#573](https://github.com/SmartBear/git-en-boite/issues/573)
 - Failed to save a feature when the local repo is not up to date [\#566](https://github.com/SmartBear/git-en-boite/issues/566)
 
 ## [v0.5.5](https://github.com/SmartBear/git-en-boite/tree/v0.5.5) (2021-03-03)
