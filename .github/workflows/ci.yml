@@ -43,15 +43,6 @@ jobs:
         run: yarn build
       - name: Run tests in each workspace
         run: yarn test
-      - name: Notify test failures
-        if: ${{ failure() }}
-        uses: archive/github-actions-slack@v2.4.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
-          slack-channel: cucumberstudio-ci
-          slack-text: |
-            *git-en-boite*
-            :red_circle: Tests failed on main branch: <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
 
   publish-docker-image:
     name: Build & publish Docker image
@@ -109,26 +100,6 @@ jobs:
       - name: PUBLISH -- Push smartbear/git-en-boite
         if: github.event_name == 'push'
         run: docker push --all-tags smartbear/git-en-boite
-
-      - name: "REPORT -- Notify slack channel of build failure"
-        if: failure()
-        uses: archive/github-actions-slack@v2.4.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
-          slack-channel: cucumberstudio-ci
-          slack-text: |
-            *git-en-boite*
-            :fire_engine: Docker image build failed <https://github.com/SmartBear/git-en-boite/commit/${{ github.sha }}>
-
-      - name: "REPORT -- Notify Slack channel of build success for a release"
-        if: success() && startsWith(github.ref, 'refs/tags/v')
-        uses: archive/github-actions-slack@v2.4.0
-        with:
-          slack-bot-user-oauth-access-token: ${{ secrets.CUCUMBERSTUDIO_SLACK_BOT_OAUTH_ACCESS_TOKEN }}
-          slack-channel: cucumberstudio-ci
-          slack-text: |
-            *git-en-boite*
-            :truck: New release image published: "${{ steps.docker-image-tag.outputs.tag }}"
 
       - name: "REPORT -- Nofify SmartBear infrastructure of new container image"
         if: success()
