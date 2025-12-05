@@ -17,7 +17,7 @@
     "@types/koa": "2.13.1",
     "@types/mocha": "9.1.1",
     "hamjest": "3.7.3",
-    "koa": "2.13.1",
+    "koa": "^2.15.4",
     "mocha": "10.0.0",
     "supertest": "6.2.2"
   },
