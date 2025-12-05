@@ -37,5 +37,8 @@
   "dependencies": {
     "typescript": "4.2.4"
   },
+  "resolutions": {
+    "minimist": "^1.2.6"
+  },
   "version": "0.14.33"
 }
