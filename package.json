@@ -37,5 +37,8 @@
   "dependencies": {
     "typescript": "4.2.4"
   },
+  "resolutions": {
+    "https-proxy-agent": "^2.2.0"
+  },
   "version": "0.14.33"
 }
