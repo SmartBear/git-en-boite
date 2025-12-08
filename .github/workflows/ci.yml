@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, ci, BDD-1884/security-issue]
+    branches: [main, ci]
     tags: ['v*']
 
 jobs:
@@ -97,9 +97,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_KEY }}
-      - name: PUBLISH -- Push smartbear/git-en-boite
-        if: github.event_name == 'push'
-        run: docker push --all-tags smartbear/git-en-boite
+      # - name: PUBLISH -- Push smartbear/git-en-boite
+      #   if: github.event_name == 'push'
+      #   run: docker push --all-tags smartbear/git-en-boite
 
       - name: "REPORT -- Nofify SmartBear infrastructure of new container image"
         if: success()
