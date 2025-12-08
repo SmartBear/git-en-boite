@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, ci]
+    branches: [main, ci, BDD-1884/security-issue]
     tags: ['v*']
 
 jobs:
