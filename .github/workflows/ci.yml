@@ -80,9 +80,9 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: SMOKE TESTS -- Start services
-        run: docker-compose up --no-build --detach
+        run: docker compose up --no-build --detach
       - name: SMOKE TESTS -- Services start logs
-        run: docker-compose logs
+        run: docker compose logs
       - name: SMOKE TESTS -- Wait for services to be ready
         uses: ifaxity/wait-on-action@v1
         with:
@@ -90,7 +90,7 @@ jobs:
           timeout: 60000
           verbose: true
       - name: SMOKE TESTS -- Run smoke tests
-        run: docker-compose run smoke-tests yarn smoke start || (docker-compose log && exit 1)
+        run: docker compose run smoke-tests yarn smoke start || (docker compose logs && exit 1)
 
       - name: PUBLISH -- Authenticate with DockerHub
         uses: docker/login-action@v1
