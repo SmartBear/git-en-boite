@@ -18,10 +18,10 @@ jobs:
           last_release=`git describe --abbrev=0 --tags`
           total_new_commits=`git log $last_release..main --pretty=oneline | wc -l`
           echo "Commits by everyone: $total_new_commits"
-          echo "::set-output name=by-everyone::$total_new_commits"
+          echo "by-everyone=$total_new_commits" >> $GITHUB_OUTPUT
           commits_by_dependabot=`git log $last_release..main --author="dependabot" --author="GitHub Actions" --pretty=oneline | wc -l`
           echo "Commits by dependabot: $commits_by_dependabot"
-          echo "::set-output name=by-dependabot::$commits_by_dependabot"
+          echo "by-dependabot=$commits_by_dependabot" >> $GITHUB_OUTPUT
       - uses: oleksiyrudenko/gha-git-credentials@v2-latest
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
