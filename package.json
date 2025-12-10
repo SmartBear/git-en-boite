@@ -39,6 +39,7 @@
   },
   "resolutions": {
     "minimist": "^1.2.6"
+    "form-data": "^4.0.4"
   },
   "version": "0.14.33"
 }
