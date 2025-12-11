@@ -74,7 +74,7 @@ describe(`Smoke tests on ${url}`, function () {
     const response = await fetch(`${url}/repos/${repoId}`)
     const { branches } = await response.json()
     assertThat(branches, not(empty()))
-    assertThat(branches, hasItem(hasProperties({ name: 'master' })))
+    assertThat(branches, hasItem(hasProperties({ name: 'main' })))
   })
 
   it('Commits a file', async () => {

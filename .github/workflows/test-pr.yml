@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-      - uses: egordm/gha-yarn-node-cache@v1
+          cache: 'yarn'
       - uses: supercharge/redis-github-action@1.4.0
       - name: Install dependencies
         run: yarn install
