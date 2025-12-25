@@ -2842,10 +2842,10 @@ graphql@^14.0.0:
   dependencies:
     iterall "^1.2.2"
 
-hamjest-sinon@1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/hamjest-sinon/-/hamjest-sinon-1.0.6.tgz#60b0733772612f2002701c346a0afa6045041ae2"
-  integrity sha512-vxEX5gDefES4stKPcwp1I7itfXyOh4l+XQ4ZCNTcKf5o2sqBullTTvGqf1F9e1w7RfO5QnB97CW/zksJih5guw==
+hamjest-sinon@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/hamjest-sinon/-/hamjest-sinon-1.2.0.tgz#36814dd84b91e89702a7985af29ec6fe9def0f29"
+  integrity sha512-d8vGr29G2kousL2D3y8oR3oKH7/3pOc2ikqsEl0FnBXq3yW5RO9RG4c8BI65dudiQxVyw8MdJ6LVsFjvQvUcjQ==
 
 hamjest@3.7.3:
   version "3.7.3"
