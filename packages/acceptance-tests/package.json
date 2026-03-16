@@ -39,7 +39,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "hamjest": "mattwynne/hamjest#master",
     "prettier": "2.6.2",
-    "supertest": "6.2.2",
+    "supertest": "6.3.3",
     "tmp": "0.2.1",
     "ts-node-dev": "1.1.8",
     "tsconfig-paths": "3.14.1"
