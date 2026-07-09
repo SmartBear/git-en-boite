@@ -46,7 +46,7 @@
     "@types/split2": "3.2.1",
     "hamjest": "3.7.3",
     "hamjest-sinon": "1.0.6",
-    "node-fetch": "2.6.7",
+    "node-fetch": "3.2.4",
     "split2": "4.1.0",
     "supertest": "6.2.2"
   }
